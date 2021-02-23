@@ -1,2 +1,3 @@
 # craterstats
-greg's new desc
+
+This is a reimplementation in python of the CraterstatsII software.
