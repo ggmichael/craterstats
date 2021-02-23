@@ -1,0 +1,34 @@
+# Craterstats: sample binned PF
+# -----------------------------
+#
+# Counting area, in km^2
+
+area = 123.0 
+
+
+#
+# Bins should be in ascending order
+# Set the final bin width by adding an additional bin with 0 frequency (e.g. 0.7  0)
+#
+# For a normal count, provide the area and a table of diameter vs frequency.
+# For buffered counts, it may be useful to provide the frequency (density) relative to a standard area (e.g. 1 km2 or 10^6 km2). In such a case,
+# you should additionally provide the event_frequency, i.e. the actual number of craters counted of the given size. This is required to 
+# properly calculate the stochastic error. Substitute the folowing line for the table header:
+#
+# table = {diameter,frequency,event_frequency
+
+
+table = {diameter,frequency
+0.06              1
+0.1               3
+0.13              1
+0.14              2
+0.15              2
+0.17              2
+0.2               8
+0.25              5
+0.3               3
+0.35              2
+0.6               1
+0.7               0
+}

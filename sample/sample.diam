@@ -1,0 +1,24 @@
+# Empty sample .diam file for Craterstats
+#
+# new format introduced 2014.03.04
+# previous formats should still work, but this one to be preferred
+#
+#
+# area, km^2
+area = 100.
+#
+#
+# table below may include any of the following field combinations:
+#
+#              km        -      deg  deg
+# crater = {diameter
+# crater = {diameter, fraction
+# crater = {diameter, fraction, lon, lat
+#
+# 
+crater = {diameter
+1.1
+2.3
+3.0
+1.7
+}

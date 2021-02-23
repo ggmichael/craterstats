@@ -1,0 +1,47 @@
+
+#
+# Command line options to produce demonstration plots
+#
+
+-title Differential plot -subtitle with two differential fit age evaluations -cs 3 -p source=sample\Pickering.scc;psym=8 -p type=d-fit;range=[.2,.7];isochron=1 -p range=[2,5];colour=1;offset_age=[2,-3]
+
+-cs 3 -title Differential plot -subtitle with two Poisson age evaluations -p source=sample\Pickering.scc;psym=12 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=1;offset_age=[2,-3]
+
+-pi 1 -title Cumulative fit -subtitle with resurfacing correction -cs 3 -p source=sample\Pickering.scc;psym=8 -p type=c-fit;range=[.2,.7];resurf=1;psym=12
+
+-pi 1 -cs 3 -title Cumulative fit with resurfacing correction -subtitle showing all corrected data points -p source=sample\Pickering.scc;psym=8 -p type=c-fit;range=[.2,.7];resurf=1;psym=12;resurf_showall=1
+
+-pi 1 -cs 3 -ep 2 -ef 1 -title Cumulative fit with resurfacing correction -subtitle corrected data points, and epoch system -p source=sample\Pickering.scc;psym=8 -p type=c-fit;range=[.2,.7];resurf=1;psym=12;resurf_showall=1
+
+-pi 1 -cs 3 -legend naN -title Modified legend 1: -subtitle renamed data series; N(1) value but no count or range -p source=sample\Pickering.scc;psym=8;name=Area 1 -p type=c-fit;range=[.2,.7];resurf=1;psym=12
+
+-pi 1 -cs 3 -legend #r -cite_functions 0 -title Modified legend 2: -subtitle hide data series and function citations -p source=sample\Pickering.scc;psym=8;name=Area 1 -p type=c-fit;range=[.2,.7];resurf=1;psym=12
+
+-pi 3 -cs 3 -ep 2 -title R-plot -subtitle with 10/decade binning -p source=sample\Pickering.scc;psym=8;binning=10/decade -p type=poisson;range=[.2,.7];psym=12
+
+-pi 4 -cs 5 -ef 2 -title Hartmann-style plot -subtitle with specified isochrons -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9 -p source=sample\Pickering.scc;psym=8
+
+-pi 4 -cs 6 --equilibrium 2 -title Hartmann style plot -subtitle with H&D 2016 production function -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9 -p source=sample\Pickering.scc;psym=8
+
+-pi 4 -cs 3 -mu 0 -ef 2 -title Hartmann-style plot with other chronology -subtitle system and without $\mu$-notation -p source=sample\Pickering.scc;psym=2;isochron=1 -p type=poisson;colour=3;range=[.2,.7] -p colour=1;range=[2,5];offset_age=[3,0]
+
+-pi 6 -ref_diameter 10 -yrange -7 2 -title Impact rate function -subtitle with alternative specified reference diameter
+
+-pi 5 -ep 2 -cs 3 -title Chronology function -subtitle with Mars epochs and transition times
+
+-pi 5 -ep 1 -title Chronology function -subtitle with lunar epochs and transition times
+
+-cs 3 -style root-2 -title Differential plot -subtitle with root-2 binning and root-2 diameter scale -p source=sample\Pickering.scc;psym=12;binning=root-2 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=5;offset_age=[2,-3]
+
+-cs 3 -invert 1 -title Plot with inverted colour -p source=sample\Pickering.scc;psym=12 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=5;offset_age=[2,-3]
+
+-cs 3 --transparent -title Plot with transparent background -p source=sample\Pickering.scc;psym=12 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=5;offset_age=[2,-3]
+
+-cs 3 -title Plot with left-positioned age annotation -p source=sample\Pickering.scc;psym=12 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=3;age_left=1
+
+-cs 3 -title Plot with specified adjustment to position of age annotation -subtitle x+1%,y+4% -p source=sample\Pickering.scc;psym=12 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=3;age_left=1;offset_age=[1,4]
+
+# list supported chronology systems, equilibrium functions and epoch systems
+-lcs
+
+# list symbol and colour options

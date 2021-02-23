@@ -1,0 +1,536 @@
+﻿#
+#
+# Moon
+#
+# 
+
+
+chronology_system={
+  body='Moon'
+  name='Moon, Neukum (1983)'
+  cf='Moon, Neukum (1983)'
+  pf='Moon, Neukum (1983)'
+}
+
+production={
+   name='Moon, Neukum (1983)'
+   coefficients=*[-2.5339,-3.6269,0.43662,0.79347,0.086468,-0.26485,-0.066382,0.037923,0.010596,-0.0022496,-0.00051797,0.0000397]
+#                a0 for 1 Ga should be -3.0768 (in any case, a0 is superfluous to specification of PF and ignored by Craterstats)
+   range=[.01,300.]
+}
+
+
+chronology={
+    name='Moon, Neukum (1983)'
+    coefficients=[5.44E-14,6.93E0,0,8.38E-4]
+    reference='Neukum, G., 1983. Meteoritenbombardement und Datierung planetarer Oberflächen. Habilitation Dissertation. Ludwig Maximilianis Univ., Munich.'    
+}
+
+
+
+
+chronology_system={
+  body='Moon'
+  name='Moon, Neukum et al. (2001)'
+  cf='Moon, Neukum et al. (2001)'
+  pf='Moon, Neukum et al. (2001)'
+}
+
+production={
+   name='Moon, Neukum et al. (2001)'
+   coefficients=*[-3.0768e00,-3.557528e00,0.781027e00,1.021521e00,-0.156012e00,-0.444058e00,0.019977e00,0.086850e00,-0.005874e00,-0.006809e00,8.25e-04,5.54e-05]
+#                published value is a0=-3.0876, but this appears to be a typo (either way, a0 is superfluous to specification of PF and ignored by Craterstats)
+   range=[.01,100.]
+   reference='Neukum, G., B. Ivanov, and W. Hartmann (2001), Cratering records in the inner solar system in relation to the lunar reference system, Space Sci. Rev. 96, 55 - 87.'
+}
+
+chronology={
+    name='Moon, Neukum et al. (2001)'
+    coefficients=[5.44E-14,6.93E0,0,8.38E-4]
+    reference='Neukum, G., Ivanov, B. A., and Hartmann, W. K. (2001) Cratering records in the inner solar system in relation to the lunar reference system. Space Science Reviews, v. 96, p. 55-86.'    
+}
+
+
+
+#
+#
+# Equilibrium functions
+#
+#
+
+equilibrium={
+   name='Standard lunar equilibrium (Trask, 1966)'
+   type='polynomial'
+   coefficients=[-1.1,-2.]
+   range=[.001,1000.]
+   reference='Trask, N. J. (1966) Size and spatial distribution of craters estimated from Ranger photographs. Jet Propul. Lab. Tech. Rep. 32-800, Pasadena, Cal., 252 S.'
+}
+
+equilibrium={
+   name='Hartmann (1984)'
+   type='polynomial'
+   coefficients=[-1.14,-1.83] 
+#                 a0=-1.33-alog10(2.^(-.25*k)-2.^(.25*k)) where k=-1.83 for cumulative form. Correction provided by Kjartan Kinch 2017-03
+   range=[.001,1000.]
+   reference='Hartmann W. K. (1984) Does Crater Saturation Equilibrium Occur in the Solar System? Icarus 60, 56-74'
+}
+
+
+
+#
+#
+# Epoch systems
+#
+# 
+            
+epochs={
+  name='Moon, Wilhelms (1987)'
+  epoch=['Copernican','Eratosthenian','Late Imbrian','Early Imbrian','Nectarian','Pre-Nectarian']
+  time=[0.,1.1,3.2,3.8,3.85,3.92]
+  formatting=[60,0b,1b,0,2b,1r,2]
+  reference='Wilhelms (1987). Geologic History of the Moon. U.S. Geological Survey Professional Paper 1348. Ages (incl. significant figures) from text of Chapter 14.'
+}
+
+epochs={
+  name='Mars, Michael (2013)'
+  epoch=*['Late Amazonian','Middle Amazonian','Early Amazonian','Late Hesperian','Early Hesperian','Late Noachian','Middle Noachian','Early Noachian']
+  formatting=[90,0,1,2b,0,2b,0,1,2]
+  ref_diameter=[1,1,1,5,5,16,16]
+  density=[160,600,2100,125,200,100,200]
+  reference='Michael (2013), Planetary surface dating from crater size–frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting. Note that ages are corrected from those in Werner & Tanaka (2011).'
+}
+
+
+
+#
+#
+# Mars
+#
+# 
+
+
+chronology_system={
+  body='Mars'
+  name='Mars, Neukum-Ivanov (2001)'
+  cf='Mars, Hartmann & Neukum (2001)'
+  pf='Mars, Ivanov (2001)'
+}
+
+chronology_system={
+  body='Mars'
+  name='Mars, Ivanov (2001)'
+  cf='Mars, Ivanov (2001)'
+  pf='Mars, Ivanov (2001)'
+}
+
+production={
+   name='Mars, Ivanov (2001)'
+   coefficients=*[-3.383677e00,-3.197453e00,1.256814e00,7.915374e-01,-4.860814e-01,-3.630098e-01,1.015683e-01,6.755923e-02,-1.180639e-02,-4.753462e-03,6.232845e-04,5.805492e-05]
+   range=[.015,362.]
+}
+
+chronology={
+    name='Mars, Hartmann & Neukum (2001)'
+    coefficients=[3.22E-14,6.93E00,0,4.875E-04]    
+    reference='graphically: 2001 Hartmann & Neukum - Cratering Chronology and the Evolution of Mars; in equation form: 2001 Neukum Ivanov Hartmann - Cratering Records in the Inner Solar System in Relation to the Lunar Reference System"
+}
+
+chronology={
+    name='Mars, Ivanov (2001)'
+    coefficients=[2.68e-14,6.93e00,0,4.13e-4]    
+    reference='Ivanov, B. A. (2001) MARS/MOON CRATERING RATE RATIO ESTIMATES' 
+}
+
+production={
+   name='Mars, Neukum (1983)'
+   coefficients=*[-3.7887,-2.9076,1.187,3.8419e-01,-3.9553e-01,-1.6517e-01,5.8655e-02,2.6348e-02,-3.6585e-03,-1.6354e-03,7.3875e-05,2.8421e-05]
+   range=[.01,300.]
+}
+
+
+
+
+
+chronology_system={
+  body='Mars'
+  name='Mars, Hartmann 2004 iteration'
+  cf='Mars, Hartmann (2005) [Michael (2013)]'
+  pf='Mars, Hartmann (2005)'
+}
+
+production={
+   name='Mars, Hartmann (2005)'
+   type='tabular incremental root-2'
+   H=*[4.04E+03,2.33E+03,1.14E+03,4.58E+02,1.91E+02,6.66E+01,2.40E+01,9.44E+00,3.30E+00,1.22E+00,4.37E-01,1.47E-01,4.70E-02,1.38E-02,4.02E-03,1.15E-03,3.08E-04,1.28E-04,6.85E-05,3.67E-05,1.98E-05,1.06E-05,5.68E-06,3.04E-06,1.62E-06,8.71E-07,4.67E-07,2.40E-07,1.12E-07,5.21E-08,2.43E-08,1.13E-08,5.28E-09,2.47E-09,1.15E-09,5.37E-10]
+   index_1km=16
+   yrange=[-8,4]
+   reference='Hartmann W.K., Martian cratering 8: Isochron refinement and the chronology of Mars. Icarus 174 (2005) [nb: corrected typos]'
+}
+
+chronology={
+    name='Mars, Hartmann (2005) [Michael (2013)]'
+    coefficients=[3.79E-14,6.93,0,5.84E-04] 
+   reference='Hartmann W.K., Martian cratering 8: Isochron refinement and the chronology of Mars. Icarus 174 (2005); Michael G., Planetary surface dating from crater size–frequency distribution measurements- Multiple resurfacing episodes and differential isochron fitting (2013)'
+}
+
+
+
+chronology_system={
+  body='Mars'
+  name='Mars, Hartmann & Daubar (2016)'
+  cf='Mars, Hartmann (2005) [Michael (2013)]'
+  pf='Mars, Hartmann & Daubar (2016)'
+}
+
+production={
+   name='Mars, Hartmann & Daubar (2016)'
+   type='tabular incremental root-2'
+   H=*[1.10e+05,7.50e+04,4.50e+04,2.40e+04,1.10e+04,4.20e+03,1.60e+03,6.00e+02,1.90e+02,6.70e+01,2.40E+01,9.44E+00,3.30E+00,1.22E+00,4.37E-01,1.47E-01,4.70E-02,1.38E-02,4.02E-03,1.15E-03,3.08E-04,1.28E-04,6.85E-05,3.67E-05,1.98E-05,1.06E-05,5.68E-06,3.04E-06,1.62E-06,8.71E-07,4.67E-07,2.40E-07,1.12E-07,5.21E-08,2.43E-08,1.13E-08,5.28E-09,2.47E-09,1.15E-09,5.37E-10]
+   index_1km=20
+   yrange=[-8,5]
+   reference='Hartmann & Daubar. Martian cratering 11 - Utilizing decameter scale crater populations to study Martian history. Meteoritics & Planetary Science 1–18 (2016)'
+}
+
+
+
+#
+#
+# Mercury
+#
+# 
+
+
+
+chronology_system={
+  body='Mercury'
+  name='Mercury, Strom & Neukum (1988)'
+  cf='Mercury, Strom & Neukum (1988)'
+  pf='Mercury, Strom & Neukum (1988)'
+}
+
+production={
+   name='Mercury, Strom & Neukum (1988)'
+   coefficients=*[-2.600300e00,-3.6712e00,2.946e-01,7.63e-01,1.62e-01,-2.379e-01,-8.1361e-02,3.2493e-02,1.1737e-02,-1.9272e-03,-5.4447e-04,3.97e-05]
+   range=[.01,100.]
+   reference='Strom, R.G., Neukum, G., 1988. The cratering record on Mercury and the origin of impacting objects. In: Vilas, F., Chapman, C.R., Matthews, M.S. (Eds.), Mercury. University of Arizona Press, Tucson, Ariz., pp. 336-373.'
+}
+
+chronology={
+    name='Mercury, Strom & Neukum (1988)'
+    coefficients=[1.186E-13,6.93E0,0,1.818E-3]
+    reference='Strom, R.G., Neukum, G., 1988. The cratering record on Mercury and the origin of impacting objects. In: Vilas, F., Chapman, C.R., Matthews, M.S. (Eds.), Mercury. University of Arizona Press, Tucson, Ariz., pp. 336–373.'    
+}
+
+
+
+chronology_system={
+  body='Mercury'
+  name='Mercury, Neukum et al. (2001)'
+  cf='Mercury, Neukum et al. (2001)'
+  pf='Mercury, Neukum et al. (2001)'
+}
+
+production={
+   name='Mercury, Neukum et al. (2001)'
+   coefficients=*[-3.016675e00,-3.627417e00,6.038601e-01,1.026714e00,-3.767761e-03,-4.204364e-01,-3.2235e-02,8.044575e-02,3.170165e-03,-6.733922e-03,1.334403e-04,1.428627e-04]
+   range=[.01,100.]
+   reference='G. Neukum, J. Oberst, H. Hoffmann, R. Wagner, B. A. Ivanov, Geologic evolution and cratering history of Mercury, Planetary and Space Science, Volume 49, Issues 14-15, December 2001, Pages 1507-1521.'
+}
+
+chronology={
+    name='Mercury, Neukum et al. (2001)'
+    coefficients=[6.247e-14,6.93E0,0,9.620e-4]
+    reference='G. Neukum, J. Oberst, H. Hoffmann, R. Wagner, B. A. Ivanov, Geologic evolution and cratering history of Mercury, Planetary and Space Science, Volume 49, Issues 14-15, December 2001, Pages 1507-1521.'    
+}
+
+
+
+
+
+chronology_system={
+  body='Mercury'
+  name='Mercury, Le Feuvre and Wieczorek 2011 non-porous'
+  cf='Mercury, Le Feuvre and Wieczorek (2011) non-porous'
+  pf='Mercury, Le Feuvre and Wieczorek (2011) non-porous'
+}
+
+production={
+   name='Mercury, Le Feuvre and Wieczorek (2011) non-porous'
+   coefficients=*[-0.93900e00,-3.99400e00,-1.11600e00,1.26900e00,1.27200e00,-8.27600e-01,-3.71800e-01,2.46300e-01,2.09100e-02,-2.75600e-02,3.65900e-03,0.00000e00]
+   range=[0.1,1000.]
+   reference='Le Feuvre and Wieczorek 2011 Icarus'
+}
+
+chronology={
+    name='Mercury, Le Feuvre and Wieczorek (2011) non-porous'
+    coefficients=[2.74e-24,1.444E1,0,1.150e-1]
+    reference='Le Feuvre and Wieczorek 2011 Icarus'
+}
+
+
+
+
+chronology_system={
+  body='Mercury'
+  name='Mercury, Le Feuvre and Wieczorek 2011 porous'
+  cf='Mercury, Le Feuvre and Wieczorek (2011) porous'
+  pf='Mercury, Le Feuvre and Wieczorek (2011) porous'
+}
+
+production={
+   name='Mercury, Le Feuvre and Wieczorek (2011) porous'
+   coefficients=*[-2.59000000e00,-3.67300000e00,9.00200000e-01,9.60900000e-01,-5.23900000e-01,-3.62200000e-01,1.50800000e-01,5.22400000e-02,-1.84300000e-02,-2.51000000e-03,8.05300000e-04]
+   range=[0.1,1000.]
+   reference='Le Feuvre and Wieczorek 2011 Icarus'
+}
+
+chronology={
+    name='Mercury, Le Feuvre and Wieczorek (2011) porous'
+    coefficients=[6.11e-26,1.444E1,0,2.57e-3]
+    reference='Le Feuvre and Wieczorek 2011 Icarus'
+}
+
+
+
+
+
+
+
+
+#
+#
+# Small bodies
+#
+#
+
+
+
+###Vesta###
+
+chronology_system={
+  body='Vesta'
+  name='Vesta, Rev4, Schmedemann et al (2014)'
+  cf='Vesta, Rev4, Schmedemann et al (2014)'
+  pf='Vesta, Rev4, Schmedemann et al (2014)'
+  ref='N. Schmedemann, T. Kneissl, B.A. Ivanov, G.G. Michael, R.J. Wagner, G. Neukum, O. Ruesch, H. Hiesinger, K. Krohn, T. Roatsch, F. Preusker, H. Sierks, R. Jaumann, V. Reddy, A. Nathues, S. Walter, A. Neesemann, C.A. Raymond, C.T. Russell, The Cratering Record, Chronology and Surface Ages of (4) Vesta in Comparison to Smaller Asteroids and the Ages of HED Meteorites, Planetary and Space Science, 2014,  http://dx.doi.org/10.1016/j.pss.2014.04.004'
+}
+
+production={
+   name='Vesta, Rev4, Schmedemann et al (2014)'
+   coefficients=*[-3.365,-2.9267,0.6192,0.59636,0.11879,-0.30577,-0.20515,0.068576,0.058513,-0.010293,-0.0053325,0.0009643]
+   range=[0.03,500]
+}
+
+chronology={
+    name='Vesta, Rev4, Schmedemann et al (2014)'
+    coefficients=[1.28501204957199e-12,6.93,0,0.0197948547342156]    
+}
+
+
+
+
+
+chronology_system={
+  body='Vesta'
+  name='Vesta, Rev3, Schmedemann et al (2014)'
+  cf='Vesta, Rev3, Schmedemann et al (2014)'
+  pf='Vesta, Rev3, Schmedemann et al (2014)'
+  ref='N. Schmedemann, T. Kneissl, B.A. Ivanov, G.G. Michael, R.J. Wagner, G. Neukum, O. Ruesch, H. Hiesinger, K. Krohn, T. Roatsch, F. Preusker, H. Sierks, R. Jaumann, V. Reddy, A. Nathues, S. Walter, A. Neesemann, C.A. Raymond, C.T. Russell, The Cratering Record, Chronology and Surface Ages of (4) Vesta in Comparison to Smaller Asteroids and the Ages of HED Meteorites, Planetary and Space Science, 2014,  http://dx.doi.org/10.1016/j.pss.2014.04.004'
+}
+
+production={
+   name='Vesta, Rev3, Schmedemann et al (2014)'
+   coefficients=*[-3.1643,-3.0382,0.5445,0.67305,0.11447,-0.34186,-0.15077,0.079115,0.035557,-0.0099727,-0.002574,0.00058434]
+   range=[0.00380141,500]
+}
+
+chronology={
+    name='Vesta, Rev3, Schmedemann et al (2014)'
+    coefficients=[1.32232049255323e-12,6.93,0,0.0203695693521986]
+}
+
+
+
+
+
+chronology_system={
+  body='Vesta'
+  name='Vesta, Marchi & O'Brien (2014)'
+  cf='Vesta, O'Brien et al. (2014)'
+  pf='Vesta, Marchi et al (2013) [inferred, NS]'
+}
+
+production={
+   name='Vesta, Marchi et al (2013) [inferred, NS]'
+   coefficients=*[-1.723e+000,-2.256e+000,5.189e-001,2.271e-001,-2.462e-001,-1.768e-001,5.113e-002,4.482e-002,-4.253e-003,-4.663e-003,1.013e-004,1.681e-004]
+   range=[0.001,600]
+   reference="Marchi et al, Small crater populations on Vesta, P&SS 103, 2014"
+}
+
+
+chronology={
+    name='Vesta, O'Brien et al. (2014)'
+    n1_code="
+        t_o = 4.56
+        t_lhb = 4.1
+        lambda_lhb = 6.93
+        f_lhb = 2
+        tau_pd = 0.025
+        c_cd = (t_lhb+0.001)**(0.0834)
+	f_cd = c_cd*(0.001)**(-0.0834)
+	c_lhb= (f_lhb*f_cd-f_cd)/exp(lambda_lhb*t_lhb)
+        M_o = 836.
+        c_pd = M_o-f_lhb*f_cd
+        C1 = c_cd/0.9166*(t_lhb+0.001)**0.9166
+        n_mlt = (c_lhb/lambda_lhb*(exp(lambda_lhb*t)-1) - c_cd/0.9166*(t_lhb-t+0.001)**0.9166 + C1)
+        C2 = (c_lhb/lambda_lhb) * (exp(lambda_lhb*t_lhb)-1) - c_cd/0.9166*(0.001)**0.9166 + C1
+        C3 = c_pd*tau_pd*exp((t_lhb-t_o)/tau_pd)
+        n_mgt = (C2 + f_lhb*f_cd*(t-t_lhb) + c_pd*tau_pd*exp((t-t_o)/tau_pd) - C3)
+        n1=n_mlt if t<t_lhb else n_mgt
+        "
+    #substitute last line: "n1=gm_conditional(t lt t_lhb,n_mlt,n_mgt)", and ^ for ** for IDL
+    reference="O'Brien et al., Constraining the cratering chronology of Vesta, P&SS 103, 2014"
+}
+
+
+
+###Ceres###
+
+chronology_system={
+  body='Ceres'
+  name='Ceres, Hiesinger et al. (2016)'
+  cf='Ceres, Hiesinger et al. (2016)'
+  pf='Ceres, Hiesinger et al. (2016)'
+  ref='Hiesinger et al., Cratering on Ceres: Implications for its crust and evolution, Science, 2016'
+}
+
+
+production={
+   name='Ceres, Hiesinger et al. (2016)'
+   coefficients=*[-2.8502,-3.2567,0.48621,0.60437,0.07478,-0.18704,-0.072493,0.02096,0.013396,-0.00072764,-0.00080732,1.5624e-05]
+   range=[0.0066,301]
+}
+
+chronology={
+    name='Ceres, Hiesinger et al. (2016)'
+    coefficients=[3.79e-12,6.93,0,0.0584]
+}
+
+
+
+
+###Ida###
+
+chronology_system={
+  body='Ida'
+  name='Ida, Schmedemann et al (2014)'
+  cf='Ida, Schmedemann et al (2014)'
+  pf='Ida, Schmedemann et al (2014)'
+  ref='N. Schmedemann, T. Kneissl, B.A. Ivanov, G.G. Michael, R.J. Wagner, G. Neukum, O. Ruesch, H. Hiesinger, K. Krohn, T. Roatsch, F. Preusker, H. Sierks, R. Jaumann, V. Reddy, A. Nathues, S. Walter, A. Neesemann, C.A. Raymond, C.T. Russell, The Cratering Record, Chronology and Surface Ages of (4) Vesta in Comparison to Smaller Asteroids and the Ages of HED Meteorites, Planetary and Space Science, 2014,  http://dx.doi.org/10.1016/j.pss.2014.04.004'
+}
+
+production={
+   name='Ida, Schmedemann et al (2014)'
+   coefficients=*[-3.224142138786374,-2.734469281506526,0.671929065421138,0.324530500059052,-0.117050908572989,-0.061444221371560,0.025122353823233,-0.016168430276488,-0.010553901203146,0.006314954709733,0.001418988794371,-0.000624930348572]
+   range=[.01,500.]
+}
+
+chronology={
+    name='Ida, Schmedemann et al (2014)'
+    coefficients=[1.58098379906017e-12,6.93e00,0,0.0243541254340518]    
+}
+
+
+
+###Gaspra###
+
+chronology_system={
+  body='Gaspra'
+  name='Gaspra, Schmedemann et al (2014)'
+  cf='Gaspra, Schmedemann et al (2014)'
+  pf='Gaspra, Schmedemann et al (2014)'
+  ref='N. Schmedemann, T. Kneissl, B.A. Ivanov, G.G. Michael, R.J. Wagner, G. Neukum, O. Ruesch, H. Hiesinger, K. Krohn, T. Roatsch, F. Preusker, H. Sierks, R. Jaumann, V. Reddy, A. Nathues, S. Walter, A. Neesemann, C.A. Raymond, C.T. Russell, The Cratering Record, Chronology and Surface Ages of (4) Vesta in Comparison to Smaller Asteroids and the Ages of HED Meteorites, Planetary and Space Science, 2014,  http://dx.doi.org/10.1016/j.pss.2014.04.004'
+}
+
+production={
+   name='Gaspra, Schmedemann et al (2014)'
+   coefficients=*[-2.994946069972350,-2.837652592429328,0.588639686417394,0.362687108451849,-0.090567764875174,-0.081316576656523,0.033630503955855,-0.005110350246025,-0.015222706637551,0.004495261079555,0.002050010873481,-0.000613330653994]
+   range=[.01,500.]
+}
+
+chronology={
+    name='Gaspra, Schmedemann et al (2014)'
+    coefficients=[2.63540786651188e-12,6.93e00,0,0.0405969079436940]    
+}
+
+
+
+
+###Lutetia###
+
+chronology_system={
+  body='Lutetia'
+  name='Lutetia, Schmedemann et al (2014)'
+  cf='Lutetia, Schmedemann et al (2014)'
+  pf='Lutetia, Schmedemann et al (2014)'
+  ref='N. Schmedemann, T. Kneissl, B.A. Ivanov, G.G. Michael, R.J. Wagner, G. Neukum, O. Ruesch, H. Hiesinger, K. Krohn, T. Roatsch, F. Preusker, H. Sierks, R. Jaumann, V. Reddy, A. Nathues, S. Walter, A. Neesemann, C.A. Raymond, C.T. Russell, The Cratering Record, Chronology and Surface Ages of (4) Vesta in Comparison to Smaller Asteroids and the Ages of HED Meteorites, Planetary and Space Science, 2014,  http://dx.doi.org/10.1016/j.pss.2014.04.004'
+}
+
+production={
+   name='Lutetia, Schmedemann et al (2014)'
+   coefficients=*[-3.196962504355302,-2.750391206930112,0.655546915146280,0.320959334276113,-0.101901273684199,-0.051678170720090,0.016546774685667,-0.020969106448107,-0.008409482560258,0.007003716267793,0.001211905612587,-0.000637909708634]
+   range=[0.01,500]
+}
+
+chronology={
+    name='Lutetia, Schmedemann et al (2014)'
+    coefficients=[2.04789006742868e-12,6.93,0,0.0315465418475227]    
+}
+
+
+
+
+###Phobos###
+
+chronology_system={
+  body='Phobos'
+  name='Phobos, Case A - SOM, Schmedemann et al (2014)'
+  cf='Phobos, Case A - SOM, Schmedemann et al (2014)'
+  pf='Phobos, Case A - SOM, Schmedemann et al (2014)'
+  ref='N. Schmedemann, G. Michael, B.A. Ivanov, J.B. Murray, G. Neukum, The age of Phobos and its largest crater, Stickney, Planetary and Space Science, April 2014, http://dx.doi.org/10.1016/j.pss.2014.04.009'
+}
+
+production={
+   name='Phobos, Case A - SOM, Schmedemann et al (2014)'
+   coefficients=*[-2.5489,-2.9794,0.42605,0.32288,-0.030823,-0.022295,0.019473,-0.022278,-0.0085611,0.0053854,0.00087331,-0.0003887]
+   range=[0.01,10]   
+}
+
+chronology={
+   name='Phobos, Case A - SOM, Schmedemann et al (2014)'
+   coefficients=[5.24956219344925e-14,6.93e00,0,0.000808981039512889]    
+   ref='N. Schmedemann, G. Michael, B.A. Ivanov, J.B. Murray, G. Neukum, The age of Phobos and its largest crater, Stickney, Planetary and Space Science, April 2014, http://dx.doi.org/10.1016/j.pss.2014.04.009'
+}
+
+
+
+
+
+chronology_system={
+  body='Phobos'
+  name='Phobos, Case B - MBA, Schmedemann et al (2014)'
+  cf='Phobos, Case B - MBA, Schmedemann et al (2014)'
+  pf='Phobos, Case B - MBA, Schmedemann et al (2014)'
+  ref='N. Schmedemann, G. Michael, B.A. Ivanov, J.B. Murray, G. Neukum, The age of Phobos and its largest crater, Stickney, Planetary and Space Science, April 2014, http://dx.doi.org/10.1016/j.pss.2014.04.009'
+}
+
+production={
+   name='Phobos, Case B - MBA, Schmedemann et al (2014)'
+   coefficients=*[-2.8783,-2.8687,0.53853,0.30803,-0.048714,-0.018894,0.00371,-0.025344,-0.0033966,0.005711,0.0004281,-0.00036638]
+   range=[0.01,10]  
+}
+
+chronology={
+   name='Phobos, Case B - MBA, Schmedemann et al (2014)'
+   coefficients=[4.02087515959294e-12,6.93e00,0,0.0619392166128471]      
+}

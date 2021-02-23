@@ -1,0 +1,9 @@
+
+
+float with no excess chars...
+
+'{:0g}'.format(3.23)
+'3.23'
+
+'{:0g}'.format(3.)
+'3'
