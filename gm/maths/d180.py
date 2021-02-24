@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jul 22 16:03:12 2019
-
-@author: gmichael
-"""
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 def d180(x):
     return ((x+180) % 360)-180

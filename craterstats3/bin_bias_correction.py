@@ -1,3 +1,5 @@
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 def bin_bias_correction(beta,k):
     #b=beta - bin boundary factor, e.g. sqrt(2)

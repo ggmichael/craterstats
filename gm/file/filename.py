@@ -1,4 +1,7 @@
 
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
+
 import re
 
 def filename(f,code,insert1=None,insert2=None,max_ext_length=4):

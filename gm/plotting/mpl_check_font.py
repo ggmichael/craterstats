@@ -1,6 +1,7 @@
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import matplotlib as mpl
-import gm
 
 # which font is selected when asking for fontname?
 
