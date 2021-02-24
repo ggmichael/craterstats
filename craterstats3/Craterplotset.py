@@ -152,30 +152,28 @@ class Craterplotset:
 
         plt.style.use(('default', 'dark_background')[self.invert])
 
-        # plt.rcParams['font.sans-serif'].insert(0,'Myriad Pro')
-        # plt.rcParams['font.family']='sans-serif'
+        desired_font=['Myriad Pro','Tahoma']
+        available_font=gm.mpl_check_font(desired_font)
+
+        scale_factor = 1.
+        if available_font == 'DejaVu Sans': scale_factor = .83
+        if available_font == 'Tahoma': scale_factor = .93
 
 
-        plt.rc('font', family='Myriad Pro', size=self.pt_size)
-        plt.rc('mathtext', fontset ='custom', rm='Myriad Pro', bf='Myriad Pro:bold') #sets for $expressions$ it='Myriad Pro:italic',
+        self.scaled_pt_size=self.pt_size*scale_factor
 
-
-        import matplotlib as mpl
-        #test for found font
-        prop = mpl.font_manager.FontProperties(family='Myriad Pro')
-        fnt= mpl.font_manager.findfont(prop)
-        print(f'Found font is: {fnt}')
-
+        plt.rc('font', family=available_font, size = self.scaled_pt_size)
+        plt.rc('mathtext', fontset ='custom', rm=available_font, bf=available_font+':bold', cal=available_font+':italic') #sets for $expressions$ it='Myriad Pro:italic',
 
         tw=.4
         plt.rcParams.update({
             'legend.fontsize':      'x-small',
             'legend.title_fontsize':'small',
-            'axes.labelsize':       self.pt_size*.9,
+            'axes.labelsize':       self.scaled_pt_size*.9,
             'axes.titlesize':       'small',
             'xtick.labelsize':      xtick_labelsize,
             'ytick.labelsize':      'medium',
-            'axes.titlepad':        self.pt_size*1.,
+            'axes.titlepad':        self.scaled_pt_size*1.,
             'axes.linewidth':tw,
             'xtick.major.width':tw,
             'xtick.minor.width':tw,
@@ -193,7 +191,7 @@ class Craterplotset:
             ax2.set_axisbelow(False)
             ax2.set_xscale('log')      
             ax2.set_xbound(lower=10**self.xrange[0], upper=10**self.xrange[1])  
-            ax2.tick_params(axis='x',which='minor',direction="in",length=self.pt_size*.25, top=True)
+            ax2.tick_params(axis='x',which='minor',direction="in",length=self.scaled_pt_size*.25, top=True)
             ax2.tick_params(axis='x',which='major', bottom=False,labelbottom=False)
             ax2.get_yaxis().set_visible(False)            
                     
@@ -202,8 +200,8 @@ class Craterplotset:
   
         ax.set_xlim(left=self.xrange[0], right=self.xrange[1])
         
-        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.5,right=True,top=True)
-        ax.tick_params(axis='both',which='minor',direction="in",length=self.pt_size*.25,right=True,top=True)
+        ax.tick_params(axis='both',which='major',direction="in",length=self.scaled_pt_size*.5,right=True,top=True)
+        ax.tick_params(axis='both',which='minor',direction="in",length=self.scaled_pt_size*.25,right=True,top=True)
  
         if xminor is not None: ax.xaxis.set_minor_locator(ticker.MultipleLocator(xminor))            
         if xmajor is not None: ax.xaxis.set_major_locator(ticker.MultipleLocator(xmajor))
@@ -244,7 +242,7 @@ class Craterplotset:
             if self.ef: txt += "EF: " + self.ef.name + '\n'
             if not (self.time_plot and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
             txt += "CF: " + self.cf.name
-            self.ax.text(.05,.05,txt,transform=self.ax.transAxes,fontsize=self.pt_size*.7,linespacing=1.5)
+            self.ax.text(.05,.05,txt,transform=self.ax.transAxes,fontsize=self.scaled_pt_size*.7,linespacing=1.5)
 
         if self.time_plot:
             phi=self.presentation=='rate'
@@ -311,7 +309,7 @@ class Craterplotset:
                 th = np.rad2deg(np.arctan2(np.log10(self.pf.evaluate(self.presentation, 10**(sx + .3), a0))-sy, .3 * y_factor))
 
                 self.ax.text(sx, 10 ** sy, cs3.str_age(t, simple=True),
-                             color=self.grey[0],size=self.pt_size*(.5 if small else .7),
+                             color=self.grey[0],size=self.scaled_pt_size*(.5 if small else .7),
                              rotation=th,rotation_mode='anchor',
                              verticalalignment='bottom' if above else 'top',
                              horizontalalignment='left',

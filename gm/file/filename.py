@@ -17,7 +17,7 @@ def filename(f,code,insert1=None,insert2=None,max_ext_length=4):
   if type(f) is list:
       return [filename(e,code,insert1=insert1,insert2=insert2) for e in f]
 
-  m = re.search('(?P<path>.*?)(?P<name>[\.\w]*?)(?P<ext>(\.\w{1,'+str(max_ext_length)+'})?$)', f)
+  m = re.search(r'(?P<path>.*?)(?P<name>[\.\w-]*?)(?P<ext>(\.\w{1,'+str(max_ext_length)+'})?$)', f)
 
   path=m['path']
   name=m['name']
