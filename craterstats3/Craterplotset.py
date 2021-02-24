@@ -1,9 +1,3 @@
-# -*- coding': utf-8 -*-
-"""
-Created on Fri Dec  4 14:58:35 2020
-
-@author: gmichael
-"""
 
 import numpy as np
 
@@ -53,7 +47,7 @@ class Craterplotset:
             'show_subtitle':1, 
             },*args,kwargs)
 
-        self.marker_def = cs3.MARKERS
+        self.marker_def = [e[2] for e in cs3.MARKERS]
         self.grey = cs3.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cs3.PALETTE]
 
@@ -157,8 +151,21 @@ class Craterplotset:
 #create layout
 
         plt.style.use(('default', 'dark_background')[self.invert])
+
+        # plt.rcParams['font.sans-serif'].insert(0,'Myriad Pro')
+        # plt.rcParams['font.family']='sans-serif'
+
+
         plt.rc('font', family='Myriad Pro', size=self.pt_size)
         plt.rc('mathtext', fontset ='custom', rm='Myriad Pro', bf='Myriad Pro:bold') #sets for $expressions$ it='Myriad Pro:italic',
+
+
+        import matplotlib as mpl
+        #test for found font
+        prop = mpl.font_manager.FontProperties(family='Myriad Pro')
+        fnt= mpl.font_manager.findfont(prop)
+        print(f'Found font is: {fnt}')
+
 
         tw=.4
         plt.rcParams.update({

@@ -1,6 +1,7 @@
 
 import numpy as np
 import matplotlib.path as mpath
+import gm
 
 PRESENTATIONS=('cumulative', 'differential', 'relative (R)', 'Hartmann', 'chronology', 'rate')
 
@@ -48,19 +49,34 @@ PALETTE = ( #1st column for white background; 2nd for inverted
 star4 = mpath.Path(
     np.array(([-1, -.25, 0, .25, 1, .25, 0, -.25, -1], [0, .25, 1, .25, 0, -.25, -1, -.25, 0])).transpose())
 
-MARKERS = ( {'marker': 's', 'fillstyle': 'none', 'markersize': 3.},
-            {'marker': '^', 'fillstyle': 'none', 'markersize': 3.5},
-            {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3},
-            {'marker': 'x', 'markersize': 3.},
-            {'marker': '*', 'fillstyle': 'none', 'markersize': 4.5},
-            {'marker': '+', 'markersize': 3.5},
-            {'marker': '.', 'markersize': 3.},
-            {'marker': 'v', 'fillstyle': 'none', 'markersize': 3.5},
-            {'marker': 'o', 'fillstyle': 'none', 'markersize': 3.},
-            {'marker': 's', 'markersize': 2.5},
-            {'marker': '^', 'markersize': 2.5},
-            {'marker': 'v', 'markersize': 2.5},
-            {'marker': 'o', 'markersize': 2.5},
-            {'marker': '*', 'markersize': 3.5},
-            {'marker': star4, 'markersize': 3.8},
-            )
+MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.}),
+           ('o', 'circle', {'marker': 'o', 'fillstyle': 'none', 'markersize': 3.}),
+           ('s4', 'star4', {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3}),
+           ('^', 'triangle', {'marker': '^', 'fillstyle': 'none', 'markersize': 3.5}),
+           ('*', 'star5', {'marker': '*', 'fillstyle': 'none', 'markersize': 4.5}),
+           ('x', 'diagonal cross', {'marker': 'x', 'markersize': 3.}),
+           ('+', 'cross', {'marker': '+', 'markersize': 3.5}),
+           ('.', 'point', {'marker': '.', 'markersize': 3.}),
+           ('v', 'inverted triangle', {'marker': 'v', 'fillstyle': 'none', 'markersize': 3.5}),
+           ('fs', 'filled square', {'marker': 's', 'markersize': 2.5}),
+           ('fo', 'filled circle', {'marker': 'o', 'markersize': 2.5}),
+           ('f4s', 'filled 4-star', {'marker': star4, 'markersize': 3.8}),
+           ('ft', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
+           ('f*', 'filled star5', {'marker': '*', 'markersize': 3.5}),
+           ('fit', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
+           )
+
+ABOUT=[gm.bright("CraterstatsIII"),
+       "Copyright (c) 2021, Greg Michael",
+       "",
+       "Scientific publications making use of the software may consult the following for details of software calculations:",
+       "",
+       gm.bright("Resurfacing correction; PF differential forms:"),
+       "Michael G.G., Neukum G., Planetary surface dating from crater size-frequency distribution measurements: Partial resurfacing events and statistical age uncertainty. Earth and Planetary Science Letters, 2010",
+       "",
+       gm.bright("Differential fitting; binning bias correction; revised Mars epoch boundaries:"),
+       "Michael G.G., Planetary surface dating from crater size-frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting. Icarus, 2013",
+       "",
+       gm.bright("Poisson timing analysis (and mu-notation):"),
+       "Michael G.G., Kneissl T., Neesemann A., Planetary surface dating from crater size-frequency distribution measurements: Poisson timing analysis. Icarus, 2016"
+       ]

@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Jul 18 17:23:14 2019
-
-@author: gmichael
-"""
 
 import gm.string
 

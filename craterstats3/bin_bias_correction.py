@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Nov 25 19:56:56 2020
-
-@author: gmichael
-"""
 
 def bin_bias_correction(beta,k):
     #b=beta - bin boundary factor, e.g. sqrt(2)

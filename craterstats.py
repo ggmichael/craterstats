@@ -1,6 +1,4 @@
 
-
-
 import argparse
 import numpy as np
 
@@ -28,10 +26,10 @@ class SpacedString(argparse.Action):
 
 
 def parse_args(args):
-    parser = argparse.ArgumentParser(description='Craterstats3: Analyse and plot crater count data.')
+    parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
-    parser.add_argument("-lt", help="list templates", action='store_true')
+    #parser.add_argument("-lt", help="list templates", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
@@ -186,6 +184,7 @@ def construct_plot_dicts(args, c):
 
 
 def main(args):
+    #colorama.init()
     template="config/default.plt"
     functions="config/functions.txt"
 
@@ -193,16 +192,23 @@ def main(args):
     f = gm.read_textstructure(functions)
 
     if args.lcs:
-        print("Chronology systems:")
+        print(gm.bright("\nChronology systems:"))
         print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['chronology_system'])]))
-        print("\nEquilibrium functions:")
+        print(gm.bright("\nEquilibrium functions:"))
         print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['equilibrium'])]))
-        print("\nEpoch systems:")
+        print(gm.bright("\nEpoch systems:"))
         print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['epochs'])]))
         return
 
-    if args.lt:
-        print("Here's the current list of templates...")
+    if args.lpc:
+        print(gm.bright("\nPlot symbols:"))
+        print('\n'.join(['{0} {1}'.format(i, e[1]) for i, e in enumerate(cs3.MARKERS)]))
+        print(gm.bright("\nColours:"))
+        print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cs3.PALETTE)]))
+        return
+
+    if args.about:
+        print('\n'.join(cs3.ABOUT))
         return
 
     if args.demo:
