@@ -121,7 +121,7 @@ class Craterplot:
             if self.display_age:
                 st=cs3.str_age(self.t[0],self.t[2]-self.t[0],self.t[0]-self.t[1],cps.sig_figs,mu=cps.mu)
                 xy = cps.data_to_axis((np.log10(fit['d'][0]),fit['y'][0]))
-                x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/100.
+                x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/(cps.decades[0]*20) #(cps.decades[0]*10).
                 cps.ax.text(x,y,st,transform=cps.ax.transAxes,
                             color=cps.palette[self.colour],size=cps.scaled_pt_size*1.2,
                             horizontalalignment='right' if self.age_left else 'left',)

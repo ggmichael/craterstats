@@ -3,7 +3,7 @@
 # Command line options to produce various demonstration results
 #
 
--cs 3 -title Differential plot -subtitle with two Poisson age evaluations -p source=sample/Pickering.scc;psym=0 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=3;offset_age=[2,-3]
+-cs 3 -title Differential plot -subtitle with two Poisson age evaluations -p source=sample/Pickering.scc;psym=0 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=3;offset_age=[2,-2]
 
 -cs 3 -title Differential plot -subtitle with two differential fit age evaluations -p source=sample/Pickering.scc;psym=1 -p type=d-fit;range=[.2,.7];isochron=1 -p range=[2,5];colour=1
 
@@ -17,7 +17,7 @@
 
 -pi 1 -cs 3 -legend #r -cite_functions 0 -title Modified legend 2: -subtitle hide data series and function citations -p source=sample/Pickering.scc;psym=1;name=Area 1 -p type=c-fit;range=[.2,.7];resurf=1;psym=10
 
--pi 3 -cs 3 -ep 2 -title R-plot -subtitle with 10/decade binning -p source=sample/Pickering.scc;psym=1;binning=10/decade -p type=poisson;range=[.2,.7];psym=10
+-pi 3 -cs 3 -ep 2 -title R-plot -subtitle with 10/decade binning -p source=sample/Pickering.scc;psym=1;binning=10/decade -p type=poisson;range=[.2,.7];psym=10;offset_age=[-9,0]
 
 -pi 4 -cs 5 -ef 2 -title Hartmann-style plot -subtitle with specified isochrons -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9 -p source=sample/Pickering.scc;psym=1
 
@@ -39,7 +39,7 @@
 
 -cs 3 -title Plot with left-positioned age annotation -p source=sample/Pickering.scc;psym=10 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=3;age_left=1
 
--cs 3 -title Plot with specified adjustment to position of age annotation -subtitle x+1%,y+4% -p source=sample/Pickering.scc;psym=10 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=3;age_left=1;offset_age=[1,4]
+-cs 3 -title Plot with adjusted position of age annotation: -subtitle offset_age=[+1,+4] (in 1/20ths of decade) -p source=sample/Pickering.scc;psym=10 -p type=poisson;range=[.2,.7] -p range=[2,5];colour=3;age_left=1;offset_age=[1,4]
 
 -f pdf -cs 3 -title Plot in PDF format -p source=sample/Pickering.scc;psym=10 -p type=poisson;range=[.2,.7];isochron=1 -p range=[2,5];colour=3;offset_age=[2,-3]
 
