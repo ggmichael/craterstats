@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 28 18:08:26 2020
-
-@author: gmichael
-"""
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
 

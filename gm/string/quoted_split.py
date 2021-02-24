@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Nov  8 20:16:35 2020
-
-@author: Ton van den Heuvel
-"""
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import re
 

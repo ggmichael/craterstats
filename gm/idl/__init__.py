@@ -1,9 +1,5 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 19 15:24:11 2019
-
-@author: gmichael
-"""
+#  Copyright (c) 2021, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 from .where import where
 from .value_locate import value_locate
