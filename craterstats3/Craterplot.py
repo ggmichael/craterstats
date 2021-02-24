@@ -123,11 +123,11 @@ class Craterplot:
                 xy = cps.data_to_axis((np.log10(fit['d'][0]),fit['y'][0]))
                 x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/100.
                 cps.ax.text(x,y,st,transform=cps.ax.transAxes,
-                            color=cps.palette[self.colour],size=cps.pt_size*1.2,
+                            color=cps.palette[self.colour],size=cps.scaled_pt_size*1.2,
                             horizontalalignment='right' if self.age_left else 'left',)
 
                 if self.type in ['poisson','b-poisson']:
-                    text_extent = TextPath((0, 0), st, size=cps.pt_size*1.2).get_extents()
+                    text_extent = TextPath((0, 0), st, size=cps.scaled_pt_size*1.2).get_extents()
                     h,w=text_extent.height,text_extent.width
                     f = 1 / (cps.cm2inch * (cps.position[2] - cps.position[0]) * 100) #conversion for axes coord
                     offset = self.pdf.offset(self.age_left)          # normalised units of mini-plot width in +x direction
@@ -143,7 +143,7 @@ class Craterplot:
                     pos2=cps.axis_to_fig(pos)
                     pos3=np.concatenate([pos2[0:2],pos2[2:4]-pos2[0:2]])
                     ax = cps.fig.add_axes(pos3)
-                    self.pdf.plot(ax,pt_size=cps.pt_size,color=cps.palette[self.colour])
+                    self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour])
 
             if '#' in cps.legend:
                 if self.cratercount.buffered:
