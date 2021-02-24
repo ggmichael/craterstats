@@ -111,7 +111,23 @@ class Craterplotset:
         position_randomness=margin*np.array([1,ysize/margin-.8-randomness_plot,xsize/margin-2,ysize/margin-2]) #cm
         normalised_position=self.position/np.array([xsize,ysize,xsize,ysize])  #pos, width for matplotlib axes
 
-#set up titles, tick marks, and tick labels
+# set up font and scaled font size
+
+        plt.style.use(('default', 'dark_background')[self.invert])
+
+        desired_font=['Myriad Pro','Verdana','DejaVu Sans','Tahoma'] # in order of preference
+        available_font=gm.mpl_check_font(desired_font)
+        scale_factor = {'Myriad Pro':1.,
+                        'Verdana':.83,
+                        'DejaVu Sans':.83,
+                        'Tahoma':.93,
+                        }[available_font]
+        self.scaled_pt_size=self.pt_size*scale_factor
+
+        plt.rc('font', family=available_font, size = self.scaled_pt_size)
+        plt.rc('mathtext', fontset ='custom', rm=available_font, bf=available_font+':bold', cal=available_font+':italic')
+
+# set up titles, tick marks, and tick labels
 
         xtitle="Age, Ga" if self.time_plot else 'Diameter'
         ytitle={
@@ -140,7 +156,7 @@ class Craterplotset:
                 xtickv,xtickname = map(list,zip(*[(val,txt) for val,txt in zip(v,labels) if val>=self.xrange[0] and val<=self.xrange[1]]))
                 if xtickv[0]<0: xtickname[0]+='m'
                 xminor=(xtickv[1]-xtickv[0])/2
-                xtick_labelsize=self.pt_size*.75
+                xtick_labelsize=self.scaled_pt_size*.75
                 
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
@@ -149,21 +165,6 @@ class Craterplotset:
                 add_xminorlogticks=True
 
 #create layout
-
-        plt.style.use(('default', 'dark_background')[self.invert])
-
-        desired_font=['Myriad Pro','Tahoma']
-        available_font=gm.mpl_check_font(desired_font)
-
-        scale_factor = 1.
-        if available_font == 'DejaVu Sans': scale_factor = .83
-        if available_font == 'Tahoma': scale_factor = .93
-
-
-        self.scaled_pt_size=self.pt_size*scale_factor
-
-        plt.rc('font', family=available_font, size = self.scaled_pt_size)
-        plt.rc('mathtext', fontset ='custom', rm=available_font, bf=available_font+':bold', cal=available_font+':italic') #sets for $expressions$ it='Myriad Pro:italic',
 
         tw=.4
         plt.rcParams.update({
@@ -180,6 +181,7 @@ class Craterplotset:
             'ytick.major.width':tw,
             'ytick.minor.width':tw,
         })
+
 
         fig = mfig.Figure(figsize=[xsize*self.cm2inch,ysize*self.cm2inch],dpi=200) # bypass pyplot figure manager (causes issues, and not needed for non-interactive)
 
