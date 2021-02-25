@@ -6,7 +6,6 @@ import scipy.optimize as sc
 
 import gm
 import craterstats3 as cs3
-from craterstats3 import bin_bias_correction
 
 class Productionfn:
     
@@ -67,9 +66,6 @@ class Productionfn:
             self.F10 = self.hartmann_F10
             self.R = self.hartmann_R
             self.H = self.hartmann_H
-
-
-
 
 
     def __str__(self):

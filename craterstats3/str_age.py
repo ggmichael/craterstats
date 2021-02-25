@@ -1,7 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-import gm.string
+import gm
 
 def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dict=False):
     #ga - force Ga unit

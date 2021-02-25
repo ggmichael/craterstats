@@ -8,7 +8,6 @@ import craterstats3 as cs3
 import gm
 
 
-
 class Epochs:
 
     def __init__(self, source,identifier,pf,cf):
@@ -100,7 +99,7 @@ class Epochs:
 
 
 if __name__ == '__main__':
-    f="def/functions.txt"
+    f="config/functions.txt"
     cf = cs3.Chronologyfn(f, 'Moon, Neukum (1983)')
     pf = cs3.Productionfn(f, 'Moon, Neukum (1983)')
     ep=Epochs(f,'Moon, Wilhelms (1987)',pf,cf)

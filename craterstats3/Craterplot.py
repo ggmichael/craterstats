@@ -64,7 +64,7 @@ class Craterplot:
             self.n=self.pdf.k
             self.n_event=self.n
 
-        elif self.type=='b-poisson':
+        elif self.type=='b-poisson': # implement after publication
             pf_range=cps.pf.range()
             r0=np.clip(self.range,pf_range[0],pf_range[1])
 

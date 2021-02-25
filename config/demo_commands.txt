@@ -33,6 +33,8 @@
 
 -cs 3 -style root-2 -title Differential plot -subtitle with root-2 binning and root-2 diameter scale -p source=sample/Pickering.scc,psym=10,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=5,offset_age=[2,-3]
 
+-pi 1 -cs 3 -title Cumulative plot -subtitle with no binning -p source=sample/Pickering.scc,binning=none,psym=7 -p type=poisson,colour=1,range=[.2,.5],isochron=1 -p range=[2,5],colour=3,offset_age=[2,-2]
+
 -cs 3 -invert 1 -title Plot with inverted colour -p source=sample/Pickering.scc,psym=10 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=5,offset_age=[2,-3]
 
 -cs 3 --transparent -title Plot with transparent background -p source=sample/Pickering.scc,psym=10 -p type=poisson,range=[.2,.7] -p range=[2,5],colour=5,offset_age=[2,-3]
