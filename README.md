@@ -24,9 +24,9 @@ There are two parts to creating a Craterstats plot:
 
 In the following example, the first items define characteristics for the whole plot: `-cs 3` specifies chronology system 3, *Mars, Neukum-Ivanov (2001)*, and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition (this should come after the part 1 settings). Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2--0.7 km. Note that parameters within the overplot definition are separated by a `;`.  
+The `-p` indicates the start of an overplot definition (this should come after the part 1 settings). Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2--0.7 km. Note that parameters within the overplot definition are separated by a `,`.  
 
-    python craterstats.py -cs 3 -title Example plot -p source=sample/Pickering.scc -p type=poisson;range=[.2,.7]
+    python craterstats.py -cs 3 -title Example plot -p source=sample/Pickering.scc -p type=poisson,range=[.2,.7]
 
 By default, an output file is created in the current folder with the name `out.png`. The output path or name can be set with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
 
