@@ -5,7 +5,7 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
  
 # Quick start
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output -- including the full comnand lines as they should be typed to generate the output -- goes to the terminal window.
+After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output -- including the full command lines as they should be typed to generate the output -- goes to the terminal window.
 
     python craterstats.py -demo
 
@@ -30,7 +30,7 @@ The `-p` indicates the start of an overplot definition (this should come after t
 
 By default, an output file is created in the current folder with the name `out.png`. The output path or name can be set with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
 
-Also, by default, a differential plot was produced. To switch to a cumulative plot, add `-pi 1` to the part 1 settings (other presentation indices: 3 - relative (R), 4 - Hartmann, 5 - chronology, 6 - rate)
+Also, by default, a differential plot was produced. To switch to a cumulative plot, add `-pi 1` to the part 1 settings. Other possibilities are: 3 - relative (R), 4 - Hartmann, 5 - chronology, 6 - rate.
 
 Numbered tables of recognised chronology systems, equilibrium functions and epoch systems -- which can be used with the `-cs`, `-ef` and `-ep` options -- may be listed with the following command:
 
@@ -44,13 +44,13 @@ The complete set of options can be seen with:
 
     python craterstats.py --help
 
-#Additional information
+# Additional information
 
-The recognised chronology systems, equilibrium functions and epoch systems are defined in the text file `config/functions.txt`. User functions may be added here, following the same format.
+The useable chronology systems, equilibrium functions and epoch systems are defined in the text file `config/functions.txt`. User functions may be added here, following the same format.
 
 There is a text file `config/default.txt` which contains all the default plot settings. This may be modified to suit the choices you use most often.
 
-To simplify the construction of the command line, certain plot properties are 'sticky': if, for example, you specify `source=sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to a number of other properties, including `colour=` and `psym=`.
+To simplify the construction of the command line, certain plot properties are 'sticky'. If, for example, you specify `source=sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to a number of other properties, including `binning=`, `colour=` and `psym=`.
 
 
 
