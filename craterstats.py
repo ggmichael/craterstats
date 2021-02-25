@@ -14,7 +14,7 @@ class AppendPlotDict(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         s=' '.join(values)
         d = {}
-        for kv in re.split(',(?=\w+=)',s): # only split on commas preceding keys
+        for kv in re.split(',(?=\w+=)',s): # only split on commas directly preceding keys
             k, v = kv.split("=")
             if k in ('range','offset_age'):
                 v=gm.read_textstructure(kv,from_string=True)[k]
@@ -66,22 +66,22 @@ def parse_args(args):
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
 
-    parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL;",
+    parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
                         help="specify overplot. Allowed keys:   \n"
-                             "source=txt;"
-                             "name=txt;"
-                             "range=[min,max];"
-                             "type={data,poisson,c-fit,d-fit};"
-                             "error_bars={1,0};"
-                             "hide={1,0};"
-                             "colour={0-31};"
-                             "psym={0-14};"
-                             "binning={" +','.join(cs3.Cratercount.BINNINGS) + "};"
-                             "age_left={1,0};"
-                             "display_age={1,0};"
-                             "resurf={1,0}, apply resurfacing correction;"
-                             "resurf_showall={1,0}, show all data with resurfacing correction;"
-                             "isochron={1,0}, show whole fitted isochron;"
+                             "source=txt,"
+                             "name=txt,"
+                             "range=[min,max],"
+                             "type={data,poisson,c-fit,d-fit},"
+                             "error_bars={1,0},"
+                             "hide={1,0},"
+                             "colour={0-31},"
+                             "psym={0-14},"
+                             "binning={" +','.join(cs3.Cratercount.BINNINGS) + "},"
+                             "age_left={1,0},"
+                             "display_age={1,0},"
+                             "resurf={1,0}, apply resurfacing correction,"
+                             "resurf_showall={1,0}, show all data with resurfacing correction,"
+                             "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
 
     return parser.parse_args(args)
