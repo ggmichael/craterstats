@@ -3,6 +3,7 @@
 
 import argparse
 import numpy as np
+import re
 
 import gm
 import craterstats3 as cs3
@@ -13,7 +14,7 @@ class AppendPlotDict(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         s=' '.join(values)
         d = {}
-        for kv in s.split(";"):
+        for kv in re.split(',(?=\w+=)',s): # only split on commas preceding keys
             k, v = kv.split("=")
             if k in ('range','offset_age'):
                 v=gm.read_textstructure(kv,from_string=True)[k]
