@@ -81,7 +81,7 @@ def parse_args(args):
                              "resurf={1,0}, apply resurfacing correction;"
                              "resurf_showall={1,0}, show all data with resurfacing correction;"
                              "isochron={1,0}, show whole fitted isochron;"
-                             "offset_age=[x,y], as percentage of axis")
+                             "offset_age=[x,y], in 1/20ths of decade")
 
     return parser.parse_args(args)
 
