@@ -53,7 +53,7 @@ star4 = mpath.Path(
 
 MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.}),
            ('o', 'circle', {'marker': 'o', 'fillstyle': 'none', 'markersize': 3.}),
-           ('s4', 'star4', {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3}),
+           ('*4', 'star4', {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3}),
            ('^', 'triangle', {'marker': '^', 'fillstyle': 'none', 'markersize': 3.5}),
            ('*', 'star5', {'marker': '*', 'fillstyle': 'none', 'markersize': 4.5}),
            ('x', 'diagonal cross', {'marker': 'x', 'markersize': 3.}),
@@ -62,10 +62,10 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            ('v', 'inverted triangle', {'marker': 'v', 'fillstyle': 'none', 'markersize': 3.5}),
            ('fs', 'filled square', {'marker': 's', 'markersize': 2.5}),
            ('fo', 'filled circle', {'marker': 'o', 'markersize': 2.5}),
-           ('f4s', 'filled 4-star', {'marker': star4, 'markersize': 3.8}),
+           ('f*4', 'filled star4', {'marker': star4, 'markersize': 3.8}),
            ('ft', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
            ('f*', 'filled star5', {'marker': '*', 'markersize': 3.5}),
-           ('fit', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
+           ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
            )
 
 ABOUT=[gm.bright("CraterstatsIII"),
