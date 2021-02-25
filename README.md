@@ -5,7 +5,7 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
  
 # Quick start
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output -- including the full command lines as they should be typed to generate the output -- goes to the terminal window.
+After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output -- including the full command lines as they could be typed to generate the output -- goes to the terminal window.
 
     python craterstats.py -demo
 
@@ -19,8 +19,6 @@ There are two parts to creating a Craterstats plot:
 1. Specify the type of plot and any characteristics which apply to the analysis as a whole, e.g. whether differential, cumulative of other data presentation; the chronology system, displayed axis ranges
 
 2. Specify the data to be overplotted, and which chronology model evaluations should be applied to it
-
-
 
 In the following example, the first items define characteristics for the whole plot: `-cs 3` specifies chronology system 3, *Mars, Neukum-Ivanov (2001)*, and the `-title Example plot` adds the chosen title.
 
@@ -48,7 +46,7 @@ The complete set of options can be seen with:
 
 The useable chronology systems, equilibrium functions and epoch systems are defined in the text file `config/functions.txt`. User functions may be added here, following the same format.
 
-There is a text file `config/default.txt` which contains all the default plot settings. This may be modified to suit the choices you use most often.
+There is a text file `config/default.plt` which contains all the default plot settings. This may be modified to suit the choices you use most often.
 
 To simplify the construction of the command line, certain plot properties are 'sticky'. If, for example, you specify `source=sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to a number of other properties, including `binning=`, `colour=` and `psym=`.
 

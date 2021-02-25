@@ -9,7 +9,6 @@ import re
 import craterstats3 as cs3
 import gm
 
-from . import bin_bias_correction
 
 class Cratercount:
 
@@ -19,7 +18,7 @@ class Cratercount:
         self.filename=filename
         filetype=gm.filename(filename,'e').lstrip('.')
 
-        self.binning='none'                                                                     #current binning
+        self.binning=None                                                                   #current binning
         self.binned={}
         self.perimeter=None
         self.buffered=False
@@ -195,16 +194,11 @@ class Cratercount:
         d=self.diam
 
         if binning=='none':
-
-            width=0
-            # q=sort(d)
-            # bins=d[q]
-            # bin_centres=bins
-            # h=(*self.fraction)[q]
-            # h_event=make_array(n_elements(h),value=1)
-            # width=0*bins
-
-
+            bins,h = zip(*sorted(zip(d, self.fraction)))
+            bins, h = np.array(list(bins)+[bins[-1]]), np.array(list(h)+[0]) #add extra 'empty' bin
+            bin_centres = bins
+            h_event=np.ones(len(h))
+            width = np.zeros(len(d))
 
         elif binning=='pseudo-log':
             a=[1.,1.1,1.2,1.3,1.4,1.5,1.7,2.,2.5,3.,3.5,4.,4.5,5.,6.,7.,8.,9.]
@@ -219,13 +213,8 @@ class Cratercount:
             h_event,bins=np.histogram(d,bins=bins0[i-1:j+1])
             h,bins=np.histogram(d,weights=self.fraction,bins=bins)
 
-            # have removed 'skip empty bin' code: restore?
-            # q=where(h0 ge 0)
-            # h=h0[q] 
-
             width=bins[1:]-bins[:-1]
             bin_centres=np.sqrt(bins[1:]*bins[:-1])
-
 
         elif binning=='x2':
             logdiam=np.log10(d)*1./np.log10(2.)

@@ -195,7 +195,7 @@ class Craterplotset:
             ax2.set_axisbelow(False)
             ax2.set_xscale('log')      
             ax2.set_xbound(lower=10**self.xrange[0], upper=10**self.xrange[1])  
-            ax2.tick_params(axis='x',which='minor',direction="in",length=self.scaled_pt_size*.25, top=True)
+            ax2.tick_params(axis='x',which='minor',direction="in",length=self.pt_size*.25, top=True)
             ax2.tick_params(axis='x',which='major', bottom=False,labelbottom=False)
             ax2.get_yaxis().set_visible(False)            
                     
@@ -204,8 +204,8 @@ class Craterplotset:
   
         ax.set_xlim(left=self.xrange[0], right=self.xrange[1])
         
-        ax.tick_params(axis='both',which='major',direction="in",length=self.scaled_pt_size*.5,right=True,top=True)
-        ax.tick_params(axis='both',which='minor',direction="in",length=self.scaled_pt_size*.25,right=True,top=True)
+        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.5,right=True,top=True)
+        ax.tick_params(axis='both',which='minor',direction="in",length=self.pt_size*.25,right=True,top=True)
  
         if xminor is not None: ax.xaxis.set_minor_locator(ticker.MultipleLocator(xminor))            
         if xmajor is not None: ax.xaxis.set_major_locator(ticker.MultipleLocator(xmajor))
