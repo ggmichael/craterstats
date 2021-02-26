@@ -2,6 +2,29 @@
 # Craterstats
 
 This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool to analyse and plot crater count data for planetary surface dating.
+
+# Installation
+
+There are various ways to install Python on your system. If you are installing it specifically to run Craterstats, the following is recommended:
+
+1. Install Python 3.8 or higher from  <https://www.python.org/downloads/>.
+1. Download [Craterstats](https://github.com/ggmichael/craterstats/archive/main.zip) and unzip the files where you choose.
+1. Open a command prompt/terminal window and `cd` to the newly-created `craterstats-main/`
+1. Enter these commands to establish a Python *virtual environment:*
+
+Windows:
+
+    py -m venv venv
+    venv\Scripts\activate.bat
+    py -m pip install -r requirements.txt
+
+Linux:
+
+    python3 -m venv venv
+    source venv/bin/activate
+    python3 -m pip install -r requirements.txt
+
+After you see the required python packages installed, the set-up is complete. In the remaining sections, you should substitute `py` or `python3` for `python` according to your system. 
  
 # Quick start
 
