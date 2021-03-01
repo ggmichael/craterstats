@@ -16,7 +16,7 @@ def demo(d=None):
 
     for i in d:
         c=cmd[i]
-        print(f'\nDemo {i}\ncraterstats.py '+c)
+        print(f'\nDemo {i}\npython craterstats.py '+c)
         a=craterstats.parse_args((f.format(i) + c).split())
         craterstats.main(a)
 

@@ -5,7 +5,7 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 
 # Installation
 
-There are various ways to install Python on your system. If you are installing it specifically to run Craterstats, the following is recommended:
+There are various ways to install Python. If you are installing it specifically to run Craterstats, the following is suggested:
 
 1. Install Python 3.8 or higher from  [python.org](https://www.python.org/downloads/).
 1. Download [Craterstats](https://github.com/ggmichael/craterstats/archive/main.zip) and unzip the files where you choose.
