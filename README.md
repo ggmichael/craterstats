@@ -73,3 +73,36 @@ There is a text file `config/default.plt` which contains all the default plot se
 
 To simplify the construction of the command line, certain plot properties are 'sticky'. If, for example, you specify `source=sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
+# References
+
+Explanations of calculations in the software are given in publications below.
+
+#### Standardisation of crater count data presentation
+
+Arvidson, R.E., Boyce, J., Chapman, C., Cintala, M., Fulchignoni, M., Moore, H., Neukum,
+G., Schultz, P., Soderblom, L., Strom, R., Woronow, A., Young, R. [<i>Standard
+techniques for presentation and analysis of crater size–frequency data.</i>](https://doi.org/10.1016/0019-1035%2879%2990009-5) Icarus 37, 1979.
+
+#### Formulation of a planetary surface chronology model
+
+Neukum G., [<i>Meteorite bombardment and dating of planetary surfaces</i>](http://ntrs.nasa.gov/search.jsp?R=19840027189) (English translation, 1984). [<i>Meteoritenbombardement und Datierung planetarer Oberflächen</i>](http://www.planet.geo.fu-berlin.de/public/Neukum-Thesis%201983.pdf) (German original) Habilitation Thesis, Univ. of Munich, 186pp, 1983.
+
+#### Resurfacing correction for cumulative fits; production function differential forms
+
+Michael G.G., Neukum G., [<i>Planetary surface dating from crater size-frequency distribution measurements: Partial resurfacing events and statistical age uncertainty.</i>](http://doi.org/10.1016/j.epsl.2009.12.041) Earth and Planetary Science Letters 294, 2010.
+
+#### Differential fitting; binning bias correction; revised Mars epoch boundaries
+
+Michael G.G., [<i>Planetary surface dating from crater size-frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting.</i>](http://doi.org/10.1016/j.icarus.2013.07.004) Icarus 2013.
+
+#### Poisson timing analysis; <i>μ</i>-notation
+
+Michael G.G., Kneissl T., Neesemann A., [<i>Planetary surface dating from crater size-frequency distribution measurements: Poisson timing analysis.</i>](https://doi.org/10.1016/j.icarus.2016.05.019) Icarus, 2016
+
+Full references for specific chronology or other functions are listed with the function definitions in `/config/functions.txt`.
+
+A set of introductory slides from a previous workshop is available here: [FreieUni_Workshop2012](
+ftp://pdsimage2.wr.usgs.gov/pub/pigpen/tutorials/FreieUni_Workshop2012/)
+
+
+
