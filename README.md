@@ -101,7 +101,7 @@ Michael G.G., Kneissl T., Neesemann A., [<i>Planetary surface dating from crater
 
 Full references for specific chronology or other functions are listed with the function definitions in `/config/functions.txt`.
 
-A set of introductory slides from a previous workshop is available here: [FreieUni_Workshop2012](https://bit.ly/2OgRFLp)
+A set of introductory slides from a previous workshop is available here: [ftp://pdsimage2.wr.usgs.gov/pub/pigpen/tutorials/FreieUni_Workshop2012/](ftp://pdsimage2.wr.usgs.gov/pub/pigpen/tutorials/FreieUni_Workshop2012/)
 
 
 
