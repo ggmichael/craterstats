@@ -5,8 +5,8 @@ import os
 import gm
 import craterstats
 
-def demo(d=None):
-    cmd=gm.read_textfile('config/demo_commands.txt',ignore_blank=True,ignore_hash=True)
+def demo(d=None,src='config/demo_commands.txt'):
+    cmd=gm.read_textfile(src,ignore_blank=True,ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
@@ -24,7 +24,8 @@ def demo(d=None):
 
 if __name__ == '__main__':
     indices=None
-    #indices=[15]
+    #indices = [12]
     demo(indices)
+
 
 
