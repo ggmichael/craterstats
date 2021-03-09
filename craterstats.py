@@ -36,9 +36,10 @@ def parse_args(args):
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
+    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
 
     parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
-    parser.add_argument("-o","--out", help="output filename (omit extension for default)", default='out', nargs='+', action=SpacedString)
+    parser.add_argument("-o","--out", help="output filename (omit extension for default)", nargs='+', action=SpacedString)
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
     parser.add_argument("--transparent", help="set transparent background", action='store_true')
@@ -145,7 +146,8 @@ def construct_cps_dict(args,c,f):
         else:
             cpset['xrange'] = cs3.DEF_XRANGE[3]
             cpset['yrange'] = cs3.DEF_YRANGE[3]
-
+    if cpset['out'] is None:
+        cpset['out']='out' # don't set as default in parse_args: need to detect None in source_cmds
     return cpset
 
 
@@ -186,8 +188,16 @@ def construct_plot_dicts(args, c):
     return cpl
 
 
+def source_cmds(src):
+    cmd=gm.read_textfile(src,ignore_blank=True,ignore_hash=True)
+    for i,c in enumerate(cmd):
+        print(f'\nCommand: {i}\npython craterstats.py '+c)
+        a=parse_args(c.split())
+        if a.out is None: a.out='{:02d}-out'.format(i)
+        main(a)
+    print('\nProcessing complete.')
+
 def main(args):
-    #colorama.init()
     template="config/default.plt"
     functions="config/functions.txt"
 
@@ -214,6 +224,10 @@ def main(args):
         print('\n'.join(cs3.ABOUT))
         return
 
+    if args.src:
+        source_cmds(args.src)
+        return
+
     if args.demo:
         demo.demo()
         return
@@ -236,7 +250,6 @@ def main(args):
             cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent)
         if f in {'txt'}:
             cps.create_summary_file()
-
 
 if __name__ == '__main__':
     args = parse_args(None)
