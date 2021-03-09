@@ -321,7 +321,7 @@ class Craterplotset:
 
     def autoscale(self):
         x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
-        m = [.9, .9 * (2 if self.presentation=='differential' else 1)] # minimum empty margin
+        m = [.7, .7 * (2 if self.presentation=='differential' else 1)] # minimum empty margin
         xr = np.array([np.floor(np.log10(min(x0))-m[0]), np.ceil(np.log10(max(x1))+m[0])])
         yr = np.array([np.floor(np.log10(min(y0))-m[1]), np.ceil(np.log10(max(y1))+m[1])])
 
@@ -334,8 +334,8 @@ class Craterplotset:
             d0=abs(d)
             d2a=int(d0/2)
             d2b=d0-d2a
-            if d<0: yr+=[-d2b,d2a]*2
-            if d>0: xr+=[-d2a,d2b]
+            if d<0: yr+=np.array([-d2b,d2a])*2
+            if d>0: xr+=np.array([-d2a,d2b])
         else:
             d=dy-dx
             d0=abs(d)

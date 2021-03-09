@@ -18,7 +18,7 @@ Windows:
     venv\Scripts\activate.bat
     py -m pip install -r requirements.txt
 
-Linux: [not yet tested]
+Linux:
 
     python3 -m venv venv
     source venv/bin/activate
