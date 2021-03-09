@@ -24,7 +24,7 @@ def demo(d=None,src='config/demo_commands.txt'):
 
 if __name__ == '__main__':
     indices=None
-    #indices = [12]
+    indices = [0]
     demo(indices)
 
 

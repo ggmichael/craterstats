@@ -177,8 +177,10 @@ class Productionfn:
 
     def fit(self,p):
         y, d, err = p['y'], p['d'], p['err']
-        if np.array(y).size==1: #allow to call with single values for conversion
-            y,d,err=[y,y],[d,d],[err,err]
+        if type(y) is np.ndarray and y.size==1:
+            y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
+        if isinstance(y, (np.floating, float)): #allow to call with single values for conversion
+            y,d,err=np.array([y,y]),np.array([d,d]),np.array([err,err])
 
         with np.errstate(divide='ignore'):
             if p['presentation'] == 'cumulative':
