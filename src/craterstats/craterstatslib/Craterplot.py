@@ -4,7 +4,7 @@
 import numpy as np
 from matplotlib.textpath import TextPath
 
-import craterstats as cst
+import craterstatslib as cst
 import gm
 
 

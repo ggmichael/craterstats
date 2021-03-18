@@ -1,12 +1,13 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import os
 import argparse
 import numpy as np
 import re
 
 import gm
-import craterstats as cst
+import craterstatslib as cst
 
 
 class AppendPlotDict(argparse.Action):
@@ -27,11 +28,10 @@ class SpacedString(argparse.Action):
         setattr(namespace, self.dest, ' '.join(values))
 
 
-def parse_args(args):
+def create_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
-    #parser.add_argument("-lt", help="list templates", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
@@ -83,8 +83,7 @@ def parse_args(args):
                              "resurf_showall={1,0}, show all data with resurfacing correction,"
                              "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
-
-    return parser.parse_args(args)
+    return parser
 
 
 def construct_cps_dict(args,c,f):
@@ -188,15 +187,34 @@ def construct_plot_dicts(args, c):
 
 
 def source_cmds(src):
-    cmd= gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+    cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+    parser=create_parser()
     for i,c in enumerate(cmd):
         print(f'\nCommand: {i}\npython craterstats.py '+c)
-        a=parse_args(c.split())
-        if a.out is None: a.out='{:02d}-out'.format(i)
+        a=c.split()
+        args = parser.parse_args(a)
+        if args.out is None: a+=['-o','{:02d}-out'.format(i)]
         main(a)
     print('\nProcessing complete.')
 
-def main(args):
+def demo(d=None,src='config/demo_commands.txt'):
+    cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+    out='demo/'
+    os.makedirs(out,exist_ok=True)
+    f = '-o '+out+'{:02d}-demo '
+    if d is None:
+        d=range(0,len(cmd))
+    for i in d:
+        c=cmd[i]
+        print(f'\nDemo {i}\npython craterstats.py '+c)
+        a = (f.format(i) + c).split()
+        main(a)
+    print('\n\nDemo output written to: '+out)
+
+
+def main(args0):
+    args = create_parser().parse_args(args0)
+
     template="config/default.plt"
     functions="config/functions.txt"
 
@@ -228,7 +246,7 @@ def main(args):
         return
 
     if args.demo:
-        demo.demo()
+        demo()
         return
 
     cps_dict = construct_cps_dict(args, c, f)
@@ -251,5 +269,5 @@ def main(args):
             cps.create_summary_file()
 
 if __name__ == '__main__':
-    args = parse_args(None)
+    args = create_parser().parse_args(None)
     main(args)

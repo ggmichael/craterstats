@@ -7,7 +7,7 @@ import itertools as it
 import re
 
 import gm
-import craterstats as cst
+import craterstatslib as cst
 
 class Cratercount:
 
@@ -39,9 +39,6 @@ class Cratercount:
         d_min=self.binned['d_min']
         d_max=np.append(d_min[1:],d_min[-1]*( (d_min[-1]/d_min[-2])))
 
-        # self.binned.update({'d_mean':[np.sqrt(e*f) for e,f in zip(d_min,d_max)],\
-        #                     'bin_width':[f-e for e,f in zip(d_min,d_max)],\
-        #                     'd_max':d_max})
         self.binned.update({'d_mean':np.sqrt(d_min,d_max),
                             'bin_width':d_max-d_min,
                             'd_max':d_max})

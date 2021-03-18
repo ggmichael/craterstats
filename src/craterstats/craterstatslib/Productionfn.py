@@ -5,7 +5,7 @@ import numpy as np
 import scipy.optimize as sc
 
 import gm
-import craterstats as cst
+import craterstatslib as cst
 
 
 class Productionfn:

@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
 import gm
-import craterstats as cst
+import craterstatslib as cst
 
 
 class Craterpdf:
