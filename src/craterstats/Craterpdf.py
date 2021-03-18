@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
 import gm
-import craterstats as cs
+import craterstats as cst
 
 
 class Craterpdf:
@@ -61,7 +61,7 @@ class Craterpdf:
         max_ticks=3
         xt= gm.ticks(np.append(0, t), max_ticks)
         max_t=np.max(xt)
-        max_text=cs.str_age(max_t, simple=True)
+        max_text=cst.str_age(max_t, simple=True)
         a=max_text.split(' ')
         xt_units=float(a[0])/max_t*xt
         xt_label=['{:g}'.format(e) for e in xt_units]

@@ -4,7 +4,7 @@
 import numpy as np
 from matplotlib.textpath import TextPath
 
-import craterstats as cs
+import craterstats as cst
 import gm
 
 
@@ -48,7 +48,7 @@ class Craterplot:
                 v = int(v)
             setattr(self, k, v)
         if not self.cratercount and self.source:
-            self.cratercount = cs.Cratercount(self.source)
+            self.cratercount = cst.Cratercount(self.source)
 
 
 
@@ -58,7 +58,7 @@ class Craterplot:
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
 
-            self.pdf=cs.Craterpdf(cps.pf, cps.cf, self.cratercount, r0)
+            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0)
             self.t=self.pdf.t([.50,.16,.84]) #median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
@@ -120,7 +120,7 @@ class Craterplot:
             cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=cps.palette[self.colour], lw=.7)
 
             if self.display_age:
-                st=cs.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu)
+                st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu)
                 xy = cps.data_to_axis((np.log10(fit['d'][0]),fit['y'][0]))
                 x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/(cps.decades[0]*20) #(cps.decades[0]*10).
                 cps.ax.text(x,y,st,transform=cps.ax.transAxes,
@@ -156,7 +156,7 @@ class Craterplot:
                         legend_label += ['{0:.1f} (of {1:d})'.format(self.n,self.n_event)]
                 legend_label[-1] += " craters"
             if 'r' in cps.legend:
-                legend_label += [cs.str_diameter_range(self.range)]
+                legend_label += [cst.str_diameter_range(self.range)]
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
 

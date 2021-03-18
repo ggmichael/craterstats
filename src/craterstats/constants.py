@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib.path as mpath
-import craterstats.gm as gm
+import gm
 
 PRESENTATIONS=('cumulative', 'differential', 'relative (R)', 'Hartmann', 'chronology', 'rate')
 
@@ -71,7 +71,7 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
 ABOUT=[gm.bright("CraterstatsIII"),
        "Copyright (c) 2021, Greg Michael",
        "",
-       "Scientific publications making use of the software may consult the following for details of software calculations:",
+       "Please consult the following publications for explanation of the software calculations:",
        "",
        gm.bright("Resurfacing correction; PF differential forms:"),
        "Michael G.G., Neukum G., Planetary surface dating from crater size-frequency distribution measurements: Partial resurfacing events and statistical age uncertainty. Earth and Planetary Science Letters, 2010",

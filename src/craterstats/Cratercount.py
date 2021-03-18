@@ -7,9 +7,7 @@ import itertools as it
 import re
 
 import gm
-
 import craterstats as cst
-
 
 class Cratercount:
 

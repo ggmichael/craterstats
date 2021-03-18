@@ -8,9 +8,6 @@ import re
 import gm
 import craterstats as cst
 
-#import demo,Cratercount,Craterplot,Craterplotset,constants
-
-
 
 class AppendPlotDict(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
