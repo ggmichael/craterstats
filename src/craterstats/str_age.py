@@ -21,11 +21,11 @@ def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dic
     if simple:
         st='{:g}'.format(v)
     else:
-        st=gm.sigfigs(v,sf)
+        st= gm.sigfigs(v, sf)
 
     if e1>0 and not no_error :
-        e1s = gm.sigfigs(e1 / a[0], sf-1)
-        e2s = gm.sigfigs(e2 / a[0], sf-1)
+        e1s = gm.sigfigs(e1 / a[0], sf - 1)
+        e2s = gm.sigfigs(e2 / a[0], sf - 1)
         st=st+'^{+'+e1s+'}_{-'+e2s+'}'
 
     if mu:

@@ -6,8 +6,9 @@ import pandas as pd
 import itertools as it
 import re
 
-import craterstats3 as cs3
 import gm
+
+import craterstats as cst
 
 
 class Cratercount:
@@ -16,7 +17,7 @@ class Cratercount:
 
     def __init__(self,filename):
         self.filename=filename
-        filetype=gm.filename(filename,'e').lstrip('.')
+        filetype= gm.filename(filename, 'e').lstrip('.')
 
         self.binning=None                                                                   #current binning
         self.binned={}
@@ -27,7 +28,7 @@ class Cratercount:
         elif filetype=='diam': self.ReadDiamFile()
         elif filetype=='binned': self.ReadBinnedFile()
         elif filetype=='scc': self.ReadSCCfile()
-        #elif filetype=='csv': self.read_JMARS_file  #need new sample file
+        #elif filetype=='csv': self.read_JMARS_file  #need new data file
 
     def __str__(self):
         return self.filename
@@ -91,7 +92,7 @@ class Cratercount:
 
 
     def ReadDiamFile(self):
-        s=gm.read_textstructure(self.filename)
+        s= gm.read_textstructure(self.filename)
 
         c=s['crater']
         diam=[float(e) for e in c['diameter']]
@@ -119,7 +120,7 @@ class Cratercount:
 
 
     def ReadBinnedFile(self):
-        s=gm.read_textstructure(self.filename)
+        s= gm.read_textstructure(self.filename)
         t=s['table']
         diam=[float(e) for e in t['diameter']]
 
@@ -137,7 +138,7 @@ class Cratercount:
 
 
     def ReadSCCfile(self):
-        s=gm.read_textstructure(self.filename)
+        s= gm.read_textstructure(self.filename)
         c=s['crater']
         diam=[float(e) for e in c['diam']]
 
@@ -183,7 +184,7 @@ class Cratercount:
             out+=[s]
 
         out+=['#------------------------------------------------------------------------------------------------------------------------------']
-        gm.write_textfile(filename,out)
+        gm.write_textfile(filename, out)
 
 
 
@@ -206,7 +207,7 @@ class Cratercount:
             bins0=np.outer(b,a).flatten()  #all possible bin edges
 
             if binrange==None:
-                i,j=np.searchsorted(bins0,gm.range(d))
+                i,j=np.searchsorted(bins0, gm.range(d))
             else:
                 i,j=np.searchsorted(bins0,binrange)
 
@@ -218,7 +219,7 @@ class Cratercount:
 
         elif binning=='x2':
             logdiam=np.log10(d)*1./np.log10(2.)
-            br=gm.range(logdiam,outer=True)
+            br= gm.range(logdiam, outer=True)
             bins0=np.arange(br[0],br[1]+1)
 
             h_event,bins0=np.histogram(logdiam,bins=bins0)
@@ -230,7 +231,7 @@ class Cratercount:
 
         elif binning=='x2-shifted':
             logdiam=np.log10(d)*1./np.log10(2.)
-            br=gm.range(logdiam+.5,outer=True)-.5
+            br= gm.range(logdiam + .5, outer=True) - .5
             bins0=np.arange(br[0],br[1]+1)
 
             h_event,bins0=np.histogram(logdiam,bins=bins0)
@@ -242,7 +243,7 @@ class Cratercount:
 
         elif binning=='root-2':
             logdiam=np.log10(d)*2./np.log10(2.)
-            br=gm.range(logdiam,outer=True)
+            br= gm.range(logdiam, outer=True)
             bins0=np.arange(br[0],br[1]+1)
 
             h_event,bins0=np.histogram(logdiam,bins=bins0)
@@ -254,7 +255,7 @@ class Cratercount:
 
         elif binning=='4th root-2':
             logdiam=np.log10(d)*4./np.log10(2.)
-            br=gm.range(logdiam,outer=True)
+            br= gm.range(logdiam, outer=True)
             bins0=np.arange(br[0],br[1]+1)
 
             h_event,bins0=np.histogram(logdiam,bins=bins0)
@@ -362,7 +363,7 @@ class Cratercount:
                 k=np.log10(pf.evaluate("cumulative",d*np.sqrt(beta))/pf.evaluate("cumulative",d/np.sqrt(beta)))/np.log10(beta)
             else:
                 k=-3. #if exact slope unknown, taking -3 (cumulative) is better than nothing
-            f=cs3.bin_bias_correction(beta,k)
+            f=cst.bin_bias_correction(beta, k)
             y/=f
 
         elif presentation=='relative (R)':
@@ -381,6 +382,6 @@ class Cratercount:
         n=np.sum(self.binned['n'][q])             #no of craters in range
         n_event=np.sum(self.binned['n_event'][q])
 
-        actual_range=gm.range(d)
+        actual_range= gm.range(d)
 
         return {'presentation':presentation,'d':d,'y':y,'err':err,'n':n,'n_event':n_event,'actual_range':actual_range}

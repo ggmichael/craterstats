@@ -3,7 +3,7 @@
 
 import numpy as np
 import types
-import gm
+import craterstats.gm as gm
 
 
 def import_code(code):
@@ -26,10 +26,10 @@ class Chronologyfn:
             src=source
         else:
             if type(source) is list:
-                txt='\n'.join([gm.read_textfile(e,as_string=True) for e in source])
+                txt='\n'.join([gm.read_textfile(e, as_string=True) for e in source])
             elif type(source) is str:
-                txt=gm.read_textfile(source,as_string=True,ignore_hash=True)
-            src=gm.read_textstructure(txt,from_string=True)
+                txt= gm.read_textfile(source, as_string=True, ignore_hash=True)
+            src= gm.read_textstructure(txt, from_string=True)
         
         self.definition=next((e for e in src['chronology'] if e['name']==identifier),None)
         if self.definition is None:

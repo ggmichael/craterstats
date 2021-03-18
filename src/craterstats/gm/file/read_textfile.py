@@ -1,9 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-from gm.file import file_exists
-
-
+from . import file_exists
 
 def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip=None,as_string=False):
     

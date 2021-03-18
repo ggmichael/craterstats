@@ -4,10 +4,11 @@
 import numpy as np
 import gm
 
+
 def scientific_notation(n,sf=3,force=False):
 
     if -2 < np.log10(n) < 4 and not force:
-            return gm.sigfigs(n,sf)
+            return gm.sigfigs(n, sf)
 
     s0 = ("{:." + str(sf-1) + "e}").format(n)
     s = s0.split('e')

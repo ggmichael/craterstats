@@ -3,7 +3,8 @@
 
 import numpy as np
 
-import gm
+from . import normal
+
 
 def poisson(k,lam,cumulative=False):
   #poisson pmf
@@ -23,9 +24,9 @@ def poisson(k,lam,cumulative=False):
 
   else:                 #normal
       if cumulative:
-          return gm.normal(lam, np.sqrt(lam), k, cumulative=True)
+          return normal(lam, np.sqrt(lam), k, cumulative=True)
       else:
-          return gm.normal(lam, np.sqrt(lam), k)
+          return normal(lam, np.sqrt(lam), k)
 
 
 

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.figure as mfig
 
-import craterstats3 as cs3
+import craterstats as cs
 import gm
 
 
@@ -49,16 +49,16 @@ class Craterplotset:
             'show_subtitle':1, 
             },*args,kwargs)
 
-        self.marker_def = [e[2] for e in cs3.MARKERS]
-        self.grey = cs3.GREYS[self.invert]
-        self.palette = [e[self.invert] for e in cs3.PALETTE]
+        self.marker_def = [e[2] for e in cs.MARKERS]
+        self.grey = cs.GREYS[self.invert]
+        self.palette = [e[self.invert] for e in cs.PALETTE]
 
         
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
         for k, v in a.items():
-            if k == 'source': self.cratercount = cs3.Cratercount(v)
+            if k == 'source': self.cratercount = cs.Cratercount(v)
             if k in ('xrange','yrange'): v=[float(e) for e in v]
             if k in ('pt_size','ref_diameter'): v = float(v)
             if k in ('show_isochrons',
@@ -82,7 +82,7 @@ class Craterplotset:
             
         self.time_plot=self.presentation in ['chronology','rate']
             
-        def f(x): return np.clip(gm.mag(x),1,None)
+        def f(x): return np.clip(gm.mag(x), 1, None)
         self.decades=f(self.xrange),f(self.yrange)
 
         self.data_aspect=(
@@ -118,7 +118,7 @@ class Craterplotset:
         plt.style.use(('default', 'dark_background')[self.invert])
 
         desired_font=['Myriad Pro','Verdana','DejaVu Sans','Tahoma'] # in order of preference
-        available_font=gm.mpl_check_font(desired_font)
+        available_font= gm.mpl_check_font(desired_font)
         scale_factor = {'Myriad Pro':1.,
                         'Verdana':.83,
                         'DejaVu Sans':.83,
@@ -304,7 +304,7 @@ class Craterplotset:
 
             q = gm.where(np.abs(np.log10(iso['y']) - (self.yrange[1] - .1)) < .1)
             if not q or (d10[q[0]] < self.xrange[0]):  # (d10[q[0][0]] < self.xrange[0]):
-                q=gm.where(abs(d10-np.max([self.xrange[0]+.15, d10[0]])) < .1)
+                q= gm.where(abs(d10 - np.max([self.xrange[0] + .15, d10[0]])) < .1)
 
             if q and not hide:
                 sx = np.mean(d10[q])
@@ -312,9 +312,9 @@ class Craterplotset:
                 y_factor = self.data_aspect
                 th = np.rad2deg(np.arctan2(np.log10(self.pf.evaluate(self.presentation, 10**(sx + .3), a0))-sy, .3 * y_factor))
 
-                self.ax.text(sx, 10 ** sy, cs3.str_age(t, simple=True),
-                             color=self.grey[0],size=self.scaled_pt_size*(.5 if small else .7),
-                             rotation=th,rotation_mode='anchor',
+                self.ax.text(sx, 10 ** sy, cs.str_age(t, simple=True),
+                             color=self.grey[0], size=self.scaled_pt_size*(.5 if small else .7),
+                             rotation=th, rotation_mode='anchor',
                              verticalalignment='bottom' if above else 'top',
                              horizontalalignment='left',
                              bbox=dict(facecolor='none', edgecolor='none', boxstyle='square,pad=0.5'))
@@ -326,10 +326,10 @@ class Craterplotset:
         yr = np.array([np.floor(np.log10(min(y0))-m[1]), np.ceil(np.log10(max(y1))+m[1])])
 
         #set to square
-        dx,dy=gm.mag(xr),gm.mag(yr)
+        dx,dy= gm.mag(xr), gm.mag(yr)
         if self.presentation == 'differential':
             if dy/2.-np.floor(dy/2.) > .01: yr+=[0,1]
-            dy=gm.mag(yr)
+            dy= gm.mag(yr)
             d=dy/2-dx
             d0=abs(d)
             d2a=int(d0/2)
@@ -385,7 +385,7 @@ class Craterplotset:
             ln=[]
             for k,w,f,_ in table:
                 if k=='name' and d[k]=='':
-                    d[k]=gm.filename(d['source'],'n')
+                    d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','t','a0'):
                     v=' '.join([('{:'+w+f+'}').format(e) for e in d[k]])
                 else:
