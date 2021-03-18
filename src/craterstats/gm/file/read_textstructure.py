@@ -3,7 +3,7 @@
 
 import re
 import gm
-
+#from . import read_textfile,read_textstructure
 
 def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line value)
   
@@ -16,7 +16,7 @@ def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line val
         
     elif s.startswith('('):   
         w=s.strip('() \n').split(',')
-        r=[gm_strip_quotes(e.strip('\n ')) for e in w]
+        r=[gm.strip_quotes(e.strip('\n ')) for e in w]
     
     elif s.startswith('{'):  #declare ascii table: should be tag names after (otherwise, was structure)   
         w=s.splitlines()
@@ -26,14 +26,14 @@ def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line val
         r={t:[] for t in tag}
         for row in w[1:]:
             #v=row.split() #not yet implemented - quoted string split
-            v=gm.quoted_split(row)
+            v= gm.quoted_split(row)
             if v[0]=='}': break
             for t in tag:
                 r[t].append(v.pop(0) if len(v)>0 else '')
             
     else: 
         r=s.strip(' \n')
-        if r[0] in ['"',"'"]: r=gm.strip_quotes(r)
+        if r[0] in ['"',"'"]: r= gm.strip_quotes(r)
     
     return r
 
@@ -110,7 +110,7 @@ def read_textstructure(p,from_string=False):
 
 
 if __name__ == '__main__':
-    c=gm.read_textstructure("../../craterstats3/def/default.plt")
+    c=gm.read_textstructure("../../craterstats/def/default.plt")
     print(c)
 
 

@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 
 import gm
-import craterstats3 as cs3
+import craterstats as cs
+
 
 class Craterpdf:
 
@@ -40,7 +41,7 @@ class Craterpdf:
             Ninc=(Ncum[0]-Ncum[1])*cc.area #no expected on area in bin in 1 Ga... this is assuming constant impact rate; lambda=Ninc
             lam=Ninc
 
-        pdf0=gm.poisson(self.k,lam*10**x)
+        pdf0= gm.poisson(self.k, lam * 10 ** x)
         self.pdf=pdf0/np.sum(pdf0*self.dt)
         self.cdf=np.cumsum(self.pdf*self.dt)
 
@@ -58,9 +59,9 @@ class Craterpdf:
         p=np.searchsorted(self.ts,t)-1
 
         max_ticks=3
-        xt=gm.ticks(np.append(0,t),max_ticks)
+        xt= gm.ticks(np.append(0, t), max_ticks)
         max_t=np.max(xt)
-        max_text=cs3.str_age(max_t,simple=True)
+        max_text=cs.str_age(max_t, simple=True)
         a=max_text.split(' ')
         xt_units=float(a[0])/max_t*xt
         xt_label=['{:g}'.format(e) for e in xt_units]
@@ -86,7 +87,7 @@ class Craterpdf:
     def offset(self,left): # for correct spacing of age text from mini-plot peak, in +ve x-direction
         t=self.t(.997)
         max_ticks=3
-        xt=gm.ticks(np.append(0,t),max_ticks)
+        xt= gm.ticks(np.append(0, t), max_ticks)
         q=np.where(self.pdf > np.max(self.pdf)/2)
         edges=self.ts[[q[0][0],q[0][-1]]]
         norm=edges/np.max(xt)

@@ -3,7 +3,7 @@
 
 import numpy as np
 import matplotlib.path as mpath
-import gm
+import craterstats.gm as gm
 
 PRESENTATIONS=('cumulative', 'differential', 'relative (R)', 'Hartmann', 'chronology', 'rate')
 

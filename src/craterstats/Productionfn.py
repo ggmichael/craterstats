@@ -5,7 +5,8 @@ import numpy as np
 import scipy.optimize as sc
 
 import gm
-import craterstats3 as cs3
+import craterstats as cs
+
 
 class Productionfn:
     
@@ -18,10 +19,10 @@ class Productionfn:
             src=source
         else:
             if type(source) is list:
-                txt='\n'.join([gm.read_textfile(e,as_string=True) for e in source])
+                txt='\n'.join([gm.read_textfile(e, as_string=True) for e in source])
             else:  # type(source) is str:
-                txt=gm.read_textfile(source,as_string=True,ignore_hash=True)
-            src=gm.read_textstructure(txt,from_string=True)
+                txt= gm.read_textfile(source, as_string=True, ignore_hash=True)
+            src= gm.read_textstructure(txt, from_string=True)
         
         self.definition=next((e for e in src[pf_type] if e['name']==identifier), None)
         if self.definition is None:
@@ -102,10 +103,10 @@ class Productionfn:
     def polynomial_F(self,d,a0): #differential form
         x=np.log10(d)
         a=[a0]+self.a[1:]
-        p=gm.poly(a,x)
+        p= gm.poly(a, x)
         dCdp=np.log(10.)*10.**p
         a_dash=[(i+1)*e for i,e in enumerate(a[1:])]
-        dpdx=gm.poly(a_dash,x)
+        dpdx= gm.poly(a_dash, x)
         dxdD=1./(d*np.log(10.))    
         F=-dCdp*dpdx*dxdD  #(Michael & Neukum 2010, Eq 1)
         return F
@@ -161,7 +162,7 @@ class Productionfn:
 
         k = (self.hC10 - np.roll(self.hC10,-1)) / np.log10(beta)
         k[-1]=k[-2] #fix slope at end to be continuous
-        bc=cs3.bin_bias_correction(beta,k) #remove binning bias
+        bc=cs.bin_bias_correction(beta, k) #remove binning bias
         f=f_bin/bc       
         
         if mode in ('F','F10'):
@@ -210,8 +211,8 @@ class Productionfn:
         iso=self.getplotdata(presentation,a0)
         if ef:
             e=ef.getplotdata(presentation)
-            j=gm.value_locate(e['d'], iso['d'])
-            q=gm.where(iso['y'] < e['y'][j]*.8)
+            j= gm.value_locate(e['d'], iso['d'])
+            q= gm.where(iso['y'] < e['y'][j] * .8)
             iso={'presentation':presentation,'d':iso['d'][q],'y':iso['y'][q]}
 
         return iso

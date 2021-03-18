@@ -3,10 +3,12 @@
 
 import os
 import gm
-import craterstats
+
+import cli
+
 
 def demo(d=None,src='config/demo_commands.txt'):
-    cmd=gm.read_textfile(src,ignore_blank=True,ignore_hash=True)
+    cmd= gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
@@ -17,14 +19,14 @@ def demo(d=None,src='config/demo_commands.txt'):
     for i in d:
         c=cmd[i]
         print(f'\nDemo {i}\npython craterstats.py '+c)
-        a=craterstats.parse_args((f.format(i) + c).split())
-        craterstats.main(a)
+        a= cli.parse_args((f.format(i) + c).split())
+        cli.main(a)
 
     print('\n\nDemo output written to: '+out)
 
 if __name__ == '__main__':
     indices=None
-    indices = [0]
+    #indices = [0]
     demo(indices)
 
 

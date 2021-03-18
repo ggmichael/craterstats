@@ -6,8 +6,10 @@ import numpy as np
 import re
 
 import gm
-import craterstats3 as cs3
-import demo
+import craterstats as cst
+
+#import demo,Cratercount,Craterplot,Craterplotset,constants
+
 
 
 class AppendPlotDict(argparse.Action):
@@ -17,7 +19,7 @@ class AppendPlotDict(argparse.Action):
         for kv in re.split(',(?=\w+=)',s): # only split on commas directly preceding keys
             k, v = kv.split("=")
             if k in ('range','offset_age'):
-                v=gm.read_textstructure(kv,from_string=True)[k]
+                v= gm.read_textstructure(kv, from_string=True)[k]
             d[k] = v
         list_of_d = getattr(namespace, self.dest)
         list_of_d=[d] if list_of_d is None else list_of_d+[d]
@@ -51,7 +53,7 @@ def parse_args(args):
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
     parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
     parser.add_argument("-pi","--presentation", choices=range(1,7), metavar="[1-6]", default=2, type=int, dest='presentation_index',
-        help="data presentation index: "+(', ').join([str(i+1)+'-'+e for i,e in enumerate(cs3.PRESENTATIONS)]))
+        help="data presentation index: "+(', ').join([str(i+1)+'-'+e for i,e in enumerate(cst.PRESENTATIONS)]))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
@@ -77,7 +79,7 @@ def parse_args(args):
                              "hide={1,0},"
                              "colour={0-31},"
                              "psym={0-14},"
-                             "binning={" +','.join(cs3.Cratercount.BINNINGS) + "},"
+                             "binning={" +','.join(cst.Cratercount.BINNINGS) + "},"
                              "age_left={1,0},"
                              "display_age={1,0},"
                              "resurf={1,0}, apply resurfacing correction,"
@@ -91,10 +93,10 @@ def parse_args(args):
 def construct_cps_dict(args,c,f):
     cpset=c['set']
     if 'presentation_index' in vars(args):
-        cpset['presentation']=cs3.PRESENTATIONS[args.presentation_index-1]
+        cpset['presentation']=cst.PRESENTATIONS[args.presentation_index-1]
     if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
-        cpset['xrange'] = cs3.DEF_XRANGE[args.presentation_index-1]
-        cpset['yrange'] = cs3.DEF_YRANGE[args.presentation_index-1]
+        cpset['xrange'] = cst.DEF_XRANGE[args.presentation_index-1]
+        cpset['yrange'] = cst.DEF_YRANGE[args.presentation_index-1]
     cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
 
     for k,v in vars(args).items():
@@ -123,7 +125,7 @@ def construct_cps_dict(args,c,f):
                 cpset[k]=d['name']
             if k == 'out':
                 cpset[k] = gm.filename(v, 'pn')
-                ext=gm.filename(v, 'e').lstrip('.')
+                ext= gm.filename(v, 'e').lstrip('.')
                 if ext: cpset['format'].add(ext)
             if k == 'format':
                 cpset[k]=set(v)
@@ -131,21 +133,21 @@ def construct_cps_dict(args,c,f):
     cs=next((e for e in f['chronology_system'] if e['name'] == cpset['chronology_system']), None)
     if cs is None: raise ValueError('Chronology system not found:' + cpset['chronology_system'])
 
-    cpset['cf'] = cs3.Chronologyfn(f, cs['cf'])
-    cpset['pf'] = cs3.Productionfn(f, cs['pf'])
+    cpset['cf'] = cst.Chronologyfn(f, cs['cf'])
+    cpset['pf'] = cst.Productionfn(f, cs['pf'])
 
     if 'equilibrium' in cpset and cpset['equilibrium'] not in (None,''):
-        cpset['ef'] = cs3.Productionfn(f, cpset['equilibrium'], equilibrium=True)
+        cpset['ef'] = cst.Productionfn(f, cpset['equilibrium'], equilibrium=True)
     if 'epochs' in cpset and cpset['epochs'] not in (None,''):
-        cpset['ep'] = cs3.Epochs(f, cpset['epochs'],cpset['pf'],cpset['cf'])
+        cpset['ep'] = cst.Epochs(f, cpset['epochs'],cpset['pf'],cpset['cf'])
 
     if cpset['presentation'] == 'Hartmann':
         if hasattr(cpset['pf'],'xrange'): #not possible to overwrite with user choice
             cpset['xrange'] = cpset['pf'].xrange
             cpset['yrange'] = cpset['pf'].yrange
         else:
-            cpset['xrange'] = cs3.DEF_XRANGE[3]
-            cpset['yrange'] = cs3.DEF_YRANGE[3]
+            cpset['xrange'] = cst.DEF_XRANGE[3]
+            cpset['yrange'] = cst.DEF_YRANGE[3]
     if cpset['out'] is None:
         cpset['out']='out' # don't set as default in parse_args: need to detect None in source_cmds
     return cpset
@@ -183,13 +185,13 @@ def construct_plot_dicts(args, c):
                     'offset_age',
                     ):
                 p[k]=v
-        p['cratercount'] = cs3.Cratercount(p['source'])
+        p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
     return cpl
 
 
 def source_cmds(src):
-    cmd=gm.read_textfile(src,ignore_blank=True,ignore_hash=True)
+    cmd= gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     for i,c in enumerate(cmd):
         print(f'\nCommand: {i}\npython craterstats.py '+c)
         a=parse_args(c.split())
@@ -215,13 +217,13 @@ def main(args):
 
     if args.lpc:
         print(gm.bright("\nPlot symbols:"))
-        print('\n'.join(['{0} {1}'.format(i, e[1]) for i, e in enumerate(cs3.MARKERS)]))
+        print('\n'.join(['{0} {1}'.format(i, e[1]) for i, e in enumerate(cst.MARKERS)]))
         print(gm.bright("\nColours:"))
-        print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cs3.PALETTE)]))
+        print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cst.PALETTE)]))
         return
 
     if args.about:
-        print('\n'.join(cs3.ABOUT))
+        print('\n'.join(cst.ABOUT))
         return
 
     if args.src:
@@ -234,9 +236,9 @@ def main(args):
 
     cps_dict = construct_cps_dict(args, c, f)
     cp_dicts = construct_plot_dicts(args, c)
-    cpl = [cs3.Craterplot(d) for d in cp_dicts]
+    cpl = [cst.Craterplot(d) for d in cp_dicts]
 
-    cps=cs3.Craterplotset(cps_dict,craterplot=cpl)
+    cps=cst.Craterplotset(cps_dict,craterplot=cpl)
 
     if args.autoscale or not ('xrange' in cps_dict and 'yrange' in cps_dict):
         cps.autoscale()
