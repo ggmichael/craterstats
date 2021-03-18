@@ -28,7 +28,10 @@ class SpacedString(argparse.Action):
         setattr(namespace, self.dest, ' '.join(values))
 
 
-def create_parser():
+def get_parser():
+    if "parser" in get_parser.__dict__:
+        return get_parser.parser
+
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
@@ -83,6 +86,7 @@ def create_parser():
                              "resurf_showall={1,0}, show all data with resurfacing correction,"
                              "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
+    get_parser.parser=parser
     return parser
 
 
@@ -188,7 +192,7 @@ def construct_plot_dicts(args, c):
 
 def source_cmds(src):
     cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
-    parser=create_parser()
+    parser=get_parser()
     for i,c in enumerate(cmd):
         print(f'\nCommand: {i}\npython craterstats.py '+c)
         a=c.split()
@@ -213,7 +217,7 @@ def demo(d=None,src='config/demo_commands.txt'):
 
 
 def main(args0):
-    args = create_parser().parse_args(args0)
+    args = get_parser().parse_args(args0)
 
     template="config/default.plt"
     functions="config/functions.txt"
