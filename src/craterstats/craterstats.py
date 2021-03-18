@@ -269,5 +269,4 @@ def main(args0):
             cps.create_summary_file()
 
 if __name__ == '__main__':
-    args = create_parser().parse_args(None)
-    main(args)
+    main(None)
