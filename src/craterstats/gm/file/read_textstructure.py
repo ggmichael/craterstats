@@ -3,7 +3,6 @@
 
 import re
 import gm
-#from . import read_textfile,read_textstructure
 
 def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line value)
   

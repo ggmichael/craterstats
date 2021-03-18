@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.figure as mfig
 
-import craterstats as cs
+import craterstats as cst
 import gm
 
 
@@ -49,16 +49,16 @@ class Craterplotset:
             'show_subtitle':1, 
             },*args,kwargs)
 
-        self.marker_def = [e[2] for e in cs.MARKERS]
-        self.grey = cs.GREYS[self.invert]
-        self.palette = [e[self.invert] for e in cs.PALETTE]
+        self.marker_def = [e[2] for e in cst.MARKERS]
+        self.grey = cst.GREYS[self.invert]
+        self.palette = [e[self.invert] for e in cst.PALETTE]
 
         
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
         for k, v in a.items():
-            if k == 'source': self.cratercount = cs.Cratercount(v)
+            if k == 'source': self.cratercount = cst.Cratercount(v)
             if k in ('xrange','yrange'): v=[float(e) for e in v]
             if k in ('pt_size','ref_diameter'): v = float(v)
             if k in ('show_isochrons',
@@ -312,7 +312,7 @@ class Craterplotset:
                 y_factor = self.data_aspect
                 th = np.rad2deg(np.arctan2(np.log10(self.pf.evaluate(self.presentation, 10**(sx + .3), a0))-sy, .3 * y_factor))
 
-                self.ax.text(sx, 10 ** sy, cs.str_age(t, simple=True),
+                self.ax.text(sx, 10 ** sy, cst.str_age(t, simple=True),
                              color=self.grey[0], size=self.scaled_pt_size*(.5 if small else .7),
                              rotation=th, rotation_mode='anchor',
                              verticalalignment='bottom' if above else 'top',

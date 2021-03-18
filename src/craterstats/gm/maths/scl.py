@@ -34,7 +34,6 @@ def scl(x,in_range=None,out_range=None,tname=None,double=False):
           y=(np.float32(x)-mn)/(mx-mn)
     
     y.clip(min=0., max=1.,out=y)
-     
     out=out_range[0]+y*(out_range[1]-out_range[0])
      
     return np.array(out,dtype=tname)

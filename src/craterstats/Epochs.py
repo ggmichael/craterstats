@@ -4,8 +4,8 @@
 import numpy as np
 import re
 
-import craterstats as cs
 import gm
+import craterstats as cst
 
 
 class Epochs:
@@ -100,8 +100,8 @@ class Epochs:
 
 if __name__ == '__main__':
     f="config/functions.txt"
-    cf = cs.Chronologyfn(f, 'Moon, Neukum (1983)')
-    pf = cs.Productionfn(f, 'Moon, Neukum (1983)')
+    cf = cst.Chronologyfn(f, 'Moon, Neukum (1983)')
+    pf = cst.Productionfn(f, 'Moon, Neukum (1983)')
     ep=Epochs(f,'Moon, Wilhelms (1987)',pf,cf)
 
 

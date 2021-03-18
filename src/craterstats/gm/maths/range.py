@@ -22,4 +22,3 @@ def range(x,magnitude=False,outer=False):
 
 def mag(x,outer=False):
     return range(x,magnitude=True,outer=outer)
-    

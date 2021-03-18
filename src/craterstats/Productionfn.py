@@ -5,7 +5,7 @@ import numpy as np
 import scipy.optimize as sc
 
 import gm
-import craterstats as cs
+import craterstats as cst
 
 
 class Productionfn:
@@ -162,7 +162,7 @@ class Productionfn:
 
         k = (self.hC10 - np.roll(self.hC10,-1)) / np.log10(beta)
         k[-1]=k[-2] #fix slope at end to be continuous
-        bc=cs.bin_bias_correction(beta, k) #remove binning bias
+        bc=cst.bin_bias_correction(beta, k) #remove binning bias
         f=f_bin/bc       
         
         if mode in ('F','F10'):
