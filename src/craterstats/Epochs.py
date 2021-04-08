@@ -4,8 +4,8 @@
 import numpy as np
 import re
 
-import gm
-import craterstatslib as cst
+import craterstats as cst
+import craterstats.gm as gm
 
 
 class Epochs:

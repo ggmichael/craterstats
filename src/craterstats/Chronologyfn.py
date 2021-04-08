@@ -3,7 +3,7 @@
 
 import numpy as np
 import types
-import gm
+import craterstats.gm as gm
 
 
 def import_code(code):

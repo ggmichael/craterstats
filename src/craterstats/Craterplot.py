@@ -4,8 +4,8 @@
 import numpy as np
 from matplotlib.textpath import TextPath
 
-import craterstatslib as cst
-import gm
+import craterstats as cst
+import craterstats.gm as gm
 
 
 class Craterplot:

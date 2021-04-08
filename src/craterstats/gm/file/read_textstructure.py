@@ -2,7 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import re
-import gm
+import craterstats.gm as gm
 
 def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line value)
   
