@@ -2,7 +2,11 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import re
-import craterstats.gm as gm
+
+from ..string.quoted_split import quoted_split
+from ..string.strip_quotes import strip_quotes
+from . import read_textfile
+
 
 def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line value)
   
@@ -11,11 +15,11 @@ def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line val
     
     if s.startswith('['):
         w=s.strip('[] \n').split(',')
-        r=[gm.strip_quotes(e.strip('\n ')) for e in w]
+        r=[strip_quotes(e.strip('\n ')) for e in w]
         
     elif s.startswith('('):   
         w=s.strip('() \n').split(',')
-        r=[gm.strip_quotes(e.strip('\n ')) for e in w]
+        r=[strip_quotes(e.strip('\n ')) for e in w]
     
     elif s.startswith('{'):  #declare ascii table: should be tag names after (otherwise, was structure)   
         w=s.splitlines()
@@ -24,15 +28,14 @@ def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line val
         
         r={t:[] for t in tag}
         for row in w[1:]:
-            #v=row.split() #not yet implemented - quoted string split
-            v= gm.quoted_split(row)
+            v=quoted_split(row)
             if v[0]=='}': break
             for t in tag:
                 r[t].append(v.pop(0) if len(v)>0 else '')
             
     else: 
         r=s.strip(' \n')
-        if r[0] in ['"',"'"]: r= gm.strip_quotes(r)
+        if r[0] in ['"',"'"]: r=strip_quotes(r)
     
     return r
 
@@ -101,7 +104,7 @@ def read_textstructure(p,from_string=False):
     #,doubleq - set if want table strings allowed delimited by double quotes
     
     if not from_string:
-        s=gm.read_textfile(p, ignore_hash=True, strip=';', as_string=True) #read and remove comments
+        s=read_textfile(p, ignore_hash=True, strip=';', as_string=True) #read and remove comments
     else:
         s=p
         
@@ -109,7 +112,7 @@ def read_textstructure(p,from_string=False):
 
 
 if __name__ == '__main__':
-    c=gm.read_textstructure("../../craterstats/def/default.plt")
+    c=read_textstructure("../../craterstats/def/default.plt")
     print(c)
 
 

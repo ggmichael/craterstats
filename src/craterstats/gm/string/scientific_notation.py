@@ -2,13 +2,13 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-import craterstats.gm as gm
 
+from ..maths.sigfigs import sigfigs
 
 def scientific_notation(n,sf=3,force=False):
 
     if -2 < np.log10(n) < 4 and not force:
-            return gm.sigfigs(n, sf)
+            return sigfigs(n, sf)
 
     s0 = ("{:." + str(sf-1) + "e}").format(n)
     s = s0.split('e')
