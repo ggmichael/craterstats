@@ -2,7 +2,10 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-import craterstats.gm as gm
+#import craterstats.gm as gm
+
+from ..maths.range import range as gm_range
+from ..maths.range import mag as gm_mag
 
 
 def ticks(x, max_ticks, max_minor=None):
@@ -13,8 +16,8 @@ def ticks(x, max_ticks, max_minor=None):
     if not max_ticks: max_ticks = 5
     max_ticks = np.clip(max_ticks, 2, None)
 
-    range = gm.range(x)
-    mag = gm.mag(range)
+    range = gm_range(x)
+    mag = gm_mag(range)
 
     multiplier = 1.
 
@@ -26,7 +29,7 @@ def ticks(x, max_ticks, max_minor=None):
         nice_fraction = ([1, 2, 5, 10])[a]
         step = nice_fraction * 10. ** exponent
         i = [np.floor(range[0] / step), np.ceil(range[1] / step)]
-        ticks = (i[0] + np.arange(gm.mag(i) + 1)) * step
+        ticks = (i[0] + np.arange(gm_mag(i) + 1)) * step
         n_ticks = len(ticks)
         multiplier *= .9
         if n_ticks <= max_ticks:
