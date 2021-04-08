@@ -2,7 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-import gm
+import craterstats.gm as gm
 
 
 def scientific_notation(n,sf=3,force=False):

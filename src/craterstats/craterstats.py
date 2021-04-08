@@ -6,8 +6,8 @@ import argparse
 import numpy as np
 import re
 
-import gm
-import craterstatslib as cst
+import craterstats as cst
+import craterstats.gm as gm
 
 
 class AppendPlotDict(argparse.Action):
@@ -29,9 +29,6 @@ class SpacedString(argparse.Action):
 
 
 def get_parser():
-    if "parser" in get_parser.__dict__:
-        return get_parser.parser
-
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
@@ -86,7 +83,6 @@ def get_parser():
                              "resurf_showall={1,0}, show all data with resurfacing correction,"
                              "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
-    get_parser.parser=parser
     return parser
 
 
@@ -100,7 +96,9 @@ def construct_cps_dict(args,c,f):
     cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
 
     for k,v in vars(args).items():
-        if v is not None:
+        if v is None:
+            if k == 'out': cpset[k] = 'out' # don't set as default in parse_args: need to detect None in source_cmds
+        else:
             if k in ('title',
                      'subtitle',
                      'isochrons',
@@ -130,6 +128,7 @@ def construct_cps_dict(args,c,f):
             if k == 'format':
                 cpset[k]=set(v)
 
+
     cs=next((e for e in f['chronology_system'] if e['name'] == cpset['chronology_system']), None)
     if cs is None: raise ValueError('Chronology system not found:' + cpset['chronology_system'])
 
@@ -148,8 +147,7 @@ def construct_cps_dict(args,c,f):
         else:
             cpset['xrange'] = cst.DEF_XRANGE[3]
             cpset['yrange'] = cst.DEF_YRANGE[3]
-    if cpset['out'] is None:
-        cpset['out']='out' # don't set as default in parse_args: need to detect None in source_cmds
+
     return cpset
 
 
@@ -201,7 +199,7 @@ def source_cmds(src):
         main(a)
     print('\nProcessing complete.')
 
-def demo(d=None,src='config/demo_commands.txt'):
+def demo(d=None,src='craterstats/config/demo_commands.txt'):
     cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
@@ -219,8 +217,8 @@ def demo(d=None,src='config/demo_commands.txt'):
 def main(args0):
     args = get_parser().parse_args(args0)
 
-    template="config/default.plt"
-    functions="config/functions.txt"
+    template="craterstats/config/default.plt"
+    functions="craterstats/config/functions.txt"
 
     c = gm.read_textstructure(template if args.template is None else args.template)
     f = gm.read_textstructure(functions)
@@ -258,9 +256,9 @@ def main(args0):
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
-
-    if args.autoscale or not ('xrange' in cps_dict and 'yrange' in cps_dict):
-        cps.autoscale()
+    if cpl:
+        if args.autoscale or not ('xrange' in cps_dict and 'yrange' in cps_dict):
+            cps.autoscale()
 
     drawn=False
     for f in cps.format:

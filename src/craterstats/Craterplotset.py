@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.figure as mfig
 
-import craterstatslib as cst
-import gm
+import craterstats as cst
+import craterstats.gm as gm
 
 
 class Craterplotset:
