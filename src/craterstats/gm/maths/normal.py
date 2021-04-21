@@ -4,14 +4,20 @@
 import numpy as np
 
 def normal(m,s,x,cumulative=False):
-  #m - mean
-  #s - sd
-  #x - point to evaluate
+    '''
+    evaluate normal pdf at point(s) x
 
-  if cumulative:
-      return 0.5 * (1 + np.erf((x - m) / (s * np.sqrt(2.))))
-  else:
-      return np.exp(-((x-m)**2)/(2*s**2))/(s*np.sqrt(2*np.pi))
+    :param m: mean
+    :param s: sd
+    :param x: point(s) to evaluate
+    :param cumulative: return cdf instead of pdf
+    :return: pdf
+    '''
+
+    if cumulative:
+        return 0.5 * (1 + np.math.erf((x - m) / (s * np.sqrt(2.))))
+    else:
+        return np.exp(-((x-m)**2)/(2*s**2))/(s*np.sqrt(2*np.pi))
 
 if __name__ == '__main__':
     pass

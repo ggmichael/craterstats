@@ -6,27 +6,32 @@ import numpy as np
 from . import normal
 
 
-def poisson(k,lam,cumulative=False):
-  #poisson pmf
-  #vectorised in lambda, but not k
-  
-  threshold=23 #threshold for switching to normal approximation
+def poisson(k,lam,cumulative=False,threshold=23):
+    '''
+    poisson mass function
+    vectorised in lambda, but not k
 
-  if k<threshold:       #poisson
-      if cumulative:
-          res = 0.
-          for i in range(k+1):
-              res += (lam**i) / np.math.factorial(i)
-          return np.exp(-lam) * res
+    :param k:
+    :param lam:
+    :param cumulative: return cmf instead of pmf
+    :param threshold: use normal approximation above threshold value of k
+    :return: pmf
+    '''
 
-      else:
-          return lam**k * np.exp(-lam) / np.math.factorial(k)
+    if k<threshold:       # poisson
+        if cumulative:
+            res = 0.
+            for i in range(k+1):
+                res += (lam**i) / np.math.factorial(i)
+            return np.exp(-lam) * res
+        else:
+            return lam**k * np.exp(-lam) / np.math.factorial(k)
 
-  else:                 #normal
-      if cumulative:
-          return normal(lam, np.sqrt(lam), k, cumulative=True)
-      else:
-          return normal(lam, np.sqrt(lam), k)
+    else:                 # normal
+        if cumulative:
+            return normal(lam, np.sqrt(lam), k, cumulative=True)
+        else:
+            return normal(lam, np.sqrt(lam), k)
 
 
 
