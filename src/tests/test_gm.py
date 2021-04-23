@@ -3,18 +3,13 @@
 
 import unittest
 import numpy as np
+import colorama
 
 import craterstats.gm as gm
 
 class Testgm(unittest.TestCase):
-    def test_sigfigs(self):
-        self.assertEqual(gm.sigfigs(3.14159, 3),'3.14')
-        self.assertEqual(gm.sigfigs(3.14159, 2), '3.1')
-        self.assertEqual(gm.sigfigs(112.14159, 2), '110')
-        self.assertEqual(gm.sigfigs(-.0314159, 3), '-0.0314')
-        self.assertEqual(gm.sigfigs(314759, 3), '315000')
-        self.assertEqual(gm.sigfigs(31.4759, 1), '30')
-        self.assertEqual(gm.sigfigs([243.3, 0.3422], 2), ['240', '0.34'])
+
+    # maths
 
     def test_scl(self):
         a=np.linspace(2, 7, 4)
@@ -57,7 +52,66 @@ class Testgm(unittest.TestCase):
         self.assertAlmostEqual(gm.normal(10., 1., 11., cumulative=True) - gm.normal(10., 1., 9., cumulative=True),
                                .683,places=3)
 
+    def test_sigfigs(self):
+        self.assertEqual(gm.sigfigs(3.14159, 3),'3.14')
+        self.assertEqual(gm.sigfigs(3.14159, 2), '3.1')
+        self.assertEqual(gm.sigfigs(112.14159, 2), '110')
+        self.assertEqual(gm.sigfigs(-.0314159, 3), '-0.0314')
+        self.assertEqual(gm.sigfigs(314759, 3), '315000')
+        self.assertEqual(gm.sigfigs(31.4759, 1), '30')
+        self.assertEqual(gm.sigfigs([243.3, 0.3422], 2), ['240', '0.34'])
 
+    def test_scientific_notation(self):
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2),'3100')
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2, force=True), '3.1×10^{3}')
+        self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, 2),'0.031')
+        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, 3), '-3.14×10^{-3}')
+
+    # plotting
+
+    def test_mpl_check_font(self):
+        fontnamelist=['Myriad Pro','Verdana','DejaVu Sans','Tahoma']
+        self.assertIn(gm.mpl_check_font(fontnamelist),fontnamelist)
+
+    def test_ticks(self):
+        self.assertTrue(np.array_equal(gm.ticks([0,4.5],3), [0., 5.]))
+        self.assertTrue(np.array_equal(gm.ticks([0, .9], 3), [0. , 0.5, 1. ]))
+        self.assertTrue(np.array_equal(gm.ticks([0.5, 3.5], 3), [0., 2., 4.]))
+
+    # string
+
+    def test_bright(self):
+        self.assertEqual(gm.bright('test'), colorama.Style.BRIGHT+'test'+colorama.Style.RESET_ALL)
+        self.assertTrue(gm.bright.init)
+
+    def test_strip_quotes(self):
+        self.assertEqual(gm.strip_quotes('"test"'),'test')
+        self.assertEqual(gm.strip_quotes("'test'"), 'test')
+        self.assertEqual(gm.strip_quotes('"'), '"')
+
+    def test_quoted_split(self):
+        self.assertEqual(gm.quoted_split('"test"  0'),['test', '0'])
+        self.assertEqual(gm.quoted_split('test'), ['test'])
+        self.assertEqual(gm.quoted_split(r"9684  0 Inf 'test data' 1.76e+04 'D:\tmp\test.scc'"),
+                         ['9684', '0', 'Inf', 'test data', '1.76e+04', r'D:\tmp\test.scc'])
+        self.assertEqual(gm.quoted_split(r"9684,  0, Inf, 'test, data', 1.76e+04 'D:\tmp\test.scc'",separator='\s,'),
+                         ['9684', '0', 'Inf', 'test, data', '1.76e+04', r'D:\tmp\test.scc'])
+
+    #file
+
+    def test_filename(self):
+        f=r'd:\tmp\fred.txt'
+        self.assertEqual(gm.filename(f, 'n'), 'fred')
+        self.assertEqual(gm.filename(f, 'e'), '.txt')
+        self.assertEqual(gm.filename(f, 'p'), 'd:\\tmp\\')
+        self.assertEqual(gm.filename(f, 'u'), 'tmp\\')
+        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\tmp\fred_tag.txt')
+
+    # def read_textfile(self):
+    #
+    #
+    # #     ;  print,"this; shouldn't be deleted"
+    # #     ;  print,' or this;'
 
 if __name__ == '__main__':
     unittest.main()

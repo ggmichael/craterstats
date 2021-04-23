@@ -4,6 +4,10 @@
 import colorama
 
 def bright(txt):
+    '''
+    Wrap string with control codes to cause bright display on console
+    '''
+
     if "init" not in bright.__dict__:
         colorama.init()
         bright.init = True

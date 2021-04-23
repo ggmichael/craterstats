@@ -7,3 +7,4 @@ from .range import range,mag
 from .poly import poly
 from .scl import scl
 from .sigfigs import sigfigs
+from .scientific_notation import scientific_notation

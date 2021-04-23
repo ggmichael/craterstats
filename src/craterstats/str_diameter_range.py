@@ -4,6 +4,12 @@
 import numpy as np
 
 def str_diameter_range(d):
+    '''
+    Convert numerical diameters in km into string diameter range with units
+
+    :param d: two element numerical sequence of diameters in km
+    :return: string diameter range
+    '''
 
     # \u2013 en-dash \u2009 short space
     if d[1] >=1:
