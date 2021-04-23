@@ -4,10 +4,21 @@
 import craterstats.gm as gm
 
 def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dict=False):
-    #ga - force Ga unit
-    #simple - don't show unnecessary decimals (for isochrons), nor use '$' for craterpdf
-    #no_error - don't show errors
-    #sf - sig figs (3 or 2?)
+    '''
+    Convert numerical age in Ga to latex-style string, optionally with sub/superscript errors and mu uncertainty function
+
+    :param age:
+    :param e1: plus error
+    :param e2: minus error
+    :param sf: no of sig figs
+    :param ga: force Ga unit
+    :param simple: don't show zero decimals (for isochrons), nor use latex-style
+    :param no_error: don't show errors
+    :param mu: show mu uncertainty function
+    :param dict:
+    :return: age string
+    '''
+
 
     if ga: 
         a=(1,'Ga')

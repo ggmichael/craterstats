@@ -3,10 +3,16 @@
 
 import re
 
-def quoted_split(s):
-    def strip_quotes(s):
-        if s and (s[0] == '"' or s[0] == "'") and s[0] == s[-1]:
-            return s[1:-1]
-        return s
+from .strip_quotes import strip_quotes
+
+def quoted_split(s,separator='\s'):
+    '''
+    split string using separator characters, leaving separators within quoted substrings
+
+    :param s: source string
+    :param separator: default is whitespace; for comma with whitespace, use '\s,'
+    :return: list of substrings
+    '''
+
     return [strip_quotes(p).replace('\\"', '"').replace("\\'", "'") \
-            for p in re.findall(r'"(?:\\.|[^"])*"|\'(?:\\.|[^\'])*\'|[^\s]+', s)]
+            for p in re.findall(r'"(?:\\.|[^"])*"|\'(?:\\.|[^\'])*\'|[^'+separator+']+', s)]

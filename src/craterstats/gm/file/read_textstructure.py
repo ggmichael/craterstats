@@ -3,9 +3,10 @@
 
 import re
 
-from ..string.quoted_split import quoted_split
 from ..string.strip_quotes import strip_quotes
 from . import read_textfile
+
+
 
 
 def gmrts_simple_value(s): #s contains one keyword only (possibly multi-line value)

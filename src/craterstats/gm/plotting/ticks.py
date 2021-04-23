@@ -2,16 +2,21 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-#import craterstats.gm as gm
 
 from ..maths.range import range as gm_range
 from ..maths.range import mag as gm_mag
 
 
 def ticks(x, max_ticks, max_minor=None):
-    # ;x - data
-    # ;max_ticks - max no of major ticks
-    # ;max_minor - max no of minor ticks (in total, i.e. n_ticks*minor_ticks) - optional
+    '''
+    calculate nice number tick values for plot axis
+
+    :param x: plot data vector
+    :param max_ticks: max no of major ticks
+    :param max_minor: max no of minor ticks (in total, i.e. n_ticks*minor_ticks) (optional)
+    :return: tick values
+    '''
+
 
     if not max_ticks: max_ticks = 5
     max_ticks = np.clip(max_ticks, 2, None)
