@@ -11,4 +11,4 @@ def write_textfile(filename,s):
     '''
     
     with open(filename, 'w') as file:
-        file.writelines('\n'.join(s))
+        file.writelines('\n'.join(s) if type(s) is list else s)

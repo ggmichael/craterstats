@@ -3,7 +3,7 @@
 
 import numpy as np
 
-from . import sigfigs
+from .sigfigs import sigfigs
 
 def scientific_notation(n,sf=3,force=False):
     '''
