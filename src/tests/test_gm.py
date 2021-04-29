@@ -2,6 +2,10 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import unittest
+
+from unittest.mock import patch, mock_open
+
+
 import numpy as np
 import colorama
 
@@ -52,20 +56,6 @@ class Testgm(unittest.TestCase):
         self.assertAlmostEqual(gm.normal(10., 1., 11., cumulative=True) - gm.normal(10., 1., 9., cumulative=True),
                                .683,places=3)
 
-    def test_sigfigs(self):
-        self.assertEqual(gm.sigfigs(3.14159, 3),'3.14')
-        self.assertEqual(gm.sigfigs(3.14159, 2), '3.1')
-        self.assertEqual(gm.sigfigs(112.14159, 2), '110')
-        self.assertEqual(gm.sigfigs(-.0314159, 3), '-0.0314')
-        self.assertEqual(gm.sigfigs(314759, 3), '315000')
-        self.assertEqual(gm.sigfigs(31.4759, 1), '30')
-        self.assertEqual(gm.sigfigs([243.3, 0.3422], 2), ['240', '0.34'])
-
-    def test_scientific_notation(self):
-        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2),'3100')
-        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2, force=True), '3.1×10^{3}')
-        self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, 2),'0.031')
-        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, 3), '-3.14×10^{-3}')
 
     # plotting
 
@@ -97,21 +87,71 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.quoted_split(r"9684,  0, Inf, 'test, data', 1.76e+04 'D:\tmp\test.scc'",separator='\s,'),
                          ['9684', '0', 'Inf', 'test, data', '1.76e+04', r'D:\tmp\test.scc'])
 
+    def test_sigfigs(self):
+        self.assertEqual(gm.sigfigs(3.14159, 3),'3.14')
+        self.assertEqual(gm.sigfigs(3.14159, 2), '3.1')
+        self.assertEqual(gm.sigfigs(112.14159, 2), '110')
+        self.assertEqual(gm.sigfigs(-.0314159, 3), '-0.0314')
+        self.assertEqual(gm.sigfigs(314759, 3), '315000')
+        self.assertEqual(gm.sigfigs(31.4759, 1), '30')
+        self.assertEqual(gm.sigfigs([243.3, 0.3422], 2), ['240', '0.34'])
+
+    def test_scientific_notation(self):
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2),'3100')
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2, force=True), '3.1×10^{3}')
+        self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, 2),'0.031')
+        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, 3), '-3.14×10^{-3}')
+
     #file
 
     def test_filename(self):
-        f=r'd:\tmp\fred.txt'
-        self.assertEqual(gm.filename(f, 'n'), 'fred')
+        f=r'd:\tmp\test.txt'
+        self.assertEqual(gm.filename(f, 'n'), 'test')
         self.assertEqual(gm.filename(f, 'e'), '.txt')
         self.assertEqual(gm.filename(f, 'p'), 'd:\\tmp\\')
         self.assertEqual(gm.filename(f, 'u'), 'tmp\\')
-        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\tmp\fred_tag.txt')
+        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\tmp\test_tag.txt')
 
-    # def read_textfile(self):
-    #
-    #
-    # #     ;  print,"this; shouldn't be deleted"
-    # #     ;  print,' or this;'
+    def test_write_textfile(self):
+        m = mock_open()
+        f = r'd:\tmp\test.txt'
+        with patch('builtins.open', m):
+            gm.write_textfile(f,'test-string')
+            m.assert_called_once_with(f, 'w')
+            m().writelines.assert_called_once_with('test-string')
+
+            gm.write_textfile(f, ['a','b'])
+            m().writelines.assert_called_with('a\nb')
+
+    def test_read_textfile(self):
+        f = r'd:\tmp\test.txt'
+        c = '1\n2\n#test\n\n5 ;comment'
+        with patch('builtins.open', mock_open(read_data=c)) as m:
+            self.assertEqual(gm.read_textfile(f),['1', '2', '#test', '', '5 ;comment'])
+            m.assert_called_once_with(f, 'r', encoding='utf-8-sig')
+            self.assertEqual(gm.read_textfile(f, as_string=True),c)
+            self.assertEqual(gm.read_textfile(f, n_lines=2), ['1', '2'])
+            self.assertEqual(gm.read_textfile(f, ignore_hash=True), ['1', '2', '', '5 ;comment'])
+            self.assertEqual(gm.read_textfile(f, ignore_blank=True), ['1', '2', '#test', '5 ;comment'])
+            self.assertEqual(gm.read_textfile(f, strip=';'), ['1', '2', '#test', '','5 '])
+
+    def test_read_textstructure(self):
+        self.assertEqual(gm.read_textstructure('scalar=10', from_string=True), {'scalar': '10'})
+        self.assertEqual(gm.read_textstructure("string='this is a string.'", from_string=True), {'string': 'this is a string.'})
+        self.assertEqual(gm.read_textstructure('array=[1.3,15.7,6,14]', from_string=True), {'array': ['1.3', '15.7', '6', '14']})
+        self.assertEqual(gm.read_textstructure('array=[1,2,\n3,4]', from_string=True), {'array': ['1', '2', '3', '4']})
+        self.assertEqual(gm.read_textstructure('pointer=*[1,2,3]', from_string=True), {'pointer': ['1', '2', '3']})
+        self.assertEqual(gm.read_textstructure('boundary = {lon,lat\n-126.97	17.35\n-124.45	18.94\n}',
+            from_string=True), {'boundary': {'lat': ['17.35', '18.94'], 'lon': ['-126.97', '-124.45']}})
+        self.assertEqual(gm.read_textstructure('wifi={mac,name\n04f02a418c2e "ABC Wi-Fi"\n}',
+            from_string=True), {'wifi': {'mac': ['04f02a418c2e'], 'name': ['ABC Wi-Fi']}})
+        self.assertEqual(gm.read_textstructure('text_block=""As the sun set and the moon rose,\n'
+                                               'she happened upon a splendid castle."\n"',from_string=True),
+            {'text_block': '"As the sun set and the moon rose,\nshe happened upon a splendid castle."\n'})
+        self.assertEqual(gm.read_textstructure('dict={\n  a=30\n  b=[2,3]\n}', from_string=True), {'dict': {'a': '30', 'b': ['2', '3']}})
+        self.assertEqual(gm.read_textstructure('implied=1\nimplied=2\nimplied=3', from_string=True), {'implied': ['1', '2', '3']})
+
+
 
 if __name__ == '__main__':
     unittest.main()

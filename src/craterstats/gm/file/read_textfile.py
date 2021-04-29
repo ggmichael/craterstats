@@ -1,6 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import re
 from . import file_exists
 
 def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip=None,as_string=False):
@@ -15,8 +16,8 @@ def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip
     :return: file contents as list of strings or single string
     '''
 
-    if not file_exists(filename) :
-        return None
+    # if not file_exists(filename):
+    #     return None
 
     with open(filename, 'r', encoding='utf-8-sig') as file: # encoding='utf-8-sig' removes BOM if present
         if n_lines !=-1:
@@ -33,7 +34,7 @@ def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip
 
     if strip is not None:
         c = re.compile(r'(("[^"]*?")|(\'[^\']*?\')|[^;\'"]*)*') # avoid splitting within quoted string
-        s = [c.match(s)[0] for e in s]
+        s = [c.match(e)[0] for e in s]
 
     if as_string:
         s='\n'.join(s)
