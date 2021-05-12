@@ -2,9 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import unittest
-
 from unittest.mock import patch, mock_open
-
 
 import numpy as np
 import colorama
@@ -25,7 +23,7 @@ class Testgm(unittest.TestCase):
 
     def test_range(self):
         self.assertEqual(gm.range([3, 7, 2]),(2,7))
-        self.assertEqual(gm.range([3, -7, 2]), (-7, 3))
+        self.assertEqual(gm.range([3.5, -7, 2]), (-7, 3.5))
 
     def test_mag(self):
         self.assertEqual(gm.mag([3, 7, 2]),5)
@@ -56,7 +54,6 @@ class Testgm(unittest.TestCase):
         self.assertAlmostEqual(gm.normal(10., 1., 11., cumulative=True) - gm.normal(10., 1., 9., cumulative=True),
                                .683,places=3)
 
-
     # plotting
 
     def test_mpl_check_font(self):
@@ -78,6 +75,7 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.strip_quotes('"test"'),'test')
         self.assertEqual(gm.strip_quotes("'test'"), 'test')
         self.assertEqual(gm.strip_quotes('"'), '"')
+        self.assertEqual(gm.strip_quotes(''), '')
 
     def test_quoted_split(self):
         self.assertEqual(gm.quoted_split('"test"  0'),['test', '0'])
@@ -150,7 +148,6 @@ class Testgm(unittest.TestCase):
             {'text_block': '"As the sun set and the moon rose,\nshe happened upon a splendid castle."\n'})
         self.assertEqual(gm.read_textstructure('dict={\n  a=30\n  b=[2,3]\n}', from_string=True), {'dict': {'a': '30', 'b': ['2', '3']}})
         self.assertEqual(gm.read_textstructure('implied=1\nimplied=2\nimplied=3', from_string=True), {'implied': ['1', '2', '3']})
-
 
 
 if __name__ == '__main__':

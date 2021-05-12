@@ -25,11 +25,11 @@ class Chronologyfn:
         if type(source) is dict:
             src=source
         else:
-            if type(source) is list:
-                txt='\n'.join([gm.read_textfile(e, as_string=True) for e in source])
-            elif type(source) is str:
-                txt= gm.read_textfile(source, as_string=True, ignore_hash=True)
-            src= gm.read_textstructure(txt, from_string=True)
+            if '\n' in source: # multiline string is definition
+                txt = source + '\nchronology={\n name="null"\n}' # add null entry to force implied array
+            else: # single line string is filename
+                txt = gm.read_textfile(source, as_string=True, ignore_hash=True)
+            src = gm.read_textstructure(txt, from_string=True)
         
         self.definition=next((e for e in src['chronology'] if e['name']==identifier),None)
         if self.definition is None:
@@ -63,7 +63,7 @@ class Chronologyfn:
         
     def phi(self,t): #phi = dN1/dt - the impact rate [/Ga]
         if self.lambda_phi is None:
-            dt=self.t/1e4
+            dt=t/1e4
             return (self.N1(t+dt)-self.N1(t-dt))/(2.*dt)
         else:
             return self.lambda_phi(t)

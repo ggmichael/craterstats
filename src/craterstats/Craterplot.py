@@ -9,13 +9,16 @@ import craterstats.gm as gm
 
 
 class Craterplot:
+    """
+    Specify and draw a single overplot: either a crater data series, or an age estimate of one
+    """
 
     def __init__(self,*args,**kwargs):
         self.UpdateSettings({
             'cratercount':None, # if not provided, will create from 'source'
             'source':'',
             'name':'',
-            'range':np.array([0.,1e9]),   #unconstrained
+            'range':np.array([0.,np.inf]),   #unconstrained
             'type':'data',
             'error_bars':1,
             'hide':0,
@@ -49,11 +52,16 @@ class Craterplot:
             setattr(self, k, v)
         if not self.cratercount and self.source:
             self.cratercount = cst.Cratercount(self.source)
-
+        if not self.source and self.cratercount:
+            self.source = self.cratercount.filename
 
 
     def calculate_age(self,cps):
+        """
+        Calculate age
 
+        :param cps: Craterplotset instance
+        """
         if self.type=='poisson':
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
@@ -79,10 +87,9 @@ class Craterplot:
 
         else:
             if self.type=='c-fit':
-                p0=self.cratercount.getplotdata("cumulative",self.binning,
-                                                range=self.range,
-                                                resurfacing={'pf':cps.pf,'range':self.range} if self.resurf else {},
-                                                )
+                p0=self.cratercount.getplotdata("cumulative",self.binning, range=self.range,
+                    resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+                    pf=cps.pf)
             elif self.type=='d-fit':
                 p0=self.cratercount.getplotdata("differential",self.binning,range=self.range,pf=cps.pf)
 
@@ -90,17 +97,25 @@ class Craterplot:
             self.n_event=p0['n_event']
             self.a0=cps.pf.fit(p0)
             self.t = [cps.cf.t(a0=e) for e in self.a0]
+            self.bin_range=p0['bin_range']
 
         self.n_d = cps.pf.evaluate("cumulative", cps.ref_diameter, self.a0[0])
 
 
 
-    def overplot(self,cps): #,presentation,ef=None,sf=3,mu=False):
+    def overplot(self,cps):
+        """
+        Add overplot elements into figure
+
+        :param cps: Craterplotset instance
+        :return: none
+        """
         if not self.cratercount or self.hide: return
-        p=self.cratercount.getplotdata(cps.presentation,self.binning,
-                                       range=[0,self.range[1]] if self.resurf_showall and self.type=='c-fit' else self.range,
-                                       resurfacing={'pf':cps.pf,'range':self.range} if self.resurf and self.type=='c-fit' else {},
-                                       )
+
+        p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
+             resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+             pf=cps.pf)
+
         self.n=p['n']
         self.n_event=p['n_event']
         legend_label = []
@@ -156,7 +171,7 @@ class Craterplot:
                         legend_label += ['{0:.1f} (of {1:d})'.format(self.n,self.n_event)]
                 legend_label[-1] += " craters"
             if 'r' in cps.legend:
-                legend_label += [cst.str_diameter_range(self.range)]
+                legend_label += [cst.str_diameter_range(self.cratercount.generate_bins(self.binning,self.range,expand=False))]
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
 
@@ -173,10 +188,15 @@ class Craterplot:
 
 
     def get_data_range(self,cps):
-        p = self.cratercount.getplotdata(cps.presentation, self.binning,
-             range=[0, self.range[1]] if self.resurf_showall and self.type == 'c-fit' else self.range,
-             resurfacing={'pf': cps.pf, 'range': self.range} if self.resurf else None
-             )
+        """
+        Return data range of Craterplot
+
+        :param cps: Craterplotset instance
+        :return: (d_min,d_max,y_min,y_max)
+        """
+        p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
+             resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+             pf=cps.pf)
         return gm.range(p['d']) + gm.range(p['y'])
 
 

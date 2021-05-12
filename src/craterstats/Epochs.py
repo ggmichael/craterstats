@@ -9,16 +9,20 @@ import craterstats.gm as gm
 
 
 class Epochs:
+    """
+    Decode Epoch definitions, calculate derived values, and provide overplot routines
+
+    """
 
     def __init__(self, source,identifier,pf,cf):
 
         if type(source) is dict:
             src = source
         else:
-            if type(source) is list:
-                txt = '\n'.join([gm.read_textfile(e, as_string=True) for e in source])
-            elif type(source) is str:
-                txt= gm.read_textfile(source, as_string=True, ignore_hash=True)
+            if '\n' in source: # multiline string is definition
+                txt = source + '\nepochs={\n name="null"\n}' # add null entry to force implied array
+            else: # single line string is filename
+                txt = gm.read_textfile(source, as_string=True, ignore_hash=True)
             src = gm.read_textstructure(txt, from_string=True)
 
         definition = next((e for e in src['epochs'] if e['name'] == identifier), None)
@@ -43,6 +47,10 @@ class Epochs:
         return self.name
 
     def decode_formatting(self):
+        """
+        Decode epoch definition
+
+        """
         label_slant=int(self.formatting[0])
         colour = [int(re.search('\d?', e)[0]) for e in self.formatting[1:]]
         offset = ['r' in e for e in self.formatting[1:]]
@@ -50,6 +58,13 @@ class Epochs:
         return label_slant,colour,offset,boundary
 
     def chronology_oplot(self,cps,phi=False):
+        """
+        Overplot epoch system on chronology/rate plot
+
+        :param cps: Craterplotset instance
+        :param phi: rate function?
+        :return: none
+        """
         p_t,p_y=self.cf.getplotdata(phi=phi,linear=True)
         label_slant, colour, offset, boundary = self.decode_formatting()
 
@@ -84,6 +99,12 @@ class Epochs:
 
 
     def oplot(self,cps):
+        """
+        Overplot epoch system on crater count plot
+
+        :param cps: Craterplotset instance
+        :return: none
+        """
         a0=[self.cf.a0(t) for t in self.time[1:]]
         iso = [self.pf.getisochron(cps.presentation,e,cps.ef) for e in a0]
         _, colour, _, boundary = self.decode_formatting()

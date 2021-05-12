@@ -12,6 +12,12 @@ import craterstats.gm as gm
 
 
 class Craterplotset:
+    """
+    Base object for set of Craterplots. Holds properties common to all of set.
+    Creates plot layout and calls overplot methods of Craterplot instances.
+    Aggregates legend annotations.
+
+    """
     
     def __init__(self,*args,**kwargs):   
             
@@ -33,6 +39,7 @@ class Craterplotset:
             'presentation':'differential',
             'xrange':[-3,2],
             'yrange':[-5,5],
+            'style':'natural',
             'isochrons':'',
             'show_isochrons':0,
             'legend_data':'a', # a show counting area
@@ -58,7 +65,7 @@ class Craterplotset:
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
         for k, v in a.items():
-            if k == 'source': self.cratercount = cst.Cratercount(v)
+            #if k == 'source': self.cratercount = cst.Cratercount(v)
             if k in ('xrange','yrange'): v=[float(e) for e in v]
             if k in ('pt_size','ref_diameter'): v = float(v)
             if k in ('show_isochrons',
@@ -75,6 +82,12 @@ class Craterplotset:
         
             
     def CreatePlotSpace(self):
+        """
+        Set up plot dimensions, font and scaled font size, titles, tick marks, and tick labels
+        Create layout
+        Set up plot coordinate transformations
+
+        """
 
         if self.fig: del self.fig
             
@@ -110,7 +123,7 @@ class Craterplotset:
             )
               
         self.position=margin*np.array([1,1,xsize/margin-2,ysize/margin-2-randomness_plot]) #cm
-        position_randomness=margin*np.array([1,ysize/margin-.8-randomness_plot,xsize/margin-2,ysize/margin-2]) #cm
+        position_randomness=margin*np.array([1,ysize/margin-.8-randomness_plot,xsize/margin-2,ysize/margin-2]) #cm - not yet used
         normalised_position=self.position/np.array([xsize,ysize,xsize,ysize])  #pos, width for matplotlib axes
 
 # set up font and scaled font size
@@ -163,7 +176,7 @@ class Craterplotset:
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
                 xtickname=[format(10**e,'.0f')+'$\,$km' if e>=0 else format(10**(e+3),'.0f')+'$\,$m' for e in v]
-                xtickv=v #[10**e for e in v]
+                xtickv=v
                 add_xminorlogticks=True
 
 #create layout
@@ -234,6 +247,10 @@ class Craterplotset:
 
 
     def draw(self):
+        """
+        Draw plot, adding all specified items
+
+        """
 
         self.CreatePlotSpace()
 
@@ -274,7 +291,7 @@ class Craterplotset:
             for cp in self.craterplot:
                 cp.overplot(self)
 
-
+        # aggregate legend entries
         h, b = self.ax.get_legend_handles_labels()
         h1, b1 =[], []
         skip=False
@@ -294,6 +311,12 @@ class Craterplotset:
 
 
     def plot_isochrons(self):
+        """
+        Overplot predefined isochrons with annotations
+
+        :return: none
+        """
+
         isochrons = [(abs(float(e.rstrip('ash'))),'h' in e,'a' in e, 's' in e) for e in self.isochrons.split(',')]
 
         for t,hide,above,small in isochrons:
@@ -320,6 +343,12 @@ class Craterplotset:
                              bbox=dict(facecolor='none', edgecolor='none', boxstyle='square,pad=0.5'))
 
     def autoscale(self):
+        """
+        Calculate union of data ranges from all Craterplots
+        Use to set default axis ranges
+
+        :return: none
+        """
         x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
         m = [.7, .7 * (2 if self.presentation=='differential' else 1)] # minimum empty margin
         xr = np.array([np.floor(np.log10(min(x0))-m[0]), np.ceil(np.log10(max(x1))+m[0])])
@@ -347,26 +376,30 @@ class Craterplotset:
         self.xrange=xr
         self.yrange=yr
 
-    def create_summary_file(self):
+    def create_summary_table(self):
+        """
+        Output table of Craterplot age calculations to stdout
+
+        :return: none
+        """
         s=[]
         for cp in self.craterplot:
             if cp.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
                 cp.calculate_age(self)
-                #s+=[{'name'}]
                 d = {k: getattr(cp, k) for k in
-                      {'name', 'binning', 'range', 'resurf', 'type', 'source', 'n', 'n_event', 't','a0','n_d'}}
+                      {'name', 'binning', 'range', 'bin_range', 'resurf', 'type', 'source', 'n', 'n_event', 't','a0','n_d'}}
                 d.update({k: getattr(cp.cratercount, k) for k in {'area'} })
                 s+=[d]
 
-        table = (('name', '18', '', None),
-                 ('area', '8', '.2f', None),
+        table = (('name', '24', '', None),
+                 ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
-                 ('range', '6', '.3g', ('d_min','d_max')),
+                 ('bin_range' if d['type'] in ('c-fit','d-fit') else 'range', '5', '.2g', ('d_min', 'd_max')),
                  ('type', '>9', '', ('method',)),
-                 ('resurf', '7', '', None),
+                 ('resurf', '6', '', None),
                  ('n', '7', '', None),
                  ('n_event', '9', '', None),
-                 ('t', '6', '.3g', ('age','age-','age+')),
+                 ('t', '7', '.3g', ('age','age-','age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
                  ('n_d', '8', '.2e', ('N({:0g})'.format(self.ref_diameter),)),
                  ('source', '', '', None))
@@ -386,7 +419,7 @@ class Craterplotset:
             for k,w,f,_ in table:
                 if k=='name' and d[k]=='':
                     d[k]= gm.filename(d['source'], 'n')
-                if k in ('range','t','a0'):
+                if k in ('range','bin_range','t','a0'):
                     v=' '.join([('{:'+w+f+'}').format(e) for e in d[k]])
                 else:
                     v=('{:'+w+f+'}').format(d[k])
