@@ -7,6 +7,8 @@
 
 -cs 3 -title Differential plot -subtitle with two differential fit age evaluations -p source=craterstats/sample/Pickering.scc,psym=1 -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=1
 
+-cs 3 -title Differential age fits -subtitle with 10/decade binning -p source=craterstats/sample/Pickering.scc,psym=1,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=1
+
 -pi 1 -title Cumulative fit -subtitle with resurfacing correction -cs 3 -p source=craterstats/sample/Pickering.scc,psym=1 -p type=c-fit,range=[.2,.7],resurf=1,psym=10
 
 -pi 1 -cs 3 -title Cumulative fit with resurfacing correction -subtitle showing all corrected data points -p source=craterstats/sample/Pickering.scc,psym=1 -p type=c-fit,range=[.2,.7],resurf=1,psym=10,resurf_showall=1
@@ -35,7 +37,7 @@
 
 -cs 3 -style root-2 -title Differential plot -subtitle with root-2 binning and root-2 diameter scale -p source=craterstats/sample/Pickering.scc,psym=10,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=5,offset_age=[2,-3]
 
--pi 1 -cs 3 -title Cumulative plot -subtitle with no binning -p source=craterstats/sample/Pickering.scc,binning=none,psym=7 -p type=poisson,colour=1,range=[.2,.5],isochron=1 -p range=[2,5],colour=3,offset_age=[2,-2]
+-pi 1 -cs 3 -title Cumulative plot -subtitle with no binning -p source=craterstats/sample/Pickering.scc,binning=none,psym=7 -p type=poisson,colour=1,range=[.22,.43],isochron=1 -p range=[2,5],colour=3,offset_age=[2,-2]
 
 -cs 3 -invert 1 -title Plot with inverted colour -p source=craterstats/sample/Pickering.scc,psym=10 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=5,offset_age=[2,-3]
 
@@ -49,6 +51,9 @@
 
 # output age data as text
 -f txt -title Age evaluation ouput as text -cs 3 -p source=craterstats/sample/Pickering.scc,psym=1 -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=1,offset_age=[2,-3]
+
+# output age data as text - temporary
+-f txt -title Age evaluation ouput as text -cs 3 -p source=craterstats/sample/Pickering.scc,psym=1,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=1,offset_age=[2,-3]
 
 # list supported chronology systems, equilibrium functions and epoch systems
 -lcs

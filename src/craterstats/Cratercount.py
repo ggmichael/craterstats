@@ -10,23 +10,25 @@ import craterstats as cst
 import craterstats.gm as gm
 
 class Cratercount:
+    '''Reads crater count data; provides onward in various styles and binnings'''
 
     BINNINGS = ['pseudo-log', '20/decade', '10/decade', 'x2', 'root-2', '4th root-2', 'none'] #allowed binnings
 
     def __init__(self,filename):
         self.filename=filename
-        filetype= gm.filename(filename, 'e').lstrip('.')
+        filetype = gm.filename(filename, 'e')
 
         self.binning=None                                                                   #current binning
         self.binned={}
         self.perimeter=None
         self.buffered=False
+        self.prebinned=False
 
-        if filetype=='stat': self.ReadStatFile()
-        elif filetype=='diam': self.ReadDiamFile()
-        elif filetype=='binned': self.ReadBinnedFile()
-        elif filetype=='scc': self.ReadSCCfile()
-        #elif filetype=='csv': self.read_JMARS_file  #need new data file
+        if filetype=='.stat': self.ReadStatFile()
+        elif filetype=='.diam': self.ReadDiamFile()
+        elif filetype=='.binned': self.ReadBinnedFile()
+        elif filetype=='.scc': self.ReadSCCfile()
+        #elif filetype=='csv': self.read_JMARS_file  #need new model data file
 
     def __str__(self):
         return self.filename
@@ -39,7 +41,7 @@ class Cratercount:
         d_min=self.binned['d_min']
         d_max=np.append(d_min[1:],d_min[-1]*( (d_min[-1]/d_min[-2])))
 
-        self.binned.update({'d_mean':np.sqrt(d_min,d_max),
+        self.binned.update({'d_mean':np.sqrt(d_min*d_max),
                             'bin_width':d_max-d_min,
                             'd_max':d_max})
 
@@ -95,10 +97,10 @@ class Cratercount:
         if 'reference_area' in c:                           #buffered case
             area=1. #nominal area
             self.buffered=True
-            frac=area/c['reference_area']
+            frac=[area/float(e) for e in c['reference_area']]
         else:                                               #normal case
             area=float(s['area'])
-            frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1.]
+            frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1.]*len(diam)
 
         if (min(frac)<0 or max(frac)>1) and self.buffered==0:
             self.errormsg="Crater list in "+self.filename+" has invalid crater fractions."
@@ -143,7 +145,7 @@ class Cratercount:
 
         self.area=float(re.findall('\s*[\d\.]*',s['Total_area'])[0])
         if 'Perimeter' in s.keys():
-            self.perimeter = s['Perimeter']
+            self.perimeter = float(s['Perimeter'])
         self.diam=[diam[e] for e in q]
         self.fraction=[frac[e] for e in q]
         self.prebinned=0
@@ -182,106 +184,69 @@ class Cratercount:
         gm.write_textfile(filename, out)
 
 
+    def generate_bins(self,binning,d,offset=0.,expand=True):
+        '''
+        Generate bin boundaries to cover range of d
+
+        :param binning: binning style string
+        :param d: diameter values
+        :param offset: fractional offset (set 0.5 to offset by half bin)
+        :param expand: create one boundary beyond data (default True)
+        :return: bin boundaries
+        '''
+        r10=np.log10(gm.range(d))
+        if expand: r10[1]+=.001 # small vs smallest possible bin
+
+        if binning == 'none': return d
+        if binning == 'pseudo-log':
+            a=[1.,1.1,1.2,1.3,1.4,1.5,1.7,2.,2.5,3.,3.5,4.,4.5,5.,6.,7.,8.,9.]
+            b=[10**e for e in range(int(np.floor(r10[0])),int(np.ceil(r10[1]+.1)))] # if above .9 make sure get next decade
+            bins=np.outer(b,a).flatten()
+        else:
+            bins_per_decade = {'x2': 1. / np.log10(2.),
+                               'root-2': 2./np.log10(2.),
+                               '4th root-2': 4./np.log10(2.),
+                               '10/decade': 10.,
+                               '20/decade': 20.,
+                            }[binning]
+
+            br = gm.range(r10*bins_per_decade + offset, outer=True)
+            b0 = np.arange(br[0],br[1]+1)
+            bins = 10 ** (b0 / bins_per_decade)
+
+        q=np.searchsorted(bins,10**r10)
+        return bins[np.clip(q[0]-1,0,None):q[1]+1]
 
 
-    def apply_binning(self,binning,allbins=False,binrange=None):
-                                # ;set allbins to include empty bins
-                                # ;set binrange to force - otherwise auto
+    def apply_binning(self,binning,offset=0.):
+        '''
+        Create binned version of cratercount (internally, into self.binned structure)
+
+        :param binning: name of binning style
+        :param offset: fractional offset (set 0.5 to offset by half bin)
+        :return: none
+        '''
+        if not binning in self.BINNINGS: raise Exception("Invalid binning")
+
         d=self.diam
 
         if binning=='none':
             bins,h = zip(*sorted(zip(d, self.fraction)))
-            bins, h = np.array(list(bins)+[bins[-1]]), np.array(list(h)+[0]) #add extra 'empty' bin
+            bins, h = np.array(bins), np.array(h)
             bin_centres = bins
             h_event=np.ones(len(h))
             width = np.zeros(len(d))
 
-        elif binning=='pseudo-log':
-            a=[1.,1.1,1.2,1.3,1.4,1.5,1.7,2.,2.5,3.,3.5,4.,4.5,5.,6.,7.,8.,9.]
-            b=[10**e for e in range(-5,4)]
-            bins0=np.outer(b,a).flatten()  #all possible bin edges
-
-            if binrange==None:
-                i,j=np.searchsorted(bins0, gm.range(d))
-            else:
-                i,j=np.searchsorted(bins0,binrange)
-
-            h_event,bins=np.histogram(d,bins=bins0[i-1:j+1])
+        else:
+            bins=self.generate_bins(binning,d,offset=offset)
+            h_event, bins = np.histogram(d, bins=bins)
             h,bins=np.histogram(d,weights=self.fraction,bins=bins)
 
             width=bins[1:]-bins[:-1]
             bin_centres=np.sqrt(bins[1:]*bins[:-1])
 
-        elif binning=='x2':
-            logdiam=np.log10(d)*1./np.log10(2.)
-            br= gm.range(logdiam, outer=True)
-            bins0=np.arange(br[0],br[1]+1)
-
-            h_event,bins0=np.histogram(logdiam,bins=bins0)
-            h,bins0=np.histogram(logdiam,weights=self.fraction,bins=bins0)
-
-            bins=10**(bins0*np.log10(2.)/1.)
-            bin_centres=10**((bins0[:-1]+.5)*np.log10(2.)/1.)
-            width=bins[:-1]
-
-        elif binning=='x2-shifted':
-            logdiam=np.log10(d)*1./np.log10(2.)
-            br= gm.range(logdiam + .5, outer=True) - .5
-            bins0=np.arange(br[0],br[1]+1)
-
-            h_event,bins0=np.histogram(logdiam,bins=bins0)
-            h,bins0=np.histogram(logdiam,weights=self.fraction,bins=bins0)
-
-            bins=10**(bins0*np.log10(2.)/1.)
-            bin_centres=10**((bins0[:-1]+.5)*np.log10(2.)/1.)
-            width=bins[:-1]
-
-        elif binning=='root-2':
-            logdiam=np.log10(d)*2./np.log10(2.)
-            br= gm.range(logdiam, outer=True)
-            bins0=np.arange(br[0],br[1]+1)
-
-            h_event,bins0=np.histogram(logdiam,bins=bins0)
-            h,bins0=np.histogram(logdiam,weights=self.fraction,bins=bins0)
-
-            bins=10**(bins0*np.log10(2.)/2.)
-            bin_centres=10**((bins0[:-1]+.5)*np.log10(2.)/2.)
-            width=bins[:-1]*(np.sqrt(2)-1)
-
-        elif binning=='4th root-2':
-            logdiam=np.log10(d)*4./np.log10(2.)
-            br= gm.range(logdiam, outer=True)
-            bins0=np.arange(br[0],br[1]+1)
-
-            h_event,bins0=np.histogram(logdiam,bins=bins0)
-            h,bins0=np.histogram(logdiam,weights=self.fraction,bins=bins0)
-
-            bins=10**(bins0*np.log10(2.)/4.)
-            bin_centres=10**((bins0[:-1]+.5)*np.log10(2.)/4.)
-            width=bins[:-1]*(2**.25-1)
-
-        else:
-            if binning=='20/decade':
-                bins_per_decade=20
-            elif binning=='10/decade':
-                bins_per_decade=10
-            else:
-                raise Exception("Invalid binning")
-
-            logdiam=np.log10(d)*bins_per_decade
-            br = gm.range(logdiam, outer=True)
-            bins0=np.arange(br[0],br[1]+1)
-
-            h_event,bins0=np.histogram(logdiam,bins=bins0)
-            h,bins0=np.histogram(logdiam,weights=self.fraction,bins=bins0)
-
-            bins=10**(bins0/bins_per_decade)
-            bin_centres=10**((bins0+.5)/bins_per_decade)
-            width=bins[:-1]*(10**(1/bins_per_decade)-1)
-
-
-        self.binned={'d_min':bins[:-1],
-                     'd_max':bins[1:],
+        self.binned={'d_min':bins[:-1] if binning!='none' else bins,
+                     'd_max':bins[1:] if binning!='none' else bins,
                      'bin_width':width,
                      'd_mean':bin_centres,
                      'n':h,
@@ -289,9 +254,7 @@ class Cratercount:
                      'ncum':np.flip(np.cumsum(np.flip(h))),
                      'ncum_event':np.flip(np.cumsum(np.flip(h_event)))
                      }
-
         self.binning=binning
-
 
 
 # ;****************************************************
@@ -318,17 +281,24 @@ class Cratercount:
 
     def getplotdata(self,presentation,binning,
                     range=None,
-                    allbins=False,
-                    binrange=None,
-                    resurfacing=False,              #resurfacing - {pf:,range:}
-                    pf=None):                       #for bin bias correction (differential only)
+                    resurfacing=None,
+                    pf=None):
+        '''
+        Return cratercount data in one of several presentation forms suitable for plotting
 
+        :param presentation: data presentation name
+        :param binning: binning name
+        :param range: diameter range (km)
+        :param resurfacing: None|0|1  - no correction|show only range of correction|show all corrected points
+        :param pf: production function (for binning bias or resurfacing corrections)
+        :return: dictionary of plottable values
+        '''
 
         if not self.prebinned:
             if self.binning != binning:
-                self.apply_binning(binning,binrange=binrange)
+                self.apply_binning(binning)
 
-        adj=0 if not resurfacing else self.resurf_adj(resurfacing['pf'],resurfacing['range'])
+        adj=0 if resurfacing is None else self.resurf_adj(pf,range)
 
         q=np.where(self.binned['n']>0)
 
@@ -357,7 +327,7 @@ class Cratercount:
             if pf:
                 k=np.log10(pf.evaluate("cumulative",d*np.sqrt(beta))/pf.evaluate("cumulative",d/np.sqrt(beta)))/np.log10(beta)
             else:
-                k=-3. #if exact slope unknown, taking -3 (cumulative) is better than nothing
+                k=-3. #if exact slope unknown, taking -3 (cumulative) is much better than nothing
             f=cst.bin_bias_correction(beta, k)
             y/=f
 
@@ -366,17 +336,24 @@ class Cratercount:
             y=d**3*self.binned['n'][q]/self.binned['bin_width'][q]/self.area
             err=y/np.sqrt(self.binned['n_event'][q])
 
-        if range is not None:
+        if range:
             d_mean_q=self.binned['d_mean'][q]
-            q1=np.where((range[0] < d_mean_q) & (d_mean_q < range[1]))
+            q1=np.where((range[0] < d_mean_q)  & (d_mean_q < range[1]))
             d=d[q1]
             y=y[q1]
             err=err[q1]
             q=q[0][q1]  #[0] takes first dim of tuple
 
+            r1=range.copy()
+            if resurfacing == 1: r1[0]=0 # show all corrected points
+            if r1[0] == 0: r1[0]=self.binned['d_min'][0]
+            if r1[1] == np.Inf: r1[1] = self.binned['d_max'][-1]
+            bin_range = tuple(np.array(self.generate_bins(self.binning,r1,expand=False))[[0,-1]])  # extend selection to bin boundaries
+        else:
+            bin_range = self.binned['d_min'][q[0][0]], self.binned['d_max'][q[0][-1]] # data range
+
+
         n=np.sum(self.binned['n'][q])             #no of craters in range
         n_event=np.sum(self.binned['n_event'][q])
 
-        actual_range= gm.range(d)
-
-        return {'presentation':presentation,'d':d,'y':y,'err':err,'n':n,'n_event':n_event,'actual_range':actual_range}
+        return {'presentation':presentation,'d':d,'y':y,'err':err,'n':n,'n_event':n_event,'bin_range':bin_range}

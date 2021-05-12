@@ -268,7 +268,7 @@ def main(args0):
                 drawn=True
             cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent)
         if f in {'txt'}:
-            cps.create_summary_file()
+            cps.create_summary_table()
 
 if __name__ == '__main__':
     main(None)

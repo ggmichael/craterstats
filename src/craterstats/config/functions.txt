@@ -355,8 +355,8 @@ chronology={
 
 chronology_system={
   body='Vesta'
-  name='Vesta, Marchi & O'Brien (2014)'
-  cf='Vesta, O'Brien et al. (2014)'
+  name="Vesta, Marchi & O'Brien (2014)"
+  cf="Vesta, O'Brien et al. (2014)""
   pf='Vesta, Marchi et al (2013) [inferred, NS]'
 }
 
@@ -369,7 +369,7 @@ production={
 
 
 chronology={
-    name='Vesta, O'Brien et al. (2014)'
+    name="Vesta, O'Brien et al. (2014)"
     n1_code="
         t_o = 4.56
         t_lhb = 4.1
@@ -377,8 +377,8 @@ chronology={
         f_lhb = 2
         tau_pd = 0.025
         c_cd = (t_lhb+0.001)**(0.0834)
-	f_cd = c_cd*(0.001)**(-0.0834)
-	c_lhb= (f_lhb*f_cd-f_cd)/exp(lambda_lhb*t_lhb)
+        f_cd = c_cd*(0.001)**(-0.0834)
+        c_lhb= (f_lhb*f_cd-f_cd)/exp(lambda_lhb*t_lhb)
         M_o = 836.
         c_pd = M_o-f_lhb*f_cd
         C1 = c_cd/0.9166*(t_lhb+0.001)**0.9166
@@ -388,7 +388,7 @@ chronology={
         n_mgt = (C2 + f_lhb*f_cd*(t-t_lhb) + c_pd*tau_pd*exp((t-t_o)/tau_pd) - C3)
         n1=n_mlt if t<t_lhb else n_mgt
         "
-    #substitute last line: "n1=gm_conditional(t lt t_lhb,n_mlt,n_mgt)", and ^ for ** for IDL
+    #substitute last line: "n1=gm_conditional(t lt t_lhb,n_mlt,n_mgt)", and ^ for ** for IDL CraterstatsII
     reference="O'Brien et al., Constraining the cratering chronology of Vesta, P&SS 103, 2014"
 }
 

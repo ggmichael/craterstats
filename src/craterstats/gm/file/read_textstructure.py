@@ -34,8 +34,7 @@ def simple_value(s):
             for t in tag:
                 r[t].append(v.pop(0) if len(v)>0 else '')
     else: 
-        r=s.strip(' \n')
-        if r[0] in ['"',"'"]: r=strip_quotes(r)
+        r=strip_quotes(s.strip(' \n'))
     
     return r
 
@@ -43,7 +42,7 @@ def simple_value(s):
 def merge(s1, sr):
     '''merge single tag structure into cumulative structure'''
 
-    # if first is duplicate of tag in remainder -> add to array
+    # if first is duplicate of tag in remainder (implicit array) -> add to array
     # else make union of first+remainder
     
     if type(sr) != dict: return s1
@@ -63,7 +62,12 @@ def evaluate(s):
     '''evaluate first definition; join with recursively evaluated remainder'''
 
     # find keyword followed by either struct_value, multiline text_value, or simple value; then following keyword
-    m=re.search("(?ms)^\s*(?P<keyword>[\w\.]*\^?)\s*=\s*(\{\s*$(?P<struct_value>[^{]*)^\s*\}.*?|\"\s*$(?P<text_value>[^{]*)^\s*\".*?|(?P<value>.*?))^\s*(?P<keyword2>[\w\.]*\^?) *=",s+"\nend=")
+    m=re.search("(?ms)^\s*(?P<keyword>[\w\.]*\^?)\s*=\s*"
+                "(\{\s*$(?P<struct_value>[^{]*)^\s*\}.*?|"
+                "\"\s*$(?P<text_value>[^{]*)^\s*\".*?|"
+                "(?P<value>.*?))"
+                "^\s*(?P<keyword2>[\w\.]*\^?) *="
+                ,s+"\nend=")
       
     if not m: return None #no definitions to process
     
@@ -90,7 +94,7 @@ def evaluate(s):
     #join together  
     dict_out=merge(dict1, dict_r)
     
-    return dict_out #structure encapsulated by s
+    return dict_out #structure from s
 
 def read_textstructure(p,from_string=False):
     '''
@@ -108,10 +112,6 @@ def read_textstructure(p,from_string=False):
         
     return evaluate(s)
 
-
-if __name__ == '__main__':
-    c=read_textstructure("../../craterstats/def/default.plt")
-    print(c)
 
 
 

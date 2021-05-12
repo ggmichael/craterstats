@@ -12,6 +12,10 @@ import craterstats.gm as gm
 
 
 class Craterpdf:
+    """
+    Create and plot age uncertainty distribution function
+
+    """
 
     def __init__(self, pf,cf,cc,d_range,bcc=None,n_samples=3000):
 
@@ -22,9 +26,9 @@ class Craterpdf:
         self.dt[0] = self.dt[1]
 
         if cc.diam:
-            d = [e for e in cc.diam if d_range[0] < e < d_range[1]]  # I'd prefer ge and lt, but this comes out consistent with binning
+            d = [e for e in cc.diam if d_range[0] <= e < d_range[1]]
             self.k = len(d)
-        else:   # means we have a binned-only count
+        else:   # we have a binned-only count
             b = cc['binned']
             q = np.where(b['d_min'] >= d_range[0] and b['d_max'] <= d_range[1])
             self.k = np.sum(b['.n_event'][q])
@@ -38,7 +42,7 @@ class Craterpdf:
             lam=I1
         else: #standard count
             Ncum=pf.evaluate("cumulative",d_range,a0)
-            Ninc=(Ncum[0]-Ncum[1])*cc.area #no expected on area in bin in 1 Ga... this is assuming constant impact rate; lambda=Ninc
+            Ninc=(Ncum[0]-Ncum[1])*cc.area # no expected on area with phi(1 Ga)
             lam=Ninc
 
         pdf0= gm.poisson(self.k, lam * 10 ** x)
@@ -46,11 +50,25 @@ class Craterpdf:
         self.cdf=np.cumsum(self.pdf*self.dt)
 
 
-    def t(self,cum_fraction): #interpolate percentiles
+    def t(self,cum_fraction):
+        """
+        Return time for interpolated percentiles
+
+        :param cum_fraction: percentile as fraction
+        :return: times
+        """
         return np.interp(cum_fraction,self.cdf,self.ts)
 
 
     def plot(self,ax=None,pt_size=9,color='0'):
+        """
+        Set up uncertainty distribution plot
+
+        :param ax: matplotlib axes object
+        :param pt_size: character point size
+        :param color: colour
+        :return: none
+        """
         if not ax:
             ax = plt.subplot(1,1,1)
 
@@ -84,7 +102,13 @@ class Craterpdf:
         ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
         ax.set_xticklabels(xt_label,fontsize=pt_size*.7, color=color)#,horizontalalignment='left')
 
-    def offset(self,left): # for correct spacing of age text from mini-plot peak, in +ve x-direction
+    def offset(self,left):
+        """
+        Calculate offset for correct spacing of age text from mini-plot peak, in +ve x-direction
+
+        :param left: left-aligned plot?
+        :return: offset as fraction of mini-plot width
+        """
         t=self.t(.997)
         max_ticks=3
         xt= gm.ticks(np.append(0, t), max_ticks)

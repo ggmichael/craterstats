@@ -18,11 +18,11 @@ class Productionfn:
         if type(source) is dict:
             src=source
         else:
-            if type(source) is list:
-                txt='\n'.join([gm.read_textfile(e, as_string=True) for e in source])
-            else:  # type(source) is str:
-                txt= gm.read_textfile(source, as_string=True, ignore_hash=True)
-            src= gm.read_textstructure(txt, from_string=True)
+            if '\n' in source: # multiline string is definition
+                txt = source + '\n'+pf_type+'={\n name="null"\n}' # add null entry to force implied array
+            else: # single line string is filename
+                txt = gm.read_textfile(source, as_string=True, ignore_hash=True)
+            src = gm.read_textstructure(txt, from_string=True)
         
         self.definition=next((e for e in src[pf_type] if e['name']==identifier), None)
         if self.definition is None:
@@ -60,7 +60,6 @@ class Productionfn:
             self.range=d_mean[[0,-1]]
             self.xrange = np.log10([d_min[0],d_min[-1]*2**.5]) # plot axis range
 
-            #self.yrange=[float(e) for e in self.definition['yrange']]
             self.C = self.hartmann_C
             self.C10 = self.hartmann_C10
             self.F = self.hartmann_F
@@ -74,6 +73,14 @@ class Productionfn:
 
 
     def evaluate(self,presentation,d,a0=0.):
+        '''
+        Evaluate PF according to presentation string
+
+        :param presentation: presentation string
+        :param d: series of crater diameters (km)
+        :param a0: a0
+        :return: y-values
+        '''
         if presentation=='cumulative':
             return self.C(d,a0)
         elif presentation=='differential':
@@ -177,6 +184,12 @@ class Productionfn:
 
 
     def fit(self,p):
+        '''
+        Make fit to points supplied in dict, according to presentation (cumulative or differential)
+
+        :param p: dict containing presentation, y, d and err fields
+        :return: a0 tuple: (fit, lower, upper)
+        '''
         y, d, err = p['y'], p['d'], p['err']
         if type(y) is np.ndarray and y.size==1:
             y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
@@ -191,10 +204,18 @@ class Productionfn:
 
         popt, pcov = sc.curve_fit(func, np.log10(d), np.log10(y),sigma=sigma)
         a0=popt[0]-[0,np.log10(y[0])-np.log10(y[0]-.99*err[0]),np.log10(y[0])-np.log10(y[0]+.99*err[0])]
-        return a0 # return a0 [fit, lower, upper]
+        return a0
 
 
     def getplotdata(self,presentation,a0=None,range=None):
+        '''
+        Return dict of values for plotting PF
+
+        :param presentation: presentation string
+        :param a0: a0
+        :param range: diameter range
+        :return: dict with series of values for plotting
+        '''
         ns=400
         if a0 is None: a0 = self.a[0]
         if range is None: range=self.range
@@ -206,7 +227,14 @@ class Productionfn:
 
 
     def getisochron(self,presentation,a0,ef):
-        #ef - equilibrium fn (productionfn obj)
+        '''
+        Return series of values for plotting isochron, optionally truncated by equilibrium function curve
+
+        :param presentation: presentation string
+        :param a0: a0
+        :param ef: equilibrium function instance (optional)
+        :return: dict with series of values for plotting
+        '''
 
         iso=self.getplotdata(presentation,a0)
         if ef:
