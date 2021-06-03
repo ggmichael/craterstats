@@ -195,7 +195,12 @@ class Cratercount:
         :return: bin boundaries
         '''
         r10=np.log10(gm.range(d))
-        if expand: r10[1]+=.001 # small vs smallest possible bin
+        eps=.001 # small vs smallest possible bin factor
+        if expand:
+            r10[1] += eps
+        else:
+            r10[0] += eps
+            r10[1] -= eps
 
         if binning == 'none': return d
         if binning == 'pseudo-log':
@@ -210,12 +215,13 @@ class Cratercount:
                                '20/decade': 20.,
                             }[binning]
 
-            br = gm.range(r10*bins_per_decade + offset, outer=True)
+            br = np.array(gm.range(r10*bins_per_decade + offset, outer=True)) - offset
             b0 = np.arange(br[0],br[1]+1)
             bins = 10 ** (b0 / bins_per_decade)
 
         q=np.searchsorted(bins,10**r10)
-        return bins[np.clip(q[0]-1,0,None):q[1]+1]
+        needed_bins = bins[np.clip(q[0]-1,0,None):q[1]+1]
+        return needed_bins
 
 
     def apply_binning(self,binning,offset=0.):

@@ -154,6 +154,20 @@ class TestCratercount(unittest.TestCase):
         p = cc.getplotdata('cumulative', 'pseudo-log',range=[1.02,4.98])
         self.assertEqual(p['bin_range'], (1.,5.))
 
+    def test_generate_bins(self):
+        cc = self.make_flat_distribution()
+        self.assertEqual(cc.generate_bins('none',[.33,.44]),[.33,.44])
+        np.testing.assert_allclose(cc.generate_bins('pseudo-log', [.33, .34]), [.3, .35])
+        np.testing.assert_allclose(cc.generate_bins('pseudo-log', [.33, .35]), [.3, .35,.4])
+        np.testing.assert_allclose(cc.generate_bins('pseudo-log', [.33, .35], expand=False), [.3, .35])
+        np.testing.assert_allclose(cc.generate_bins('root-2', [1.1, 1.2]), [1., np.sqrt(2)])
+        np.testing.assert_allclose(cc.generate_bins('root-2', [1.2, 1.3], offset=.5), [2**.25,2**.75])
+        bins=cc.generate_bins('10/decade', cc.diam)
+        self.assertEqual(len(bins),11)
+        np.testing.assert_allclose(bins[[0,-1]],[1.,10.])
+        self.assertEqual(len(cc.generate_bins('20/decade', cc.diam)),21)
+
+
 
 if __name__ == '__main__':
     unittest.main()
