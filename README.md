@@ -33,7 +33,7 @@ After installation, the following commands will produce a series of example outp
     cd src
     python craterstats.py -demo
 
-# Future sessions
+# Normal start
 
 Open a command prompt/terminal window and `cd` to `craterstats-main/`, then
    
