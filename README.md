@@ -28,10 +28,24 @@ After you see the required python packages installed, the set-up is complete. In
  
 # Quick start
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
+After installation, the following commands will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
 
+    cd src
     python craterstats.py -demo
 
+# Future sessions
+
+Open a command prompt/terminal window and `cd` to `craterstats-main/`, then
+   
+Windows:
+
+    venv\Scripts\activate.bat 
+    cd src
+
+Linux:
+
+    source venv/bin/activate 
+    cd src
 
 # Usage
 
