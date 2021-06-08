@@ -26,7 +26,7 @@ Linux:
 
 After you see the required python packages installed, the set-up is complete. In the remaining sections, you should substitute `py` or `python3` for `python` according to your system. 
  
-# Quick start
+# Quick demonstration
 
 After installation, the following commands will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
 
