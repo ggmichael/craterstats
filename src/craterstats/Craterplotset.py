@@ -144,12 +144,14 @@ class Craterplotset:
 
 # set up titles, tick marks, and tick labels
 
+        nonroot2=False in [cp.binning=='root-2' for cp in self.craterplot]
+
         xtitle="Age, Ga" if self.time_plot else 'Diameter'
         ytitle={
             'cumulative':   'Cumulative crater density, km$^{-2}$',           
             'differential': 'Differential crater density, km$^{-3}$',
             'relative (R)': 'Relative crater density (R)',
-            'Hartmann':     'Craters per root-2 bin (equivalent), km$^{-2}$',
+            'Hartmann':     'Craters per root-2 bin'+(' (equivalent)' if nonroot2 else '')+', km$^{-2}$',
             'chronology':   'Cumulative crater density N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$',
             'rate':         'Crater formation rate N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$ Ga$^{-1}$',
             }[self.presentation]
