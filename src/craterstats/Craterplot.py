@@ -171,7 +171,11 @@ class Craterplot:
                         legend_label += ['{0:.1f} (of {1:d})'.format(self.n,self.n_event)]
                 legend_label[-1] += " craters"
             if 'r' in cps.legend:
-                legend_label += [cst.str_diameter_range(gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False)))]
+                if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
+                    r=self.range
+                else:
+                    r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
+                legend_label += [cst.str_diameter_range(r)]
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
 
