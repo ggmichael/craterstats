@@ -52,6 +52,29 @@ chronology={
 
 
 
+chronology_system={
+  body='Moon'
+  name='Moon, Hartmann 2010 iteration'
+  cf='Moon, Hartmann 2010 iteration'
+  pf='Moon, Hartmann 2010 iteration'
+}
+
+production={
+   name='Moon, Hartmann 2010 iteration'
+   type='tabular incremental root-2'
+   H=*[3.66E+04,9.87E+03,2.63E+03,6.99E+02,1.86E+02,4.98E+01,1.33E+01,3.49E+00,9.40E-01,2.50E-01,6.65E-02,1.76E-02,4.69E-03,1.25E-03,4.73E-04,2.53E-04,1.36E-04,7.26E-05,3.90E-05,2.08E-05,1.12E-05,5.98E-06,3.21E-06,1.72E-06,9.22E-07,3.80E-07,1.50E-07]
+   index_1km=13
+   yrange=[-7.6,3]
+   reference='Hartmann W.K., private communication'
+}
+
+chronology={
+    name='Moon, Hartmann 2010 iteration'
+    coefficients=[2.57E-14,6.93,0,3.97E-04]
+   reference='Hartmann W.K., private communication; Michael G., Planetary surface dating from crater size–frequency distribution measurements- Multiple resurfacing episodes and differential isochron fitting (2013)'
+}
+
+
 #
 #
 # Equilibrium functions
