@@ -2,6 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import os
+import sys
 import argparse
 import numpy as np
 import re
@@ -43,14 +44,16 @@ def get_parser():
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
     parser.add_argument("--transparent", help="set transparent background", action='store_true')
 
-    parser.add_argument("-cs", "--chronology_system", help="chronology system index",  type=int)
-    parser.add_argument("-ef", "--equilibrium", help="equilibrium function index",  type=int)
-    parser.add_argument("-ep", "--epochs", help="epoch system index",  type=int)
+    parser.add_argument("-cs", "--chronology_system", help="chronology system index")
+    parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
+    parser.add_argument("-ep", "--epochs", help="epoch system index")
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
     parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
-    parser.add_argument("-pi","--presentation", choices=range(1,7), metavar="[1-6]", default=2, type=int, dest='presentation_index',
-        help="data presentation index: "+(', ').join([str(i+1)+'-'+e for i,e in enumerate(cst.PRESENTATIONS)]))
+    # parser.add_argument("-pi","--presentation", choices=range(1,7), metavar="[1-6]", default=2, type=int, dest='presentation_index',
+    #     help="data presentation index: "+(', ').join([str(i+1)+'-'+e for i,e in enumerate(cst.PRESENTATIONS)]))
+    parser.add_argument("-pr", "--presentation", help="data presentation: "
+                        + (', ').join([str(i + 1) + '-' + e for i, e in enumerate(cst.PRESENTATIONS)]))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
@@ -85,11 +88,33 @@ def get_parser():
                              "offset_age=[x,y], in 1/20ths of decade")
     return parser
 
+def decode_abbreviation(s,v,zero_based=False,allow_ambiguous=False):
+    """
+
+    :param s: full string list
+    :param v: abbreviation or index
+    :param zero_based: indexing of s is zero based?
+    :param allow_ambiguous: if allowed, return first match
+    :return: index
+    """
+
+    try:  # if v contains index
+        return np.clip(int(v) - int(not zero_based), 0, len(s))
+    except: # otherwise abbreviation...
+        regex = '(?i)' + '.*'.join(v)
+        res = [i for i,e in enumerate(s) if re.search(regex, e) is not None]
+        if len(res) == 0:
+            sys.exit('Invalid abbreviation: ' + v)
+        elif len(res) > 1 and not allow_ambiguous:
+            sys.exit('Ambiguous abbreviation: ' + v)
+        return res[0]
+
 
 def construct_cps_dict(args,c,f):
     cpset=c['set']
-    if 'presentation_index' in vars(args):
-        cpset['presentation']=cst.PRESENTATIONS[args.presentation_index-1]
+    if 'presentation' in vars(args):
+        #cpset['presentation']=cst.PRESENTATIONS[args.presentation_index-1]
+        cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation)]
     if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
         cpset['xrange'] = cst.DEF_XRANGE[args.presentation_index-1]
         cpset['yrange'] = cst.DEF_YRANGE[args.presentation_index-1]
@@ -118,19 +143,20 @@ def construct_cps_dict(args,c,f):
                      'xrange', 'yrange',
                      ):
                 cpset[k]=v
-            if k in ('chronology_system','equilibrium','epochs'):
-                d=f[k][np.clip(v-1,0,len(f[k]))]
-                cpset[k]=d['name']
-            if k == 'out':
+            elif k in ('chronology_system','equilibrium','epochs'):
+                names = [e['name'] for e in f[k]]
+                cpset[k]=f[k][decode_abbreviation(names, v)]['name']
+
+            elif k == 'out':
                 cpset[k] = gm.filename(v, 'pn')
                 ext= gm.filename(v, 'e').lstrip('.')
                 if ext: cpset['format'].add(ext)
-            if k == 'format':
+            elif k == 'format':
                 cpset[k]=set(v)
 
 
     cs=next((e for e in f['chronology_system'] if e['name'] == cpset['chronology_system']), None)
-    if cs is None: raise ValueError('Chronology system not found:' + cpset['chronology_system'])
+    if cs is None: sys.exit('Chronology system not found:' + cpset['chronology_system'])
 
     cpset['cf'] = cst.Chronologyfn(f, cs['cf'])
     cpset['pf'] = cst.Productionfn(f, cs['pf'])
@@ -162,7 +188,7 @@ def construct_plot_dicts(args, c):
             for k in ['source','psym','type','isochron','error_bars','colour','binning']:
                 p[k] = cpl[-1][k]
         else:
-            if not 'source' in d: raise ValueError('Source not specified')
+            if not 'source' in d: sys.exit('Source not specified')
 
         for k,v in d.items():
             if k in (
@@ -172,8 +198,6 @@ def construct_plot_dicts(args, c):
                     'type',
                     'error_bars',
                     'hide',
-                    'colour',
-                    'psym',
                     'binning',
                     'age_left',
                     'display_age',
@@ -183,6 +207,17 @@ def construct_plot_dicts(args, c):
                     'offset_age',
                     ):
                 p[k]=v
+            elif k == 'colour':
+                names=[n for c1,c2,n in cst.PALETTE]
+                p[k]=decode_abbreviation(names, v, zero_based=True,allow_ambiguous=True)
+            elif k == 'psym':
+                j=[i for i,e in enumerate(cst.MARKERS) if e[0]==v]
+                if len(j)==1: # found standard abbreviation
+                    p[k]=j[0]
+                else: # look for abitrary abbreviation or index
+                    names = [e[1] for e in cst.MARKERS]
+                    p[k]=decode_abbreviation(names, v, zero_based=True,allow_ambiguous=True)
+
         p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
     return cpl
@@ -234,7 +269,7 @@ def main(args0):
 
     if args.lpc:
         print(gm.bright("\nPlot symbols:"))
-        print('\n'.join(['{0} {1}'.format(i, e[1]) for i, e in enumerate(cst.MARKERS)]))
+        print('\n'.join(['{0} {1} ({2})'.format(i, e[1], e[0]) for i, e in enumerate(cst.MARKERS)]))
         print(gm.bright("\nColours:"))
         print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cst.PALETTE)]))
         return
