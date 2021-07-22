@@ -5,10 +5,12 @@ import numpy as np
 import matplotlib.path as mpath
 import craterstats.gm as gm
 
-PRESENTATIONS=('cumulative', 'differential', 'relative (R)', 'Hartmann', 'chronology', 'rate')
+PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate')
 
-DEF_XRANGE = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0))
-DEF_YRANGE = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3))
+DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0))
+DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3))
+DEFAULT_XRANGE = dict(zip(PRESENTATIONS,DEFAULT_XRANGE0))
+DEFAULT_YRANGE = dict(zip(PRESENTATIONS,DEFAULT_YRANGE0))
 
 GREYS = (['#aaaaaa', '#e0e0e0', '#ededed', '#f8f8f8'], #standard/inverted grey values
          ['#787878', '#464646', '#373737', '#282828'])

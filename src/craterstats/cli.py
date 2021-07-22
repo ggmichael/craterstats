@@ -113,11 +113,11 @@ def decode_abbreviation(s,v,zero_based=False,allow_ambiguous=False):
 def construct_cps_dict(args,c,f):
     cpset=c['set']
     if 'presentation' in vars(args):
-        #cpset['presentation']=cst.PRESENTATIONS[args.presentation_index-1]
-        cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation)]
+        if args.presentation is not None:
+            cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation)]
     if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
-        cpset['xrange'] = cst.DEF_XRANGE[args.presentation_index-1]
-        cpset['yrange'] = cst.DEF_YRANGE[args.presentation_index-1]
+        cpset['xrange'] = cst.DEFAULT_XRANGE[cpset['presentation']]
+        cpset['yrange'] = cst.DEFAULT_YRANGE[cpset['presentation']]
     cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
 
     for k,v in vars(args).items():
@@ -171,8 +171,8 @@ def construct_cps_dict(args,c,f):
             cpset['xrange'] = cpset['pf'].xrange
             cpset['yrange'] = cpset['pf'].yrange
         else:
-            cpset['xrange'] = cst.DEF_XRANGE[3]
-            cpset['yrange'] = cst.DEF_YRANGE[3]
+            cpset['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
+            cpset['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
 
     return cpset
 

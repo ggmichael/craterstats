@@ -337,7 +337,7 @@ class Cratercount:
             f=cst.bin_bias_correction(beta, k)
             y/=f
 
-        elif presentation=='relative (R)':
+        elif presentation=='R-plot':
             d=self.binned['d_mean'][q]
             y=d**3*self.binned['n'][q]/self.binned['bin_width'][q]/self.area
             err=y/np.sqrt(self.binned['n_event'][q])
