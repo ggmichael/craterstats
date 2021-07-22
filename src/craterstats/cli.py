@@ -88,18 +88,19 @@ def get_parser():
                              "offset_age=[x,y], in 1/20ths of decade")
     return parser
 
-def decode_abbreviation(s,v,zero_based=False,allow_ambiguous=False):
+def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     """
+    decode abitrary abbreviation of list member into index
 
     :param s: full string list
     :param v: abbreviation or index
-    :param zero_based: indexing of s is zero based?
+    :param one_based: menu indexing of s starts at 1?
     :param allow_ambiguous: if allowed, return first match
-    :return: index
+    :return: index (zero-based)
     """
 
     try:  # if v contains index
-        return np.clip(int(v) - int(not zero_based), 0, len(s))
+        return np.clip(int(v) - int(one_based), 0, len(s))
     except: # otherwise abbreviation...
         regex = '(?i)' + '.*'.join(v)
         res = [i for i,e in enumerate(s) if re.search(regex, e) is not None]
@@ -114,7 +115,7 @@ def construct_cps_dict(args,c,f):
     cpset=c['set']
     if 'presentation' in vars(args):
         if args.presentation is not None:
-            cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation)]
+            cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
     if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
         cpset['xrange'] = cst.DEFAULT_XRANGE[cpset['presentation']]
         cpset['yrange'] = cst.DEFAULT_YRANGE[cpset['presentation']]
@@ -145,7 +146,7 @@ def construct_cps_dict(args,c,f):
                 cpset[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
                 names = [e['name'] for e in f[k]]
-                cpset[k]=f[k][decode_abbreviation(names, v)]['name']
+                cpset[k]=f[k][decode_abbreviation(names, v, one_based=True)]['name']
 
             elif k == 'out':
                 cpset[k] = gm.filename(v, 'pn')
@@ -209,14 +210,14 @@ def construct_plot_dicts(args, c):
                 p[k]=v
             elif k == 'colour':
                 names=[n for c1,c2,n in cst.PALETTE]
-                p[k]=decode_abbreviation(names, v, zero_based=True,allow_ambiguous=True)
+                p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
             elif k == 'psym':
                 j=[i for i,e in enumerate(cst.MARKERS) if e[0]==v]
                 if len(j)==1: # found standard abbreviation
                     p[k]=j[0]
                 else: # look for abitrary abbreviation or index
                     names = [e[1] for e in cst.MARKERS]
-                    p[k]=decode_abbreviation(names, v, zero_based=True,allow_ambiguous=True)
+                    p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
 
         p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
