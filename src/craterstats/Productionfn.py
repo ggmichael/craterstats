@@ -85,7 +85,7 @@ class Productionfn:
             return self.C(d,a0)
         elif presentation=='differential':
             return self.F(d,a0)
-        elif presentation=='relative (R)':
+        elif presentation=='R-plot':
             return self.R(d,a0)
         elif presentation=='Hartmann':
             return self.H(d,a0)
