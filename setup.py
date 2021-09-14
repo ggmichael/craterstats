@@ -30,7 +30,7 @@ setup(
     description="Craterstats - a tool to analyse and plot crater count data for planetary surface dating",
     entry_points={
         "console_scripts": [
-            'craterstats=craterstats.cli:main',
+            'craterstats=craterstats.cli:main_default',
         ],
     },
     license="BSD license",

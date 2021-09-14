@@ -6,6 +6,10 @@ import sys
 import argparse
 import numpy as np
 import re
+import pathlib
+
+here = str(pathlib.Path(__file__).parent.resolve())
+
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -229,13 +233,13 @@ def source_cmds(src):
     parser=get_parser()
     for i,c in enumerate(cmd):
         print(f'\nCommand: {i}\npython craterstats.py '+c)
-        a=c.split()
+        a = c.split()
         args = parser.parse_args(a)
         if args.out is None: a+=['-o','{:02d}-out'.format(i)]
         main(a)
     print('\nProcessing complete.')
 
-def demo(d=None,src='craterstats/config/demo_commands.txt'):
+def demo(d=None,src=here+'/config/demo_commands.txt'):
     cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
@@ -253,8 +257,8 @@ def demo(d=None,src='craterstats/config/demo_commands.txt'):
 def main(args0):
     args = get_parser().parse_args(args0)
 
-    template="craterstats/config/default.plt"
-    functions="craterstats/config/functions.txt"
+    template=here+"/config/default.plt"
+    functions=here+"/config/functions.txt"
 
     c = gm.read_textstructure(template if args.template is None else args.template)
     f = gm.read_textstructure(functions)
@@ -306,5 +310,11 @@ def main(args0):
         if f in {'txt'}:
             cps.create_summary_table()
 
-if __name__ == '__main__':
+def main_default():
     main(None)
+
+
+if __name__ == '__main__': 
+    main_defualt()
+
+
