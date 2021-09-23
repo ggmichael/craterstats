@@ -254,7 +254,7 @@ def demo(d=None,src=here+'/config/demo_commands.txt'):
     print('\n\nDemo output written to: '+out)
 
 
-def main(args0):
+def main(args0=None):
     args = get_parser().parse_args(args0)
 
     template=here+"/config/default.plt"
@@ -310,11 +310,7 @@ def main(args0):
         if f in {'txt'}:
             cps.create_summary_table()
 
-def main_default():
-    main(None)
-
-
 if __name__ == '__main__': 
-    main_defualt()
+    main()
 
 
