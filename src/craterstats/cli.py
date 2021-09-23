@@ -8,7 +8,11 @@ import numpy as np
 import re
 import pathlib
 
-here = str(pathlib.Path(__file__).parent.resolve())
+try:
+    import importlib.resources as importlib_resources
+except ImportError:
+    # Try backported to PY<37 `importlib_resources`.
+    import importlib_resources
 
 
 import craterstats as cst
@@ -239,8 +243,13 @@ def source_cmds(src):
         main(a)
     print('\nProcessing complete.')
 
-def demo(d=None,src=here+'/config/demo_commands.txt'):
-    cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+def demo(d=None,src=None):
+    if src is None:
+        demo_cmds_ref=importlib_resources.files("craterstats.config") / 'demo_commands.txt'
+        with importlib_resources.as_file(demo_cmds_ref) as src:
+            cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+    else:
+        cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
@@ -257,11 +266,13 @@ def demo(d=None,src=here+'/config/demo_commands.txt'):
 def main(args0=None):
     args = get_parser().parse_args(args0)
 
-    template=here+"/config/default.plt"
-    functions=here+"/config/functions.txt"
+    template_ref=importlib_resources.files("craterstats.config") / 'default.plt'
+    functions_ref=importlib_resources.files("craterstats.config") / 'functions.txt'
 
-    c = gm.read_textstructure(template if args.template is None else args.template)
-    f = gm.read_textstructure(functions)
+    with importlib_resources.as_file(template_ref) as template:
+        c = gm.read_textstructure(template if args.template is None else args.template)
+    with importlib_resources.as_file(functions_ref) as functions:
+        f = gm.read_textstructure(functions)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))

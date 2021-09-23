@@ -8,4 +8,4 @@ eggs/
 .installed.cfg
 dist/
 sdist/
-
+demo/
