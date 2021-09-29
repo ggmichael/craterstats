@@ -111,8 +111,8 @@ class Cratercount:
         diam,frac=zip(*sorted(zip(diam,frac),reverse=True))
 
         self.area=area
-        self.diam=np.array(diam)
-        self.fraction=np.array(frac)
+        self.diam=diam
+        self.fraction=frac
         self.prebinned=0
 
 

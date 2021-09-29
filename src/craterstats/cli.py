@@ -215,7 +215,7 @@ def construct_plot_dicts(args, c):
                 j=[i for i,e in enumerate(cst.MARKERS) if e[0]==v]
                 if len(j)==1: # found standard abbreviation
                     p[k]=j[0]
-                else: # look for abitrary abbreviation or index
+                else: # look for arbitrary abbreviation or index
                     names = [e[1] for e in cst.MARKERS]
                     p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
 
