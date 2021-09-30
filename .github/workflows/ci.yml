@@ -30,7 +30,7 @@ jobs:
           python setup.py install
       - name: Run Tests with Coverage
         run: |
-          coverage run -m unittest discover
+          coverage run -m unittest discover -s ./src/tests
           coverage report 
       - name: Run Demo
         run: |
