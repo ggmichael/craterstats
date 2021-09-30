@@ -243,13 +243,9 @@ def source_cmds(src):
         main(a)
     print('\nProcessing complete.')
 
-def demo(d=None,src=None):
-    if src is None:
-        demo_cmds_ref=importlib_resources.files("craterstats.config") / 'demo_commands.txt'
-        with importlib_resources.as_file(demo_cmds_ref) as src:
-            cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
-    else:
-        cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
+    cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
+    cmd = [e.replace('source=src/craterstats/', 'source=' + cst.PATH) for e in cmd]
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
@@ -266,13 +262,10 @@ def demo(d=None,src=None):
 def main(args0=None):
     args = get_parser().parse_args(args0)
 
-    template_ref=importlib_resources.files("craterstats.config") / 'default.plt'
-    functions_ref=importlib_resources.files("craterstats.config") / 'functions.txt'
-
-    with importlib_resources.as_file(template_ref) as template:
-        c = gm.read_textstructure(template if args.template is None else args.template)
-    with importlib_resources.as_file(functions_ref) as functions:
-        f = gm.read_textstructure(functions)
+    template=cst.PATH+'config/default.plt'
+    functions=cst.PATH+'config/functions.txt'
+    c = gm.read_textstructure(template if args.template is None else args.template)
+    f = gm.read_textstructure(functions)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))

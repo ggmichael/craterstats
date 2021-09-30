@@ -103,12 +103,13 @@ class Testgm(unittest.TestCase):
     #file
 
     def test_filename(self):
-        f=r'd:\tmp\test.txt'
+        f=r'd:\aaa\bbb\test.txt'
         self.assertEqual(gm.filename(f, 'n'), 'test')
         self.assertEqual(gm.filename(f, 'e'), '.txt')
-        self.assertEqual(gm.filename(f, 'p'), 'd:\\tmp\\')
-        self.assertEqual(gm.filename(f, 'u'), 'tmp\\')
-        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\tmp\test_tag.txt')
+        self.assertEqual(gm.filename(f, 'p'), 'd:\\aaa\\bbb\\')
+        self.assertEqual(gm.filename(f, 'b'), 'bbb\\')
+        self.assertEqual(gm.filename(f, 'u'), 'd:\\aaa\\')
+        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\aaa\bbb\test_tag.txt')
 
     def test_write_textfile(self):
         m = mock_open()
