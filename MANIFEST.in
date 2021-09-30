@@ -1,0 +1,14 @@
+include src/craterstats/config/__init__.py
+include src/craterstats/config/default.plt
+include src/craterstats/config/demo_commands.txt
+include src/craterstats/config/functions.txt
+include src/craterstats/sample/c7_Michael-et-al-2021.scc
+include src/craterstats/sample/ECHUS_CHAP_AR1_A.stat
+include src/craterstats/sample/Pickering.scc
+include src/craterstats/sample/README.md
+include src/craterstats/sample/sample.binned
+include src/craterstats/sample/sample.diam
+include src/craterstats/sample/sample.r
+include src/craterstats/sample/sample.scc
+include src/craterstats/sample/sample.stat
+include src/craterstats/sample/sample2.diam
