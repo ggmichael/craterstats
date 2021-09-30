@@ -1,0 +1,11 @@
+*.png
+__pycache__
+develop-eggs/
+build/
+eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+dist/
+sdist/
+demo/
