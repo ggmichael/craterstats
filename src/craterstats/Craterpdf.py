@@ -17,7 +17,7 @@ class Craterpdf:
 
     """
 
-    def __init__(self, pf,cf,cc,d_range,bcc=None,n_samples=3000):
+    def __init__(self, pf,cf,cc,d_range,bcc=False,n_samples=3000):
 
         x=np.linspace(-10, 3, n_samples) #additive change to a0 (equidistant in fitting space)
         a0=cf.a0(1.)

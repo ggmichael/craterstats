@@ -2,7 +2,6 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import re
-from . import file_exists
 
 def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip=None,as_string=False):
     '''
@@ -12,12 +11,9 @@ def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip
     :param ignore_blank: ignore blank lines
     :param ignore_hash: ignore # lines
     :param strip: remove trailing comments after strip symbol (e.g. ';')
-    :param as_string: concatenate into single string, jioned with '\n'
+    :param as_string: concatenate into single string, joined with '\n'
     :return: file contents as list of strings or single string
     '''
-
-    # if not file_exists(filename):
-    #     return None
 
     with open(filename, 'r', encoding='utf-8-sig') as file: # encoding='utf-8-sig' removes BOM if present
         if n_lines !=-1:
