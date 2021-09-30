@@ -37,7 +37,7 @@
 
 -pr chronology -ep wilhelms -title Chronology function -subtitle with lunar epochs and transition times
 
--title Poisson calculation for buffered crater counting area -cs neukum83 -pr diff -p source=craterstats/sample/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
+-title Poisson calculation for buffered crater counting area -cs neukum83 -pr diff -p source=src/craterstats/sample/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
 
 -cs neukumivanov -style root-2 -title Differential plot -subtitle with root-2 binning and root-2 diameter scale -p source=src/craterstats/sample/Pickering.scc,psym=x,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
