@@ -62,28 +62,14 @@ class Craterplot:
 
         :param cps: Craterplotset instance
         """
-        if self.type=='poisson':
+        if self.type in ['poisson','b-poisson']:
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
-
-            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0)
+            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'b-poisson')
             self.t=self.pdf.t([.50,.16,.84]) #median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
             self.n_event=self.n
-
-        elif self.type=='b-poisson': # implement after publication
-            pf_range=cps.pf.range()
-            r0=np.clip(self.range,pf_range[0],pf_range[1])
-
-            # cpdf=obj_new("craterpdf",cps.pf,cps.cf,self.cratercount,r0,/buffer)
-            # if ~obj_valid(cpdf) then return
-
-            # self.t=cpdf->t([.50,.16,.84]) ;1-sigma intervals/median
-            # self.a0=cps.cf->a0(self.t)
-
-            # self.n=cpdf->k()
-            # self.n_event=self.n
 
         else:
             if self.type=='c-fit':

@@ -58,8 +58,6 @@ def get_parser():
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
     parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
-    # parser.add_argument("-pi","--presentation", choices=range(1,7), metavar="[1-6]", default=2, type=int, dest='presentation_index',
-    #     help="data presentation index: "+(', ').join([str(i+1)+'-'+e for i,e in enumerate(cst.PRESENTATIONS)]))
     parser.add_argument("-pr", "--presentation", help="data presentation: "
                         + (', ').join([str(i + 1) + '-' + e for i, e in enumerate(cst.PRESENTATIONS)]))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
@@ -82,7 +80,7 @@ def get_parser():
                              "source=txt,"
                              "name=txt,"
                              "range=[min,max],"
-                             "type={data,poisson,c-fit,d-fit},"
+                             "type={data,poisson,b-poisson,c-fit,d-fit},"
                              "error_bars={1,0},"
                              "hide={1,0},"
                              "colour={0-31},"
