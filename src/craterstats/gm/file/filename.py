@@ -9,15 +9,16 @@ def filename(f,code,insert1=None,insert2=None,max_ext_length=4):
 
     :param f: file name or full path
     :param code: string containing any order/combination of
-        p - path; n - name (without extension); e (extension with '.'); 1,2 - insert string ; u - up (parent dir)
+        p - path; n - name (without extension); e (extension with '.'); 1,2 - insert string;
+        u - up (parent path); b - back (parent dir name)
     :param insert1,insert2: optional strings to insert (if arrays, should agree in dim with f)
     :param max_ext_length: max extension length (so that files including dots but no extension are not cut)
     :return: reconstructed filename or fragment(s)
 
     e.g. filename(r"d:\tmp\fred.txt","pn1e","_en") gives "d:\tmp\fred_en.txt"
     e.g. filename(r"d:\tmp\fred.txt","ne") gives "fred.txt"
-    e.g. filename(r"d:\tmp\fred.txt","une") gives "tmp/fred.txt"
-    e.g. filename(r"F:\broom\ortho-090\nd.l3_he330_0000.tif","p1une",'nd\') gives "F:\broom\nd\ortho-090\nd.l3_he330_0000.tif"
+    e.g. filename(r"d:\tmp\fred.txt","bne") gives "tmp/fred.txt"
+    e.g. filename(r"F:\broom\ortho-090\nd.l3_he330_0000.tif","p1bne",'nd\\') gives 'F:\\broom\\nd\\ortho-090\\nd.l3_he330_0000.tif'
     '''
 
     if type(f) is list:
@@ -35,11 +36,13 @@ def filename(f,code,insert1=None,insert2=None,max_ext_length=4):
         elif ch=='e': out=ext+out
         elif ch=='1': out=insert1+out
         elif ch=='2': out=insert2+out
-        elif ch=='u':
-            m = re.search(r'(?P<path>.*(\\|/))(?P<up>.+)', path)
+        elif ch in ['u','b']:
+            m = re.search(r'(?P<path>.*(\\|/))(?P<parentdir>.+)', path)
             path=m['path'] if m['path'] is not None else ''
-            up=m['up'] if m['up'] is not None else ''
-            out=up+out
+            parentdir=m['parentdir'] if m['parentdir'] is not None else ''
+            out=(parentdir if ch=='b' else path)+out
 
     return out
+
+
 
