@@ -5,15 +5,7 @@ import numpy as np
 import matplotlib.path as mpath
 import craterstats.gm as gm
 
-try:
-    import importlib.resources as importlib_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources
-
-
-with importlib_resources.path("craterstats.config", "demo_commands.txt") as path:
-    PATH = gm.filename(str(path),'u')
+PATH='src/craterstats/'
 
 PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate')
 

@@ -96,7 +96,7 @@ def evaluate(s):
     
     return dict_out #structure from s
 
-def read_textstructure(p,from_string=False):
+def read_textstructure(p,from_string=False,substitute_resource=None):
     '''
     Read set of key-value pairs from text file
 
@@ -106,7 +106,7 @@ def read_textstructure(p,from_string=False):
     '''
     
     if not from_string:
-        s=read_textfile(p, ignore_hash=True, strip=';', as_string=True) #read and remove comments
+        s=read_textfile(p, ignore_hash=True, strip=';', as_string=True,substitute_resource=substitute_resource)
     else:
         s=p
         

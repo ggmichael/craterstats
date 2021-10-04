@@ -6,14 +6,6 @@ import sys
 import argparse
 import numpy as np
 import re
-import pathlib
-
-try:
-    import importlib.resources as importlib_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources
-
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -242,8 +234,8 @@ def source_cmds(src):
     print('\nProcessing complete.')
 
 def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
-    cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
-    cmd = [e.replace('source=src/craterstats/', 'source=' + cst.PATH) for e in cmd]
+    cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True,
+                           substitute_resource={'package':'craterstats','path':cst.PATH})
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
@@ -262,7 +254,8 @@ def main(args0=None):
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
-    c = gm.read_textstructure(template if args.template is None else args.template)
+    c = gm.read_textstructure(template if args.template is None else args.template,
+                              substitute_resource={'package':'craterstats','path':cst.PATH})
     f = gm.read_textstructure(functions)
 
     if args.lcs:
