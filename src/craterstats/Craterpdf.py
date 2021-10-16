@@ -45,9 +45,10 @@ class Craterpdf:
             Ninc=(Ncum[0]-Ncum[1])*cc.area # no expected on area with phi(1 Ga)
             lam=Ninc
 
-        pdf0= gm.poisson(self.k, lam * 10 ** x)
-        self.pdf=pdf0/np.sum(pdf0*self.dt)
-        self.cdf=np.cumsum(self.pdf*self.dt)
+        pdf0 = gm.poisson(self.k, lam * 10 ** x)
+        pdf0 = pdf0.astype(float)
+        self.pdf = pdf0/np.sum(pdf0*self.dt)
+        self.cdf = np.cumsum(self.pdf*self.dt)
 
 
     def t(self,cum_fraction):
