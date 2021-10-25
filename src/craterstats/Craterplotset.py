@@ -388,9 +388,9 @@ class Craterplotset:
         for cp in self.craterplot:
             if cp.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
                 cp.calculate_age(self)
-                d = {k: getattr(cp, k) for k in
+                d = {k: getattr(cp, k, None) for k in
                       {'name', 'binning', 'range', 'bin_range', 'resurf', 'type', 'source', 'n', 'n_event', 't','a0','n_d'}}
-                d.update({k: getattr(cp.cratercount, k) for k in {'area'} })
+                d.update({k: getattr(cp.cratercount, k, None) for k in {'area'} })
                 s+=[d]
 
         table = (('name', '24', '', None),
