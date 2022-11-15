@@ -177,7 +177,7 @@ class Craterplotset:
                 
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
-                xtickname=[format(10**e,'.0f')+'$\,$km' if e>=0 else format(10**(e+3),'.0f')+'$\,$m' for e in v]
+                xtickname=[format(10**e,'0g')+'$\,$km' if e>=0 else format(10**(e+3),'0g')+'$\,$m' for e in v]
                 xtickv=v
                 add_xminorlogticks=True
 
