@@ -75,6 +75,20 @@ chronology={
 }
 
 
+chronology_system={
+  body='Moon'
+  name='Moon, Yue et al. (2022)'
+  cf='Moon, Yue et al. (2022)'
+  pf='Moon, Neukum et al. (2001)'
+}
+
+chronology={
+    name='Moon, Yue et al. (2022)'
+    coefficients=[1.089E-13,6.757,0,7.660E-4]
+    reference='Zongyu Yue, Kaichang Di, Wenhui Wan, Zhaoqin Liu, Sheng Gou, Bin Liu, Man Peng, Yexin Wang, Mengna Jia, Jianzhong Liu, and Ziyuan Ouyang. Updated lunar cratering chronology model with the radiometric age of Chang’e-5 samples. Nature Astronomy, 2022.'
+}
+
+
 #
 #
 # Equilibrium functions
