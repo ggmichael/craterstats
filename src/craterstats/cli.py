@@ -8,12 +8,7 @@ import numpy as np
 import re
 import pathlib
 
-try:
-    import importlib.resources as importlib_resources
-except ImportError:
-    # Try backported to PY<37 `importlib_resources`.
-    import importlib_resources
-
+import importlib.resources as importlib_resources
 
 import craterstats as cst
 import craterstats.gm as gm
