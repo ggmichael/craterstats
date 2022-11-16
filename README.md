@@ -8,9 +8,7 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 There are various ways to install Python. If you are installing it specifically to run Craterstats, the following is suggested:
 
 1. Install Python 3.8 or higher from  [python.org](https://www.python.org/downloads/).
-1. Download [Craterstats](https://github.com/ggmichael/craterstats/archive/main.zip) and unzip the files where you choose.
-1. Open a command prompt/terminal window and `cd` to the newly-created `craterstats-main/`
-1. Enter these commands to establish a Python *virtual environment:*
+1. Open a command prompt/terminal window and enter these commands to establish a Python *virtual environment:*
 
 Windows:
 
