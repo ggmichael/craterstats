@@ -14,38 +14,35 @@ There are various ways to install Python. If you are installing it specifically 
 
 Windows:
 
-    py -m venv venv
-    venv\Scripts\activate.bat
-    py -m pip install -r requirements.txt
+    py -m venv c:\craterstats
+    c:\craterstats\Scripts\activate
+    py -m pip install craterstats
 
 Linux:
 
-    python3 -m venv venv
-    source venv/bin/activate
-    python3 -m pip install -r requirements.txt
+    python3 -m venv ~/.craterstats
+    source ~/.craterstats/bin/activate
+    python3 -m pip install craterstats
 
-After you see the required python packages installed, the set-up is complete. In the remaining sections, you should substitute `py` or `python3` for `python` according to your system. 
+After you see the required python packages installed, the set-up is complete.
  
 # Quick demonstration
 
 After installation, the following commands will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
-
-    cd src
-    python craterstats.py -demo
+    
+    craterstats -demo
 
 # Normal start
 
-Open a command prompt/terminal window and `cd` to `craterstats-main/`, then
+Open a command prompt/terminal window and run the activate script:
    
 Windows:
 
-    venv\Scripts\activate.bat 
-    cd src
-
+    c:\craterstats\Scripts\activate
+    
 Linux:
 
-    source venv/bin/activate 
-    cd src
+    source ~/.craterstats/bin/activate
 
 # Usage
 
@@ -61,19 +58,19 @@ In the following example, the first items define characteristics for the whole p
 
 The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
-    python craterstats.py -cs neukumivanov -title Example plot -p source=craterstats/sample/Pickering.scc -p type=poisson,range=[.2,.7]
+    craterstats -cs neukumivanov -title Example plot -p source=craterstats/sample/Pickering.scc -p type=poisson,range=[.2,.7]
 
 By default, an output file is created in the current folder with the name `out.png`. The output path or name can be set with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
 
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
 
-    python craterstats.py -lcs
+    craterstats -lcs
 
 These items may specifed by their index number, e.g. `-cs 4`, or using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` is equivalent to `-ef 1` 
 
 Numbered tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
-    python craterstats.py -lpc
+    craterstats -lpc
 
 and can likewise be specified by index or abbreviation, e.g. `psym=1`, `psym=circle` or `psym=o` all select a circle; `colour=2`, `colour=green` or `colour=gr` select green.  
 
@@ -81,7 +78,7 @@ Differential plots are produced by default. To switch to a different kind, e.g. 
 
 The complete set of options can be seen with:
 
-    python craterstats.py --help
+    craterstats --help
 
 # Additional information
 
