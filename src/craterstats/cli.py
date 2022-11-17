@@ -246,7 +246,7 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
         d=range(0,len(cmd))
     for i in d:
         c=cmd[i]
-        print(f'\nDemo {i}\npython craterstats.py '+c)
+        print(f'\nDemo {i}\ncraterstats '+c)
         a = (f.format(i) + c).split()
         main(a)
     print('\n\nDemo output written to: '+out)
