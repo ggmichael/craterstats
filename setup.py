@@ -7,7 +7,7 @@ import pathlib
 
 here = pathlib.Path(__file__).parent.resolve()
 
-with open(here / "README.md") as readme_file:
+with open(here / "README.md", encoding='utf-8') as readme_file:
     readme = readme_file.read()
 
 with open(here / 'requirements.txt') as f:
