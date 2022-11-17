@@ -8,7 +8,9 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 There are various ways to install Python. If you are installing it specifically to run Craterstats, the following is suggested:
 
 1. Install Python 3.8 or higher from  [python.org](https://www.python.org/downloads/).
-1. Open a command prompt/terminal window and enter these commands to establish a Python *virtual environment:*
+1. Download [Craterstats](https://github.com/ggmichael/craterstats/archive/main.zip) and unzip the files where you choose.
+1. Open a command prompt/terminal window and `cd` to the newly-created `craterstats-main/`
+1. Enter these commands to establish a Python *virtual environment:*
 
 Windows:
 
@@ -26,7 +28,7 @@ After you see the required python packages installed, the set-up is complete.
  
 # Quick demonstration
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output -- including the full command lines as they could be typed to generate the output -- goes to the terminal window.
+After installation, the following commands will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
     
     craterstats -demo
 
@@ -54,7 +56,7 @@ There are two parts to creating a Craterstats plot:
 
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies chronology system 4, *Mars, Neukum-Ivanov (2001)* , and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2--0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
+The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -title Example plot -p source=craterstats/sample/Pickering.scc -p type=poisson,range=[.2,.7]
 
@@ -108,7 +110,7 @@ techniques for presentation and analysis of crater size–frequency data.</i>](h
 
 >Michael G.G., [<i>Planetary surface dating from crater size-frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting.</i>](http://doi.org/10.1016/j.icarus.2013.07.004) Icarus 2013.
 
-#### Poisson timing analysis; <i>$\mu$</i>-notation
+#### Poisson timing analysis; <i>μ</i>-notation
 
 >Michael G.G., Kneissl T., Neesemann A., [<i>Planetary surface dating from crater size-frequency distribution measurements: Poisson timing analysis.</i>](https://doi.org/10.1016/j.icarus.2016.05.019) Icarus, 2016.
 
