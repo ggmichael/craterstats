@@ -24,11 +24,15 @@ class Cratercount:
         self.buffered=False
         self.prebinned=False
 
-        if filetype=='.stat': self.ReadStatFile()
-        elif filetype=='.diam': self.ReadDiamFile()
-        elif filetype=='.binned': self.ReadBinnedFile()
-        elif filetype=='.scc': self.ReadSCCfile()
-        #elif filetype=='csv': self.read_JMARS_file  #need new model data file
+        try:
+            if filetype=='.stat': self.ReadStatFile()
+            elif filetype=='.diam': self.ReadDiamFile()
+            elif filetype=='.binned': self.ReadBinnedFile()
+            elif filetype=='.scc': self.ReadSCCfile()
+            #elif filetype=='csv': self.read_JMARS_file  #need new model data file
+        except:
+            print("Unable to read file: "+filename)
+            raise SystemExit(0)
 
     def __str__(self):
         return self.filename
