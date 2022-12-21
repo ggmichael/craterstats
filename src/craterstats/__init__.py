@@ -1,7 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-__version__ = "3.0.11"
+__version__ = "3.0.12"
 
 from .Chronologyfn import Chronologyfn
 from .Productionfn import Productionfn
