@@ -37,6 +37,8 @@ Open a command prompt/terminal window and run the activate script:
 Windows:
 
     c:\craterstats\Scripts\activate
+
+Alternatively, copy windows_shortcut/craterstats.lnk to the Windows desktop to create a startup icon. 
     
 Linux:
 
@@ -77,6 +79,25 @@ Differential plots are produced by default. To switch to a different kind, e.g. 
 The complete set of options can be seen with:
 
     craterstats --help
+
+# Examples
+
+Differential plot with Poisson age evaluations, equilibrium function, and epoch system
+
+    craterstats -cs neukumivanov -ep mars -ef standard -p source=src/craterstats/sample/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
+
+Differential plot with two differential fit age evaluations
+
+    craterstats -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+
+Differential age fits with 10/decade binning
+
+    craterstats -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+
+Cumulative fit with resurfacing correction
+
+    craterstats -pr cumul -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
+
 
 # Additional information
 
