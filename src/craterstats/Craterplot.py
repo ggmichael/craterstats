@@ -62,21 +62,21 @@ class Craterplot:
 
         :param cps: Craterplotset instance
         """
-        if self.type in ['poisson','b-poisson']:
+        if self.type in ['poisson','buffered-poisson']:
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
-            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'b-poisson')
-            self.t=self.pdf.t([.50,.16,.84]) #median/1-sigma gaussian-equivalent percentiles
+            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'buffered-poisson')
+            self.t=self.pdf.t([.5,.1586,.8413]) #median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
             self.n_event=self.n
 
         else:
-            if self.type=='c-fit':
+            if self.type=='cumulative-fit':
                 p0=self.cratercount.getplotdata("cumulative",self.binning, range=self.range,
-                    resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+                    resurfacing=self.resurf_showall if self.resurf and self.type == 'cumulative-fit' else None,
                     pf=cps.pf)
-            elif self.type=='d-fit':
+            elif self.type=='differential-fit':
                 p0=self.cratercount.getplotdata("differential",self.binning,range=self.range,pf=cps.pf)
 
             self.n=p0['n']    #override with number used in fit (range may be a bit different because of d_min)
@@ -109,7 +109,7 @@ class Craterplot:
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.7,ecolor=cps.grey[0])
 
-        if self.type in ['c-fit','d-fit','poisson','b-poisson']:
+        if self.type in ['cumulative-fit','differential-fit','poisson','buffered-poisson']:
             self.calculate_age(cps)
 
             if self.isochron:
@@ -128,7 +128,7 @@ class Craterplot:
                             color=cps.palette[self.colour],size=cps.scaled_pt_size*1.2,
                             horizontalalignment='right' if self.age_left else 'left',)
 
-                if self.type in ['poisson','b-poisson']:
+                if self.type in ['poisson','buffered-poisson']:
                     text_extent = TextPath((0, 0), st, size=cps.scaled_pt_size*1.2).get_extents()
                     h,w=text_extent.height,text_extent.width
                     f = 1 / (cps.cm2inch * (cps.position[2] - cps.position[0]) * 100) #conversion for axes coord
@@ -157,7 +157,7 @@ class Craterplot:
                         legend_label += ['{0:.1f} (of {1:d})'.format(self.n,self.n_event)]
                 legend_label[-1] += " craters"
             if 'r' in cps.legend:
-                if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
+                if not self.cratercount.prebinned and self.type in ['poisson','buffered-poisson']:
                     r=self.range
                 else:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
@@ -185,7 +185,7 @@ class Craterplot:
         :return: (d_min,d_max,y_min,y_max)
         """
         p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
-             resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+             resurfacing=self.resurf_showall if self.resurf and self.type == 'cumulative-fit' else None,
              pf=cps.pf)
         return gm.range(p['d']) + gm.range(p['y'])
 

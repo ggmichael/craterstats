@@ -17,6 +17,8 @@
 
 -pr cumul -cs neukumivanov -ep mars -ef trask -title Cumulative fits showing resurfacing correction, -subtitle equilibrium function and epoch system -p source=src/craterstats/sample/Pickering.scc,psym=sq -p type=c-fit,range=[2,5] -p range=[.2,.7],resurf=1,psym=fsq
 
+-pr cumul -cs neukumivanov -p source="D:\mydocs\code\pycharm\craterstats\src\craterstats\sample\sample.binned"
+
 -pr cumul -cs neukumivanov -legend naN -title Modified legend 1: -subtitle renamed data series, N(1) value but no count or range -p source=src/craterstats/sample/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
 -pr cumul -cs neukumivanov -legend #r -cite_functions 0 -title Modified legend 2: -subtitle only count and diameter range, hide function citations -p source=src/craterstats/sample/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq

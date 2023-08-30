@@ -91,7 +91,7 @@ def get_parser():
 
 def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     """
-    decode abitrary abbreviation of list member into index
+    decode arbitrary abbreviation of list member into index
 
     :param s: full string list
     :param v: abbreviation or index
@@ -197,7 +197,6 @@ def construct_plot_dicts(args, c):
                     'source',
                     'name',
                     'range',
-                    'type',
                     'error_bars',
                     'hide',
                     'binning',
@@ -209,6 +208,8 @@ def construct_plot_dicts(args, c):
                     'offset_age',
                     ):
                 p[k]=v
+            elif k == 'type':
+                p[k]=cst.OPLOT_TYPES[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'colour':
                 names=[n for c1,c2,n in cst.PALETTE]
                 p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
