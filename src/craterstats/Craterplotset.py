@@ -386,7 +386,7 @@ class Craterplotset:
         """
         s=[]
         for cp in self.craterplot:
-            if cp.type in ['cumulative-fit', 'differential-fit', 'poisson', 'buffered-poisson']:
+            if cp.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
                 cp.calculate_age(self)
                 d = {k: getattr(cp, k, None) for k in
                       {'name', 'binning', 'range', 'bin_range', 'resurf', 'type', 'source', 'n', 'n_event', 't','a0','n_d'}}
@@ -396,7 +396,7 @@ class Craterplotset:
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
-                 ('bin_range' if d['type'] in ('cumulative-fit','differential-fit') else 'range', '5', '.2g', ('d_min', 'd_max')),
+                 ('bin_range' if d['type'] in ('c-fit','d-fit') else 'range', '5', '.2g', ('d_min', 'd_max')),
                  ('type', '>9', '', ('method',)),
                  ('resurf', '6', '', None),
                  ('n', '7', '', None),

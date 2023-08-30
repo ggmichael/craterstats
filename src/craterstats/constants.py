@@ -12,6 +12,7 @@ with importlib_resources.path("craterstats.config", "demo_commands.txt") as path
 
 PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate')
 OPLOT_TYPES=('data','differential-fit','cumulative-fit','poisson','buffered-poisson')
+OPLOT_TYPES_SHORT=('data','d-fit','c-fit','poisson','b-poisson')
 
 DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0))
 DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3))

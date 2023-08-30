@@ -209,7 +209,7 @@ def construct_plot_dicts(args, c):
                     ):
                 p[k]=v
             elif k == 'type':
-                p[k]=cst.OPLOT_TYPES[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
+                p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'colour':
                 names=[n for c1,c2,n in cst.PALETTE]
                 p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
