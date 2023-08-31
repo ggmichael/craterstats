@@ -16,7 +16,7 @@ class Cratercount:
 
     def __init__(self,filename):
         self.filename=filename
-        filetype = gm.filename(filename, 'e')
+        filetype = gm.filename(filename, 'e', max_ext_length=6)
 
         self.binning=None                                                                   #current binning
         self.binned={}
@@ -27,7 +27,10 @@ class Cratercount:
         try:
             if filetype=='.stat': self.ReadStatFile()
             elif filetype=='.diam': self.ReadDiamFile()
-            elif filetype=='.binned': self.ReadBinnedFile()
+            # '.binned' disallowed for now
+            # requires dedicated code to interact with 'range' specification beyond given bins
+            # needs further consideration (e.g. for poisson range), but better not to use data in this format anyway
+            #elif filetype=='.binned': self.ReadBinnedFile()
             elif filetype=='.scc': self.ReadSCCfile()
             #elif filetype=='csv': self.read_JMARS_file  #need new model data file
         except:
@@ -60,8 +63,8 @@ class Cratercount:
         self.binned.update(bin_width=width)
 
     def MakeBinNcum(self):
-        self.binned.update(ncum=list(it.accumulate(reversed(self.binned['n']))))
-        self.binned.update(ncum_event=list(it.accumulate(reversed(self.binned['n_event']))))
+        self.binned.update(ncum=np.array(list(it.accumulate(reversed(self.binned['n'])))))
+        self.binned.update(ncum_event=np.array(list(it.accumulate(reversed(self.binned['n_event'])))))
 
 
 # ;****************************************************
@@ -129,9 +132,10 @@ class Cratercount:
 
         self.area=float(s['area'])
 
-        self.binned={'d_min':[diam[e] for e in q],\
-                     'n':[float(t['frequency'][e]) for e in q],\
-                     'n_event':[float(t['event_frequency'][e]) for e in q] if 'event_frequency' else self.binned.n}
+        d_min=[diam[e] for e in q]
+        n=[float(t['frequency'][e]) for e in q]
+        n_event=[float(t['event_frequency'][e]) for e in q] if 'event_frequency' in t else n
+        self.binned={'d_min':np.array(d_min),'n':np.array(n),'n_event':np.array(n_event)}
 
         self.prebinned=1
         self.MakeBinGeometricMean()
