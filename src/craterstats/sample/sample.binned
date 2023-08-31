@@ -13,9 +13,14 @@ area = 123.0
 # For a normal count, provide the area and a table of diameter vs frequency.
 # For buffered counts, it may be useful to provide the frequency (density) relative to a standard area (e.g. 1 km2 or 10^6 km2). In such a case,
 # you should additionally provide the event_frequency, i.e. the actual number of craters counted of the given size. This is required to 
-# properly calculate the stochastic error. Substitute the folowing line for the table header:
+# properly calculate the stochastic error. Substitute the following line for the table header:
 #
 # table = {diameter,frequency,event_frequency
+#
+# NOTE: this format is not currently supported
+#       Requires dedicated code to interact properly with 'range' specification beyond given bins
+#       Needs further consideration: e.g. for poisson range - add dynamic empty tail bins?
+#       Generally better not to use prebinned data anyway (provides less information)
 
 
 table = {diameter,frequency
