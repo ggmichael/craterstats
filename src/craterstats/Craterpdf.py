@@ -1,6 +1,8 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import sys
+
 import numpy as np
 from scipy.integrate import simps
 
@@ -34,6 +36,8 @@ class Craterpdf:
             self.k = np.sum(b['.n_event'][q])
 
         if bcc: #buffered count
+            if cc.perimeter is None:
+                sys.exit('Error: buffered-poisson calculation requires polygon perimeter in source file')
             ns=300 #samples of PF for integration
             d=np.linspace(d_range[0], d_range[1], ns)
             F=pf.F(d,a0)
