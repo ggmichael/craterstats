@@ -302,9 +302,10 @@ class Craterplotset:
                 skip=False
                 continue
             if e=='fit':
-                h1.append((h[i],h[i+1]))
-                b1.append(b[i+1])
-                skip=True
+                skip = True
+                if set(self.legend) & set('crN') != set():
+                    h1.append((h[i],h[i+1]))
+                    b1.append(b[i+1])
             else:
                 h1.append(h[i])
                 b1.append(e)
