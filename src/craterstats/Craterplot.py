@@ -147,7 +147,7 @@ class Craterplot:
                     ax = cps.fig.add_axes(pos3)
                     self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour])
 
-            if '#' in cps.legend:
+            if 'c' in cps.legend:
                 if self.cratercount.buffered:
                     legend_label += ['{:.1f}'.format(self.n_event)]
                 else:

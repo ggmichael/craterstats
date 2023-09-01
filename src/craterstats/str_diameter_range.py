@@ -14,6 +14,9 @@ def str_diameter_range(d,sf=2):
     """
 
     # \u2013 en-dash \u2009 short space
+    if np.isinf(d[1]):
+        return 'unconstrained'
+
     if d[1] >=1:
         s = gm.sigfigs(d, sf)
         return '{0[0]}\u2013{0[1]} km'.format(s)
