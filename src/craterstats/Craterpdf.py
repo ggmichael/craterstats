@@ -21,7 +21,7 @@ class Craterpdf:
 
     def __init__(self, pf,cf,cc,d_range,bcc=False,n_samples=3000):
 
-        x=np.linspace(-10, 3, n_samples) #additive change to a0 (equidistant in fitting space)
+        x=np.linspace(-10, 4, n_samples) #additive change to a0 (equidistant in fitting space)
         a0=cf.a0(1.)
         self.ts = cf.t(a0=a0+x)
         self.dt = self.ts - np.roll(self.ts, 1)
@@ -38,7 +38,7 @@ class Craterpdf:
         if bcc: #buffered count
             if cc.perimeter is None:
                 sys.exit('Error: buffered-poisson calculation requires polygon perimeter in source file')
-            ns=300 #samples of PF for integration
+            ns=500 #samples of PF for integration
             d=np.linspace(d_range[0], d_range[1], ns)
             F=pf.F(d,a0)
             y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/8.)*F
