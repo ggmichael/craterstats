@@ -65,7 +65,7 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
     parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
 
-    parser.add_argument("-print_dim", help="print dimensions: either single value (cm/decade) or enclosing box (AxB), e.g. 2 or 8x8", nargs=1)
+    parser.add_argument("-print_dim", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8", nargs=1)
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
@@ -190,7 +190,9 @@ def construct_plot_dicts(args, c):
     for d in args.plot:
         p=plot.copy()
         if cpl: # for these items: if not given, carry over from previous
-            for k in ['source','psym','type','isochron','error_bars','colour','binning']:
+            for k in ['source','psym','isochron','error_bars','colour','binning']:
+                p[k] = cpl[-1][k]
+            if k=='type' and p['source'] == cpl[-1]['source']: #reset to data if new source
                 p[k] = cpl[-1][k]
         else:
             if not ('source' in d or 'src' in d): sys.exit('Source not specified')
@@ -295,7 +297,7 @@ def main(args0=None):
 
 
     cp_dicts = construct_plot_dicts(args, c)
-    default_filename = '_'.join(set([gm.filename(d['source'], 'n') for d in cp_dicts]))
+    default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts])))
     cps_dict = construct_cps_dict(args, c, f, default_filename)
 
 
