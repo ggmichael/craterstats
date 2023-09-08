@@ -192,8 +192,8 @@ def construct_plot_dicts(args, c):
         if cpl: # for these items: if not given, carry over from previous
             for k in ['source','psym','isochron','error_bars','colour','binning']:
                 p[k] = cpl[-1][k]
-            if k=='type' and p['source'] == cpl[-1]['source']: #reset to data if new source
-                p[k] = cpl[-1][k]
+            if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
+                p['type'] = cpl[-1]['type']
         else:
             if not ('source' in d or 'src' in d): sys.exit('Source not specified')
 
