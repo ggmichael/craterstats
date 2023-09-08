@@ -42,7 +42,7 @@ def get_parser():
     parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
 
     parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
-    parser.add_argument("-o","--out", help="output filename (omit extension for default)", nargs='+', action=SpacedString)
+    parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
     parser.add_argument("--transparent", help="set transparent background", action='store_true')
@@ -112,7 +112,7 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
         return res[0]
 
 
-def construct_cps_dict(args,c,f):
+def construct_cps_dict(args,c,f,default_filename):
     cpset=c['set']
     if 'presentation' in vars(args):
         if args.presentation is not None:
@@ -124,7 +124,7 @@ def construct_cps_dict(args,c,f):
 
     for k,v in vars(args).items():
         if v is None:
-            if k == 'out': cpset[k] = 'out' # don't set as default in parse_args: need to detect None in source_cmds
+            if k == 'out': cpset[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
         else:
             if k in ('title',
                      'subtitle',
@@ -150,9 +150,12 @@ def construct_cps_dict(args,c,f):
                 cpset[k]=f[k][decode_abbreviation(names, v, one_based=True)]['name']
 
             elif k == 'out':
-                cpset[k] = gm.filename(v, 'pn')
-                ext= gm.filename(v, 'e').lstrip('.')
-                if ext: cpset['format'].add(ext)
+                if os.path.isdir(v):
+                    cpset[k] = os.path.normpath(v+'/'+default_filename)
+                else:
+                    cpset[k] = gm.filename(v, 'pn')
+                    ext = gm.filename(v, 'e').lstrip('.')
+                    if ext: cpset['format'].add(ext)
             elif k == 'format':
                 cpset[k]=set(v)
 
@@ -190,11 +193,10 @@ def construct_plot_dicts(args, c):
             for k in ['source','psym','type','isochron','error_bars','colour','binning']:
                 p[k] = cpl[-1][k]
         else:
-            if not 'source' in d: sys.exit('Source not specified')
+            if not ('source' in d or 'src' in d): sys.exit('Source not specified')
 
         for k,v in d.items():
             if k in (
-                    'source',
                     'name',
                     'range',
                     'error_bars',
@@ -208,6 +210,8 @@ def construct_plot_dicts(args, c):
                     'offset_age',
                     ):
                 p[k]=v
+            elif k in ('source','src'):
+                p['source']=v.strip('"')
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'colour':
@@ -289,8 +293,12 @@ def main(args0=None):
         demo()
         return
 
-    cps_dict = construct_cps_dict(args, c, f)
+
     cp_dicts = construct_plot_dicts(args, c)
+    default_filename = '_'.join(set([gm.filename(d['source'], 'n') for d in cp_dicts]))
+    cps_dict = construct_cps_dict(args, c, f, default_filename)
+
+
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
