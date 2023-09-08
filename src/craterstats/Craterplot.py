@@ -171,6 +171,9 @@ class Craterplot:
                 legend_label+=[self.name if self.name!='' else gm.filename(self.source, "n")]
             if 'a' in cps.legend:
                 legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
+            if 'p' in cps.legend:
+                if self.cratercount.perimeter:
+                    legend_label += ['$' + gm.scientific_notation(self.cratercount.perimeter, sf=3) + '$ km']
 
         cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
                     **cps.marker_def[self.psym],ls='',color=cps.palette[self.colour],markeredgewidth=.5)
