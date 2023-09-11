@@ -236,10 +236,13 @@ def source_cmds(src):
     cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     parser=get_parser()
     for i,c in enumerate(cmd):
-        print(f'\nCommand: {i}\npython craterstats.py '+c)
         a = c.split()
         args = parser.parse_args(a)
-        if args.out is None: a+=['-o','{:02d}-out'.format(i)]
+        if args.out is None:
+            f='{:02d}-out'.format(i)
+            a+=['-o',f]
+            c+=' -o '+f
+        print(f'\nCommand: {i}\ncraterstats ' + c)
         main(a)
     print('\nProcessing complete.')
 
@@ -300,6 +303,8 @@ def main(args0=None):
     default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts])))
     cps_dict = construct_cps_dict(args, c, f, default_filename)
 
+    if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
+        cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
 
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
