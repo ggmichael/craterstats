@@ -1,6 +1,9 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+from importlib.metadata import version
+VERSION_NUM = version("craterstats")
+
 import numpy as np
 import matplotlib.path as mpath
 import craterstats.gm as gm
@@ -78,7 +81,8 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            )
 
 ABOUT=["",gm.bright("CraterstatsIII"),
-       "Copyright (c) 2021, Greg Michael",
+       "Copyright (c) 2021-2023, Greg Michael",
+       "Version:"+VERSION_NUM,
        "",
        "Explanations of concepts and calculations used in the software are given in publications below:",
        "",
@@ -100,7 +104,7 @@ ABOUT=["",gm.bright("CraterstatsIII"),
        "",
        gm.bright("Poisson calculation for buffered crater count"),
        "Michael G.G., Yue Z., Gou S., Di K., Dating individual several-km lunar impact craters from the rim annulus in "
-       "region of planned Chang’E-5 landing Poisson age-likelihood calculation. EPSL 568, 2021.",
+       "region of planned Chang’E-5 landing Poisson age-likelihood calculation for a buffered crater counting area. EPSL 568, 2021.",
        "",
        "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
        "",
