@@ -5,24 +5,29 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 
 # Installation
 
-There are various ways to install Python. If you are installing it specifically to run Craterstats, the following is suggested:
+The `craterstats` package is available on pypi.
+There are 2 recommended way to receive the required dependencies for the package.
 
-1. Install Python 3.8 or higher from  [python.org](https://www.python.org/downloads/).
-1. Open a command prompt/terminal window and enter these commands to establish a Python *virtual environment:*
+1. If you are installing it specifically to only run `craterstats``, the following is suggested:
 
-Windows:
+- (recommended, but not required:) install conda via the [miniforge or mambaforge installer](https://github.com/conda-forge/miniforge)
+- create a virtual environment for craterstats, with conda, e.g.: `conda create -n craterstats python=3.8`
+- activate the virtual environment, with conda, e.g.: `conda activate craterstats`
+- then execute the pip install: `pip install craterstats`
 
-    py -m venv c:\craterstats
-    c:\craterstats\Scripts\activate
-    py -m pip install craterstats
+This will get all dependencies from the pypi server.
 
-Linux:
+2. Alternatively, if you intend to add the `craterstats` package to other libraries and packages you are managing within a virtual environment, we recommend to use conda like so:
 
-    python3 -m venv ~/.craterstats
-    source ~/.craterstats/bin/activate
-    python3 -m pip install craterstats
+- create craterstats conda environment: `conda create -n craterstats python=3.8`
+- activate the env: `conda activate craterstats`
+- use the requirements file of this package to install the dependencies: `mamba install --file ./requirements.txt`
+- finish by getting `craterstats` from pypi: `pip install craterstats`
 
-After you see the required python packages installed, the set-up is complete.
+The advantage of this is, that conda/mamba will take care that your dependencies fit to the rest of your other libraries/packages that you install later on.
+
+Note, that conda runs equally well on on major OS platforms, hence it is our recommendation for virtual envs (but there are other frameworks that do this as well.)
+
  
 # Quick demonstration
 
