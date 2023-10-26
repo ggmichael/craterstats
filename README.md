@@ -5,35 +5,34 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 
 # Installation
 
-The `craterstats` package is available on pypi.
-The recommended installation entails setting up a virtual environment.
-We recommend using `conda`, because it serves a lot of scientific and data analysis use cases and runs well on all 3 major operating systems, but other virtual env managers may be used as well.
+The `craterstats` package is available through the Python Package Index (PyPi).
+We recommend the following procedure for installation on Windows, MacOS or Linux:
 
-1. Install `conda` via the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) (or use your preferred virtual env provider.)
-1. create a virtual environment for craterstats, with conda, e.g.:
-
+1. Install `conda` via the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS. 
+1. Launch the miniforge prompt and enter the following to create a virtual environment for craterstats:
     ```
     conda create -n craterstats python=3.8
     ```
 
-1. activate the virtual environment, with conda, e.g.:
-
+1. Activate the virtual environment:
    ```
    conda activate craterstats
    ```
 
-2. then execute the pip install:
-
+1. Install the craterstats package with its dependencies:
    ```
    pip install craterstats
    ```
 
-This will install also all required dependencies from the pypi server.
+If you later need to upgrade to a newer version, use:
+   ```
+   pip install --upgrade craterstats
+   ```
 
 ## Advanced users
 
-For advanced users, if you intend to add the `craterstats` package to your existing conda environment, we recommend to install first the requirements with conda and finish with the pip install.
-
+If you intend to add the `craterstats` package to your existing conda environment, we recommend
+first installing the requirements with conda and then finishing with the pip install.
 
  
 # Quick demonstration
