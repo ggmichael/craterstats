@@ -6,27 +6,34 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 # Installation
 
 The `craterstats` package is available on pypi.
-There are 2 recommended way to receive the required dependencies for the package.
+The recommended installation entails setting up a virtual environment.
+We recommend using `conda`, because it serves a lot of scientific and data analysis use cases and runs well on all 3 major operating systems, but other virtual env managers may be used as well.
 
-1. If you are installing it specifically to only run `craterstats``, the following is suggested:
+1. Install `conda` via the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) (or use your preferred virtual env provider.)
+1. create a virtual environment for craterstats, with conda, e.g.:
 
-- (recommended, but not required:) install conda via the [miniforge or mambaforge installer](https://github.com/conda-forge/miniforge)
-- create a virtual environment for craterstats, with conda, e.g.: `conda create -n craterstats python=3.8`
-- activate the virtual environment, with conda, e.g.: `conda activate craterstats`
-- then execute the pip install: `pip install craterstats`
+    ```
+    conda create -n craterstats python=3.8
+    ```
 
-This will get all dependencies from the pypi server.
+1. activate the virtual environment, with conda, e.g.:
 
-2. Alternatively, if you intend to add the `craterstats` package to other libraries and packages you are managing within a virtual environment, we recommend to use conda like so:
+   ```
+   conda activate craterstats
+   ```
 
-- create craterstats conda environment: `conda create -n craterstats python=3.8`
-- activate the env: `conda activate craterstats`
-- use the requirements file of this package to install the dependencies: `mamba install --file ./requirements.txt`
-- finish by getting `craterstats` from pypi: `pip install craterstats`
+2. then execute the pip install:
 
-The advantage of this is, that conda/mamba will take care that your dependencies fit to the rest of your other libraries/packages that you install later on.
+   ```
+   pip install craterstats
+   ```
 
-Note, that conda runs equally well on on major OS platforms, hence it is our recommendation for virtual envs (but there are other frameworks that do this as well.)
+This will install also all required dependencies from the pypi server.
+
+## Advanced users
+
+For advanced users, if you intend to add the `craterstats` package to your existing conda environment, we recommend to install first the requirements with conda and finish with the pip install.
+
 
  
 # Quick demonstration
