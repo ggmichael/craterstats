@@ -10,14 +10,17 @@ We recommend the following procedure for installation on Windows, MacOS or Linux
 
 1. Install `conda` via the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS. 
 1. Launch the miniforge prompt and enter the following to create a virtual environment for craterstats:
+  
     ```
     conda create -n craterstats python=3.8
     ```
 1. Activate the virtual environment:
+
    ```
    conda activate craterstats
    ```
 1. Install the craterstats package with its dependencies:
+
    ```
    pip install craterstats
    ```
