@@ -13,20 +13,13 @@ We recommend the following procedure for installation on Windows, MacOS or Linux
     ```
     conda create -n craterstats python=3.8
     ```
-
 1. Activate the virtual environment:
    ```
    conda activate craterstats
    ```
-
 1. Install the craterstats package with its dependencies:
    ```
    pip install craterstats
-   ```
-
-If you later need to upgrade to a newer version, use:
-   ```
-   pip install --upgrade craterstats
    ```
 
 ## Advanced users
@@ -43,17 +36,18 @@ After installation, the following command will produce a series of example outpu
 
 # Normal start
 
-Open a command prompt/terminal window and run the activate script:
-   
-Windows:
+Launch the miniforge prompt and activate the virtual environment:
+   ```
+   conda activate craterstats
+   ```
 
-    c:\craterstats\Scripts\activate
+# Upgrade 
 
-Alternatively, copy windows_shortcut/craterstats.lnk to the Windows desktop to create a startup icon. 
-    
-Linux:
+If you later need to upgrade to a newer version, use:
+   ```
+   pip install --upgrade craterstats
+   ```
 
-    source ~/.craterstats/bin/activate
 
 # Usage
 
