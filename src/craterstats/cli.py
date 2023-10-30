@@ -213,6 +213,7 @@ def construct_plot_dicts(args, c):
                     ):
                 p[k]=v
             elif k in ('source','src'):
+                v = v.replace('%sample%/', cst.PATH+'sample/')
                 p['source']=v.strip('"')
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
@@ -248,7 +249,7 @@ def source_cmds(src):
 
 def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
     cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
-    cmd = [e.replace('source=src/craterstats/', 'source=' + cst.PATH) for e in cmd]
+    #cmd = [e.replace('source=src/craterstats/', 'source=' + cst.PATH) for e in cmd]
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
