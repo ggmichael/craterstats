@@ -64,9 +64,9 @@ There are two parts to creating a Craterstats plot:
 
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies chronology system 4, *Mars, Neukum-Ivanov (2001)* , and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
+The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given (note that %sample% is a path abbreviation to an installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
-    craterstats -cs neukumivanov -title Example plot -p source=craterstats/sample/Pickering.scc -p type=poisson,range=[.2,.7]
+    craterstats -cs neukumivanov -title Example plot -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
 By default, an output file is created in the current folder with the name `out.png`. The output path or name can be set with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
 
@@ -92,19 +92,19 @@ The complete set of options can be seen with:
 
 Differential plot with Poisson age evaluations, equilibrium function, and epoch system
 
-    craterstats -cs neukumivanov -ep mars -ef standard -p source=src/craterstats/sample/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
+    craterstats -cs neukumivanov -ep mars -ef standard -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 
 Differential plot with two differential fit age evaluations
 
-    craterstats -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
 
 Differential age fits with 10/decade binning
 
-    craterstats -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
 
 Cumulative fit with resurfacing correction
 
-    craterstats -pr cumul -cs neukumivanov -p source=src/craterstats/sample/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
+    craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
 
 # Additional information
