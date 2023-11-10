@@ -43,7 +43,7 @@ Launch the miniforge prompt and activate the virtual environment:
    ```
    conda activate craterstats
    ```
-On Windows, you can alternatively create a desktop shortcut with target: 
+On Windows, you can alternatively create a desktop shortcut with this target: 
 
 ```
 %windir%\system32\cmd.exe "/K" %homepath%\mambaforge\Scripts\activate.bat craterstats 
