@@ -249,7 +249,6 @@ def source_cmds(src):
 
 def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
     cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
-    #cmd = [e.replace('source=src/craterstats/', 'source=' + cst.PATH) for e in cmd]
     out='demo/'
     os.makedirs(out,exist_ok=True)
     f = '-o '+out+'{:02d}-demo '
