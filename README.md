@@ -43,6 +43,11 @@ Launch the miniforge prompt and activate the virtual environment:
    ```
    conda activate craterstats
    ```
+On Windows, you can alternatively create a desktop shortcut with target: 
+
+```
+%windir%\system32\cmd.exe "/K" %homepath%\mambaforge\Scripts\activate.bat craterstats 
+```
 
 # Upgrade 
 
@@ -58,13 +63,13 @@ The program operates through the command line to produce output in the form of p
 
 There are two parts to creating a Craterstats plot:
 
-1. Specify the type of plot and any characteristics which apply to the analysis as a whole, e.g. whether differential, cumulative of other data presentation; the chronology system, displayed axis ranges
+1. Specify the type of plot and any characteristics which apply to the analysis as a whole, e.g. whether differential, cumulative or other data presentation; the chronology system, displayed axis ranges
 
 2. Specify the data to be overplotted, and which chronology model evaluations should be applied to it
 
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies chronology system 4, *Mars, Neukum-Ivanov (2001)* , and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given (note that %sample% is a path abbreviation to an installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
+The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given (note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -title Example plot -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
@@ -111,7 +116,7 @@ Cumulative fit with resurfacing correction
 
 The useable chronology systems, equilibrium functions and epoch systems are defined in the text file `config/functions.txt`. User functions may be added here, following the same format.
 
-There is a text file `config/default.plt` which contains all the default plot settings. This may be modified to suit the choices you use most often.
+There is a text file `config/default.plt` which contains the default plot settings. This may be modified to suit the choices you use most often.
 
 To simplify the construction of the command line, certain plot properties are 'sticky'. If, for example, you specify `source=craterstats/sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
