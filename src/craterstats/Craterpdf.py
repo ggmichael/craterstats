@@ -65,7 +65,7 @@ class Craterpdf:
         return np.interp(cum_fraction,self.cdf,self.ts)
 
 
-    def plot(self,ax=None,pt_size=9,color='0'):
+    def plot(self,ax=None,pt_size=9,color='0',t_range=None,logscale=False):
         """
         Set up uncertainty distribution plot
 
@@ -81,30 +81,47 @@ class Craterpdf:
         t=self.t([.003,.16,.5,.84,.997])
         p=np.searchsorted(self.ts,t)-1
 
-        max_ticks=3
-        xt= gm.ticks(np.append(0, t), max_ticks)
-        max_t=np.max(xt)
-        max_text=cst.str_age(max_t, simple=True)
-        a=max_text.split(' ')
-        xt_units=float(a[0])/max_t*xt
-        xt_label=['{:g}'.format(e) for e in xt_units]
-        xt_label[-1]="      "+xt_label[-1]+" "+a[1]   # add unit to last label, e.g. "Ga"
+        if not logscale:
+            if not t_range:
+                t_range=[0.,np.max(t)]
+
+            max_ticks=3
+            xt=gm.ticks(t_range, max_ticks)
+            max_t=np.max(xt)
+            max_text=cst.str_age(max_t, simple=True)
+            a=max_text.split(' ')
+            xt_units=float(a[0])/max_t*xt
+            xt_label=['{:g}'.format(e) for e in xt_units]
+            xt_label[-1]="      "+xt_label[-1]+" "+a[1]   # add unit to last label, e.g. "Ga"
+
+        else: #logscale
+            if not t_range:
+                t_range=gm.range(t)
+                xt0=list(range(np.floor(np.log10(t_range[0])).astype(int),np.ceil(np.log10(t_range[1])).astype(int)+1))
+            else:
+                xt0= ([np.log10(t_range[0])]
+                    +list(range(np.floor(np.log10(t_range[0])).astype(int)+1,np.ceil(np.log10(t_range[1])).astype(int)))
+                    +[np.log10(t_range[1])])
+
+            xt = [10 ** e for e in xt0]
+            xt_label = [cst.str_age(e, simple=True) for e in xt]
+            ax.set_xscale('log')
+
 
         ax.plot(self.ts,self.pdf,lw=linewidth*1.5,color=color)
         ax.patch.set_facecolor('none') # make region transparent over background graphics
         ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0,  color=color, alpha=0.35,  edgecolor=color, lw=linewidth) #'.7'
         ax.fill_between(self.ts[p[2]:p[2]+1], self.pdf[p[2]:p[2]+1], edgecolor=color, lw=linewidth, alpha=.5)
-
         ax.get_yaxis().set_visible(False)
         for e in ['right','left','top']: ax.spines[e].set_visible(False)
         ax.spines['bottom'].set_linewidth(linewidth)
         ax.spines['bottom'].set_color(color)
 
-        ax.set_xbound(lower=0, upper=xt[1])
+        ax.set_xbound(lower=xt[0], upper=xt[1])
         ax.set_xticks(xt)
         ax.tick_params(axis='x', which='both', width=linewidth, length=pt_size * .2, pad=pt_size * .1, color=color)
         ax.tick_params(axis='x', which='minor', length=pt_size * .1)
-        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
+        if not logscale: ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
         ax.set_xticklabels(xt_label,fontsize=pt_size*.7, color=color)#,horizontalalignment='left')
 
     def offset(self,left):

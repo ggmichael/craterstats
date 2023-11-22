@@ -14,9 +14,9 @@ class Cratercount:
 
     BINNINGS = ['pseudo-log', '20/decade', '10/decade', 'x2', 'root-2', '4th root-2', 'none'] #allowed binnings
 
-    def __init__(self,filename):
+    def __init__(self,filename=None):
         self.filename=filename
-        filetype = gm.filename(filename, 'e', max_ext_length=6)
+        filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
 
         self.binning=None                                                                   #current binning
         self.binned={}
@@ -33,6 +33,7 @@ class Cratercount:
             #elif filetype=='.binned': self.ReadBinnedFile()
             elif filetype=='.scc': self.ReadSCCfile()
             #elif filetype=='csv': self.read_JMARS_file  #need new model data file
+            elif filetype==None: pass #just create empty object
         except:
             print("Unable to read file: "+filename)
             raise SystemExit(0)
