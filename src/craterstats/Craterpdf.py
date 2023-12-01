@@ -65,7 +65,7 @@ class Craterpdf:
         return np.interp(cum_fraction,self.cdf,self.ts)
 
 
-    def plot(self,ax=None,pt_size=9,color='0',t_range=None,logscale=False):
+    def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
         """
         Set up uncertainty distribution plot
 
@@ -82,17 +82,20 @@ class Craterpdf:
         p=np.searchsorted(self.ts,t)-1
 
         if not logscale:
-            if not t_range:
-                t_range=[0.,np.max(t)]
+            if t_range:
+                max_t = t_range[1]
+            else:
+                max_t = np.max(xt)
+            max_ticks = max_ticks
+            xt = gm.ticks(np.array([0.,max_t]), max_ticks)
+            for i,e in enumerate(xt):
+                if e<=max_t: max_i=i
 
-            max_ticks=3
-            xt=gm.ticks(t_range, max_ticks)
-            max_t=np.max(xt)
-            max_text=cst.str_age(max_t, simple=True)
-            a=max_text.split(' ')
-            xt_units=float(a[0])/max_t*xt
-            xt_label=['{:g}'.format(e) for e in xt_units]
-            xt_label[-1]="      "+xt_label[-1]+" "+a[1]   # add unit to last label, e.g. "Ga"
+            max_text = cst.str_age(xt[max_i], simple=True)
+            a = max_text.split(' ')
+            xt_units = float(a[0]) / xt[max_i] * xt
+            xt_label = ['{:g}'.format(e) for e in xt_units]
+            xt_label[max_i] = "      " + xt_label[max_i] + " " + a[1]  # add unit to last label, e.g. "Ga"
 
         else: #logscale
             if not t_range:
@@ -117,8 +120,9 @@ class Craterpdf:
         ax.spines['bottom'].set_linewidth(linewidth)
         ax.spines['bottom'].set_color(color)
 
-        ax.set_xbound(lower=xt[0], upper=xt[1])
         ax.set_xticks(xt)
+        ax.set_xlim(xt[0], t_range[1] if t_range else xt[1],auto=False)
+
         ax.tick_params(axis='x', which='both', width=linewidth, length=pt_size * .2, pad=pt_size * .1, color=color)
         ax.tick_params(axis='x', which='minor', length=pt_size * .1)
         if not logscale: ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
