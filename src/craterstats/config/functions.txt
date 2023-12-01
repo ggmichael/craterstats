@@ -41,7 +41,7 @@ production={
    coefficients=*[-3.0768e00,-3.557528e00,0.781027e00,1.021521e00,-0.156012e00,-0.444058e00,0.019977e00,0.086850e00,-0.005874e00,-0.006809e00,8.25e-04,5.54e-05]
 #                published value is a0=-3.0876, but this appears to be a typo (either way, a0 is superfluous to specification of PF and ignored by Craterstats)
    range=[.01,300.]
-#                range taken from Ivanov et al 2001
+#                range taken from Ivanov, Neukum, Wagner (2001), Size-Frequency Distributions of Planetary Impact Craters and Asteroids
    reference='Neukum, G., B. Ivanov, and W. Hartmann (2001), Cratering records in the inner solar system in relation to the lunar reference system, Space Sci. Rev. 96, 55 - 87.; Ivanov, B.A., Neukum, G., Wagner, R. (2001). Size-Frequency Distributions of Planetary Impact Craters and Asteroids. In: Marov, M.Y., Rickman, H. (eds) Collisional Processes in the Solar System. Astrophysics and Space Science Library, vol 261. Springer, Dordrecht. https://doi.org/10.1007/978-94-010-0712-2_1'
 }
 
