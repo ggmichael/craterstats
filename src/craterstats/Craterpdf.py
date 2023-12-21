@@ -85,8 +85,7 @@ class Craterpdf:
             if t_range:
                 max_t = t_range[1]
             else:
-                max_t = np.max(xt)
-            max_ticks = max_ticks
+                max_t = np.max(t)
             xt = gm.ticks(np.array([0.,max_t]), max_ticks)
             for i,e in enumerate(xt):
                 if e<=max_t: max_i=i
