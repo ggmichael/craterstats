@@ -64,6 +64,13 @@ class Craterpdf:
         """
         return np.interp(cum_fraction,self.cdf,self.ts)
 
+    def median1sigma(self):
+        """
+        Return times for median and 1-sigma percentiles
+
+        :return: times
+        """
+        return self.t([.5, .1586, .8413])  # median/1-sigma gaussian-equivalent percentiles
 
     def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
         """

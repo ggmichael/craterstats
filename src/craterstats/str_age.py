@@ -3,7 +3,7 @@
 
 import craterstats.gm as gm
 
-def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dict=False):
+def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False):
     '''
     Convert numerical age in Ga to latex-style string, optionally with sub/superscript errors and mu uncertainty function
 
@@ -11,21 +11,20 @@ def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dic
     :param e1: plus error
     :param e2: minus error
     :param sf: no of sig figs
-    :param ga: force Ga unit
+    :param unit: force specified unit
     :param simple: don't show zero decimals (for isochrons), nor use latex-style
     :param no_error: don't show errors
     :param mu: show mu uncertainty function
-    :param dict:
     :return: age string
     '''
 
+    f = [1, 1e-3, 1e-6, 1e-9]
+    unit0 = ['Ga', 'Ma', 'ka', 'a']
 
-    if ga: 
-        a=(1,'Ga')
+    if unit is not None:
+        a = next((e, u) for e, u in zip(f, unit0) if unit == u)
     else:
-        f=[1,1e-3,1e-6,1e-9]
-        unit=['Ga','Ma','ka','a']        
-        a=next((e,u) for e,u in zip(f,unit) if age>=e)
+        a = next((e, u) for e, u in zip(f, unit0) if age >= e)
 
     v=age/a[0]
 
@@ -51,5 +50,6 @@ def str_age(age,e1=0,e2=0,sf=3,ga=False,simple=False,no_error=False,mu=False,dic
 
 if __name__ == '__main__':
     print(str_age(.314,.11,.14))
-    print(str_age(.314, .11, .14,ga=True,mu=True))
+    print(str_age(.314, .11, .14,unit='Ga',mu=True))
     print(str_age(.314, simple=True))
+    print(str_age(.314, .11, .14, unit="ka"))
