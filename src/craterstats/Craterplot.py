@@ -66,7 +66,8 @@ class Craterplot:
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
             self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'b-poisson')
-            self.t=self.pdf.t([.5,.1586,.8413]) #median/1-sigma gaussian-equivalent percentiles
+            #self.t=self.pdf.t([.5,.1586,.8413]) #median/1-sigma gaussian-equivalent percentiles
+            self.t = self.pdf.median1sigma()  # median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
             self.n_event=self.n
