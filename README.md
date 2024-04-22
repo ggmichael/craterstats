@@ -33,7 +33,7 @@ first installing the requirements with conda and then finishing with the pip ins
  
 # Quick demonstration
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/`, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
+After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/` of the current folder, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
     
     craterstats -demo
 
@@ -46,7 +46,7 @@ Launch the miniforge prompt and activate the virtual environment:
 On Windows, you can alternatively create a desktop shortcut with this target: 
 
 ```
-%windir%\system32\cmd.exe "/K" %homepath%\mambaforge\Scripts\activate.bat craterstats 
+%windir%\system32\cmd.exe "/K" %homedrive%%homepath%\miniforge3\Scripts\activate.bat craterstats
 ```
 
 # Upgrade 
