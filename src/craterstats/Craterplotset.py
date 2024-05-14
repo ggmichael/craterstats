@@ -57,6 +57,9 @@ class Craterplotset:
             },*args,kwargs)
 
         self.marker_def = [e[2] for e in cst.MARKERS]
+        for e in self.marker_def:
+            e['markersize'] *= self.pt_size / 9.
+            e['markeredgewidth'] = .5 * self.pt_size / 9.
         self.grey = cst.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cst.PALETTE]
 
@@ -326,7 +329,7 @@ class Craterplotset:
             a0 = self.cf.a0(t)
             iso = self.pf.getisochron(self.presentation, a0, self.ef)
             d10 = np.log10(iso['d'])
-            self.ax.plot(d10, iso['y'], color=self.grey[0], lw=.5)
+            self.ax.plot(d10, iso['y'], color=self.grey[0], lw=.5*cps.pt_size/9.)
 
             q = gm.where(np.abs(np.log10(iso['y']) - (self.yrange[1] - .1)) < .1)
             if not q or (d10[q[0]] < self.xrange[0]):  # (d10[q[0][0]] < self.xrange[0]):
