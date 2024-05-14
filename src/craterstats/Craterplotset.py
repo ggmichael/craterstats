@@ -56,10 +56,11 @@ class Craterplotset:
             'show_subtitle':1, 
             },*args,kwargs)
 
+        self.sz_ratio= self.pt_size / 9.
         self.marker_def = [e[2] for e in cst.MARKERS]
         for e in self.marker_def:
-            e['markersize'] *= self.pt_size / 9.
-            e['markeredgewidth'] = .5 * self.pt_size / 9.
+            e['markersize'] *= self.sz_ratio
+            e['markeredgewidth'] = .5 * self.sz_ratio
         self.grey = cst.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cst.PALETTE]
 
@@ -186,7 +187,7 @@ class Craterplotset:
 
 #create layout
 
-        tw=.4
+        tw=.4*self.sz_ratio
         plt.rcParams.update({
             'legend.fontsize':      'x-small',
             'legend.title_fontsize':'small',
