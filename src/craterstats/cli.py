@@ -267,8 +267,13 @@ def main(args0=None):
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
+    functions_user = cst.PATH + 'config/functions_user.txt'
+
     c = gm.read_textstructure(template if args.template is None else args.template)
-    f = gm.read_textstructure(functions)
+    s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
+    if gm.file_exists(functions_user):
+        s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
+    f = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
