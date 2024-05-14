@@ -108,18 +108,18 @@ class Craterplot:
         legend_label = []
 
         if self.error_bars:
-            cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.7*cps.pt_size/9.,ecolor=cps.grey[0])
+            cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.7*cps.sz_ratio,ecolor=cps.grey[0])
 
         if self.type in ['c-fit','d-fit','poisson','b-poisson']:
             self.calculate_age(cps)
 
             if self.isochron:
                 iso=cps.pf.getisochron(cps.presentation,self.a0[0],cps.ef)
-                cps.ax.plot(np.log10(iso['d']), iso['y'], label=None,color=cps.grey[0], lw=.4*cps.pt_size/9., zorder=.9)
+                cps.ax.plot(np.log10(iso['d']), iso['y'], label=None,color=cps.grey[0], lw=.4*cps.sz_ratio, zorder=.9)
 
             expansion=np.array([.99,1.01])
             fit=cps.pf.getplotdata(cps.presentation,self.a0[0],range=self.range*expansion)
-            cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=cps.palette[self.colour], lw=.7*cps.pt_size/9.)
+            cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=cps.palette[self.colour], lw=.7*cps.sz_ratio)
 
             if self.display_age:
                 st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu)
@@ -134,7 +134,7 @@ class Craterplot:
                     h,w=text_extent.height,text_extent.width
                     f = 1 / (cps.cm2inch * (cps.position[2] - cps.position[0]) * 100) #conversion for axes coord
                     offset = self.pdf.offset(self.age_left)          # normalised units of mini-plot width in +x direction
-                    box = np.array([.12, .05])*cps.pt_size/9.        # dimensions of plot box
+                    box = np.array([.12, .05])*cps.size_ratio        # dimensions of plot box
 
                     if self.age_left:  # offset from string write position
                         dx = -(f * w + .03) + (-1 + offset) * box[0]
