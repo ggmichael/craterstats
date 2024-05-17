@@ -269,7 +269,8 @@ class Craterplotset:
             if self.ef: txt += "EF: " + self.ef.name + '\n'
             if not (self.time_plot and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
             txt += "CF: " + self.cf.name
-            self.ax.text(.05,.05,txt,transform=self.ax.transAxes,fontsize=self.scaled_pt_size*.7,linespacing=1.5)
+            #offset would be better specified in pts (1.5 * fontsize) [for many-decade plots]:
+            self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
 
         if self.time_plot:
             phi=self.presentation=='rate'
