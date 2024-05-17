@@ -331,7 +331,7 @@ class Craterplotset:
             a0 = self.cf.a0(t)
             iso = self.pf.getisochron(self.presentation, a0, self.ef)
             d10 = np.log10(iso['d'])
-            self.ax.plot(d10, iso['y'], color=self.grey[0], lw=.5*cps.pt_size/9.)
+            self.ax.plot(d10, iso['y'], color=self.grey[0], lw=.5*self.sz_ratio)
 
             q = gm.where(np.abs(np.log10(iso['y']) - (self.yrange[1] - .1)) < .1)
             if not q or (d10[q[0]] < self.xrange[0]):  # (d10[q[0][0]] < self.xrange[0]):
