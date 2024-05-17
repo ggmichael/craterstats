@@ -134,7 +134,7 @@ class Craterplot:
                     h,w=text_extent.height,text_extent.width
                     f = 1 / (cps.cm2inch * (cps.position[2] - cps.position[0]) * 100) #conversion for axes coord
                     offset = self.pdf.offset(self.age_left)          # normalised units of mini-plot width in +x direction
-                    box = np.array([.12, .05])*cps.size_ratio        # dimensions of plot box
+                    box = np.array([.12, .05])*cps.sz_ratio          # dimensions of plot box
 
                     if self.age_left:  # offset from string write position
                         dx = -(f * w + .03) + (-1 + offset) * box[0]
