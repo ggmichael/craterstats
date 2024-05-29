@@ -19,7 +19,17 @@ class Craterpdf:
 
     """
 
-    def __init__(self, pf,cf,cc,d_range,bcc=False,n_samples=3000):
+    def __init__(self, pf,cf,cc,d_range,k=None,bcc=False,n_samples=3000):
+        """
+        :param pf: Productionfn object
+        :param cf: Chronologyfn object
+        :param cc: Cratercount object
+        :param d_range: diameter range (km)
+        :param k: number of craters in range (normally not required - calculated from cc)
+        :param bcc: buffered crater count?
+        :param n_samples: number of samples for likelihood curve
+
+        """
 
         x=np.linspace(-10, 4, n_samples) #additive change to a0 (equidistant in fitting space)
         a0=cf.a0(1.)
@@ -27,7 +37,9 @@ class Craterpdf:
         self.dt = self.ts - np.roll(self.ts, 1)
         self.dt[0] = self.dt[1]
 
-        if cc.diam:
+        if k is not None:
+            self.k=k
+        elif cc.diam:
             d = [e for e in cc.diam if d_range[0] <= e < d_range[1]]
             self.k = len(d)
         else:   # we have a binned-only count
