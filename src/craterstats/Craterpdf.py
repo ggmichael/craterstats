@@ -31,7 +31,7 @@ class Craterpdf:
 
         """
 
-        x=np.linspace(-10, 4, n_samples) #additive change to a0 (equidistant in fitting space)
+        x=np.linspace(-10, 5, n_samples) #additive change to a0 (equidistant in fitting space)
         a0=cf.a0(1.)
         self.ts = cf.t(a0=a0+x)
         self.dt = self.ts - np.roll(self.ts, 1)

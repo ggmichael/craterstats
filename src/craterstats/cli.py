@@ -315,8 +315,8 @@ def main(args0=None):
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
     if cpl:
-        if args.autoscale or not ('xrange' in cps_dict and 'yrange' in cps_dict):
-            cps.autoscale()
+        cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
+                      cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     drawn=False
     for f in cps.format:

@@ -350,10 +350,13 @@ class Craterplotset:
                              horizontalalignment='left',
                              bbox=dict(facecolor='none', edgecolor='none', boxstyle='square,pad=0.5'))
 
-    def autoscale(self):
+    def autoscale(self,xrange=None,yrange=None):
         """
         Calculate union of data ranges from all Craterplots
         Use to set default axis ranges
+
+        xrange: optional forced range
+        yrange: optional forced range
 
         :return: none
         """
@@ -381,8 +384,8 @@ class Craterplotset:
             if d < 0: yr += [-d2a,d2b]
             if d > 0: xr += [-d2a,d2b]
 
-        self.xrange=xr
-        self.yrange=yr
+        self.xrange=np.array(xrange,dtype=float) if xrange else xr
+        self.yrange=np.array(yrange,dtype=float) if yrange else yr
 
     def create_summary_table(self):
         """
