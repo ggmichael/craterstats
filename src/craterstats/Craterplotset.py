@@ -384,8 +384,8 @@ class Craterplotset:
             if d < 0: yr += [-d2a,d2b]
             if d > 0: xr += [-d2a,d2b]
 
-        self.xrange=np.array(xrange,dtype=float) if xrange else xr
-        self.yrange=np.array(yrange,dtype=float) if yrange else yr
+        self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
+        self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
 
     def create_summary_table(self):
         """
