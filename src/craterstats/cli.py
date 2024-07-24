@@ -326,7 +326,7 @@ def main(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',' '.join(args0))
+        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not e[1].isdigit() else ' '+e for e in args0])[1:])
 
     drawn=False
     for f in cps.format:
