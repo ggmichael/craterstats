@@ -31,9 +31,17 @@ class SpacedString(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         setattr(namespace, self.dest, ' '.join(values))
 
+class LoadFromFile(argparse.Action):
+    def __call__ (self, parser, namespace, values, option_string = None):
+        with values as f:
+            # parse arguments in the file and store them in the target namespace
+            parser.parse_args(f.read().split(), namespace)
+            setattr(namespace, self.dest, True)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
+
+    parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
@@ -303,7 +311,6 @@ def main(args0=None):
         demo()
         return
 
-
     cp_dicts = construct_plot_dicts(args, c)
     default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts])))
     cps_dict = construct_cps_dict(args, c, f, default_filename)
@@ -317,6 +324,9 @@ def main(args0=None):
     if cpl:
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
+
+    if not args.input:
+        gm.write_textfile(cps_dict['out']+'.cs',' '.join(args0))
 
     drawn=False
     for f in cps.format:
