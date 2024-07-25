@@ -106,8 +106,10 @@ class Craterpdf:
             else:
                 max_t = np.max(t)
             xt = gm.ticks(np.array([0.,max_t]), max_ticks)
-            for i,e in enumerate(xt):
-                if e<=max_t: max_i=i
+            #2024-07-25 don't understand what this was for:
+            # for i,e in enumerate(xt):
+            #     if e<=max_t: max_i=i
+            max_i=-1
 
             max_text = cst.str_age(xt[max_i], simple=True)
             a = max_text.split(' ')
@@ -139,7 +141,7 @@ class Craterpdf:
         ax.spines['bottom'].set_color(color)
 
         ax.set_xticks(xt)
-        ax.set_xlim(xt[0], t_range[1] if t_range else xt[1],auto=False)
+        ax.set_xlim(xt[0], t_range[1] if t_range else xt[-1],auto=False)
 
         ax.tick_params(axis='x', which='both', width=linewidth, length=pt_size * .2, pad=pt_size * .1, color=color)
         ax.tick_params(axis='x', which='minor', length=pt_size * .1)

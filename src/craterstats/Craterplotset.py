@@ -57,7 +57,7 @@ class Craterplotset:
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.
-        self.marker_def = [e[2] for e in cst.MARKERS]
+        self.marker_def = [e[2].copy() for e in cst.MARKERS]
         for e in self.marker_def:
             e['markersize'] *= self.sz_ratio
             e['markeredgewidth'] = .5 * self.sz_ratio
