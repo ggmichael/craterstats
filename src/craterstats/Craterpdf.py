@@ -131,10 +131,8 @@ class Craterpdf:
             ax.set_xscale('log')
 
         if violin:
-            def reflectx(x):
-                return np.concatenate([x, x[::-1]])
-            def reflecty(x):
-                return np.concatenate([x, -x[::-1]])
+            reflectx = lambda x: np.concatenate([x, x[::-1]])
+            reflecty = lambda x: np.concatenate([x, -x[::-1]])
             ax.plot(reflectx(self.ts), reflecty(self.pdf),lw=linewidth *1.5, color=color)
             ax.fill_between(reflectx(self.ts[p[1]:p[3]]), reflecty(self.pdf[p[1]:p[3]]), 0, color=color, alpha=0.35, edgecolor=color,
                             lw=linewidth)  # '.7'
