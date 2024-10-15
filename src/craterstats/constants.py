@@ -13,7 +13,7 @@ import importlib.resources as importlib_resources
 with importlib_resources.path("craterstats.config", "demo_commands.txt") as path:
     PATH = gm.filename(str(path),'u')
 
-PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate')
+PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate', 'sequence', 'uncertainty')
 OPLOT_TYPES=('data','differential-fit','cumulative-fit','poisson','buffered-poisson')
 OPLOT_TYPES_SHORT=('data','d-fit','c-fit','poisson','b-poisson')
 
