@@ -84,7 +84,7 @@ class Craterpdf:
         """
         return self.t([.5, .1586, .8413])  # median/1-sigma gaussian-equivalent percentiles
 
-    def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
+    def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3, violin=False):
         """
         Set up uncertainty distribution plot
 
@@ -130,11 +130,22 @@ class Craterpdf:
             xt_label = [cst.str_age(e, simple=True) for e in xt]
             ax.set_xscale('log')
 
+        if violin:
+            def reflectx(x):
+                return np.concatenate([x, x[::-1]])
+            def reflecty(x):
+                return np.concatenate([x, -x[::-1]])
+            ax.plot(reflectx(self.ts), reflecty(self.pdf),lw=linewidth *1.5, color=color)
+            ax.fill_between(reflectx(self.ts[p[1]:p[3]]), reflecty(self.pdf[p[1]:p[3]]), 0, color=color, alpha=0.35, edgecolor=color,
+                            lw=linewidth)  # '.7'
+            ax.fill_between(reflectx(self.ts[p[2]:p[2] + 1]), reflecty(self.pdf[p[2]:p[2] + 1]), edgecolor=color, lw=linewidth, alpha=.5)
+        else:
+            ax.plot(self.ts, self.pdf, lw=linewidth * 1.5, color=color)
+            ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0, color=color, alpha=0.35, edgecolor=color,
+                            lw=linewidth)  # '.7'
+            ax.fill_between(self.ts[p[2]:p[2] + 1], self.pdf[p[2]:p[2] + 1], edgecolor=color, lw=linewidth, alpha=.5)
 
-        ax.plot(self.ts,self.pdf,lw=linewidth*1.5,color=color)
         ax.patch.set_facecolor('none') # make region transparent over background graphics
-        ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0,  color=color, alpha=0.35,  edgecolor=color, lw=linewidth) #'.7'
-        ax.fill_between(self.ts[p[2]:p[2]+1], self.pdf[p[2]:p[2]+1], edgecolor=color, lw=linewidth, alpha=.5)
         ax.get_yaxis().set_visible(False)
         for e in ['right','left','top']: ax.spines[e].set_visible(False)
         ax.spines['bottom'].set_linewidth(linewidth)
