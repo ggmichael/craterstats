@@ -244,7 +244,7 @@ class Craterplotset:
         self.fig=fig
         self.ax=ax
 
-        # set up coordinate transformations
+# set up coordinate transformations
         a2d=ax.transAxes + ax.transData.inverted()
         self.axis_to_data = a2d.transform
         self.data_to_axis = a2d.inverted().transform
