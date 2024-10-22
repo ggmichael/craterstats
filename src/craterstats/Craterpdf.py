@@ -19,7 +19,7 @@ class Craterpdf:
 
     """
 
-    def __init__(self, pf,cf,cc,d_range,k=None,bcc=False,n_samples=3000):
+    def __init__(self, pf,cf,cc,d_range,k=None,bcc=False,n_samples=5000):
         """
         :param pf: Productionfn object
         :param cf: Chronologyfn object
@@ -84,7 +84,7 @@ class Craterpdf:
         """
         return self.t([.5, .1586, .8413])  # median/1-sigma gaussian-equivalent percentiles
 
-    def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3, violin=False):
+    def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
         """
         Set up uncertainty distribution plot
 
@@ -99,6 +99,7 @@ class Craterpdf:
         linewidth=.5 * pt_size / 9
         t=self.t([.003,.16,.5,.84,.997])
         p=np.searchsorted(self.ts,t)-1
+
 
         if not logscale:
             if t_range:
@@ -130,18 +131,11 @@ class Craterpdf:
             xt_label = [cst.str_age(e, simple=True) for e in xt]
             ax.set_xscale('log')
 
-        if violin:
-            reflectx = lambda x: np.concatenate([x, x[::-1]])
-            reflecty = lambda x: np.concatenate([x, -x[::-1]])
-            ax.plot(reflectx(self.ts), reflecty(self.pdf),lw=linewidth *1.5, color=color)
-            ax.fill_between(reflectx(self.ts[p[1]:p[3]]), reflecty(self.pdf[p[1]:p[3]]), 0, color=color, alpha=0.35, edgecolor=color,
-                            lw=linewidth)  # '.7'
-            ax.fill_between(reflectx(self.ts[p[2]:p[2] + 1]), reflecty(self.pdf[p[2]:p[2] + 1]), edgecolor=color, lw=linewidth, alpha=.5)
-        else:
-            ax.plot(self.ts, self.pdf, lw=linewidth * 1.5, color=color)
-            ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0, color=color, alpha=0.35, edgecolor=color,
-                            lw=linewidth)  # '.7'
-            ax.fill_between(self.ts[p[2]:p[2] + 1], self.pdf[p[2]:p[2] + 1], edgecolor=color, lw=linewidth, alpha=.5)
+
+        ax.plot(self.ts, self.pdf, lw=linewidth * 1.5, color=color)
+        ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0, color=color, alpha=0.35, edgecolor=color,
+                        lw=linewidth)  # '.7'
+        ax.fill_between(self.ts[p[2]:p[2] + 1], self.pdf[p[2]:p[2] + 1], edgecolor=color, lw=linewidth, alpha=.5)
 
         ax.patch.set_facecolor('none') # make region transparent over background graphics
         ax.get_yaxis().set_visible(False)
@@ -172,6 +166,32 @@ class Craterpdf:
         norm=edges/np.max(xt)
         offset=(1-norm[1])-.1 if left else -norm[0]+.1
         return offset
+
+    def violin_plot(self,ax,y,w0,pt_size=9,color='0',invert=False):
+        """
+        Set up uncertainty distribution plot
+
+        :param ax: matplotlib axes object
+        :param pt_size: character point size
+        :param color: colour
+        :return: none
+        """
+        linewidth=.4 * pt_size / 9
+        t=self.t([.0001,.16,.5,.84,.9999])
+        p=np.searchsorted(self.ts,t)-1
+
+        w = .9*w0/max(self.pdf)
+
+        ax.fill_between(self.ts[p[0]:p[4]], y + w * self.pdf[p[0]:p[4]], y - w * self.pdf[p[0]:p[4]],
+                        color='black' if invert else 'white',
+                        edgecolor=color, lw=linewidth * 1.5, zorder=4)
+
+        ax.fill_between(self.ts[p[1]:p[3]], y + w * self.pdf[p[1]:p[3]], y - w * self.pdf[p[1]:p[3]],
+                        color=gm.mix_colours(color,'black' if invert else 'white',0.35),
+                        edgecolor=color,lw=linewidth, zorder=4)
+
+        ax.fill_between(self.ts[p[2]:p[2] + 1], y + w * self.pdf[p[2]:p[2] + 1], y - w * self.pdf[p[2]:p[2] + 1],
+                        edgecolor=color, lw=linewidth, alpha=.5, zorder=4)
 
 
 
