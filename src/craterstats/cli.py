@@ -35,19 +35,22 @@ class LoadFromFile(argparse.Action):
     def __call__ (self, parser, namespace, values, option_string = None):
         with values as f:
             # parse arguments in the file and store them in the target namespace
-            parser.parse_args(f.read().split(), namespace)
+            a=f.read()
+            a=('\n').join([e for e in a.split('\n') if e[0]!='#']) #remove '#' commented lines
+            parser.parse_args(a.split(), namespace)
             setattr(namespace, self.dest, True)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
+    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
+    #latter is used for demo. Maybe switch demo to use .cs files, too?
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
-    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
 
     parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
@@ -73,7 +76,7 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
     parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
 
-    parser.add_argument("-print_dim", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8", nargs=1)
+    parser.add_argument("-print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8") #, nargs=1)
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
@@ -126,7 +129,7 @@ def construct_cps_dict(args,c,f,default_filename):
     if 'presentation' in vars(args):
         if args.presentation is not None:
             cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
+    if cpset['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
         cpset['xrange'] = cst.DEFAULT_XRANGE[cpset['presentation']]
         cpset['yrange'] = cst.DEFAULT_YRANGE[cpset['presentation']]
     cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
@@ -323,7 +326,7 @@ def main(args0=None):
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
-    if cpl:
+    if cpl and cps_dict['presentation'] in ['cumulative', 'differential', 'R-plot']:
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 

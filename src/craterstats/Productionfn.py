@@ -203,7 +203,7 @@ class Productionfn:
                 func, sigma = self.F10, 1 / np.sqrt(err)
 
         popt, pcov = sc.curve_fit(func, np.log10(d), np.log10(y),sigma=sigma)
-        a0=popt[0]-[0,np.log10(y[0])-np.log10(y[0]-.99*err[0]),np.log10(y[0])-np.log10(y[0]+.99*err[0])]
+        a0=popt[0]-[0,np.log10(y[0])-np.log10(y[0]-.98*err[0]),np.log10(y[0])-np.log10(y[0]+.98*err[0])]
         return a0
 
 

@@ -98,6 +98,39 @@ class Epochs:
                             bbox=dict(facecolor='none', edgecolor='none', pad=50))
 
 
+    def sequence_oplot(self,cps):
+        """
+        Overplot epoch system on a sequence plot
+
+        :param cps: Craterplotset instance
+        :return: none
+        """
+
+        label_slant, colour, offset, boundary = self.decode_formatting()
+
+        for j in [0, 1] if cps.crossover else [0]:
+
+            for i,(t0,t1) in enumerate(zip(self.time[1:],self.time[2:])):  # fill epoch regions
+                cps.ax2[j].fill_between([t0,t1],[0,0],[1,1], color=cps.grey[3-colour[i+1]], edgecolor=None, lw=0)
+
+            for i, t in enumerate(self.time[1:]):  # add dividing lines
+                cps.ax2[j].plot([t,t], [0,1], color=gm.mix_colours(cps.grey[0],'white' ,1 if boundary[i] else .3),
+                                lw=.4 if boundary[i] else .3)
+
+            t0 = sorted(self.time + [cps.t_min,cps.t_max])[1:] #lower limit substitutes correct place in seq
+
+            for i,e in enumerate(self.epoch): # write epoch names
+                lbl=[a[0] for a in re.split(' |-',e)]
+                lbl=lbl[0].lower()+lbl[1] if len(lbl)==2 else lbl[0]
+                if j==0:
+                    t = (t0[i] + t0[i + 1]) / 2
+                else:
+                    t = np.sqrt(t0[i] * t0[i + 1])
+                cps.ax2[j].text(t, .01, lbl, horizontalalignment='center',
+                                size=cps.scaled_pt_size * .5, clip_on=True)
+
+
+
     def oplot(self,cps):
         """
         Overplot epoch system on crater count plot

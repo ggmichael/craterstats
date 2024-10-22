@@ -83,7 +83,42 @@ class Craterplotset:
                      ):
                 v = int(v)
             setattr(self, k, v)
-        
+
+
+    def EstablishFontandScaling(self):
+        # set up font and scaled font size
+
+        plt.style.use(('default', 'dark_background')[self.invert])
+
+        desired_font = ['Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
+        available_font = gm.mpl_check_font(desired_font)
+        scale_factor = {'Myriad Pro': 1.,
+                       'Verdana': .83,
+                       'DejaVu Sans': .83,
+                       'Tahoma': .93,
+                       }[available_font]
+        self.scaled_pt_size = self.pt_size * scale_factor
+
+        plt.rc('font', family=available_font, size=self.scaled_pt_size)
+        plt.rc('mathtext', fontset='custom', rm=available_font, bf=available_font + ':bold',
+              cal=available_font + ':italic')
+
+        tw = .4 * self.sz_ratio
+        plt.rcParams.update({
+            'legend.fontsize': 'x-small',
+            'legend.title_fontsize': 'small',
+            'axes.labelsize': self.scaled_pt_size * .9,
+            'axes.titlesize': 'small',
+            'xtick.labelsize': 'medium',
+            'ytick.labelsize': 'medium',
+            'axes.titlepad': self.scaled_pt_size * 1.,
+            'axes.linewidth': tw,
+            'xtick.major.width': tw,
+            'xtick.minor.width': tw,
+            'ytick.major.width': tw,
+            'ytick.minor.width': tw,
+        })
+
             
     def CreatePlotSpace(self):
         """
@@ -94,17 +129,16 @@ class Craterplotset:
         """
 
         if self.fig: del self.fig
+        self.EstablishFontandScaling()
             
 #set up plot dimensions
-            
-        self.time_plot=self.presentation in ['chronology','rate']
-            
+
         def f(x): return np.clip(gm.mag(x), 1, None)
         self.decades=f(self.xrange),f(self.yrange)
 
         self.data_aspect=(
             2                                 if self.presentation=='differential' else
-            self.decades[1]/self.decades[0]   if self.presentation=='Hartmann' or self.time_plot else
+            self.decades[1]/self.decades[0]   if self.presentation in ['Hartmann','chronology', 'rate'] else
             1
             )            
             
@@ -116,13 +150,13 @@ class Craterplotset:
             min(np.clip(plot_dims*np.array([1,self.data_aspect]),1,None)/self.decades)
             )
                 
-        randomness_plot=int(self.randomness and not self.time_plot) #boolean as 0,1
+        randomness_plot=int(self.randomness and not self.presentation in ['chronology', 'rate']) #boolean as 0,1
         margin=self.pt_size*.2  #plot margin in cm
         xsize=self.decades[0]*self.print_scale+2*margin #in cm
 
         ysize=(
             xsize+self.print_scale*randomness_plot  if self.presentation=='Hartmann' else
-            xsize                                   if self.time_plot else
+            xsize                                   if self.presentation in ['chronology', 'rate'] else
             (randomness_plot+self.decades[1]/self.data_aspect)*self.print_scale+2*margin
             )
               
@@ -130,27 +164,13 @@ class Craterplotset:
         position_randomness=margin*np.array([1,ysize/margin-.8-randomness_plot,xsize/margin-2,ysize/margin-2]) #cm - not yet used
         normalised_position=self.position/np.array([xsize,ysize,xsize,ysize])  #pos, width for matplotlib axes
 
-# set up font and scaled font size
 
-        plt.style.use(('default', 'dark_background')[self.invert])
-
-        desired_font=['Myriad Pro','Verdana','DejaVu Sans','Tahoma'] # in order of preference
-        available_font= gm.mpl_check_font(desired_font)
-        scale_factor = {'Myriad Pro':1.,
-                        'Verdana':.83,
-                        'DejaVu Sans':.83,
-                        'Tahoma':.93,
-                        }[available_font]
-        self.scaled_pt_size=self.pt_size*scale_factor
-
-        plt.rc('font', family=available_font, size = self.scaled_pt_size)
-        plt.rc('mathtext', fontset ='custom', rm=available_font, bf=available_font+':bold', cal=available_font+':italic')
 
 # set up titles, tick marks, and tick labels
 
         nonroot2=False in [cp.binning=='root-2' for cp in self.craterplot]
 
-        xtitle="Age, Ga" if self.time_plot else 'Diameter'
+        xtitle="Age, Ga" if self.presentation in ['chronology', 'rate'] else 'Diameter'
         ytitle={
             'cumulative':   'Cumulative crater density, km$^{-2}$',           
             'differential': 'Differential crater density, km$^{-3}$',
@@ -164,9 +184,9 @@ class Craterplotset:
 
         xminor=xmajor=xtickv=None
         add_xminorlogticks=False
-        xtick_labelsize='medium'
+
  
-        if self.time_plot:
+        if self.presentation in ['chronology', 'rate']:
             xminor, xmajor = .5, 1
         else:
             if self.style=='root-2' or self.presentation=='Hartmann':                
@@ -177,7 +197,7 @@ class Craterplotset:
                 xtickv,xtickname = map(list,zip(*[(val,txt) for val,txt in zip(v,labels) if val>=self.xrange[0] and val<=self.xrange[1]]))
                 if xtickv[0]<0: xtickname[0]+='m'
                 xminor=(xtickv[1]-xtickv[0])/2
-                xtick_labelsize=self.scaled_pt_size*.75
+                plt.rcParams.update({'xtick.labelsize':self.scaled_pt_size*.75})
                 
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
@@ -186,23 +206,6 @@ class Craterplotset:
                 add_xminorlogticks=True
 
 #create layout
-
-        tw=.4*self.sz_ratio
-        plt.rcParams.update({
-            'legend.fontsize':      'x-small',
-            'legend.title_fontsize':'small',
-            'axes.labelsize':       self.scaled_pt_size*.9,
-            'axes.titlesize':       'small',
-            'xtick.labelsize':      xtick_labelsize,
-            'ytick.labelsize':      'medium',
-            'axes.titlepad':        self.scaled_pt_size*1.,
-            'axes.linewidth':tw,
-            'xtick.major.width':tw,
-            'xtick.minor.width':tw,
-            'ytick.major.width':tw,
-            'ytick.minor.width':tw,
-        })
-
 
         fig = mfig.Figure(figsize=[xsize*self.cm2inch,ysize*self.cm2inch],dpi=200) # bypass pyplot figure manager (causes issues, and not needed for non-interactive)
 
@@ -251,6 +254,124 @@ class Craterplotset:
         self.axis_to_fig = (ax.transAxes + fig.transFigure.inverted()).transform
      
 
+    def create_sequence_plotspace(self):
+        """
+        Set up and draw sequence plot
+        """
+
+        if self.fig: del self.fig
+        self.EstablishFontandScaling()
+
+        # set up plot dimensions
+
+        margin = self.pt_size * .2  # plot margin in cm
+        xsize, ysize = [float(e)+2*margin for e in self.print_dimensions.split('x')]
+
+
+        self.position = margin * np.array([1, 1, xsize / margin - 2, ysize / margin - 2])  # cm
+
+        def f(x): return np.clip(gm.mag(x), 1, None)
+        self.decades=f(self.xrange),f(self.yrange)
+
+        self.t_max = np.clip(max(self.xrange), 1e-8, 4.5)
+        self.t_min = np.clip(min(self.xrange), 0., 3.5)
+
+        if self.t_min<1 and self.t_min !=0:
+            self.t_min=10**np.floor(np.log10(self.t_min))
+            self.crossover = True
+        else:
+            self.crossover = False
+
+
+        if self.crossover:
+            t_crossover = 3.
+            log_t_min = np.log10(self.t_min)
+
+            dec2lin = 0.7
+            lin_units = max(self.t_max - t_crossover, 0) / dec2lin
+            log_units = np.log10(t_crossover) - log_t_min
+
+            xtickv = [3., 3.5, 4.]
+
+        else:
+            t_crossover = self.t_min
+            lin_units = 1
+            log_units = 0
+            xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
+
+        xticklabels = [str(e) for e in xtickv]
+        xticklabels[-1] +=' Ga'
+
+
+        xfrac_linear = lin_units / (lin_units + log_units)
+        width_linear = xfrac_linear * (xsize - margin * 2)
+        pos_linear = [margin, margin, width_linear, ysize - 2*margin]
+        pos_log = [margin + width_linear, margin, (1 - xfrac_linear) * (xsize - margin * 2), pos_linear[3]]
+        pos_all = [margin, margin, xsize - margin * 2, ysize - margin * 2]
+
+        fig = mfig.Figure(figsize=[xsize * self.cm2inch, ysize * self.cm2inch], dpi=500)
+
+        ax_lin = fig.add_axes(pos_linear / np.array([xsize, ysize, xsize, ysize]))
+        ax_log = fig.add_axes(pos_log / np.array([xsize, ysize, xsize, ysize]))
+        ax = fig.add_axes(pos_all / np.array([xsize, ysize, xsize, ysize]))
+
+        #ax_log
+        if self.crossover:
+            ax_log.set_xscale('log')
+            ax_log.set_xlim(left=t_crossover, right=10 ** log_t_min)
+            def xlogFuncFormatter(x, pos):
+                return cst.str_age(x, simple=True)
+
+            ax_log.xaxis.set_major_formatter(ticker.FuncFormatter(xlogFuncFormatter))
+
+            ax_log.xaxis.set_major_locator(ticker.LogLocator(numticks=999))
+            ax_log.xaxis.set_minor_locator(ticker.LogLocator(numticks=999, subs="auto"))
+
+            ax_log.tick_params(length=2, pad=1.5)
+            ax_log.tick_params(which='minor',length=1)
+
+            ax_log.get_yaxis().set_visible(False)
+
+            ax_log.spines[['left', 'right', 'top']].set_visible(False)
+            ax_log.set_ylim(bottom=0, top=1)
+
+            ax_log.plot(t_crossover,0,marker='x',clip_on=False,markeredgewidth=.3, markersize=self.pt_size*.3,color='black')
+        else:
+            ax_log.set_axis_off()
+
+
+        #ax_lin
+        ax_lin.set_xlim(left=self.t_max, right=t_crossover)
+        ax_lin.set_ylim(bottom=0, top=1)
+
+
+        ax_lin.set_xticks(xtickv, labels=xticklabels)
+        ax_lin.tick_params(length=2, pad=1.5)
+        ax_lin.tick_params(which='minor',length=1)
+        ax_lin.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
+
+        ax_lin.get_yaxis().set_visible(False)
+        ax_lin.spines[['left', 'right', 'top']].set_visible(False)
+
+
+        #ax_all
+        ax.get_yaxis().set_visible(False)
+        ax.get_xaxis().set_visible(False)
+        ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
+        ax.patch.set_facecolor('none')
+
+        # create layout
+
+        self.fig = fig
+        self.ax = ax
+        self.ax2 = (ax_lin,ax_log)
+
+        # set up coordinate transformations
+        a2d = ax.transAxes + ax.transData.inverted()
+        self.axis_to_data = a2d.transform
+        self.data_to_axis = a2d.inverted().transform
+        self.axis_to_fig = (ax.transAxes + fig.transFigure.inverted()).transform
+
 
     def draw(self):
         """
@@ -258,7 +379,11 @@ class Craterplotset:
 
         """
 
-        self.CreatePlotSpace()
+        if self.presentation=='sequence':
+            self.create_sequence_plotspace()
+            self.ep.sequence_oplot(self)
+        else:
+            self.CreatePlotSpace()
 
         N=self.pf.evaluate("cumulative",[self.ref_diameter,1.]) if self.pf else [1,1]
         ref_diam_ratio=N[0]/N[1]
@@ -266,13 +391,13 @@ class Craterplotset:
         if self.cite_functions:
             txt=''
             if self.ep: txt += "Epochs: " + self.ep.name + '\n'
-            if self.ef: txt += "EF: " + self.ef.name + '\n'
-            if not (self.time_plot and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
+            if self.ef and self.presentation not in ['sequence']: txt += "EF: " + self.ef.name + '\n'
+            if not (self.presentation in ['chronology', 'rate'] and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
             txt += "CF: " + self.cf.name
             #offset would be better specified in pts (1.5 * fontsize) [for many-decade plots]:
             self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
 
-        if self.time_plot:
+        if self.presentation in ['chronology', 'rate']:
             phi=self.presentation=='rate'
             if self.ep:
                 self.ep.chronology_oplot(self,phi=phi)
@@ -285,7 +410,7 @@ class Craterplotset:
             else:
                 self.ax.plot(t, y, color=self.palette[0], lw=1, marker=None)
 
-        else:
+        if self.presentation in ['cumulative', 'differential', 'R-plot', 'Hartmann']:
             if self.ep: #overplot epochs
                 self.ep.oplot(self)
             if self.ef:
@@ -294,7 +419,8 @@ class Craterplotset:
 
             if self.show_isochrons and self.isochrons:
                 self.plot_isochrons()
-            
+
+        if self.presentation in ['cumulative', 'differential', 'R-plot', 'Hartmann', 'sequence']:
             for cp in self.craterplot:
                 cp.overplot(self)
 
@@ -438,6 +564,9 @@ class Craterplotset:
                     v=('{:'+w+f+'}').format(d[k])
                 ln+=[v]
             print(' '.join(ln))
+
+
+
 
 
 

@@ -3,3 +3,4 @@
 
 from .ticks import ticks
 from .mpl_check_font import mpl_check_font
+from .mix_colours import mix_colours

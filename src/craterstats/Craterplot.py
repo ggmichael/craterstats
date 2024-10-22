@@ -17,7 +17,7 @@ class Craterplot:
         self.UpdateSettings({
             'cratercount':None, # if not provided, will create from 'source'
             'source':'',
-            'name':'',
+            'name':None,
             'range':np.array([0.,np.inf]),   #unconstrained
             'type':'data',
             'error_bars':1,
@@ -54,6 +54,8 @@ class Craterplot:
             self.cratercount = cst.Cratercount(self.source)
         if not self.source and self.cratercount:
             self.source = self.cratercount.filename
+        if not self.name and self.source:
+            self.name = gm.filename(self.source,"n")
 
 
     def calculate_age(self,cps):
@@ -99,9 +101,13 @@ class Craterplot:
         """
         if not self.cratercount or self.hide: return
 
+        if cps.presentation=='sequence':
+            self.overplot_sequence_element(cps)
+            return
+
         p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
-             resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
-             pf=cps.pf)
+            resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+            pf=cps.pf)
 
         self.n=p['n']
         self.n_event=p['n_event']
@@ -193,6 +199,50 @@ class Craterplot:
              pf=cps.pf)
         return gm.range(p['d']) + gm.range(p['y'])
 
+
+
+
+    def overplot_sequence_element(self,cps):
+        """
+        Add overplot sequence elements into figure
+
+        :param cps: Craterplotset instance
+        :return: none
+        """
+
+        p = self.cratercount.getplotdata('differential', self.binning, range=self.range,
+            resurfacing=None, pf=cps.pf)
+
+        self.n=p['n']
+        self.n_event=p['n_event']
+
+        if self.type in ['c-fit','d-fit','poisson','b-poisson']:
+
+            self.calculate_age(cps)
+
+            seq=[e for e in cps.craterplot if e.type != 'data']
+            n=len(seq)
+            i=[i for i,e in enumerate(seq) if e is self][0]
+            dy = (n - i) / (n+1)
+            w0 = 0.5/(n+1)
+            w = 0.3 * w0
+
+            lw = cps.scaled_pt_size / 16.
+
+            for j in [0, 1] if cps.crossover else [0]:
+
+                if self.type in ['poisson','b-poisson']:
+                    self.pdf.violin_plot(cps.ax2[j],dy,w0,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour],invert=cps.invert)
+
+                if self.type in ['d-fit','c-fit']:
+                    cps.ax2[j].fill_between([self.t[1], self.t[2]], [dy + w, dy + w], [dy - w, dy - w],
+                                            color=gm.mix_colours(cps.palette[self.colour],'black' if cps.invert else 'white',0.35),
+                                            edgecolor=cps.palette[self.colour],lw=lw,zorder=4)
+
+                    cps.ax2[j].plot([self.t[0], self.t[0]],
+                                    [dy + w, dy - w], color=cps.palette[self.colour], alpha=0.5, lw=lw*.7,zorder=4)
+
+            cps.ax2[0].text(cps.t_max, dy, self.name, fontsize=cps.scaled_pt_size*.75, ha='right', va='center')
 
 
 
