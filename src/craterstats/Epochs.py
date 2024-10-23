@@ -114,7 +114,7 @@ class Epochs:
                 cps.ax2[j].fill_between([t0,t1],[0,0],[1,1], color=cps.grey[3-colour[i+1]], edgecolor=None, lw=0)
 
             for i, t in enumerate(self.time[1:]):  # add dividing lines
-                cps.ax2[j].plot([t,t], [0,1], color=gm.mix_colours(cps.grey[0],'white' ,1 if boundary[i] else .3),
+                cps.ax2[j].plot([t,t], [0,1], color=gm.mix_colours(cps.grey[0], 'black' if cps.invert else 'white' ,1 if boundary[i] else .3),
                                 lw=.4 if boundary[i] else .3)
 
             t0 = sorted(self.time + [cps.t_min,cps.t_max])[1:] #lower limit substitutes correct place in seq
