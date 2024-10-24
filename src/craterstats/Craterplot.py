@@ -68,7 +68,6 @@ class Craterplot:
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
             self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'b-poisson')
-            #self.t=self.pdf.t([.5,.1586,.8413]) #median/1-sigma gaussian-equivalent percentiles
             self.t = self.pdf.median1sigma()  # median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
@@ -242,8 +241,11 @@ class Craterplot:
                     cps.ax2[j].plot([self.t[0], self.t[0]],
                                     [dy + w, dy - w], color=cps.palette[self.colour], alpha=0.5, lw=lw*.7,zorder=4)
 
-            cps.ax2[0].text(cps.t_max, dy, self.name, fontsize=cps.scaled_pt_size*.75, ha='right', va='center')
+            cps.ax.text(-.007, dy, self.name, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
 
+            if self.display_age:
+                st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu, no_error=False)
+                cps.ax.text(1.007, dy, st.split()[0], fontsize=cps.scaled_pt_size * .75, ha='left', va='center')
 
 
 

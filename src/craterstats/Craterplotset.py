@@ -355,6 +355,8 @@ class Craterplotset:
 
 
         #ax_all
+        ax.set_xlim(left=0, right=1)
+        ax.set_ylim(bottom=0, top=1)
         ax.get_yaxis().set_visible(False)
         ax.get_xaxis().set_visible(False)
         ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
@@ -566,8 +568,37 @@ class Craterplotset:
             print(' '.join(ln))
 
 
+    def create_sequence_table(self,f_csv):
+        """
+        Output table of sequence probabilities from sequence plot
 
+        :f_csv: filepath for csv output
+        :return: sequence table
+        """
 
+        show_self_comparison = False
+        cpl = [e for e in self.craterplot if e.type in ['poisson','buffered-poisson']]
+        n = len(cpl)
+        if n<2: return
+        s=[['' for i in range(n+1)] for j in range(n+1)]
+
+        for i in range(n):
+            cpl[i].calculate_age(self)
+            s[i][0]=cpl[i].name
+
+        for i in range(n):
+            for j in range(i if show_self_comparison else i+1,n):
+                P = cpl[i].pdf.calculate_sequence_probability(cpl[j].pdf)
+                s[i][j+1] = '{0:.4f}'.format(1.-P)
+                s[j][i+1] = '{0:.4f}'.format(P)
+
+        st='\n'.join(['prob(x>y),'+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
+
+        try:
+            gm.write_textfile(f_csv,st)
+        except:
+            print("Unable to write file: "+f_csv)
+            raise SystemExit(0)
 
 
 

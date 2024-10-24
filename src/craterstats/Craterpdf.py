@@ -196,3 +196,17 @@ class Craterpdf:
 
 
 
+    def calculate_sequence_probability(self,pdf2):
+        """
+        Calculate sequence probability with another Craterpdf object
+        
+        :param pdf2: another Craterpdf object
+        :return: probability that self older than pdf
+        """
+        # Discretisation of cdf biases result, since calculated for one edge, especially for narrow pdfs.
+        # Finding midpoint to fix:
+        cdf2=(pdf2.cdf+np.roll(pdf2.cdf, 1))/2.
+
+        P = np.sum(self.dt * self.pdf * cdf2)
+
+        return P
