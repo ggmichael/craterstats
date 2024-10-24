@@ -81,6 +81,8 @@ def get_parser():
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
 
+    parser.add_argument("-st","--sequence_table", help="generate sequence probability table", action='store_true')
+
     parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
                         help="specify overplot. Allowed keys:   \n"
                              "source=txt,"
@@ -332,6 +334,9 @@ def main(args0=None):
 
     if not args.input:
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
+
+    if args.sequence_table:
+        cps.create_sequence_table(cps_dict['out']+'.csv')
 
     drawn=False
     for f in cps.format:
