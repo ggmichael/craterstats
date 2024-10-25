@@ -4,6 +4,7 @@
 import sys
 
 import numpy as np
+import math
 from scipy.integrate import simps
 
 import matplotlib.pyplot as plt
@@ -76,13 +77,27 @@ class Craterpdf:
         """
         return np.interp(cum_fraction,self.cdf,self.ts)
 
+    def gaussian_percentiles(self,n=1):
+        """
+        Return ordered Gaussian n-sigma percentiles
+
+        :param n: max n-sigma
+        :return: ordered percentiles (as fractions)
+        """
+        g= [.5]
+        for i in range(1,n+1):
+            f = (1-math.erf(i/np.sqrt(2.)))/2
+            g = [f]+g+[1-f]
+        return g
+
     def median1sigma(self):
         """
         Return times for median and 1-sigma percentiles
 
         :return: times
         """
-        return self.t([.5, .1586, .8413])  # median/1-sigma gaussian-equivalent percentiles
+        g=self.gaussian_percentiles()
+        return self.t([g[i] for i in [1,0,2]])
 
     def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
         """
@@ -97,9 +112,8 @@ class Craterpdf:
             ax = plt.subplot(1,1,1)
 
         linewidth=.5 * pt_size / 9
-        t=self.t([.003,.16,.5,.84,.997])
+        t=self.t([.003]+self.gaussian_percentiles()+[.997])
         p=np.searchsorted(self.ts,t)-1
-
 
         if not logscale:
             if t_range:
@@ -210,3 +224,18 @@ class Craterpdf:
         P = np.sum(self.dt * self.pdf * cdf2)
 
         return P
+
+
+    # def calculate_instantaneous_probability_ratio(self, t):
+    #     """
+    #     Calculate probability ratio between pdf median and another time, t
+    #
+    #     :param t: other time, t
+    #     :return: probability ratio pr(t)/pr(median) [<= 1.]
+    #     """
+    #
+    #     numpy.interp(t, self.ts, self.pdf)
+    #
+    #     P =
+    #
+    #     return P
