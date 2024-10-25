@@ -576,6 +576,7 @@ class Craterplotset:
         :return: sequence table
         """
 
+        # calculate sequence table
         show_self_comparison = False
         cpl = [e for e in self.craterplot if e.type in ['poisson','buffered-poisson']]
         n = len(cpl)
@@ -593,6 +594,18 @@ class Craterplotset:
                 s[j][i+1] = '{0:.4f}'.format(P)
 
         st='\n'.join(['prob(x>y),'+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
+
+        # calculate probability of simultaneous formation vs median time formation
+
+        t = [cp.pdf.t(0.5) for cp in cpl]
+        t_mean= sum(t)/float(n)
+
+        pr_ratio = [cp.pdf.calculate_instantaneous_probability_ratio(t_mean) for cp in cpl]
+        pr = np.product(pr_ratio)
+
+        st += ('\nCompound likelihood of simultaneous formation at average time vs measured median times:\n'
+               +cst.str_age(t_mean,no_error=True,latex=False)+','
+               +'{0:.4f}'.format(pr))
 
         try:
             gm.write_textfile(f_csv,st)

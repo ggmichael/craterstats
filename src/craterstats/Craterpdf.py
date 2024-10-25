@@ -208,8 +208,6 @@ class Craterpdf:
                         edgecolor=color, lw=linewidth, alpha=.5, zorder=4)
 
 
-
-
     def calculate_sequence_probability(self,pdf2):
         """
         Calculate sequence probability with another Craterpdf object
@@ -220,22 +218,16 @@ class Craterpdf:
         # Discretisation of cdf biases result, since calculated for one edge, especially for narrow pdfs.
         # Finding midpoint to fix:
         cdf2=(pdf2.cdf+np.roll(pdf2.cdf, 1))/2.
-
         P = np.sum(self.dt * self.pdf * cdf2)
-
         return P
 
+    def calculate_instantaneous_probability_ratio(self, t):
+        """
+        Calculate probability ratio between pdf median and another time, t
 
-    # def calculate_instantaneous_probability_ratio(self, t):
-    #     """
-    #     Calculate probability ratio between pdf median and another time, t
-    #
-    #     :param t: other time, t
-    #     :return: probability ratio pr(t)/pr(median) [<= 1.]
-    #     """
-    #
-    #     numpy.interp(t, self.ts, self.pdf)
-    #
-    #     P =
-    #
-    #     return P
+        :param t: other time, t
+        :return: probability ratio pr(t)/pr(median) [usually <1. if median close to max]
+        """
+        v = np.interp([self.t(0.5),t], self.ts, self.pdf)
+        r = v[1]/v[0]
+        return r

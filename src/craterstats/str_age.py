@@ -3,7 +3,7 @@
 
 import craterstats.gm as gm
 
-def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False):
+def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False,latex=True):
     '''
     Convert numerical age in Ga to latex-style string, optionally with sub/superscript errors and mu uncertainty function
 
@@ -41,7 +41,7 @@ def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False):
     if mu:
         st='\mu'+st
       
-    if not simple:
+    if latex and not simple:
         st='$'+st+'$'
 
     st += ' '+a[1]
