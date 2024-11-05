@@ -219,7 +219,7 @@ class Craterplot:
 
             self.calculate_age(cps)
 
-            seq=[e for e in cps.craterplot if e.type != 'data']
+            seq=[e for e in cps.craterplot if e.type != 'data' and not e.hide]
             n=len(seq)
             i=[i for i,e in enumerate(seq) if e is self][0]
             dy = (n - i) / (n+1)
