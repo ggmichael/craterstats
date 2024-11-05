@@ -659,7 +659,7 @@ class Craterplotset:
         try:
             gm.write_textfile(f_csv,st)
         except:
-            print("Unable to write file: "+f_csv)
+            print(gm.bright("Unable to write file: ")+f_csv)
             raise SystemExit(0)
 
 
