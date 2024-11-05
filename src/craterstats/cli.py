@@ -38,6 +38,7 @@ class LoadFromFile(argparse.Action):
             a=f.read()
             a=('\n').join([e for e in a.split('\n') if e[0]!='#']) #remove '#' commented lines
             parser.parse_args(a.split(), namespace)
+            if not namespace.out: namespace.out=gm.filename(f.name,'pn')
             setattr(namespace, self.dest, True)
 
 def get_parser():
