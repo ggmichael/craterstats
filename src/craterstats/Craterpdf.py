@@ -20,16 +20,16 @@ class Craterpdf:
 
     """
 
-    def __init__(self, pf,cf,cc,d_range,k=None,bcc=False,n_samples=5000):
+    def __init__(self, pf,cf,cc,d_range,k=None,lam=None,bcc=False,n_samples=5000):
         """
         :param pf: Productionfn object
         :param cf: Chronologyfn object
         :param cc: Cratercount object
         :param d_range: diameter range (km)
         :param k: number of craters in range (normally not required - calculated from cc)
+        :param lam: lambda for 1 Ga (if wish to force value, e.g. for probability calculation)
         :param bcc: buffered crater count?
         :param n_samples: number of samples for likelihood curve
-
         """
 
         x=np.linspace(-10, 5, n_samples) #additive change to a0 (equidistant in fitting space)
@@ -48,22 +48,24 @@ class Craterpdf:
             q = np.where(b['d_min'] >= d_range[0] and b['d_max'] <= d_range[1])
             self.k = np.sum(b['.n_event'][q])
 
-        if bcc: #buffered count
-            if cc.perimeter is None:
-                sys.exit('Error: buffered-poisson calculation requires polygon perimeter in source file')
-            ns=500 #samples of PF for integration
-            d=np.linspace(d_range[0], d_range[1], ns)
-            F=pf.F(d,a0)
-            y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/8.)*F
-            I1=simps(y,d)
-            lam=I1
-        else: #standard count
-            Ncum=pf.evaluate("cumulative",d_range,a0)
-            Ninc=(Ncum[0]-Ncum[1])*cc.area # no expected on area with phi(1 Ga)
-            lam=Ninc
+        if not lam:
+            if bcc: #buffered count
+                if cc.perimeter is None:
+                    sys.exit('Error: buffered-poisson calculation requires polygon perimeter in source file')
+                ns=500 #samples of PF for integration
+                d=np.linspace(d_range[0], d_range[1], ns)
+                F=pf.F(d,a0)
+                y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/8.)*F
+                I1=simps(y,d)
+                lam=I1
+            else: #standard count
+                Ncum=pf.evaluate("cumulative",d_range,a0)
+                Ninc=(Ncum[0]-Ncum[1])*cc.area # no expected on area with phi(1 Ga)
+                lam=Ninc
 
         pdf0 = gm.poisson(self.k, lam * 10 ** x)
         pdf0 = pdf0.astype(float)
+        self.lam = lam
         self.pdf = pdf0/np.sum(pdf0*self.dt)
         self.cdf = np.cumsum(self.pdf*self.dt)
 
@@ -76,6 +78,24 @@ class Craterpdf:
         :return: times
         """
         return np.interp(cum_fraction,self.cdf,self.ts)
+
+    def cumulative_fraction(self,t):
+        """
+        Return interpolated percentile for time
+
+        :param t: time, Ga
+        :return: cum_fraction
+        """
+        return np.interp(t,self.ts,self.cdf)
+
+    def relative_probability(self,t):
+        """
+        Return relative_probability for time
+
+        :param t: time, Ga
+        :return: relative_probability
+        """
+        return np.interp(t,self.ts,self.pdf)
 
     def gaussian_percentiles(self,n=1):
         """
@@ -98,6 +118,7 @@ class Craterpdf:
         """
         g=self.gaussian_percentiles()
         return self.t([g[i] for i in [1,0,2]])
+
 
     def plot(self,ax=None,pt_size=9,color='0',t_range=[],logscale=False, max_ticks=3):
         """
@@ -231,3 +252,17 @@ class Craterpdf:
         v = np.interp([self.t(0.5),t], self.ts, self.pdf)
         r = v[1]/v[0]
         return r
+
+    # def calculate_mean_relative_likelihood(self, t):
+    #     """
+    #     experimental
+    #     want mean relative likelihood over pdf if given median t (area stays same, n now unknown)
+    #
+    #
+    #     :return: probability that self older than pdf
+    #     """
+    #     #have to create new pdf, since lambda changed...
+    #
+    #     mrl = np.sum(pdf2**2/median_pdf2*pdf2.dt)
+    #
+    #     return mrl

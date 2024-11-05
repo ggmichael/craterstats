@@ -1,5 +1,6 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
+import copy
 
 import numpy as np
 
@@ -578,7 +579,7 @@ class Craterplotset:
 
         # calculate sequence table
         show_self_comparison = False
-        cpl = [e for e in self.craterplot if e.type in ['poisson','buffered-poisson']]
+        cpl = [e for e in self.craterplot if e.type in ['poisson','buffered-poisson'] and not e.hide]
         n = len(cpl)
         if n<2: return
         s=[['' for i in range(n+1)] for j in range(n+1)]
@@ -593,19 +594,67 @@ class Craterplotset:
                 s[i][j+1] = '{0:.4f}'.format(1.-P)
                 s[j][i+1] = '{0:.4f}'.format(P)
 
-        st='\n'.join(['prob(x>y),'+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
+        st='Table of probability that t(x)>t(y)\n'+'\n'.join([','+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
 
         # calculate probability of simultaneous formation vs median time formation
 
         t = [cp.pdf.t(0.5) for cp in cpl]
         t_mean= sum(t)/float(n)
 
-        pr_ratio = [cp.pdf.calculate_instantaneous_probability_ratio(t_mean) for cp in cpl]
-        pr = np.product(pr_ratio)
+        st += '\nTimes:,'+','.join(['{0:.3g}'.format(tt) for tt in t])
+        st += '\nt_mean:,'+'{0:.4g}'.format(t_mean)
 
-        st += ('\nCompound likelihood of simultaneous formation at average time vs measured median times:\n'
-               +cst.str_age(t_mean,no_error=True,latex=False)+','
-               +'{0:.4f}'.format(pr))
+        # pr_ratio = [cp.pdf.calculate_instantaneous_probability_ratio(t_mean) for cp in cpl]
+        # pr = np.product(pr_ratio)
+        #
+        # st += ('\nProb ratios - formation at t_mean instead of measured:\n,'
+        #        +','.join(['{0:.4f}'.format(pr) for pr in pr_ratio]) )
+        #
+        # st += ('\nCompound likelihood of simultaneous formation at average time vs measured median times:\n'
+        #        +cst.str_age(t_mean,no_error=True,latex=False)+','+'{0:.4f}'.format(pr) )
+
+        # second calculation of same
+
+        lam_ratio = [self.cf.N1(t_mean)/self.cf.N1(tt) for tt,cp in zip(t,cpl)]
+
+        # st += ('\nlambda ratios:\n,'
+        #        +','.join(['{0:.4f}'.format(e) for e in lam_ratio]) )
+
+        pdf2 = [cst.Craterpdf(self.pf,self.cf,cp.cratercount,cp.range,k=cp.pdf.k,lam=cp.pdf.lam/lr) for lr,cp in zip(lam_ratio,cpl)]
+
+        # pr_ratio2 = [pdf.calculate_instantaneous_probability_ratio(tt) for tt,pdf in zip(t,pdf2)]
+        #
+        # st += ('\nProb ratios2 - formation at t_measured if expected t_mean:\n,'
+        #        +','.join(['{0:.4f}'.format(pr) for pr in pr_ratio2]) )
+
+        # fraction beyond percentile
+        # percentile = [pdf.cumulative_fraction(tt) for tt,pdf in zip(t,pdf2)]
+        # beyond = [2*p if p<.5 else 2*(1-p) for p in percentile]
+        #
+        # st += ('\nPercentiles from t_mean:\n,'
+        #        +','.join(['{0:.4f}'.format(pr) for pr in percentile]) )
+        # st += ('\nProb beyond t from t_mean:\n,'
+        #        +','.join(['{0:.4f}'.format(e) for e in beyond]) )
+        #
+        # pr = np.product(beyond)
+        # pr0 = 0.5**n
+        #
+        # st += ('\nCompound prob beyond t_i from t_mean, compound prob beyond 50%:\n,'
+        #        +','.join(['{0:.4f}'.format(e) for e in [pr,pr0]]) )
+
+        # combined pdf
+
+        pdf3 = copy.deepcopy(pdf2[0])
+        pdf3.pdf = np.product([e.pdf for e in pdf2],0)
+
+        rel_probs =  [e.relative_probability(t0) for e,t0 in zip(pdf2,t)]
+        compound_prob = np.product(rel_probs)
+
+        worse = np.where(pdf3.pdf < compound_prob, pdf3.dt * pdf3.pdf, 0)
+        prob_worse = sum(worse)/sum(pdf3.dt * pdf3.pdf)
+
+        st += ('\n\nProbability of more distant time configuration than observed if all surfaces formed at t_mean:\n,'
+               +'{0:.4f}'.format(prob_worse) )
 
         try:
             gm.write_textfile(f_csv,st)
