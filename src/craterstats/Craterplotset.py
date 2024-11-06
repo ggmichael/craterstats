@@ -654,7 +654,7 @@ class Craterplotset:
         prob_worse = sum(worse)/sum(pdf3.dt * pdf3.pdf)
 
         st += ('\n\nProbability of more distant time configuration than observed if all surfaces formed at t_mean:\n,'
-               +'{0:.4f}'.format(prob_worse) )
+               +'{0:g}'.format(prob_worse) )
 
         try:
             gm.write_textfile(f_csv,st)
