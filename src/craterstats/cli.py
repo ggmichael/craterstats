@@ -36,7 +36,7 @@ class LoadFromFile(argparse.Action):
         with values as f:
             # parse arguments in the file and store them in the target namespace
             a=f.read()
-            a=('\n').join([e for e in a.split('\n') if e[0]!='#']) #remove '#' commented lines
+            a=('\n').join([e for e in a.split('\n') if e.strip() and (e+' ')[0]!='#'] ) #remove '#' commented lines
             parser.parse_args(a.split(), namespace)
             if not namespace.out: namespace.out=gm.filename(f.name,'pn')
             setattr(namespace, self.dest, True)
@@ -322,6 +322,7 @@ def main(args0=None):
     cp_dicts = construct_plot_dicts(args, c)
     default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
     cps_dict = construct_cps_dict(args, c, f, default_filename)
+
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
