@@ -127,7 +127,7 @@ class Epochs:
                 else:
                     t = np.sqrt(t0[i] * t0[i + 1])
                 cps.ax2[j].text(t, .01, lbl, horizontalalignment='center',
-                                size=cps.scaled_pt_size * .6, clip_on=True)
+                                size=cps.scaled_pt_size * .55, clip_on=True)
 
 
 
