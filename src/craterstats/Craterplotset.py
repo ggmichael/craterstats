@@ -615,12 +615,12 @@ class Craterplotset:
 
         # second calculation of same
 
-        lam_ratio = [self.cf.N1(t_mean)/self.cf.N1(tt) for tt,cp in zip(t,cpl)]
+        lam_ratio = [self.cf.N1(tt)/self.cf.N1(t_mean) for tt,cp in zip(t,cpl)]
 
         # st += ('\nlambda ratios:\n,'
         #        +','.join(['{0:.4f}'.format(e) for e in lam_ratio]) )
 
-        pdf2 = [cst.Craterpdf(self.pf,self.cf,cp.cratercount,cp.range,k=cp.pdf.k,lam=cp.pdf.lam/lr) for lr,cp in zip(lam_ratio,cpl)]
+        pdf2 = [cst.Craterpdf(self.pf,self.cf,cp.cratercount,cp.range,k=cp.pdf.k,lam=cp.pdf.lam*lr) for lr,cp in zip(lam_ratio,cpl)]
 
         # pr_ratio2 = [pdf.calculate_instantaneous_probability_ratio(tt) for tt,pdf in zip(t,pdf2)]
         #
