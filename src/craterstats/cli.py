@@ -112,12 +112,13 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
         return np.clip(int(v) - int(one_based), 0, len(s))
     except: # otherwise abbreviation...
         regex = '(?i)' + '.*'.join(v)
-        res = [i for i,e in enumerate(s) if re.search(regex, e) is not None]
+        res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
+        res.sort(key=lambda x: len(x[1]))
         if len(res) == 0:
             sys.exit('Invalid abbreviation: ' + v)
         elif len(res) > 1 and not allow_ambiguous:
             sys.exit('Ambiguous abbreviation: ' + v)
-        return res[0]
+        return res[0][0]
 
 
 def construct_cps_dict(args,c,f,default_filename):
@@ -155,7 +156,7 @@ def construct_cps_dict(args,c,f,default_filename):
                 cpset[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
                 names = [e['name'] for e in f[k]]
-                cpset[k]=f[k][decode_abbreviation(names, v, one_based=True)]['name']
+                cpset[k]=f[k][decode_abbreviation(names, v, one_based=True, allow_ambiguous=True)]['name']
 
             elif k == 'out':
                 if os.path.isdir(v):
