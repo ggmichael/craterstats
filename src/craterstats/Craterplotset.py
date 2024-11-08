@@ -591,8 +591,8 @@ class Craterplotset:
         for i in range(n):
             for j in range(i if show_self_comparison else i+1,n):
                 P = cpl[i].pdf.calculate_sequence_probability(cpl[j].pdf)
-                s[i][j+1] = '{0:.4f}'.format(1.-P)
-                s[j][i+1] = '{0:.4f}'.format(P)
+                s[i][j+1] = gm.sigfigs(1.-P,2)
+                s[j][i+1] = gm.sigfigs(P,2)
 
         st='Table of probability that t(x)>t(y)\n'+'\n'.join([','+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
 
