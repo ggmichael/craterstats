@@ -25,11 +25,6 @@ We recommend the following procedure for installation on Windows, MacOS or Linux
    pip install craterstats
    ```
 
-## Advanced users
-
-If you intend to add the `craterstats` package to an existing conda environment, it is recommended
-first to installing the requirements with conda and then finish with the pip install.
-
  
 # Quick demonstration
 
@@ -99,7 +94,7 @@ The complete set of options can be seen with:
 
     craterstats --help
 
-To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=craterstats/sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only when you wish to introduce a different source file do you need to specify it again. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
+To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=C:\tmp\area1.scc` in the first overplot, this becomes the default for subsequent overplots. Only when you wish to introduce a different source file do you need to specify it again. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
 
 # Examples
