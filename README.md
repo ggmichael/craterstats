@@ -148,8 +148,8 @@ techniques for presentation and analysis of crater size–frequency data.</i>](h
 
 Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.
 
-A set of introductory slides to methods and an earlier version of the software is [here](https://github.com/ggmichael/craterstats/tree/main/docs/2012-06%20USGS%20Flagstaff%20Workshop),
-and some on this version [here](https://github.com/ggmichael/craterstats/tree/main/docs/). Note that some command details have changed since those slides were written.
+A set of introductory slides to the methods and an earlier version of the software is [here](https://github.com/ggmichael/craterstats/tree/main/docs),
+as well an update on this python version. Note that some command syntax has changed since the slides were produced.
 
 
 
