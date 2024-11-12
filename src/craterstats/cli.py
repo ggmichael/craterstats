@@ -273,7 +273,7 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
 
 def main(args0=None):
     args = get_parser().parse_args(args0)
-    if not args0: args0=str(sys.argv[1:])
+    if not args0: args0=sys.argv[1:]
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
@@ -328,7 +328,7 @@ def main(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not e[1].isdigit() else ' '+e for e in args0])[1:])
+        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     drawn=False
     for f in cps.format:
