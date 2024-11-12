@@ -274,7 +274,6 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=str(sys.argv[1:])
-    print(args0)
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
