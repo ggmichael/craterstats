@@ -2,7 +2,10 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 from importlib.metadata import version
-VERSION_NUM = version("craterstats")
+try:
+    VERSION_NUM = version("craterstats")
+except:
+    VERSION_NUM = 'none'
 
 import numpy as np
 import matplotlib.path as mpath
