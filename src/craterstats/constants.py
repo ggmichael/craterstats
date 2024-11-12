@@ -5,7 +5,7 @@ from importlib.metadata import version
 try:
     VERSION_NUM = version("craterstats")
 except:
-    VERSION_NUM = 'none'
+    VERSION_NUM = 'non-distro version'
 
 import numpy as np
 import matplotlib.path as mpath
