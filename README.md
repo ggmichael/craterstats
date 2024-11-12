@@ -27,8 +27,8 @@ We recommend the following procedure for installation on Windows, MacOS or Linux
 
 ## Advanced users
 
-If you intend to add the `craterstats` package to your existing conda environment, we recommend
-first installing the requirements with conda and then finishing with the pip install.
+If you intend to add the `craterstats` package to an existing conda environment, it is recommended
+first to installing the requirements with conda and then finish with the pip install.
 
  
 # Quick demonstration
@@ -67,13 +67,19 @@ There are two parts to creating a Craterstats plot:
 
 2. Specify the data to be overplotted, and which chronology model evaluations should be applied to it
 
-In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies chronology system 4, *Mars, Neukum-Ivanov (2001)* , and the `-title Example plot` adds the chosen title.
+In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies the chronology system, *Mars, Neukum-Ivanov (2001)* 
+(any unambiguous abbreviation is acceptable), and the `-title Example plot` adds the chosen title.
 
 The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given (note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -title Example plot -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
-By default, an output file is created in the current folder with the name `out.png`. The output path or name can be set with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
+An plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. Supported types are: png, jpg, tif, pdf, svg, txt.
+
+An additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Sometimes it may be convenient 
+to edit this file to modify the plot, which can then be regenerated with the shorter command:
+
+    craterstats -i Pickering.cs
 
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
 
@@ -87,11 +93,14 @@ Numbered tables of plot symbols and colours – which can be used with the `psym
 
 and can likewise be specified by index or abbreviation, e.g. `psym=1`, `psym=circle` or `psym=o` all select a circle; `colour=2`, `colour=green` or `colour=gr` select green.  
 
-Differential plots are produced by default. To switch to a different kind, e.g. cumulative, add `-pr 1` or `-pr cum` to the part 1 settings. Other possibilities are: 3 - relative (R), 4 - Hartmann, 5 - chronology, 6 - rate.
+Differential plots are produced by default. To switch to a different kind, e.g. cumulative, add `-pr 1` or `-pr cumulative` to the part 1 settings. Other possibilities are: 3 - relative (R), 4 - Hartmann, 5 - chronology, 6 - rate.
 
 The complete set of options can be seen with:
 
     craterstats --help
+
+To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=craterstats/sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only when you wish to introduce a different source file do you need to specify it again. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
+
 
 # Examples
 
@@ -101,7 +110,7 @@ Differential plot with Poisson age evaluations, equilibrium function, and epoch 
 
 Differential plot with two differential fit age evaluations
 
-    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+    craterstats -cs NI2001 -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
 
 Differential age fits with 10/decade binning
 
@@ -111,14 +120,6 @@ Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
-
-# Additional information
-
-The useable chronology systems, equilibrium functions and epoch systems are defined in the text file `config/functions.txt`. User functions may be added here, following the same format.
-
-There is a text file `config/default.plt` which contains the default plot settings. This may be modified to suit the choices you use most often.
-
-To simplify the construction of the command line, certain plot properties are 'sticky'. If, for example, you specify `source=craterstats/sample/Pickering.scc` in the first overplot, this becomes the default for subsequent overplots. Only if you wish to introduce a different source file do you need to specify it again. This applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
 # References
 
