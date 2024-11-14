@@ -402,6 +402,8 @@ class Craterplotset:
                 d.update({k: getattr(cp.cratercount, k, None) for k in {'area'} })
                 s+=[d]
 
+        if not s: return
+
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
