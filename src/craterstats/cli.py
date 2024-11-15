@@ -81,7 +81,7 @@ def get_parser():
     parser.add_argument("--transparent", help="set transparent background", action='store_true')
     #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
 
-    parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8") #, nargs=1)
+    parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
