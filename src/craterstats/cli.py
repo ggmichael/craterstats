@@ -54,7 +54,7 @@ def get_parser():
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
 
     parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
-    #is this one obsolete?
+    #not needed any more. Can remove with use of default.plt
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
 
