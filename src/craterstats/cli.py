@@ -42,18 +42,23 @@ def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
+    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
+    #latter is used for demo. Maybe switch demo to use .cs files, too?
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
-    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
 
     parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
+    #not needed any more. Can remove with use of default.plt
+
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
+
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
+    #this is now default behaviour if axes not specified
+
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
-    parser.add_argument("--transparent", help="set transparent background", action='store_true')
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
@@ -71,12 +76,17 @@ def get_parser():
     parser.add_argument("-cite_functions", choices=['0','1'], help="1 - show; 0 - suppress")
     parser.add_argument("-mu", choices=['0','1'], help="1 - show; 0 - suppress")
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
-    parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
 
-    parser.add_argument("-print_dim", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8", nargs=1)
+    parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
+    parser.add_argument("--transparent", help="set transparent background", action='store_true')
+    #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
+
+    parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8") #, nargs=1)
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
+
+    parser.add_argument("-st","--sequence_table", help="generate sequence probability table", action='store_true')
 
     parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
                         help="specify overplot. Allowed keys:   \n"
