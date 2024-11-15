@@ -601,8 +601,8 @@ class Craterplotset:
         t = [cp.pdf.t(0.5) for cp in cpl]
         t_mean= sum(t)/float(n)
 
-        st += '\nTimes:,'+','.join(['{0:.3g}'.format(tt) for tt in t])
-        st += '\nt_mean:,'+'{0:.4g}'.format(t_mean)
+        st += '\nt_median:,'+','.join(['{0:.3g}'.format(tt) for tt in t])
+        st += '\nmean(t_median):,'+'{0:.4g}'.format(t_mean)
 
         # pr_ratio = [cp.pdf.calculate_instantaneous_probability_ratio(t_mean) for cp in cpl]
         # pr = np.product(pr_ratio)
