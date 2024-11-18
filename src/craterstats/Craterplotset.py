@@ -301,7 +301,7 @@ class Craterplotset:
             xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
 
         xticklabels = [str(e) for e in xtickv]
-        xticklabels[-1] +=' Ga'
+        xticklabels[-1] += ' Ga'
 
 
         xfrac_linear = lin_units / (lin_units + log_units)

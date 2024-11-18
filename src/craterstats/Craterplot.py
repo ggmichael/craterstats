@@ -110,7 +110,6 @@ class Craterplot:
 
         self.n=p['n']
         self.n_event=p['n_event']
-        legend_label = []
 
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.7*cps.sz_ratio,ecolor=cps.grey[0])
@@ -153,6 +152,16 @@ class Craterplot:
                     ax = cps.fig.add_axes(pos3)
                     self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour])
 
+        legend_label=self.make_legend_label(cps)
+        cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
+                    **cps.marker_def[self.psym],ls='',color=cps.palette[self.colour])
+
+
+
+    def make_legend_label(self,cps):
+        legend_label = []
+
+        if self.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
             if 'c' in cps.legend:
                 if self.cratercount.buffered:
                     legend_label += ['{:.1f}'.format(self.n_event)]
@@ -171,7 +180,6 @@ class Craterplot:
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
 
-
         if self.type=='data':
             if 'n' in cps.legend:
                 legend_label+=[self.name if self.name!='' else gm.filename(self.source, "n")]
@@ -181,9 +189,7 @@ class Craterplot:
                 if self.cratercount.perimeter:
                     legend_label += ['$' + gm.scientific_notation(self.cratercount.perimeter, sf=3) + '$ km']
 
-        cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
-                    **cps.marker_def[self.psym],ls='',color=cps.palette[self.colour])
-
+        return legend_label
 
 
     def get_data_range(self,cps):
@@ -243,9 +249,11 @@ class Craterplot:
 
             cps.ax.text(-.007, dy, self.name, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
 
+            lbl = self.make_legend_label(cps)
             if self.display_age:
-                st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu, no_error=False)
-                cps.ax.text(1.007, dy, st.split()[0], fontsize=cps.scaled_pt_size * .75, ha='left', va='center')
+                lbl = [(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu, no_error=False))] + lbl
+
+            if lbl: cps.ax.text(1.007, dy, '\n'.join(lbl), fontsize=cps.scaled_pt_size * .75, ha='left', va='center')
 
 
 
