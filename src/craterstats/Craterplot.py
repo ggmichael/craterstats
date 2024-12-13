@@ -179,6 +179,9 @@ class Craterplot:
                 legend_label += [cst.str_diameter_range(r)]
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
+            if cps.presentation == 'sequence':
+                if 'a' in cps.legend:
+                    legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
 
         if self.type=='data':
             if 'n' in cps.legend:
