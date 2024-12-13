@@ -384,7 +384,7 @@ class Craterplotset:
 
         if self.presentation=='sequence':
             self.create_sequence_plotspace()
-            self.ep.sequence_oplot(self)
+            if self.ep: self.ep.sequence_oplot(self)
         else:
             self.CreatePlotSpace()
 
