@@ -18,7 +18,7 @@ class Cratercount:
         self.filename=filename
         filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
 
-        self.binning=None                                                                   #current binning
+        self.binning=None                                                                 #current binning
         self.binned={}
         self.perimeter=None
         self.buffered=False
@@ -166,7 +166,12 @@ class Cratercount:
 # ;                 File writers
 # ;****************************************************
 
-    def WriteStatFile(self,filename):
+    def WriteStatFile(self,filename,binning='pseudo-log'):
+
+        if not self.prebinned:
+            if self.binning != binning:
+                self.apply_binning(binning)
+
         out=['# Craterstats3 exported stat file',\
              '#--------------------------------',\
              '#','# Source: '+self.filename,'# Binning: '+self.binning,\
@@ -177,19 +182,20 @@ class Cratercount:
         a=self.area
         b=self.binned
 
-        for i,v in enumerate(b['n']):
-            s=(format(b['d_min'][i],'<7.5g')+
-               format(b['n'][i],'>11.5g')+
-               format(b['n'][i]/a,'>13.3E')+
-               format(b['n'][i]/a/np.sqrt(b['n'][i]),'>12.3E')+
-               format(b['ncum'][i],'>11.5g')+
-               format(b['ncum'][i]/a,'>13.3E')+
-               format(b['ncum'][i]/a/np.sqrt(b['ncum'][i]),'>12.3E')+
-               format(b['d_mean'][i],'>12.4g')+
-               format(b['n'][i]/b['bin_width'][i]/a,'>12.3E')+
-               format(b['n'][i]/b['bin_width'][i]/a/np.sqrt(b['n_event'][i]),'>12.3E')+
-               format(b['n_event'][i],'>12.5g'))
-            out+=[s]
+        for i in range(len(b['d_min'])):
+            if b['n'][i]>0:
+                s=(format(b['d_min'][i],'<7.5g')+
+                   format(b['n'][i],'>11.5g')+
+                   format(b['n'][i]/a,'>13.3E')+
+                   format(b['n'][i]/a/np.sqrt(b['n'][i]),'>12.3E')+
+                   format(b['ncum'][i],'>11.5g')+
+                   format(b['ncum'][i]/a,'>13.3E')+
+                   format(b['ncum'][i]/a/np.sqrt(b['ncum'][i]),'>12.3E')+
+                   format(b['d_mean'][i],'>12.4g')+
+                   format(b['n'][i]/b['bin_width'][i]/a,'>12.3E')+
+                   format(b['n'][i]/b['bin_width'][i]/a/np.sqrt(b['n_event'][i]),'>12.3E')+
+                   format(b['n_event'][i],'>12.5g'))
+                out+=[s]
 
         out+=['#------------------------------------------------------------------------------------------------------------------------------']
         gm.write_textfile(filename, out)
