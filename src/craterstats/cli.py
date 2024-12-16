@@ -58,7 +58,7 @@ def get_parser():
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     #this is now default behaviour if axes not specified
 
-    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
+    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt','stat'])
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
@@ -349,6 +349,12 @@ def main(args0=None):
             cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent)
         if f in {'txt'}:
             cps.create_summary_table()
+        if f in {'stat'}:
+            stat_files=set([(e.source,e.binning) for e in cpl])
+            for stat in stat_files:
+                cc=cst.Cratercount(stat[0])
+                cc.WriteStatFile(gm.filename(stat[0],"n12", '_'+stat[1],".stat"),stat[1])
+
 
 if __name__ == '__main__': 
     main()
