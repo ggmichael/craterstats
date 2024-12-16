@@ -6,9 +6,9 @@ This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool t
 # Installation
 
 The `craterstats` package is available through the Python Package Index (PyPi).
-We recommend the following procedure for installation on Windows, MacOS or Linux:
+The following procedure for installation on Windows, MacOS or Linux is recommended:
 
-1. Install `conda` via the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS. 
+1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS. 
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
   
     ```
