@@ -19,7 +19,10 @@ class AppendPlotDict(argparse.Action):
         s=' '.join(values)
         d = {}
         for kv in re.split(',(?=\w+=)',s): # only split on commas directly preceding keys
-            k, v = kv.split("=")
+            try:
+                k, v = kv.split("=")
+            except:
+                sys.exit('Syntax error: ' + option_string+' '+kv)
             if k in ('range','offset_age'):
                 v= gm.read_textstructure(kv, from_string=True)[k]
             d[k] = v
