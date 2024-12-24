@@ -250,7 +250,8 @@ class Craterplot:
                     cps.ax2[j].plot([self.t[0], self.t[0]],
                                     [dy + w, dy - w], color=cps.palette[self.colour], alpha=0.5, lw=lw*.7,zorder=4)
 
-            cps.ax.text(-.007, dy, self.name, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
+            text = '\n'.join(gm.strip_quotes(self.name).split(r'\n')) #clear quotes and substitute real linebreaks
+            cps.ax.text(-.007, dy, text, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
 
             lbl = self.make_legend_label(cps)
             if self.display_age:
