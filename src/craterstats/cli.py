@@ -205,6 +205,7 @@ def construct_plot_dicts(args, c):
     plot = c['plot']
     if type(plot) is list: plot=plot[0] #take only first plot entry as template
     cpl = []
+    valid_source = False
     if args.plot is None: return []
     for d in args.plot:
         p=plot.copy()
@@ -213,10 +214,9 @@ def construct_plot_dicts(args, c):
                 p[k] = cpl[-1][k]
             if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
                 p['type'] = cpl[-1]['type']
-        else:
-            if not ('source' in d or 'src' in d): sys.exit('Source not specified')
 
-        for k,v in d.items():
+        for k0,v in d.items():
+            k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
             if k in (
                     'name',
                     'range',
@@ -231,9 +231,10 @@ def construct_plot_dicts(args, c):
                     'offset_age',
                     ):
                 p[k]=v
-            elif k in ('source','src'):
+            elif k == 'source':
                 v = v.replace('%sample%/', cst.PATH+'sample/')
                 p['source']=v.strip('"')
+                valid_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'colour':
@@ -246,6 +247,8 @@ def construct_plot_dicts(args, c):
                 else: # look for arbitrary abbreviation or index
                     names = [e[1] for e in cst.MARKERS]
                     p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
+
+        if not valid_source: sys.exit('Source not specified')
 
         p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
