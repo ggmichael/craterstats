@@ -182,6 +182,9 @@ class Craterplot:
             if cps.presentation == 'sequence':
                 if 'a' in cps.legend:
                     legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
+                if 'A' in cps.legend:
+                    legend_label+=[(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs,
+                                            mu=cps.mu, no_error=False))]
 
         if self.type=='data':
             if 'n' in cps.legend:
@@ -254,9 +257,6 @@ class Craterplot:
             cps.ax.text(-.007, dy, text, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
 
             lbl = self.make_legend_label(cps)
-            if self.display_age:
-                lbl = [(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu, no_error=False))] + lbl
-
             if lbl: cps.ax.text(1.007, dy, '\n'.join(lbl), fontsize=cps.scaled_pt_size * .75, ha='left', va='center')
 
 
