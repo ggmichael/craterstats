@@ -37,7 +37,8 @@ class Craterplot:
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
         for k, v in a.items():
-            if k in ('range', 'offset_age'): v = [float(e) for e in v]
+            if k in ('range', 'offset_age'):
+                v = [float(e) for e in v]
             if k in ('error_bars',
                      'hide',
                      'age_left',
