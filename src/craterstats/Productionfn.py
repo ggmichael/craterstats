@@ -1,6 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import sys
 import numpy as np
 import scipy.optimize as sc
 
@@ -201,6 +202,8 @@ class Productionfn:
                 func, sigma = self.C10, 1 / np.sqrt(y)
             elif p['presentation'] == 'differential':
                 func, sigma = self.F10, 1 / np.sqrt(err)
+
+        if not y: sys.exit('Cannot fit to empty range')
 
         popt, pcov = sc.curve_fit(func, np.log10(d), np.log10(y),sigma=sigma)
         a0=popt[0]-[0,np.log10(y[0])-np.log10(y[0]-.99*err[0]),np.log10(y[0])-np.log10(y[0]+.99*err[0])]

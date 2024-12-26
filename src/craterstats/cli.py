@@ -23,8 +23,6 @@ class AppendPlotDict(argparse.Action):
                 k, v = kv.split("=")
             except:
                 sys.exit('Syntax error: ' + option_string+' '+kv)
-            if k in ('range','offset_age'):
-                v= gm.read_textstructure(kv, from_string=True)[k]
             d[k] = v
         list_of_d = getattr(namespace, self.dest)
         list_of_d=[d] if list_of_d is None else list_of_d+[d]
@@ -222,7 +220,6 @@ def construct_plot_dicts(args, c):
             k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
             if k in (
                     'name',
-                    'range',
                     'error_bars',
                     'hide',
                     'binning',
@@ -231,9 +228,10 @@ def construct_plot_dicts(args, c):
                     'resurf',
                     'resurf_showall',
                     'isochron',
-                    'offset_age',
                     ):
                 p[k]=v
+            elif k in ('range','offset_age'):
+                p[k] = v.strip('[]').split(',')
             elif k == 'source':
                 v = v.replace('%sample%/', cst.PATH+'sample/')
                 p['source']=v.strip('"')
