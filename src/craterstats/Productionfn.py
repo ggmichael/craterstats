@@ -192,8 +192,12 @@ class Productionfn:
         :return: a0 tuple: (fit, lower, upper)
         '''
         y, d, err = p['y'], p['d'], p['err']
-        if type(y) is np.ndarray and y.size==1:
-            y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
+
+        if type(y) is np.ndarray:
+            if y.size == 0:
+                sys.exit('Cannot fit to empty range')
+            if y.size==1:
+                y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
         if isinstance(y, (np.floating, float)): #allow to call with single values for conversion
             y,d,err=np.array([y,y]),np.array([d,d]),np.array([err,err])
 
@@ -202,8 +206,6 @@ class Productionfn:
                 func, sigma = self.C10, 1 / np.sqrt(y)
             elif p['presentation'] == 'differential':
                 func, sigma = self.F10, 1 / np.sqrt(err)
-
-        if not y: sys.exit('Cannot fit to empty range')
 
         popt, pcov = sc.curve_fit(func, np.log10(d), np.log10(y),sigma=sigma)
         a0=popt[0]-[0,np.log10(y[0])-np.log10(y[0]-.99*err[0]),np.log10(y[0])-np.log10(y[0]+.99*err[0])]
