@@ -51,7 +51,7 @@ class Craterplotset:
             'sig_figs':3,
             'randomness':0,
             'mu':1,
-            'invert':0,          
+            'invert':0,
             'show_title':1,
             'show_subtitle':1, 
             },*args,kwargs)
@@ -237,9 +237,9 @@ class Craterplotset:
             ax.set_xticks(xtickv)
             ax.set_xticklabels(xtickname)                
         
-        ax.set_title(title)
-        ax.set_xlabel(xtitle)
-        ax.set_ylabel(ytitle)
+        if title not in ('','\n'):ax.set_title(title) #change when subtitle removed
+        if ytitle != '':ax.set_xlabel(xtitle)
+        if ytitle != '':ax.set_ylabel(ytitle)
 
         self.fig=fig
         self.ax=ax

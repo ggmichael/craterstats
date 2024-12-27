@@ -79,8 +79,9 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
     parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
-    parser.add_argument("--transparent", help="set transparent background", action='store_true')
+    parser.add_argument("-transparent", help="set transparent background", action='store_true')
     #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
+    parser.add_argument("-tight", help="tight layout", action='store_true')
 
     parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
@@ -350,7 +351,8 @@ def main(args0=None):
             if not drawn:
                 cps.draw()
                 drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent)
+            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent,
+                            bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
         if f in {'txt'}:
             cps.create_summary_table()
         if f in {'stat'}:
