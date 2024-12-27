@@ -45,7 +45,7 @@
 
 -cs neukumivanov -invert 1 -title Plot with inverted colour -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
--cs neukumivanov --transparent -title Plot with transparent background -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=violet,offset_age=[2,-3]
+-cs neukumivanov -transparent -title Plot with transparent background -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=violet,offset_age=[2,-3]
 
 -cs neukumivanov -title Plot with left-positioned age annotation -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=blue,age_left=1
 
