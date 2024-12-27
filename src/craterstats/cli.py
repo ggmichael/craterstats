@@ -37,6 +37,7 @@ class LoadFromFile(argparse.Action):
         with values as f:
             # parse arguments in the file and store them in the target namespace
             parser.parse_args(f.read().split(), namespace)
+            namespace.input_filename=f.name
             setattr(namespace, self.dest, True)
 
 def get_parser():
@@ -329,7 +330,10 @@ def main(args0=None):
         return
 
     cp_dicts = construct_plot_dicts(args, c)
-    default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+    if args.input:
+        default_filename = gm.filename(args.input_filename,'n')
+    else:
+        default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
     cps_dict = construct_cps_dict(args, c, f, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
