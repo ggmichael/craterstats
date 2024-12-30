@@ -65,9 +65,15 @@ There are two parts to creating a Craterstats plot:
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies the chronology system, *Mars, Neukum-Ivanov (2001)* 
 (any unambiguous abbreviation is acceptable), and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given (note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
+The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given 
+(note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, 
+an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -title Example plot -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
+
+Sometimes it is useful to be able to specify the diameter range in terms of the plotted data points. Here we plot from the 8th to the 5th from last bins:
+
+    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[b8,b-5]
 
 A plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. 
 Supported types are: png, jpg, tif, pdf, svg, txt, stat (multiple types can be specified, e.g. `-f png txt`)
@@ -81,15 +87,16 @@ Tables of chronology systems, equilibrium functions and epoch systems – which 
 
     craterstats -lcs
 
-These items may specifed by their index number, e.g. `-cs 4`, or using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` is equivalent to `-ef 1` 
+These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` will obtain equilibrium function 1. 
 
-Numbered tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
+Tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
     craterstats -lpc
 
-and can likewise be specified by index or abbreviation, e.g. `psym=1`, `psym=circle` or `psym=o` all select a circle; `colour=2`, `colour=green` or `colour=gr` select green.  
+and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `colour=gr` select green.  
 
-Differential plots are produced by default. To switch to a different kind, e.g. cumulative, add `-pr 1` or `-pr cumulative` to the part 1 settings. Other possibilities are: 3 - relative (R), 4 - Hartmann, 5 - chronology, 6 - rate.
+Differential plots are produced by default. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml` to the part 1 settings. 
+Other possibilities are: relative (R), Hartmann, chronology, or rate.
 
 The complete set of options can be seen with:
 
