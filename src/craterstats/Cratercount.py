@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import itertools as it
 import re
+import sys
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -200,6 +201,7 @@ class Cratercount:
         out+=['#------------------------------------------------------------------------------------------------------------------------------']
         gm.write_textfile(filename, out)
 
+# ;****************************************************
 
     def generate_bins(self,binning,d,offset=0.,expand=True):
         '''
@@ -278,6 +280,38 @@ class Cratercount:
                      'ncum_event':np.flip(np.cumsum(np.flip(h_event)))
                      }
         self.binning=binning
+
+    def decode_range(self,range,binning):
+        if not self.prebinned:
+            if self.binning != binning:
+                self.apply_binning(binning)
+
+        r1 = [0.,0.]
+        q = np.where(self.binned['n'] > 0)
+        for i,r in enumerate(range):
+            try:
+                if isinstance(r, float):
+                    r1[i]=r
+                elif r[0]=='b':
+                    v=int(r[1:])
+                    v=np.clip(v,-len(q[0]),len(q[0]))
+                    if v>0:
+                        v-=1
+                    r1[i]=self.binned['d_mean'][q[0][v]]
+                else:
+                    r1[i]=float(r)
+            except:
+                sys.exit('Range limit error: ' + r)
+
+        if r1[1] < r1[0]: r1[1]=r1[0]
+
+        if self.binning != 'none':
+            if r1[0]>0:
+                r1[0] = self.binned['d_min'][np.searchsorted(self.binned['d_min'],r1[0]*(1.0000001))-1]
+            if r1[1] <= self.binned['d_max'][-1]-1e-7:
+                r1[1] = self.binned['d_max'][np.searchsorted(self.binned['d_max'],r1[1]*(0.999999))]
+
+        return r1
 
 
 # ;****************************************************

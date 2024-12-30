@@ -121,17 +121,16 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     :return: index (zero-based)
     """
 
-    try:  # if v contains index
-        return np.clip(int(v) - int(one_based), 0, len(s))
-    except: # otherwise abbreviation...
-        regex = '(?i)' + '.*'.join(v)
-        res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
-        res.sort(key=lambda x: len(x[1]))
-        if len(res) == 0:
-            sys.exit('Invalid abbreviation: ' + v)
-        elif len(res) > 1 and not allow_ambiguous:
-            sys.exit('Ambiguous abbreviation: ' + v)
-        return res[0][0]
+    #perhaps add back index selection requiring # prefix?
+
+    regex = '(?i)' + '.*'.join(v)
+    res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
+    res.sort(key=lambda x: len(x[1]))
+    if len(res) == 0:
+        sys.exit('Invalid abbreviation: ' + v)
+    elif len(res) > 1 and not allow_ambiguous:
+        sys.exit('Ambiguous abbreviation: ' + v)
+    return res[0][0]
 
 
 def construct_cps_dict(args,c,f,default_filename):
@@ -224,7 +223,6 @@ def construct_plot_dicts(args, c):
                     'name',
                     'error_bars',
                     'hide',
-                    'binning',
                     'age_left',
                     'display_age',
                     'resurf',
@@ -240,6 +238,9 @@ def construct_plot_dicts(args, c):
                 valid_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
+            elif k == 'binning':
+                p[k] = cst.Cratercount.BINNINGS[decode_abbreviation(cst.Cratercount.BINNINGS, v, allow_ambiguous=True)]
+                cst.Cratercount.BINNINGS
             elif k == 'colour':
                 names=[n for c1,c2,n in cst.PALETTE]
                 p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
