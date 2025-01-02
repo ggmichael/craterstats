@@ -53,18 +53,11 @@
 
 -f pdf -cs neukumivanov -title Plot in PDF format -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=blue,offset_age=[2,-3]
 
-# output age data as text
--f txt -title Age evaluation output as text -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red,offset_age=[2,-3]
-
-# output age data as text
--f txt -title Age evaluation output as text -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red,offset_age=[2,-3]
-
-# output age poisson data as text
--f txt -title Age evaluation output as text -cs neukumivanov -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1
+# list plot symbol and colour options
+-lpc
 
 # list supported chronology systems, equilibrium functions and epoch systems
 -lcs
 
-# list plot symbol and colour options
--lpc
+
 
