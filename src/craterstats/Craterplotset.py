@@ -420,7 +420,7 @@ class Craterplotset:
                  ('n_d', '8', '.2e', ('N({:0g})'.format(self.ref_diameter),)),
                  ('source', '', '', None),
                  ('Latex', '', '', None),
-                 ('MathML', '', '', ["MathML [copy-paste into Word using 'paste as text' or CTRL-SHIFT-V]"]))
+                 ('MathML', '', '', ["Word [copy-paste using 'paste as text' or CTRL-SHIFT-V]"]))
 
         ln = []
         for k, w, f, t in table:

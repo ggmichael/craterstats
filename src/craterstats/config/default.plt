@@ -22,7 +22,7 @@ set={
   style='natural'
   subtitle=''
   title=''
-  format=['png']
+  format=['png','csv']
 }
 
 plot={
