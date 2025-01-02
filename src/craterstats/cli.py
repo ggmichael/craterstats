@@ -60,7 +60,7 @@ def get_parser():
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     #this is now default behaviour if axes not specified
 
-    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt','stat'])
+    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','csv','stat'])
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
@@ -300,15 +300,15 @@ def main(args0=None):
     s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
     if gm.file_exists(functions_user):
         s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
-    f = gm.read_textstructure(s,from_string=True)
+    fm = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['chronology_system'])]))
+        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['chronology_system'])]))
         print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['equilibrium'])]))
+        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['equilibrium'])]))
         print(gm.bright("\nEpoch systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['epochs'])]))
+        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['epochs'])]))
         return
 
     if args.lpc:
@@ -335,7 +335,7 @@ def main(args0=None):
         default_filename = gm.filename(args.input_filename,'n')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-    cps_dict = construct_cps_dict(args, c, f, default_filename)
+    cps_dict = construct_cps_dict(args, c, fm, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
@@ -351,16 +351,16 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     drawn=False
-    for f in cps.format:
-        if f in {'png','jpg','pdf','svg','tif'}:
+    for fm in cps.format:
+        if fm in {'png','jpg','pdf','svg','tif'}:
             if not drawn:
                 cps.draw()
                 drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent,
+            cps.fig.savefig(cps_dict['out']+'.'+fm, dpi=500, transparent=args.transparent,
                             bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
-        if f in {'txt'}:
-            cps.create_summary_table()
-        if f in {'stat'}:
+        if fm in {'csv'}:
+            cps.create_summary_table(f_out=cps_dict['out']+'.'+fm)
+        if fm in {'stat'}:
             stat_files=set([(e.source,e.binning) for e in cpl])
             for stat in stat_files:
                 cc=cst.Cratercount(stat[0])

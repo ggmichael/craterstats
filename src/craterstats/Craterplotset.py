@@ -2,6 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
+import sys
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -388,7 +389,7 @@ class Craterplotset:
         self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
         self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
 
-    def create_summary_table(self):
+    def create_summary_table(self,f_out=None):
         """
         Output table of Craterplot age calculations to stdout
 
@@ -405,6 +406,7 @@ class Craterplotset:
 
         if not s: return
 
+        # w now obsolete in this table (width)
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
@@ -420,13 +422,11 @@ class Craterplotset:
 
         ln = []
         for k, w, f, t in table:
-            if k!='name': w='>'+w.lstrip('>')
             if t is not None:
-                v = ' '.join([('{:' + w + '}').format(e) for e in t])
+                ln += list(t)
             else:
-                v = ('{:' + w + '}').format(k)
-            ln += [v]
-        print(' '.join(ln))
+                ln += [k]
+        st = ','.join(ln)
 
         for d in s:
             ln=[]
@@ -434,11 +434,22 @@ class Craterplotset:
                 if k=='name' and d[k]=='':
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
-                    v=' '.join([('{:'+w+f+'}').format(e) for e in d[k]])
+                    v=','.join([('{:'+f+'}').format(e) for e in d[k]])
                 else:
-                    v=('{:'+w+f+'}').format(d[k])
+                    v=('{:'+f+'}').format(d[k])
                 ln+=[v]
-            print(' '.join(ln))
+            st += '\n'+','.join(ln)
+
+        if f_out:
+            try:
+                gm.write_textfile(f_out, st)
+            except:
+                sys.exit(gm.bright("Unable to write file: ") + f_out)
+
+        return st
+
+
+
 
 
 
