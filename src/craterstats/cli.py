@@ -359,7 +359,7 @@ def main(args0=None):
             cps.fig.savefig(cps_dict['out']+'.'+fm, dpi=500, transparent=args.transparent,
                             bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
         if fm in {'csv'}:
-            cps.create_summary_table(f_out=cps_dict['out']+'_summary.'+fm)
+            cps.create_summary_table(f_out=cps_dict['out']+'.'+fm)
         if fm in {'stat'}:
             stat_files=set([(e.source,e.binning) for e in cpl])
             for stat in stat_files:
