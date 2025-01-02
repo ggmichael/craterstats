@@ -345,7 +345,7 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     if args.sequence_table:
-        cps.create_sequence_table(cps_dict['out']+'.csv')
+        cps.create_sequence_table(cps_dict['out']+'_sequence.csv')
 
     drawn=False
     for f in cps.format:

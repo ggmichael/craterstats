@@ -604,43 +604,10 @@ class Craterplotset:
         st += '\nt_median:,'+','.join(['{0:.3g}'.format(tt) for tt in t])
         st += '\nmean(t_median):,'+'{0:.4g}'.format(t_mean)
 
-        # pr_ratio = [cp.pdf.calculate_instantaneous_probability_ratio(t_mean) for cp in cpl]
-        # pr = np.product(pr_ratio)
-        #
-        # st += ('\nProb ratios - formation at t_mean instead of measured:\n,'
-        #        +','.join(['{0:.4f}'.format(pr) for pr in pr_ratio]) )
-        #
-        # st += ('\nCompound likelihood of simultaneous formation at average time vs measured median times:\n'
-        #        +cst.str_age(t_mean,no_error=True,latex=False)+','+'{0:.4f}'.format(pr) )
-
         # second calculation of same
 
         lam_ratio = [self.cf.N1(tt)/self.cf.N1(t_mean) for tt,cp in zip(t,cpl)]
-
-        # st += ('\nlambda ratios:\n,'
-        #        +','.join(['{0:.4f}'.format(e) for e in lam_ratio]) )
-
         pdf2 = [cst.Craterpdf(self.pf,self.cf,cp.cratercount,cp.range,k=cp.pdf.k,lam=cp.pdf.lam*lr) for lr,cp in zip(lam_ratio,cpl)]
-
-        # pr_ratio2 = [pdf.calculate_instantaneous_probability_ratio(tt) for tt,pdf in zip(t,pdf2)]
-        #
-        # st += ('\nProb ratios2 - formation at t_measured if expected t_mean:\n,'
-        #        +','.join(['{0:.4f}'.format(pr) for pr in pr_ratio2]) )
-
-        # fraction beyond percentile
-        # percentile = [pdf.cumulative_fraction(tt) for tt,pdf in zip(t,pdf2)]
-        # beyond = [2*p if p<.5 else 2*(1-p) for p in percentile]
-        #
-        # st += ('\nPercentiles from t_mean:\n,'
-        #        +','.join(['{0:.4f}'.format(pr) for pr in percentile]) )
-        # st += ('\nProb beyond t from t_mean:\n,'
-        #        +','.join(['{0:.4f}'.format(e) for e in beyond]) )
-        #
-        # pr = np.product(beyond)
-        # pr0 = 0.5**n
-        #
-        # st += ('\nCompound prob beyond t_i from t_mean, compound prob beyond 50%:\n,'
-        #        +','.join(['{0:.4f}'.format(e) for e in [pr,pr0]]) )
 
         # combined pdf
 
@@ -659,8 +626,8 @@ class Craterplotset:
         try:
             gm.write_textfile(f_csv,st)
         except:
-            print(gm.bright("Unable to write file: ")+f_csv)
-            raise SystemExit(0)
+            sys.exit(gm.bright("Unable to write file: ")+f_csv)
+
 
 
 
