@@ -418,7 +418,9 @@ class Craterplotset:
                  ('t', '7', '.3g', ('age','age-','age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
                  ('n_d', '8', '.2e', ('N({:0g})'.format(self.ref_diameter),)),
-                 ('source', '', '', None))
+                 ('source', '', '', None),
+                 ('Latex', '', '', None),
+                 ('MathML', '', '', ["MathML [copy-paste into Word using 'paste as text' or CTRL-SHIFT-V]"]))
 
         ln = []
         for k, w, f, t in table:
@@ -435,6 +437,9 @@ class Craterplotset:
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
                     v=','.join([('{:'+f+'}').format(e) for e in d[k]])
+                elif k in ('Latex','MathML'):
+                    a = d['t']
+                    v = cst.str_age(a[0], a[0] - a[1], a[2] - a[0], mu=self.mu, MathML = k=='MathML')
                 else:
                     v=('{:'+f+'}').format(d[k])
                 ln+=[v]
@@ -446,7 +451,7 @@ class Craterplotset:
             except:
                 sys.exit(gm.bright("Unable to write file: ") + f_out)
 
-        return st
+        return st #for test routine
 
 
 
