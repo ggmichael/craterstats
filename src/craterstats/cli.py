@@ -60,7 +60,7 @@ def get_parser():
     parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     #this is now default behaviour if axes not specified
 
-    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','csv','stat'])
+    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
@@ -352,7 +352,7 @@ def main(args0=None):
 
     drawn=False
     for fm in cps.format:
-        if fm in {'png','jpg','pdf','svg','tif'}:
+        if fm in {'png','pdf','svg','tif'}:
             if not drawn:
                 cps.draw()
                 drawn=True
