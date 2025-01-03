@@ -294,11 +294,12 @@ def main(args0=None):
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
-    functions_user = cst.PATH + 'config/functions_user.txt'
 
     c = gm.read_textstructure(template if args.template is None else args.template)
     s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
-    if gm.file_exists(functions_user):
+
+    functions_user = os.environ.get('FUNCTIONS_USER')
+    if functions_user:
         s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
     fm = gm.read_textstructure(s,from_string=True)
 
