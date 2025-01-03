@@ -123,6 +123,9 @@ Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
+# Manual
+[Read the full documentation](docs/manual.md)
+
 
 # References
 
