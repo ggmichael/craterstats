@@ -68,8 +68,7 @@ def get_parser():
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
     parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
-    parser.add_argument("-pr", "--presentation", help="data presentation: "
-                        + (', ').join([str(i + 1) + '-' + e for i, e in enumerate(cst.PRESENTATIONS)]))
+    parser.add_argument("-pr", "--presentation", help="data presentation: " + (', ').join(cst.PRESENTATIONS))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
