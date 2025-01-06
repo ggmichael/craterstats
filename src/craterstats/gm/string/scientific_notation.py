@@ -21,7 +21,8 @@ def scientific_notation(v,e1=None,e2=0,sf=3,force=False, MathML=False, unit=None
 
     u = ('', '')
     if unit is not None: #add more as needed
-        u = {'km-2':(r' \text{km}^{-2}','<msup><mtext>&#8239;km</mtext><mtext>-2</mtext></msup>')
+        u = {'km-2':(r' $km$^{-2}','<msup><mtext>&#8239;km</mtext><mtext>-2</mtext></msup>'),
+             'km2': (r' $km$^{2}', '<msup><mtext>&#8239;km</mtext><mtext>2</mtext></msup>')
              }[unit]
 
     if -2 < np.log10(abs(v)) < 4 and not force:
@@ -46,7 +47,7 @@ def scientific_notation(v,e1=None,e2=0,sf=3,force=False, MathML=False, unit=None
               +('' if exp==0 else '<mo>&#183;</mo><msup><mtext>10</mtext><mtext>'+str(exp)+'</mtext></msup>')
               +u[1]+'</math>')
     else:
-        st = st + ('' if exp==0 else'×10^{'+str(exp)+'}')+u[0]
+        st = '$' + st + ('' if exp==0 else'\cdot10^{'+str(exp)+'}')+u[0] + '$'
 
     return st
 
