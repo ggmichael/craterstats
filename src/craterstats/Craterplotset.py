@@ -444,7 +444,7 @@ class Craterplotset:
                     v = ','.join([('{:' + f + '}').format(10**e) for e in d['a0']])
                 elif k in ('Latex','MathML'):
                     t = d['t']
-                    v0 = cst.str_age(t[0], t[0] - t[1], t[2] - t[0], mu=self.mu, MathML = k=='MathML')
+                    v0 = cst.str_age(t[0], t[2] - t[0], t[0] - t[1], mu=self.mu, MathML = k=='MathML')
                     a0 = d['a0']
                     v1 = gm.scientific_notation(10**a0[0],10**a0[2],10**a0[1], unit='km-2', MathML = k=='MathML')
                     v=v0+','+v1
