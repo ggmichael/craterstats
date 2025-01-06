@@ -169,17 +169,19 @@ class Craterplot:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
                 legend_label += [cst.str_diameter_range(r)]
             if 'N' in cps.legend:
-                legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
+                #legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
+                legend_label += ['N({0:0g})'.format(cps.ref_diameter) + '='
+                                 + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
 
 
         if self.type=='data':
             if 'n' in cps.legend:
                 legend_label+=[self.name if self.name!='' else gm.filename(self.source, "n")]
             if 'a' in cps.legend:
-                legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
+                legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
             if 'p' in cps.legend:
                 if self.cratercount.perimeter:
-                    legend_label += ['$' + gm.scientific_notation(self.cratercount.perimeter, sf=3) + '$ km']
+                    legend_label += [gm.scientific_notation(self.cratercount.perimeter, sf=3) + ' km']
 
         cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
                     **cps.marker_def[self.psym],ls='',color=cps.palette[self.colour])
