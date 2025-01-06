@@ -24,17 +24,17 @@ optional arguments:
 
   -as, --autoscale      rescale plot axes
 
-  -f, --format {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat}] 
+  -f, --format [{png,tif,pdf,svg,csv,stat}] 
                         output formats
 
   -cs, --chronology_system [abbreviated chronology system name]
-                        chronology system index
+                        chronology system, abbreviated
 
-  -ef EQUILIBRIUM, --equilibrium EQUILIBRIUM
-                        equilibrium function index
+  -ef, --equilibrium 
+                        equilibrium function, abbreviated
 
-  -ep EPOCHS, --epochs EPOCHS
-                        epoch system index
+  -ep, --epochs
+                        epoch system, abbreviated
 
   -title [title]        plot title
 
@@ -43,10 +43,10 @@ optional arguments:
   -pr, --presentation [data presentation]
                         data presentation: cumulative, differential, R-plot, Hartmann, chronology, rate, sequence, uncertainty
 
-  -xrange XRANGE XRANGE
+  -xrange 
                         x-axis range, log(min) log(max)
 
-  -yrange YRANGE YRANGE
+  -yrange
                         y-axis range, log(min) log(max)
 
   -isochrons [isochrons] comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
