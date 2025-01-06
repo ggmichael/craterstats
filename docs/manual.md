@@ -40,8 +40,17 @@ optional arguments:
 
   -subtitle [subtitle]  plot subtitle
 
-  -pr, --presentation [data presentation]
-                        data presentation: cumulative, differential, R-plot, Hartmann, chronology, rate, sequence, uncertainty
+  -pr, --presentation   data presentation, abbreviated: 
+  
+- cumulative
+- differential
+- R-plot
+- Hartmann
+- chronology
+- rate
+- sequence
+- uncertainty
+
 
   -xrange 
                         x-axis range, log(min) log(max)
@@ -49,8 +58,8 @@ optional arguments:
   -yrange
                         y-axis range, log(min) log(max)
 
-  -isochrons [isochrons] comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
-                        Optional combined suffix to modify label: 
+  -isochrons comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
+                        Each with optional suffix to modify label: 
   - n - suppress label
   - a - place above instead of below
   - s - small font size
