@@ -406,6 +406,7 @@ class Craterplotset:
 
         if not s: return
 
+        n_d_lbl='N({:0g})'.format(self.ref_diameter)
         # w now obsolete in this table (width)
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
@@ -417,17 +418,19 @@ class Craterplotset:
                  ('n_event', '9', '', None),
                  ('t', '7', '.3g', ('age','age-','age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
-                 ('n_d', '8', '.2e', ('N({:0g})'.format(self.ref_diameter),)),
+                 ('n_d', '8', '.2e', (n_d_lbl,n_d_lbl+'-',n_d_lbl+'+')),
                  ('source', '', '', None),
-                 ('Latex', '', '', None),
-                 ('MathML', '', '', ["Word [copy-paste using 'paste as text' or CTRL-SHIFT-V]"]))
+                 (' ', '', '', None),
+                 ('MathML', '', '', ('Age', n_d_lbl)),
+                 ('Latex', '', '', ('Age',n_d_lbl)),
+                 )
 
         ln = []
         for k, w, f, t in table:
             if t is not None:
                 ln += list(t)
             else:
-                ln += [k]
+                ln += [k[:1].upper() + k[1:]]
         st = ','.join(ln)
 
         for d in s:
@@ -437,13 +440,23 @@ class Craterplotset:
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
                     v=','.join([('{:'+f+'}').format(e) for e in d[k]])
+                elif k=='n_d':
+                    v = ','.join([('{:' + f + '}').format(10**e) for e in d['a0']])
                 elif k in ('Latex','MathML'):
-                    a = d['t']
-                    v = cst.str_age(a[0], a[0] - a[1], a[2] - a[0], mu=self.mu, MathML = k=='MathML')
+                    t = d['t']
+                    v0 = cst.str_age(t[0], t[0] - t[1], t[2] - t[0], mu=self.mu, MathML = k=='MathML')
+                    a0 = d['a0']
+                    v1 = gm.scientific_notation(10**a0[0],10**a0[2],10**a0[1], unit='km-2', MathML = k=='MathML')
+                    v=v0+','+v1
+                elif k==' ':v=' '
                 else:
                     v=('{:'+f+'}').format(d[k])
                 ln+=[v]
-            st += '\n'+','.join(ln)
+            st += '\n'+','.join(ln)+'," "'
+
+        st = (',,,,,,,,,,,,,,,,,,,,Formatted values [paste into Word using CTRL-SHIFT-V]\n'
+              ',,,,,,,,,,,,,,,,,,,,Word,,Latex,\n'
+              )+st
 
         if f_out:
             try:

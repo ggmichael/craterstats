@@ -35,10 +35,8 @@ class TestPlottingClasses(unittest.TestCase):
     def test_Craterplotset_autoscale(self):
         cp = cst.Craterplot(cratercount=self.cc)
         cps = cst.Craterplotset(craterplot=[cp])
-
         cps.autoscale()
         self.assertEqual(list(cps.xrange)+list(cps.yrange),[-2, 2, -5, 3])
-
 
     def test_Craterplotset_summary(self):
         cp = cst.Craterplot(cratercount=self.cc,range=[.2,.7],type='d-fit')
@@ -47,7 +45,7 @@ class TestPlottingClasses(unittest.TestCase):
         def get_cps_summary():
             res0=cps.create_summary_table()
             res=res0.split('\n')
-            res=','.join(res[1].split(',')[0:16]) # trim off source file
+            res=','.join(res[3].split(',')[0:16]) # trim off headers/source file
             return res
 
         # the following results are not fundamental, but verified against CraterstatsII (see demo plots):

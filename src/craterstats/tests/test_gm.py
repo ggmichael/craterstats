@@ -95,10 +95,10 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.sigfigs([243.3, 0.3422], 2), ['240', '0.34'])
 
     def test_scientific_notation(self):
-        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2),'3100')
-        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, 2, force=True), '3.1×10^{3}')
-        self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, 2),'0.031')
-        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, 3), '-3.14×10^{-3}')
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, sf=2),'3100')
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, sf=2, force=True), '3.1×10^{3}')
+        self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, sf=2),'0.031')
+        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, sf=3), '-3.14×10^{-3}')
 
     #file
 
