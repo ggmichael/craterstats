@@ -121,6 +121,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - c - number of craters
   - r - range
   - N - N(d_ref) value
+  - A - age (sequence plot)
   - 0 - suppress legend completely
 
       e.g. `-legend nacr`
