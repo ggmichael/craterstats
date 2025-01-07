@@ -1,12 +1,10 @@
 
+# Command option
 
-usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-as] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
+usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
                       [-subtitle SUBTITLE] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
                       [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-p KEY=VAL, [KEY=VAL, ...]]`
 
-Craterstats: a tool to analyse and plot crater count data for planetary surface dating.
-
-optional arguments:
 
   -h, --help            show help message
 
@@ -21,8 +19,6 @@ optional arguments:
   -demo                 run sequence of demonstration commands: output in ./demo
 
   -o, --out [filename]   output filename (omit extension for default) or directory
-
-  -as, --autoscale      rescale plot axes
 
   -f, --format [{png,tif,pdf,svg,csv,stat}] 
                         output formats
@@ -42,14 +38,14 @@ optional arguments:
 
   -pr, --presentation   data presentation, abbreviated: 
   
-- cumulative
-- differential
-- R-plot
-- Hartmann
-- chronology
-- rate
-- sequence
-- uncertainty
+  - cumulative
+  - differential
+  - R-plot
+  - Hartmann
+  - chronology
+  - rate
+  - sequence
+  - uncertainty
 
 
   -xrange 
@@ -69,15 +65,15 @@ optional arguments:
 
   -legend [codes]       any combination of: 
   
-- n - name
-- a - area 
-- p - perimeter 
-- c - number of craters
-- r - range
-- N - N(d_ref) value
-- 0 - suppress legend completely
+  - n - name
+  - a - area 
+  - p - perimeter 
+  - c - number of craters
+  - r - range
+  - N - N(d_ref) value
+  - 0 - suppress legend completely
 
-    e.g. `-legend nacr`
+      e.g. `-legend nacr`
 
 
   -cite_functions {0,1}
@@ -100,7 +96,7 @@ optional arguments:
   -pt_size              point size for figure text
 
   -ref_diameter 
-                        reference diameter for displayed N(d_ref) values
+                        alternative reference diameter for displayed N(d_ref) values
 
   -sf, --sig_figs {2,3}
                         number of significant figures for displayed ages, e.g. `-sf 3`
@@ -111,18 +107,26 @@ optional arguments:
   -p, --plot [KEY=VAL, ...]
                         specify overplot. Allowed keys: 
                         
-- source=filename
-- name=txt
-- range=[min,max]
-- type={data,poisson,b-poisson,c-fit,d-fit}
-- error_bars={1,0}
-- hide={1,0}
-- colour={black, red, blue, green...} Enter `craterstats -lpc` for full list
-- psym={circle, square, star, filled circle...} Enter `craterstats -lpc` for full list
-- binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}
-- age_left={1,0}
-- display_age={1,0}
-- resurf={1,0}, apply resurfacing correction
-- resurf_showall={1,0}, show all data with resurfacing correction
-- isochron={1,0}, extend isochron beyond selected range
-- offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
+  - source=filename
+  - name=txt
+  - range=[min,max]
+  - type={data,poisson,b-poisson,c-fit,d-fit}
+  - error_bars={1,0}
+  - hide={1,0}
+  - colour={black, red, blue, green...} Enter `craterstats -lpc` for full list
+  - psym={circle, square, star, filled circle...} Enter `craterstats -lpc` for full list
+  - binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}
+  - age_left={1,0}
+  - display_age={1,0}
+  - resurf={1,0}, apply resurfacing correction
+  - resurf_showall={1,0}, show all data with resurfacing correction
+  - isochron={1,0}, extend isochron beyond selected range
+  - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
+
+
+# Environment variables
+
+You may set an environment variable FUNCTIONS_USER to point to a text file containing your own chronology system 
+definitions, modelled on `src/craterstats/config/functions.txt`. If you place the definition in 
+`%CONDA_PREFIX%\etc\conda\activate.d\env_vars.bat` (Windows) or `$CONDA_PREFIX/etc/conda/activate.d\env_vars.sh` (Linux/MacOS),
+it will be persistent across sessions.

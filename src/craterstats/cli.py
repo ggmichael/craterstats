@@ -57,7 +57,7 @@ def get_parser():
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
 
-    parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
+    #parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
     #this is now default behaviour if axes not specified
 
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
