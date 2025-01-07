@@ -6,11 +6,11 @@ usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [
                       [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-p KEY=VAL, [KEY=VAL, ...]]`
 
 
-  -h, --help            show help message
+-h, --help            show help message
 
-  -i, --input [filename]   input args from file
+-i, --input [filename]   input args from file
 
-  -lcs                  list chronology systems
+-lcs                  list chronology systems
 
 - Chronology systems:
   - Moon, Neukum (1983)
@@ -57,37 +57,36 @@ square (s), circle (o), star4 (\*4), triangle (^), star5 (\*), diagonal cross (x
 Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown1, brown2, brown3, brown4, green1, green2, green3, orange, pink1, pink2, pink3, purple1, purple2, red1, red2, red3, teal1, teal2, yellow1, yellow2, yellow-green
 
 
+-about                show program details
 
-  -about                show program details
+-demo                 run sequence of demonstration commands: output in ./demo
 
-  -demo                 run sequence of demonstration commands: output in ./demo
+-o, --out [filename]   output filename (omit extension for default) or directory
 
-  -o, --out [filename]   output filename (omit extension for default) or directory
+-f, --format [{png,tif,pdf,svg,csv,stat}] 
+                output formats
 
-  -f, --format [{png,tif,pdf,svg,csv,stat}] 
-                        output formats
-
-  --functions_user [filepath] set path to user-defined chronology system file.
+--functions_user [filepath] set path to user-defined chronology system file.
 
 - Chronology system definitions should be modelled on those in `src/craterstats/config/functions.txt`
 - Filepath will be persistent across conda sessions
 - Check new systems are recognised with `craterstats -lcs`
 
 
-  -cs, --chronology_system 
-                        chronology system, abbreviated (Enter `craterstats -lcs` for full list)
+-cs, --chronology_system 
+                    chronology system, abbreviated (Enter `craterstats -lcs` for full list)
 
-  -ef, --equilibrium 
-                        equilibrium function, abbreviated (Enter `craterstats -lcs` for full list)
+-ef, --equilibrium 
+                    equilibrium function, abbreviated (Enter `craterstats -lcs` for full list)
 
-  -ep, --epochs
-                        epoch system, abbreviated (Enter `craterstats -lcs` for full list)
+-ep, --epochs
+                    epoch system, abbreviated (Enter `craterstats -lcs` for full list)
 
-  -title [title]        plot title
+-title [title]        plot title
 
-  -subtitle [subtitle]  plot subtitle
+-subtitle [subtitle]  plot subtitle
 
-  -pr, --presentation   data presentation, abbreviated: 
+-pr, --presentation   data presentation, abbreviated: 
   
   - cumulative
   - differential
@@ -99,22 +98,22 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - uncertainty
 
 
-  -xrange 
-                        x-axis range, log(min) log(max)
+-xrange 
+                    x-axis range, log(min) log(max)
 
-  -yrange
-                        y-axis range, log(min) log(max)
+-yrange
+                    y-axis range, log(min) log(max)
 
-  -isochrons comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
-                        Each with optional suffix to modify label: 
+-isochrons comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
+                    Each with optional suffix to modify label: 
   - n - suppress label
   - a - place above instead of below
   - s - small font size
 
-  -show_isochrons {0,1}
-                        1 - show; 0 - suppress
+-show_isochrons {0,1}
+                    1 - show; 0 - suppress
 
-  -legend [codes]       any combination of: 
+-legend [codes]       any combination of: 
   
   - n - name
   - a - area 
@@ -127,36 +126,36 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
       e.g. `-legend nacr`
 
 
-  -cite_functions {0,1}
-                        1 - show; 0 - suppress
+-cite_functions {0,1}
+                    1 - show; 0 - suppress
 
-  -mu {0,1}             1 - show; 0 - suppress
+-mu {0,1}             1 - show; 0 - suppress
 
-  -style {natural,root-2}
-                        diameter axis style
+-style {natural,root-2}
+                    diameter axis style
 
-  -invert {0,1}         1 - invert to black background; 0 - white background
+-invert {0,1}         1 - invert to black background; 0 - white background
 
-  -transparent          set transparent background
+-transparent          set transparent background
 
-  -tight                tight layout
+-tight                tight layout
 
-  -pd, --print_dimensions 
-                        either single value (cm/decade) or enclosing box for axes in cm (AxB), e.g. `-pd 1.5` or `-pd 8x8`
+-pd, --print_dimensions 
+                    either single value (cm/decade) or enclosing box for axes in cm (AxB), e.g. `-pd 1.5` or `-pd 8x8`
 
-  -pt_size              point size for figure text
+-pt_size              point size for figure text
 
-  -ref_diameter 
-                        alternative reference diameter for displayed N(d_ref) values
+-ref_diameter 
+                    alternative reference diameter for displayed N(d_ref) values
 
-  -sf, --sig_figs {2,3}
-                        number of significant figures for displayed ages, e.g. `-sf 3`
+-sf, --sig_figs {2,3}
+                    number of significant figures for displayed ages, e.g. `-sf 3`
 
-  -st, --sequence_table
-                        generate sequence probability table (with extension `_sequence.csv`)
+-st, --sequence_table
+                    generate sequence probability table (with extension `_sequence.csv`)
 
-  -p, --plot [KEY=VAL, ...]
-                        specify overplot. Allowed keys: 
+-p, --plot [KEY=VAL, ...]
+                    specify overplot. Allowed keys: 
                         
   - source=filename
   - name=txt
