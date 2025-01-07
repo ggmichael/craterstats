@@ -56,9 +56,7 @@ def get_parser():
     #not needed any more. Can remove with use of default.plt
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
-
-    #parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
-    #this is now default behaviour if axes not specified
+    parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
 
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
 
@@ -286,6 +284,12 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
         main(a)
     print('\n\nDemo output written to: '+out)
 
+def do_functions_user(args):
+    config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
+    if args.functions_user:
+        s=['#path to functions_user.txt',args.functions_user]
+        gm.write_textfile(config,s)
+    return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
 
 def main(args0=None):
     args = get_parser().parse_args(args0)
@@ -296,10 +300,12 @@ def main(args0=None):
 
     c = gm.read_textstructure(template if args.template is None else args.template)
     s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
-
-    functions_user = os.environ.get('FUNCTIONS_USER')
+    functions_user = do_functions_user(args)
     if functions_user:
-        s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
+        try:
+            s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
+        except:
+            print("Unable to read "+functions_user+" - ignoring.")
     fm = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
