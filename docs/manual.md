@@ -67,6 +67,13 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   -f, --format [{png,tif,pdf,svg,csv,stat}] 
                         output formats
 
+  --functions_user [filepath] set path to user-defined chronology system file.
+
+- Chronology system definitions should be modelled on those in `src/craterstats/config/functions.txt`
+- Filepath will be persistent across conda sessions
+- Check new systems are recognised with `craterstats -lcs`
+
+
   -cs, --chronology_system 
                         chronology system, abbreviated (Enter `craterstats -lcs` for full list)
 
@@ -168,11 +175,3 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - resurf_showall={1,0}, show all data with resurfacing correction
   - isochron={1,0}, extend isochron beyond selected range
   - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
-
-
-# Environment variables
-
-You may set an environment variable FUNCTIONS_USER to point to a text file containing your own chronology system 
-definitions, modelled on `src/craterstats/config/functions.txt`. If you place the definition in 
-`%CONDA_PREFIX%\etc\conda\activate.d\env_vars.bat` (Windows) or `$CONDA_PREFIX/etc/conda/activate.d\env_vars.sh` (Linux/MacOS),
-it will be persistent across sessions.
