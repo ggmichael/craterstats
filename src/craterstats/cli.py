@@ -304,18 +304,18 @@ def main(args0=None):
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['chronology_system'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['chronology_system']]))
         print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['equilibrium'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['equilibrium']]))
         print(gm.bright("\nEpoch systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(fm['epochs'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['epochs']]))
         return
 
     if args.lpc:
         print(gm.bright("\nPlot symbols:"))
-        print('\n'.join(['{0} {1} ({2})'.format(i, e[1], e[0]) for i, e in enumerate(cst.MARKERS)]))
+        print(', '.join(['{0} ({1})'.format(e[1], e[0]) for e in cst.MARKERS]))
         print(gm.bright("\nColours:"))
-        print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cst.PALETTE)]))
+        print(', '.join(['{0}'.format(e[2]) for e in cst.PALETTE]))
         return
 
     if args.about:
