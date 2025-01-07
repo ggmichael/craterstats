@@ -1,5 +1,5 @@
 
-# Command option
+# Command options
 
 usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
                       [-subtitle SUBTITLE] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
@@ -14,6 +14,15 @@ usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [
 
   -lpc                  list plot symbols and colours
 
+- Plot symbols:
+square (s), circle (o), star4 (\*4), triangle (^), star5 (\*), diagonal cross (x), cross (+), point (.), inverted triangle (v), filled square (fs), filled circle (fo), filled star4 (f*4), filled triangle (ft), filled star5 (f\*), filled inverted triangle
+ (fv)
+
+
+- Colours:
+Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown1, brown2, brown3, brown4, green1, green2, green3, orange, pink1, pink2, pink3, purple1, purple2, red1, red2, red3, teal1, teal2, yellow1, yellow2, yellow-green
+
+
   -about                show program details
 
   -demo                 run sequence of demonstration commands: output in ./demo
@@ -23,14 +32,45 @@ usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [
   -f, --format [{png,tif,pdf,svg,csv,stat}] 
                         output formats
 
-  -cs, --chronology_system [abbreviated chronology system name]
-                        chronology system, abbreviated
+  -cs, --chronology_system 
+                        chronology system, abbreviated (Enter `craterstats -lcs` for full list)
+
+- Moon, Neukum (1983)
+- Moon, Neukum et al. (2001)
+- Moon, Hartmann 2010 iteration
+- Moon, Yue et al. (2022)
+- Mars, Neukum-Ivanov (2001)
+- Mars, Ivanov (2001)
+- Mars, Hartmann 2004 iteration
+- Mars, Hartmann & Daubar (2016)
+- Mercury, Strom & Neukum (1988)
+- Mercury, Neukum et al. (2001)
+- Mercury, Le Feuvre and Wieczorek 2011 non-porous
+- Mercury, Le Feuvre and Wieczorek 2011 porous
+- Vesta, Rev4, Schmedemann et al (2014)
+- Vesta, Rev3, Schmedemann et al (2014)
+- Vesta, Marchi & O'Brien (2014)
+- Ceres, Hiesinger et al. (2016)
+- Ida, Schmedemann et al (2014)
+- Gaspra, Schmedemann et al (2014)
+- Lutetia, Schmedemann et al (2014)
+- Phobos, Case A - SOM, Schmedemann et al (2014)
+- Phobos, Case B - MBA, Schmedemann et al (2014)
+
 
   -ef, --equilibrium 
-                        equilibrium function, abbreviated
+                        equilibrium function, abbreviated (Enter `craterstats -lcs` for full list)
+
+- Standard lunar equilibrium (Trask, 1966)
+- Hartmann (1984)
+
 
   -ep, --epochs
-                        epoch system, abbreviated
+                        epoch system, abbreviated (Enter `craterstats -lcs` for full list)
+
+- Moon, Wilhelms (1987)
+- Mars, Michael (2013)
+
 
   -title [title]        plot title
 
@@ -110,6 +150,8 @@ usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [
   - source=filename
   - name=txt
   - range=[min,max]
+    - either diameter range in km, e.g. `range=[0.2,0.7]`
+    - or bin range, e.g. `range=[b7,b9]` (counting only bins with data), or `range=[b7,b-2]` (counting from 1st to 2nd last point)
   - type={data,poisson,b-poisson,c-fit,d-fit}
   - error_bars={1,0}
   - hide={1,0}
