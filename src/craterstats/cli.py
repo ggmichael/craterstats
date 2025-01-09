@@ -203,7 +203,7 @@ def construct_plot_dicts(args, c):
     plot = c['plot']
     if type(plot) is list: plot=plot[0] #take only first plot entry as template
     cpl = []
-    valid_source = False
+    specified_source = False
     if args.plot is None: return []
     for d in args.plot:
         p=plot.copy()
@@ -231,7 +231,7 @@ def construct_plot_dicts(args, c):
             elif k == 'source':
                 v = v.replace('%sample%/', cst.PATH+'sample/')
                 p['source']=v.strip('"')
-                valid_source = True
+                specified_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'binning':
@@ -248,9 +248,12 @@ def construct_plot_dicts(args, c):
                     names = [e[1] for e in cst.MARKERS]
                     p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
 
-        if not valid_source: sys.exit('Source not specified')
-
-        p['cratercount'] = cst.Cratercount((gm.filename(args.input_filename,'p') if args.input else '')+p['source'])
+        if not specified_source: sys.exit('Source not specified')
+        if os.path.isabs(p['source']):
+            src = p['source']
+        else:
+            src = (gm.filename(args.input_filename,'p') if args.input else '')+p['source']
+        p['cratercount'] = cst.Cratercount(src)
         cpl += [p]
     return cpl
 
