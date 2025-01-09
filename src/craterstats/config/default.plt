@@ -17,10 +17,8 @@ set={
   sig_figs=3
   show_isochrons=1
   show_legend_area=1
-  show_subtitle=1
   show_title=1
   style='natural'
-  subtitle=''
   title=''
   format=['png','csv']
 }

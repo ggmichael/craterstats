@@ -2,7 +2,7 @@
 # Command options
 
 usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
-                      [-subtitle SUBTITLE] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
+                      [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
                       [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-p KEY=VAL, [KEY=VAL, ...]]`
 
 
@@ -84,7 +84,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -title [title]        plot title
 
--subtitle [subtitle]  plot subtitle
+- use `|` as separator for multi-line title
 
 -pr, --presentation   data presentation, abbreviated: 
   
@@ -156,14 +156,14 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
                     generate sequence probability table (with extension `_sequence.csv`)
 
 -p, --plot [KEY=VAL, ...]
-                    specify overplot. Allowed keys: 
+                    specify overplot. All keys and string values can be abbreviated, e.g. `source` to `src` or  `differential-fit` to `d-fit` 
                         
   - source=filename
   - name=txt
   - range=[min,max]
     - either diameter range in km, e.g. `range=[0.2,0.7]`
-    - or bin range, e.g. `range=[b7,b9]` (counting only bins with data), or `range=[b7,b-2]` (counting from 1st to 2nd last point)
-  - type={data,poisson,b-poisson,c-fit,d-fit}
+    - or bin range, e.g. `range=[b7,b9]` include bin 7 to bin 9 (only bins with data) or `range=[b7,b-2]` (counting from 7th to 2nd-last point)
+  - type={data,cumulative-fit,differential-fit,poisson,b-poisson,sequence}
   - error_bars={1,0}
   - hide={1,0}
   - colour={black, red, blue, green...} Enter `craterstats -lpc` for full list
