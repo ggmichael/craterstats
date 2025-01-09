@@ -139,7 +139,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -transparent          set transparent background
 
--tight                tight layout
+-tight                use tight layout
 
 -pd, --print_dimensions 
                     either single value (cm/decade) or enclosing box for axes in cm (AxB), e.g. `-pd 1.5` or `-pd 8x8`
