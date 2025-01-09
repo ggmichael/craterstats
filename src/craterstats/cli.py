@@ -65,7 +65,6 @@ def get_parser():
     parser.add_argument("-ep", "--epochs", help="epoch system index")
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
-    parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
     parser.add_argument("-pr", "--presentation", help="data presentation: " + (', ').join(cst.PRESENTATIONS))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
@@ -145,7 +144,6 @@ def construct_cps_dict(args,c,f,default_filename):
             if k == 'out': cpset[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
         else:
             if k in ('title',
-                     'subtitle',
                      'isochrons',
                      'show_isochrons',
                      'legend',
@@ -158,7 +156,6 @@ def construct_cps_dict(args,c,f,default_filename):
                      'mu',
                      'invert',
                      'show_title',
-                     'show_subtitle',
                      'style',
                      'xrange', 'yrange',
                      ):

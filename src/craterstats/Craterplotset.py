@@ -36,7 +36,6 @@ class Craterplotset:
 
         self.UpdateSettings({
             'title':'',
-            'subtitle':'',
             'presentation':'differential',
             'xrange':[-3,2],
             'yrange':[-5,5],
@@ -54,7 +53,6 @@ class Craterplotset:
             'mu':1,
             'invert':0,
             'show_title':1,
-            'show_subtitle':1, 
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.
@@ -79,7 +77,6 @@ class Craterplotset:
                     'mu',
                     'invert',
                     'show_title',
-                    'show_subtitle',
                     'sig_figs',
                      ):
                 v = int(v)
@@ -161,7 +158,7 @@ class Craterplotset:
             'rate':         'Crater formation rate N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$ Ga$^{-1}$',
             }[self.presentation]
         
-        title=(self.title if self.show_title else '') + ('\n'+self.subtitle if self.show_subtitle else '')
+        title = ('\n'.join(self.title.split('|')) if self.show_title else None)
 
         xminor=xmajor=xtickv=None
         add_xminorlogticks=False
@@ -238,7 +235,7 @@ class Craterplotset:
             ax.set_xticks(xtickv)
             ax.set_xticklabels(xtickname)                
         
-        if title not in ('','\n'):ax.set_title(title) #change when subtitle removed
+        if title:ax.set_title(title)
         if ytitle != '':ax.set_xlabel(xtitle)
         if ytitle != '':ax.set_ylabel(ytitle)
 
