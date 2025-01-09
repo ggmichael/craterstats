@@ -4,7 +4,7 @@
 import numpy as np
 import craterstats.gm as gm
 
-def str_diameter_range(d,sf=2):
+def diameter_range(d,sf=2):
     """
     Convert numerical diameters in km into string diameter range with units
 
@@ -26,6 +26,6 @@ def str_diameter_range(d,sf=2):
 
 
 if __name__ == '__main__':
-    print(str_diameter_range(np.array([.65, 1.2])))
-    print(str_diameter_range([.65, 1.2]))
-    print(str_diameter_range([.65, .95]))
+    print(diameter_range(np.array([.65, 1.2])))
+    print(diameter_range([.65, 1.2]))
+    print(diameter_range([.65, .95]))

@@ -181,7 +181,7 @@ class Craterplot:
                     r=self.range
                 else:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
-                legend_label += [cst.str_diameter_range(r)]
+                legend_label += [gm.diameter_range(r)]
             if 'N' in cps.legend:
                 legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'=' + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
             if cps.presentation == 'sequence':
