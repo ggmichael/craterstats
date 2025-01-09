@@ -36,8 +36,10 @@ class LoadFromFile(argparse.Action):
     def __call__ (self, parser, namespace, values, option_string = None):
         with values as f:
             # parse arguments in the file and store them in the target namespace
-            parser.parse_args(f.read().split(), namespace)
-            namespace.input_filename=f.name
+            a=f.read()
+            a=('\n').join([e for e in a.split('\n') if e.strip() and (e+' ')[0]!='#'] ) #remove '#' commented lines
+            parser.parse_args(a.split(), namespace)
+            namespace.input_filename = f.name
             setattr(namespace, self.dest, True)
 
 def get_parser():
@@ -338,7 +340,7 @@ def main(args0=None):
 
     cp_dicts = construct_plot_dicts(args, c)
     if args.input:
-        default_filename = gm.filename(args.input_filename,'n')
+        default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
     cps_dict = construct_cps_dict(args, c, fm, default_filename)
@@ -349,7 +351,7 @@ def main(args0=None):
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
-    if cpl:
+    if cpl and cps.presentation not in ('sequence'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
