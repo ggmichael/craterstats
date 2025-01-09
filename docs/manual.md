@@ -95,7 +95,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - chronology
   - rate
   - sequence
-  - uncertainty
+  - uncertainty (still incomplete)
 
 
 -xrange 
