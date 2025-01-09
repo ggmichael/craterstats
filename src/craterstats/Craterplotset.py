@@ -540,15 +540,16 @@ class Craterplotset:
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
                  ('bin_range' if d['type'] in ('c-fit','d-fit') else 'range', '5', '.2g', ('d_min', 'd_max')),
-                 ('type', '>9', '', ('method',)),
+                 ('type', '>9', '', ('Method',)),
                  ('resurf', '6', '', None),
                  ('n', '7', '', None),
                  ('n_event', '9', '', None),
-                 ('t', '7', '.3g', ('age','age-','age+')),
+                 ('t', '7', '.3g', ('Age','Age-','Age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
                  ('n_d', '8', '.2e', (n_d_lbl,n_d_lbl+'-',n_d_lbl+'+')),
                  ('source', '', '', None),
                  (' ', '', '', None),
+                 ('Range', '', '', None),
                  ('MathML', '', '', ('Age', n_d_lbl)),
                  ('Latex', '', '', ('Age',n_d_lbl)),
                  )
@@ -568,6 +569,8 @@ class Craterplotset:
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
                     v=','.join([('{:'+f+'}').format(e) for e in d[k]])
+                    if k in ('range','bin_range'):
+                        txt_range=gm.diameter_range(d[k])
                 elif k=='n_d':
                     v = ','.join([('{:' + f + '}').format(10**e) for e in d['a0']])
                 elif k in ('Latex','MathML'):
@@ -577,13 +580,15 @@ class Craterplotset:
                     v1 = gm.scientific_notation(10**a0[0],10**a0[2],10**a0[1], unit='km-2', MathML = k=='MathML')
                     v=v0+','+v1
                 elif k==' ':v=' '
+                elif k == 'Range':
+                    v=txt_range
                 else:
                     v=('{:'+f+'}').format(d[k])
                 ln+=[v]
             st += '\n'+','.join(ln)+'," "'
 
-        st = (',,,,,,,,,,,,,,,,,,,,Formatted values [paste into Word using CTRL-SHIFT-V]\n'
-              ',,,,,,,,,,,,,,,,,,,,Word,,Latex,\n'
+        st = (',,,,,,,,,,,,,,,,,,,,Formatted values [paste MathML into Word using CTRL-SHIFT-V]\n'
+              ',,,,,,,,,,,,,,,,,,,,,MathML,,Latex,\n'
               )+st
 
         if f_out:

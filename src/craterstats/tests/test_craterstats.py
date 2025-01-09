@@ -21,10 +21,5 @@ class TestCraterstats(unittest.TestCase):
         self.assertEqual(cst.str_age(1., simple=True), '1 Ga')
         self.assertEqual(cst.str_age(.314, .11, .14,sf=2),'$310^{+100}_{-100}$ Ma')
 
-    def test_str_diameter_range(self):
-        self.assertEqual(cst.str_diameter_range(np.array([.65, 1.2])),'0.65–1.2 km')
-        self.assertEqual(cst.str_diameter_range([1.1, 1.7]),'1.1–1.7 km')
-        self.assertEqual(cst.str_diameter_range([.65, .95]),'650–950 m')
-
 if __name__ == '__main__':
     unittest.main()

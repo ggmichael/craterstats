@@ -100,6 +100,12 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, sf=2),'$0.031$')
         self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, sf=3), '$-3.14\cdot10^{-3}$')
 
+    def test_diameter_range(self):
+        self.assertEqual(gm.diameter_range(np.array([.65, 1.2])),'0.65–1.2 km')
+        self.assertEqual(gm.diameter_range([1.1, 1.7]),'1.1–1.7 km')
+        self.assertEqual(gm.diameter_range([.65, .95]),'650–950 m')
+
+
     #file
 
     def test_filename(self):
