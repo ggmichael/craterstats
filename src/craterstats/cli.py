@@ -279,7 +279,7 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
         print(f'\nDemo {i}\ncraterstats '+c)
         a = (f.format(i) + c).split()
         main(a)
-    print('\n\nDemo output written to: '+out)
+    print('\nDemo output written to: '+out)
 
 def do_functions_user(args):
     if os.environ.get('CONDA_PREFIX'):
