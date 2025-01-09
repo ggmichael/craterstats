@@ -3,6 +3,7 @@
 import copy
 
 import numpy as np
+import sys
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -36,7 +37,6 @@ class Craterplotset:
 
         self.UpdateSettings({
             'title':'',
-            'subtitle':'',
             'presentation':'differential',
             'xrange':[-3,2],
             'yrange':[-5,5],
@@ -52,9 +52,8 @@ class Craterplotset:
             'sig_figs':3,
             'randomness':0,
             'mu':1,
-            'invert':0,          
+            'invert':0,
             'show_title':1,
-            'show_subtitle':1, 
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.
@@ -79,7 +78,6 @@ class Craterplotset:
                     'mu',
                     'invert',
                     'show_title',
-                    'show_subtitle',
                     'sig_figs',
                      ):
                 v = int(v)
@@ -181,7 +179,7 @@ class Craterplotset:
             'rate':         'Crater formation rate N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$ Ga$^{-1}$',
             }[self.presentation]
         
-        title=(self.title if self.show_title else '') + ('\n'+self.subtitle if self.show_subtitle else '')
+        title = ('\n'.join(self.title.split('|')) if self.show_title else None)
 
         xminor=xmajor=xtickv=None
         add_xminorlogticks=False
@@ -241,9 +239,9 @@ class Craterplotset:
             ax.set_xticks(xtickv)
             ax.set_xticklabels(xtickname)                
         
-        ax.set_title(title)
-        ax.set_xlabel(xtitle)
-        ax.set_ylabel(ytitle)
+        if title:ax.set_title(title)
+        if ytitle != '':ax.set_xlabel(xtitle)
+        if ytitle != '':ax.set_ylabel(ytitle)
 
         self.fig=fig
         self.ax=ax
@@ -490,9 +488,10 @@ class Craterplotset:
         :return: none
         """
         x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
-        m = [.7, .7 * (2 if self.presentation=='differential' else 1)] # minimum empty margin
-        xr = np.array([np.floor(np.log10(min(x0))-m[0]), np.ceil(np.log10(max(x1))+m[0])])
-        yr = np.array([np.floor(np.log10(min(y0))-m[1]), np.ceil(np.log10(max(y1))+m[1])])
+        mx = (.5, .9) # minimum empty margin
+        my = .7 * (2 if self.presentation=='differential' else 1) # minimum empty margin
+        xr = np.array([np.floor(np.log10(min(x0))-mx[0]), np.ceil(np.log10(max(x1))+mx[1])])
+        yr = np.array([np.floor(np.log10(min(y0))-my), np.ceil(np.log10(max(y1))+my)])
 
         #set to square
         dx,dy= gm.mag(xr), gm.mag(yr)
@@ -516,7 +515,7 @@ class Craterplotset:
         self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
         self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
 
-    def create_summary_table(self):
+    def create_summary_table(self,f_out=None):
         """
         Output table of Craterplot age calculations to stdout
 
@@ -533,6 +532,8 @@ class Craterplotset:
 
         if not s: return
 
+        n_d_lbl='N({:0g})'.format(self.ref_diameter)
+        # w now obsolete in this table (width)
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
@@ -543,18 +544,20 @@ class Craterplotset:
                  ('n_event', '9', '', None),
                  ('t', '7', '.3g', ('age','age-','age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
-                 ('n_d', '8', '.2e', ('N({:0g})'.format(self.ref_diameter),)),
-                 ('source', '', '', None))
+                 ('n_d', '8', '.2e', (n_d_lbl,n_d_lbl+'-',n_d_lbl+'+')),
+                 ('source', '', '', None),
+                 (' ', '', '', None),
+                 ('MathML', '', '', ('Age', n_d_lbl)),
+                 ('Latex', '', '', ('Age',n_d_lbl)),
+                 )
 
         ln = []
         for k, w, f, t in table:
-            if k!='name': w='>'+w.lstrip('>')
             if t is not None:
-                v = ' '.join([('{:' + w + '}').format(e) for e in t])
+                ln += list(t)
             else:
-                v = ('{:' + w + '}').format(k)
-            ln += [v]
-        print(' '.join(ln))
+                ln += [k[:1].upper() + k[1:]]
+        st = ','.join(ln)
 
         for d in s:
             ln=[]
@@ -562,11 +565,35 @@ class Craterplotset:
                 if k=='name' and d[k]=='':
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
-                    v=' '.join([('{:'+w+f+'}').format(e) for e in d[k]])
+                    v=','.join([('{:'+f+'}').format(e) for e in d[k]])
+                elif k=='n_d':
+                    v = ','.join([('{:' + f + '}').format(10**e) for e in d['a0']])
+                elif k in ('Latex','MathML'):
+                    t = d['t']
+                    v0 = cst.str_age(t[0], t[2] - t[0], t[0] - t[1], mu=self.mu, MathML = k=='MathML')
+                    a0 = d['a0']
+                    v1 = gm.scientific_notation(10**a0[0],10**a0[2],10**a0[1], unit='km-2', MathML = k=='MathML')
+                    v=v0+','+v1
+                elif k==' ':v=' '
                 else:
-                    v=('{:'+w+f+'}').format(d[k])
+                    v=('{:'+f+'}').format(d[k])
                 ln+=[v]
-            print(' '.join(ln))
+            st += '\n'+','.join(ln)+'," "'
+
+        st = (',,,,,,,,,,,,,,,,,,,,Formatted values [paste into Word using CTRL-SHIFT-V]\n'
+              ',,,,,,,,,,,,,,,,,,,,Word,,Latex,\n'
+              )+st
+
+        if f_out:
+            try:
+                gm.write_textfile(f_out, st)
+            except:
+                sys.exit(gm.bright("Unable to write file: ") + f_out)
+
+        return st #for test routine
+
+
+
 
 
     def create_sequence_table(self,f_csv):

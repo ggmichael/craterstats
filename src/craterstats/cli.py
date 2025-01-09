@@ -19,9 +19,10 @@ class AppendPlotDict(argparse.Action):
         s=' '.join(values)
         d = {}
         for kv in re.split(',(?=\w+=)',s): # only split on commas directly preceding keys
-            k, v = kv.split("=")
-            if k in ('range','offset_age'):
-                v= gm.read_textstructure(kv, from_string=True)[k]
+            try:
+                k, v = kv.split("=")
+            except:
+                sys.exit('Syntax error: ' + option_string+' '+kv)
             d[k] = v
         list_of_d = getattr(namespace, self.dest)
         list_of_d=[d] if list_of_d is None else list_of_d+[d]
@@ -35,10 +36,8 @@ class LoadFromFile(argparse.Action):
     def __call__ (self, parser, namespace, values, option_string = None):
         with values as f:
             # parse arguments in the file and store them in the target namespace
-            a=f.read()
-            a=('\n').join([e for e in a.split('\n') if e.strip() and (e+' ')[0]!='#'] ) #remove '#' commented lines
-            parser.parse_args(a.split(), namespace)
-            if not namespace.out: namespace.out=gm.filename(f.name,'pn')
+            parser.parse_args(f.read().split(), namespace)
+            namespace.input_filename=f.name
             setattr(namespace, self.dest, True)
 
 def get_parser():
@@ -57,20 +56,16 @@ def get_parser():
     #not needed any more. Can remove with use of default.plt
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
+    parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
 
-    parser.add_argument("-as","--autoscale", help="rescale plot axes", action='store_true')
-    #this is now default behaviour if axes not specified
-
-    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','jpg','tif','pdf','svg','txt'])
+    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
     parser.add_argument("-ep", "--epochs", help="epoch system index")
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
-    parser.add_argument("-subtitle", help="plot subtitle", nargs='+', action=SpacedString)
-    parser.add_argument("-pr", "--presentation", help="data presentation: "
-                        + (', ').join([str(i + 1) + '-' + e for i, e in enumerate(cst.PRESENTATIONS)]))
+    parser.add_argument("-pr", "--presentation", help="data presentation: " + (', ').join(cst.PRESENTATIONS))
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
@@ -81,10 +76,11 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
     parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
-    parser.add_argument("--transparent", help="set transparent background", action='store_true')
+    parser.add_argument("-transparent", help="set transparent background", action='store_true')
     #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
+    parser.add_argument("-tight", help="tight layout", action='store_true')
 
-    parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8") #, nargs=1)
+    parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
@@ -121,17 +117,16 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     :return: index (zero-based)
     """
 
-    try:  # if v contains index
-        return np.clip(int(v) - int(one_based), 0, len(s))
-    except: # otherwise abbreviation...
-        regex = '(?i)' + '.*'.join(v)
-        res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
-        res.sort(key=lambda x: len(x[1]))
-        if len(res) == 0:
-            sys.exit('Invalid abbreviation: ' + v)
-        elif len(res) > 1 and not allow_ambiguous:
-            sys.exit('Ambiguous abbreviation: ' + v)
-        return res[0][0]
+    #perhaps add back index selection requiring # prefix?
+
+    regex = '(?i)' + '.*'.join(v)
+    res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
+    res.sort(key=lambda x: len(x[1]))
+    if len(res) == 0:
+        sys.exit('Invalid abbreviation: ' + v)
+    elif len(res) > 1 and not allow_ambiguous:
+        sys.exit('Ambiguous abbreviation: ' + v)
+    return res[0][0]
 
 
 def construct_cps_dict(args,c,f,default_filename):
@@ -139,7 +134,7 @@ def construct_cps_dict(args,c,f,default_filename):
     if 'presentation' in vars(args):
         if args.presentation is not None:
             cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if cpset['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
+    if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
         cpset['xrange'] = cst.DEFAULT_XRANGE[cpset['presentation']]
         cpset['yrange'] = cst.DEFAULT_YRANGE[cpset['presentation']]
     cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
@@ -149,7 +144,6 @@ def construct_cps_dict(args,c,f,default_filename):
             if k == 'out': cpset[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
         else:
             if k in ('title',
-                     'subtitle',
                      'isochrons',
                      'show_isochrons',
                      'legend',
@@ -162,7 +156,6 @@ def construct_cps_dict(args,c,f,default_filename):
                      'mu',
                      'invert',
                      'show_title',
-                     'show_subtitle',
                      'style',
                      'xrange', 'yrange',
                      ):
@@ -208,6 +201,7 @@ def construct_plot_dicts(args, c):
     plot = c['plot']
     if type(plot) is list: plot=plot[0] #take only first plot entry as template
     cpl = []
+    valid_source = False
     if args.plot is None: return []
     for d in args.plot:
         p=plot.copy()
@@ -216,29 +210,31 @@ def construct_plot_dicts(args, c):
                 p[k] = cpl[-1][k]
             if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
                 p['type'] = cpl[-1]['type']
-        else:
-            if not ('source' in d or 'src' in d): sys.exit('Source not specified')
 
-        for k,v in d.items():
+        for k0,v in d.items():
+            k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
             if k in (
                     'name',
-                    'range',
                     'error_bars',
                     'hide',
-                    'binning',
                     'age_left',
                     'display_age',
                     'resurf',
                     'resurf_showall',
                     'isochron',
-                    'offset_age',
                     ):
                 p[k]=v
-            elif k in ('source','src'):
+            elif k in ('range','offset_age'):
+                p[k] = v.strip('[]').split(',')
+            elif k == 'source':
                 v = v.replace('%sample%/', cst.PATH+'sample/')
                 p['source']=v.strip('"')
+                valid_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
+            elif k == 'binning':
+                p[k] = cst.Cratercount.BINNINGS[decode_abbreviation(cst.Cratercount.BINNINGS, v, allow_ambiguous=True)]
+                cst.Cratercount.BINNINGS
             elif k == 'colour':
                 names=[n for c1,c2,n in cst.PALETTE]
                 p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
@@ -249,6 +245,8 @@ def construct_plot_dicts(args, c):
                 else: # look for arbitrary abbreviation or index
                     names = [e[1] for e in cst.MARKERS]
                     p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
+
+        if not valid_source: sys.exit('Source not specified')
 
         p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
@@ -283,6 +281,15 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
         main(a)
     print('\n\nDemo output written to: '+out)
 
+def do_functions_user(args):
+    if os.environ.get('CONDA_PREFIX'):
+        config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
+    else:
+        return None #actions environment is not conda
+    if args.functions_user:
+        s=['#path to functions_user.txt',args.functions_user]
+        gm.write_textfile(config,s)
+    return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
 
 def main(args0=None):
     args = get_parser().parse_args(args0)
@@ -290,28 +297,31 @@ def main(args0=None):
 
     template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
-    functions_user = cst.PATH + 'config/functions_user.txt'
 
     c = gm.read_textstructure(template if args.template is None else args.template)
     s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
-    if gm.file_exists(functions_user):
-        s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
-    f = gm.read_textstructure(s,from_string=True)
+    functions_user = do_functions_user(args)
+    if functions_user:
+        try:
+            s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
+        except:
+            print("Unable to read "+functions_user+" - ignoring.")
+    fm = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['chronology_system'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['chronology_system']]))
         print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['equilibrium'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['equilibrium']]))
         print(gm.bright("\nEpoch systems:"))
-        print('\n'.join(['{0} {1}'.format(i + 1, e['name']) for i, e in enumerate(f['epochs'])]))
+        print('\n'.join(['{0}'.format(e['name']) for e in fm['epochs']]))
         return
 
     if args.lpc:
         print(gm.bright("\nPlot symbols:"))
-        print('\n'.join(['{0} {1} ({2})'.format(i, e[1], e[0]) for i, e in enumerate(cst.MARKERS)]))
+        print(', '.join(['{0} ({1})'.format(e[1], e[0]) for e in cst.MARKERS]))
         print(gm.bright("\nColours:"))
-        print('\n'.join(['{0} {1}'.format(i, e[2]) for i, e in enumerate(cst.PALETTE)]))
+        print(', '.join(['{0}'.format(e[2]) for e in cst.PALETTE]))
         return
 
     if args.about:
@@ -327,9 +337,11 @@ def main(args0=None):
         return
 
     cp_dicts = construct_plot_dicts(args, c)
-    default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-    cps_dict = construct_cps_dict(args, c, f, default_filename)
-
+    if args.input:
+        default_filename = gm.filename(args.input_filename,'n')
+    else:
+        default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+    cps_dict = construct_cps_dict(args, c, fm, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
@@ -337,25 +349,29 @@ def main(args0=None):
     cpl = [cst.Craterplot(d) for d in cp_dicts]
 
     cps=cst.Craterplotset(cps_dict,craterplot=cpl)
-    if cpl and cps_dict['presentation'] in ['cumulative', 'differential', 'R-plot']:
+    if cpl:
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
-    if args.sequence_table:
-        cps.create_sequence_table(cps_dict['out']+'_sequence.csv')
-
     drawn=False
-    for f in cps.format:
-        if f in {'png','jpg','pdf','svg','tif'}:
+    for fm in cps.format:
+        if fm in {'png','pdf','svg','tif'}:
             if not drawn:
                 cps.draw()
                 drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent)
-        if f in {'txt'}:
-            cps.create_summary_table()
+            cps.fig.savefig(cps_dict['out']+'.'+fm, dpi=500, transparent=args.transparent,
+                            bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
+        if fm in {'csv'}:
+            cps.create_summary_table(f_out=cps_dict['out']+'.'+fm)
+        if fm in {'stat'}:
+            stat_files=set([(e.source,e.binning) for e in cpl])
+            for stat in stat_files:
+                cc=cst.Cratercount(stat[0])
+                cc.WriteStatFile(gm.filename(stat[0],"n12", '_'+stat[1],".stat"),stat[1])
+
 
 if __name__ == '__main__': 
     main()

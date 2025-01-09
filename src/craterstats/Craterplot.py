@@ -17,8 +17,8 @@ class Craterplot:
         self.UpdateSettings({
             'cratercount':None, # if not provided, will create from 'source'
             'source':'',
-            'name':None,
-            'range':np.array([0.,np.inf]),   #unconstrained
+            'name':'',
+            'range':['0','inf'],   #unconstrained
             'type':'data',
             'error_bars':1,
             'hide':0,
@@ -33,11 +33,16 @@ class Craterplot:
             'offset_age':[0.,0.],
             },*args,kwargs)
 
+        self.range = self.cratercount.decode_range(self.range,self.binning)
+
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
         for k, v in a.items():
-            if k in ('range', 'offset_age'): v = [float(e) for e in v]
+            if k in ('offset_age'):
+                v = [float(e) for e in v]
+            if k == 'range':
+                pass #do nothing
             if k in ('error_bars',
                      'hide',
                      'age_left',
@@ -178,10 +183,10 @@ class Craterplot:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
                 legend_label += [cst.str_diameter_range(r)]
             if 'N' in cps.legend:
-                legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'$=' + gm.scientific_notation(self.n_d, sf=3) + '$ km$^{-2}$']
+                legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'=' + gm.scientific_notation(self.n_d, sf=3, unit='km-2')]
             if cps.presentation == 'sequence':
                 if 'a' in cps.legend:
-                    legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
+                    legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
                 if 'A' in cps.legend:
                     legend_label+=[(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs,
                                             mu=cps.mu, no_error=False))]
@@ -190,10 +195,10 @@ class Craterplot:
             if 'n' in cps.legend:
                 legend_label+=[self.name if self.name!='' else gm.filename(self.source, "n")]
             if 'a' in cps.legend:
-                legend_label+=['$' + gm.scientific_notation(self.cratercount.area, sf=3) + '$ km$^{2}$']
+                legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
             if 'p' in cps.legend:
                 if self.cratercount.perimeter:
-                    legend_label += ['$' + gm.scientific_notation(self.cratercount.perimeter, sf=3) + '$ km']
+                    legend_label += [gm.scientific_notation(self.cratercount.perimeter, sf=3) + ' km']
 
         return legend_label
 
