@@ -352,7 +352,6 @@ class Craterplotset:
         ax_lin.get_yaxis().set_visible(False)
         ax_lin.spines[['left', 'right', 'top']].set_visible(False)
 
-
         #ax_all
         ax.set_xlim(left=0, right=1)
         ax.set_ylim(bottom=0, top=1)
@@ -360,6 +359,9 @@ class Craterplotset:
         ax.get_xaxis().set_visible(False)
         ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
         ax.patch.set_facecolor('none')
+
+        title = ('\n'.join(self.title.split('|')) if self.show_title else None)
+        if title: ax.set_title(title)
 
         # create layout
 
