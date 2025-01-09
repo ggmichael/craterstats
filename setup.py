@@ -18,8 +18,7 @@ setup(
     author_email="ggmichael@users.noreply.github.com",
     python_requires=">=3.8, <4",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Developers",
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.8",
