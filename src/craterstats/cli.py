@@ -250,7 +250,7 @@ def construct_plot_dicts(args, c):
 
         if not valid_source: sys.exit('Source not specified')
 
-        p['cratercount'] = cst.Cratercount(p['source'])
+        p['cratercount'] = cst.Cratercount((gm.filename(args.input_filename,'p') if args.input else '')+p['source'])
         cpl += [p]
     return cpl
 

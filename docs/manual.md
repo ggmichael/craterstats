@@ -161,7 +161,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - source=filename
   - name=txt
   - range=[min,max]
-    - either diameter range in km, e.g. `range=[0.2,0.7]`
+    - either diameter range in km, e.g. `range=[0.2,0.7]` (will be expanded to closest bin boundaries)
     - or bin range, e.g. `range=[b7,b9]` include bin 7 to bin 9 (only bins with data) or `range=[b7,b-2]` (counting from 7th to 2nd-last point)
   - type={data,cumulative-fit,differential-fit,poisson,b-poisson,sequence}
   - error_bars={1,0}
