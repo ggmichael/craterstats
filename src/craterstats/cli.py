@@ -285,7 +285,10 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
     print('\n\nDemo output written to: '+out)
 
 def do_functions_user(args):
-    config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
+    if os.environ.get('CONDA_PREFIX'):
+        config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
+    else:
+        return None #actions environment is not conda
     if args.functions_user:
         s=['#path to functions_user.txt',args.functions_user]
         gm.write_textfile(config,s)
