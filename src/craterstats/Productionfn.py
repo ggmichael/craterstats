@@ -1,6 +1,7 @@
 #  Copyright (c) 2021, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import sys
 import numpy as np
 import scipy.optimize as sc
 
@@ -191,8 +192,12 @@ class Productionfn:
         :return: a0 tuple: (fit, lower, upper)
         '''
         y, d, err = p['y'], p['d'], p['err']
-        if type(y) is np.ndarray and y.size==1:
-            y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
+
+        if type(y) is np.ndarray:
+            if y.size == 0:
+                sys.exit('Cannot fit to empty range')
+            if y.size==1:
+                y,d,err=y[0],d[0],err[0] # must convert to float so that next line works for float or ndarray
         if isinstance(y, (np.floating, float)): #allow to call with single values for conversion
             y,d,err=np.array([y,y]),np.array([d,d]),np.array([err,err])
 

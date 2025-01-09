@@ -1,28 +1,83 @@
-#  Copyright (c) 2021, Greg Michael
+#  Copyright (c) 2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
 
+#import craterstats.gm.string.sigfigs as sigfigs
 from .sigfigs import sigfigs
 
-def scientific_notation(n,sf=3,force=False):
+def scientific_notation(v,e1=None,e2=0,sf=3,force=False, MathML=False, unit=None):
     '''
-    Convert number to latex-style scientific notation string
+    Convert number to latex/MathML-style scientific notation string
 
     values >0.01 and <10000 are shown without multiplier unless force=True
 
-    :param n: number to convert
+    :param v: value to convert
+    :param e1,e2: plus/minus values
     :param sf: number of significant figures
     :param force: force notation even for low-value exponents
-    :return: latex-style formatted string
+    :return: formatted string
     '''
 
-    if -2 < np.log10(abs(n)) < 4 and not force:
-            return sigfigs(n, sf)
+    u = ('', '')
+    if unit is not None: #add more as needed
+        u = {'km-2':(r' $km$^{-2}','<msup><mtext>&#8239;km</mtext><mtext>-2</mtext></msup>'),
+             'km2': (r' $km$^{2}', '<msup><mtext>&#8239;km</mtext><mtext>2</mtext></msup>')
+             }[unit]
 
-    s0 = ("{:." + str(sf-1) + "e}").format(n)
-    s = s0.split('e')
-    return s[0]+'×10^{'+str(int(s[1]))+'}'
+    if -2 < np.log10(abs(v)) < 4 and not force:
+        st = sigfigs(v, sf)
+        exp = 0
+    else:
+        s0 = ("{:." + str(sf-1) + "e}").format(v)
+        s = s0.split('e')
+        exp = int(s[1])
+        st = s[0]
+
+    if e1 is not None:
+        e1s = sigfigs((e1 - v)/10**exp, sf - 1)
+        e2s = sigfigs((v - e2)/10**exp, sf - 1)
+        if MathML:
+            st = '<msubsup><mtext>'+st+'</mtext><mtext>&#x2212;'+e2s+'</mtext><mtext>+'+e1s+'</mtext></msubsup>'
+        else:
+            st += '^{+' + e1s + '}_{-' + e2s + '}'
+
+    if MathML:
+        st = ('<math xmlns="http://www.w3.org/1998/Math/MathML">'+st
+              +('' if exp==0 else '<mo>&#183;</mo><msup><mtext>10</mtext><mtext>'+str(exp)+'</mtext></msup>')
+              +u[1]+'</math>')
+    else:
+        st = '$' + st + ('' if exp==0 else'\cdot10^{'+str(exp)+'}')+u[0] + '$'
+
+    return st
+
+if __name__ == '__main__':
+    print(scientific_notation(3.14e9,3.17e9,2.6e9))
+    print(scientific_notation(3.14e9,3.17e9,2.6e9,unit='km-2'))
+    print(scientific_notation(3.14e9,3.17e9,2.6e9, MathML=True))
+    print(scientific_notation(3.14e9,3.17e9,2.6e9,unit='km-2', MathML=True))
+    print(scientific_notation(3.14,3.17,2.6))
+    print(scientific_notation(3.14,3.17,2.6,unit='km-2'))
+    print(scientific_notation(3.14,3.17,2.6, MathML=True))
+    print(scientific_notation(3.14,3.17,2.6,unit='km-2', MathML=True))
 
 
 
+# def scientific_notation(n,sf=3,force=False):
+#     '''
+#     Convert number to latex-style scientific notation string
+#
+#     values >0.01 and <10000 are shown without multiplier unless force=True
+#
+#     :param n: number to convert
+#     :param sf: number of significant figures
+#     :param force: force notation even for low-value exponents
+#     :return: latex-style formatted string
+#     '''
+#
+#     if -2 < np.log10(abs(n)) < 4 and not force:
+#             return sigfigs(n, sf)
+#
+#     s0 = ("{:." + str(sf-1) + "e}").format(n)
+#     s = s0.split('e')
+#     return s[0]+'×10^{'+str(int(s[1]))+'}'

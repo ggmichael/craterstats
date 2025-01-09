@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import itertools as it
 import re
+import sys
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -18,7 +19,7 @@ class Cratercount:
         self.filename=filename
         filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
 
-        self.binning=None                                                                   #current binning
+        self.binning=None                                                                 #current binning
         self.binned={}
         self.perimeter=None
         self.buffered=False
@@ -166,7 +167,12 @@ class Cratercount:
 # ;                 File writers
 # ;****************************************************
 
-    def WriteStatFile(self,filename):
+    def WriteStatFile(self,filename,binning='pseudo-log'):
+
+        if not self.prebinned:
+            if self.binning != binning:
+                self.apply_binning(binning)
+
         out=['# Craterstats3 exported stat file',\
              '#--------------------------------',\
              '#','# Source: '+self.filename,'# Binning: '+self.binning,\
@@ -177,23 +183,25 @@ class Cratercount:
         a=self.area
         b=self.binned
 
-        for i,v in enumerate(b['n']):
-            s=(format(b['d_min'][i],'<7.5g')+
-               format(b['n'][i],'>11.5g')+
-               format(b['n'][i]/a,'>13.3E')+
-               format(b['n'][i]/a/np.sqrt(b['n'][i]),'>12.3E')+
-               format(b['ncum'][i],'>11.5g')+
-               format(b['ncum'][i]/a,'>13.3E')+
-               format(b['ncum'][i]/a/np.sqrt(b['ncum'][i]),'>12.3E')+
-               format(b['d_mean'][i],'>12.4g')+
-               format(b['n'][i]/b['bin_width'][i]/a,'>12.3E')+
-               format(b['n'][i]/b['bin_width'][i]/a/np.sqrt(b['n_event'][i]),'>12.3E')+
-               format(b['n_event'][i],'>12.5g'))
-            out+=[s]
+        for i in range(len(b['d_min'])):
+            if b['n'][i]>0:
+                s=(format(b['d_min'][i],'<7.5g')+
+                   format(b['n'][i],'>11.5g')+
+                   format(b['n'][i]/a,'>13.3E')+
+                   format(b['n'][i]/a/np.sqrt(b['n'][i]),'>12.3E')+
+                   format(b['ncum'][i],'>11.5g')+
+                   format(b['ncum'][i]/a,'>13.3E')+
+                   format(b['ncum'][i]/a/np.sqrt(b['ncum'][i]),'>12.3E')+
+                   format(b['d_mean'][i],'>12.4g')+
+                   format(b['n'][i]/b['bin_width'][i]/a,'>12.3E')+
+                   format(b['n'][i]/b['bin_width'][i]/a/np.sqrt(b['n_event'][i]),'>12.3E')+
+                   format(b['n_event'][i],'>12.5g'))
+                out+=[s]
 
         out+=['#------------------------------------------------------------------------------------------------------------------------------']
         gm.write_textfile(filename, out)
 
+# ;****************************************************
 
     def generate_bins(self,binning,d,offset=0.,expand=True):
         '''
@@ -272,6 +280,38 @@ class Cratercount:
                      'ncum_event':np.flip(np.cumsum(np.flip(h_event)))
                      }
         self.binning=binning
+
+    def decode_range(self,range,binning):
+        if not self.prebinned:
+            if self.binning != binning:
+                self.apply_binning(binning)
+
+        r1 = [0.,0.]
+        q = np.where(self.binned['n'] > 0)
+        for i,r in enumerate(range):
+            try:
+                if isinstance(r, float):
+                    r1[i]=r
+                elif r[0]=='b':
+                    v=int(r[1:])
+                    v=np.clip(v,-len(q[0]),len(q[0]))
+                    if v>0:
+                        v-=1
+                    r1[i]=self.binned['d_mean'][q[0][v]]
+                else:
+                    r1[i]=float(r)
+            except:
+                sys.exit('Range limit error: ' + r)
+
+        if r1[1] < r1[0]: r1[1]=r1[0]
+
+        if self.binning != 'none':
+            if r1[0]>0:
+                r1[0] = self.binned['d_min'][np.searchsorted(self.binned['d_min'],r1[0]*(1.0000001))-1]
+            if r1[1] <= self.binned['d_max'][-1]-1e-7:
+                r1[1] = self.binned['d_max'][np.searchsorted(self.binned['d_max'],r1[1]*(0.999999))]
+
+        return r1
 
 
 # ;****************************************************
