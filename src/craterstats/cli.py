@@ -54,9 +54,6 @@ def get_parser():
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
 
-    parser.add_argument("-t", "--template", help="plot template", nargs='+', action=SpacedString)
-    #not needed any more. Can remove with use of default.plt
-
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
 
@@ -131,19 +128,42 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     return res[0][0]
 
 
-def construct_cps_dict(args,c,f,default_filename):
-    cpset=c['set']
+def construct_cps_dict(args,f,default_filename):
+    cps0 = {
+        'chronology_system': 'Moon, Neukum (1983)',
+        'cite_functions': 1,
+        'epochs': '',
+        'equilibrium': '',
+        'invert': 0,
+        'isochrons': '',
+        'legend': 'nacr',
+        'mu': 1,
+        'presentation': 'differential',
+        'print_dimensions': '7.5x7.5',
+        'pt_size': 8.0,
+        'randomness': 0,
+        'ref_diam': 1,
+        'sig_figs': 3,
+        'show_isochrons': 1,
+        'show_legend_area': 1,
+        'show_title': 1,
+        'style': 'natural',
+        'title': '',
+        'format': ['png', 'csv']
+        }
     if 'presentation' in vars(args):
         if args.presentation is not None:
-            cpset['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if cpset['presentation'] in ['chronology', 'rate']: #possible to overwrite with user-choice
-        cpset['xrange'] = cst.DEFAULT_XRANGE[cpset['presentation']]
-        cpset['yrange'] = cst.DEFAULT_YRANGE[cpset['presentation']]
-    cpset['format'] = set(cpset['format']) if 'format' in cpset else {}
+            cps0['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
+    if cps0['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
+        cps0['xrange'] = cst.DEFAULT_XRANGE[cps0['presentation']]
+        cps0['yrange'] = cst.DEFAULT_YRANGE[cps0['presentation']]
+    if cps0['presentation']=='sequence':
+        cps0['legend']='A'
+    cps0['format'] = set(cps0['format']) if 'format' in cps0 else {}
 
     for k,v in vars(args).items():
         if v is None:
-            if k == 'out': cpset[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
+            if k == 'out': cps0[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
         else:
             if k in ('title',
                      'isochrons',
@@ -161,46 +181,62 @@ def construct_cps_dict(args,c,f,default_filename):
                      'style',
                      'xrange', 'yrange',
                      ):
-                cpset[k]=v
+                cps0[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
                 names = [e['name'] for e in f[k]]
-                cpset[k]=f[k][decode_abbreviation(names, v, one_based=True, allow_ambiguous=True)]['name']
+                cps0[k]=f[k][decode_abbreviation(names, v, one_based=True, allow_ambiguous=True)]['name']
 
             elif k == 'out':
                 if os.path.isdir(v):
-                    cpset[k] = os.path.normpath(v+'/'+default_filename)
+                    cps0[k] = os.path.normpath(v+'/'+default_filename)
                 else:
-                    cpset[k] = gm.filename(v, 'pn')
+                    cps0[k] = gm.filename(v, 'pn')
                     ext = gm.filename(v, 'e').lstrip('.')
-                    if ext: cpset['format'].add(ext)
+                    if ext: cps0['format'].add(ext)
             elif k == 'format':
-                cpset[k]=set(v)
+                cps0[k]=set(v)
 
 
-    cs=next((e for e in f['chronology_system'] if e['name'] == cpset['chronology_system']), None)
-    if cs is None: sys.exit('Chronology system not found:' + cpset['chronology_system'])
+    cs=next((e for e in f['chronology_system'] if e['name'] == cps0['chronology_system']), None)
+    if cs is None: sys.exit('Chronology system not found:' + cps0['chronology_system'])
 
-    cpset['cf'] = cst.Chronologyfn(f, cs['cf'])
-    cpset['pf'] = cst.Productionfn(f, cs['pf'])
+    cps0['cf'] = cst.Chronologyfn(f, cs['cf'])
+    cps0['pf'] = cst.Productionfn(f, cs['pf'])
 
-    if 'equilibrium' in cpset and cpset['equilibrium'] not in (None,''):
-        cpset['ef'] = cst.Productionfn(f, cpset['equilibrium'], equilibrium=True)
-    if 'epochs' in cpset and cpset['epochs'] not in (None,''):
-        cpset['ep'] = cst.Epochs(f, cpset['epochs'],cpset['pf'],cpset['cf'])
+    if 'equilibrium' in cps0 and cps0['equilibrium'] not in (None,''):
+        cps0['ef'] = cst.Productionfn(f, cps0['equilibrium'], equilibrium=True)
+    if 'epochs' in cps0 and cps0['epochs'] not in (None,''):
+        cps0['ep'] = cst.Epochs(f, cps0['epochs'],cps0['pf'],cps0['cf'])
 
-    if cpset['presentation'] == 'Hartmann':
-        if hasattr(cpset['pf'],'xrange'): #not possible to overwrite with user choice
-            cpset['xrange'] = cpset['pf'].xrange
-            cpset['yrange'] = cpset['pf'].yrange
+    if cps0['presentation'] == 'Hartmann':
+        if hasattr(cps0['pf'],'xrange'): #not possible to overwrite with user choice
+            cps0['xrange'] = cps0['pf'].xrange
+            cps0['yrange'] = cps0['pf'].yrange
         else:
-            cpset['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
-            cpset['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
+            cps0['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
+            cps0['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
 
-    return cpset
+    return cps0
 
 
-def construct_plot_dicts(args, c):
-    plot = c['plot']
+def construct_plot_dicts(args):
+    plot = {
+        'source': '',
+        'name': '',
+        'range': [0, float('inf')],
+        'type': 'data',
+        'error_bars': 1,
+        'hide': 0,
+        'colour': 0,
+        'psym': 1,
+        'binning': 'pseudo-log',
+        'age_left': 0,
+        'display_age': 1,
+        'resurf': 0,
+        'resurf_showall': 0,
+        'isochron': 0,
+        'offset_age': [0, 0]
+    }
     if type(plot) is list: plot=plot[0] #take only first plot entry as template
     cpl = []
     specified_source = False
@@ -306,10 +342,7 @@ def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 
-    template=cst.PATH+'config/default.plt'
     functions=cst.PATH+'config/functions.txt'
-
-    c = gm.read_textstructure(template if args.template is None else args.template)
     s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
     functions_user = do_functions_user(args)
     if functions_user:
@@ -347,12 +380,12 @@ def main(args0=None):
         demo()
         return
 
-    cp_dicts = construct_plot_dicts(args, c)
+    cp_dicts = construct_plot_dicts(args)
     if args.input:
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-    cps_dict = construct_cps_dict(args, c, fm, default_filename)
+    cps_dict = construct_cps_dict(args, fm, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
