@@ -238,8 +238,14 @@ def construct_plot_dicts(args, c):
                 p[k] = cst.Cratercount.BINNINGS[decode_abbreviation(cst.Cratercount.BINNINGS, v, allow_ambiguous=True)]
                 cst.Cratercount.BINNINGS
             elif k == 'colour':
-                names=[n for c1,c2,n in cst.PALETTE]
-                p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
+                if v[0]=='#':
+                    if bool(re.match(r'^#([0-9A-Fa-f]{6})$', v)):
+                        p[k]=v
+                    else:
+                        sys.exit('Invalid colour:'+v)
+                else:
+                    names=[n for c1,c2,n in cst.PALETTE]
+                    p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
             elif k == 'psym':
                 j=[i for i,e in enumerate(cst.MARKERS) if e[0]==v]
                 if len(j)==1: # found standard abbreviation
@@ -351,9 +357,12 @@ def main(args0=None):
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
 
+    cps=cst.Craterplotset(cps_dict) #,craterplot=cpl)
+    for d in cp_dicts:
+        if isinstance(d['colour'], int):d['colour']=cps.palette[d['colour']]
     cpl = [cst.Craterplot(d) for d in cp_dicts]
+    cps.craterplot=cpl
 
-    cps=cst.Craterplotset(cps_dict,craterplot=cpl)
     if cpl and cps.presentation not in ('sequence'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)

@@ -50,7 +50,6 @@ class Craterplot:
                      'resurf',
                      'resurf_showall',
                      'isochron',
-                     'colour',
                      'psym',
                      ):
                 v = int(v)
@@ -128,14 +127,14 @@ class Craterplot:
 
             expansion=np.array([.99,1.01])
             fit=cps.pf.getplotdata(cps.presentation,self.a0[0],range=self.range*expansion)
-            cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=cps.palette[self.colour], lw=.7*cps.sz_ratio)
+            cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=self.colour, lw=.7*cps.sz_ratio)
 
             if self.display_age:
                 st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu)
                 xy = cps.data_to_axis((np.log10(fit['d'][0]),fit['y'][0]))
                 x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/(cps.decades[0]*20) #(cps.decades[0]*10).
                 cps.ax.text(x,y,st,transform=cps.ax.transAxes,
-                            color=cps.palette[self.colour],size=cps.scaled_pt_size*1.2,
+                            color=self.colour,size=cps.scaled_pt_size*1.2,
                             horizontalalignment='right' if self.age_left else 'left',)
 
                 if self.type in ['poisson','b-poisson']:
@@ -155,11 +154,11 @@ class Craterplot:
                     pos2=cps.axis_to_fig(pos)
                     pos3=np.concatenate([pos2[0:2],pos2[2:4]-pos2[0:2]])
                     ax = cps.fig.add_axes(pos3)
-                    self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour])
+                    self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=self.colour)
 
         legend_label=self.make_legend_label(cps)
         cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
-                    **cps.marker_def[self.psym],ls='',color=cps.palette[self.colour])
+                    **cps.marker_def[self.psym],ls='',color=self.colour)
 
 
 
@@ -248,15 +247,15 @@ class Craterplot:
             for j in [0, 1] if cps.crossover else [0]:
 
                 if self.type in ['poisson','b-poisson']:
-                    self.pdf.violin_plot(cps.ax2[j],dy,w0,pt_size=cps.scaled_pt_size,color=cps.palette[self.colour],invert=cps.invert)
+                    self.pdf.violin_plot(cps.ax2[j],dy,w0,pt_size=cps.scaled_pt_size,color=self.colour,invert=cps.invert)
 
                 if self.type in ['d-fit','c-fit']:
                     cps.ax2[j].fill_between([self.t[1], self.t[2]], [dy + w, dy + w], [dy - w, dy - w],
-                                            color=gm.mix_colours(cps.palette[self.colour],'black' if cps.invert else 'white',0.35),
-                                            edgecolor=cps.palette[self.colour],lw=lw,zorder=4)
+                                            color=gm.mix_colours(self.colour,'black' if cps.invert else 'white',0.35),
+                                            edgecolor=self.colour,lw=lw,zorder=4)
 
                     cps.ax2[j].plot([self.t[0], self.t[0]],
-                                    [dy + w, dy - w], color=cps.palette[self.colour], alpha=0.5, lw=lw*.7,zorder=4)
+                                    [dy + w, dy - w], color=self.colour, alpha=0.5, lw=lw*.7,zorder=4)
 
             text = '\n'.join(gm.strip_quotes(self.name).split(r'\n')) #clear quotes and substitute real linebreaks
             cps.ax.text(-.007, dy, text, fontsize=cps.scaled_pt_size * .75, ha='right', va='center')
