@@ -69,7 +69,7 @@ The `-p` indicates the start of an overplot definition, which should come after 
 (note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, 
 an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
-    craterstats -cs neukumivanov -title Example plot -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
+    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
 Sometimes it is useful to be able to specify the diameter range in terms of the plotted data points. Here we plot from the 8th to the 5th from last bins:
 
@@ -78,7 +78,7 @@ Sometimes it is useful to be able to specify the diameter range in terms of the 
 A plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. 
 Supported types are: png, tif, pdf, svg, csv, stat (multiple types can be specified, e.g. `-f png csv`)
 
-An additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Sometimes it may be convenient 
+An additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Often it is convenient 
 to edit this file to modify the plot, which can then be regenerated with the shorter command:
 
     craterstats -i Pickering.cs
