@@ -105,6 +105,49 @@ def get_parser():
                              "offset_age=[x,y], in 1/20ths of decade")
     return parser
 
+def defaults():
+    set = {
+        'chronology_system': 'Moon, Neukum (1983)',
+        'cite_functions': 1,
+        'epochs': '',
+        'equilibrium': '',
+        'invert': 0,
+        'isochrons': '',
+        'legend': 'nacr',
+        'mu': 1,
+        'presentation': 'differential',
+        'print_dimensions': '7.5x7.5',
+        'pt_size': 8.0,
+        'randomness': 0,
+        'ref_diam': 1,
+        'sig_figs': 3,
+        'show_isochrons': 1,
+        'show_legend_area': 1,
+        'show_title': 1,
+        'style': 'natural',
+        'title': '',
+        'format': ['png', 'csv']
+        }
+    plot = {
+        'source': '',
+        'name': '',
+        'range': ['0', 'inf'],
+        'type': 'data',
+        'error_bars': 1,
+        'hide': 0,
+        'colour': 0,
+        'psym': 1,
+        'binning': 'pseudo-log',
+        'age_left': 0,
+        'display_age': 1,
+        'resurf': 0,
+        'resurf_showall': 0,
+        'isochron': 0,
+        'offset_age': [0, 0]
+    }
+    return {'set':set,'plot':plot}
+
+
 def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     """
     decode arbitrary abbreviation of list member into index
@@ -128,42 +171,20 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     return res[0][0]
 
 
-def construct_cps_dict(args,f,default_filename):
-    cps0 = {
-        'chronology_system': 'Moon, Neukum (1983)',
-        'cite_functions': 1,
-        'epochs': '',
-        'equilibrium': '',
-        'invert': 0,
-        'isochrons': '',
-        'legend': 'nacr',
-        'mu': 1,
-        'presentation': 'differential',
-        'print_dimensions': '7.5x7.5',
-        'pt_size': 8.0,
-        'randomness': 0,
-        'ref_diam': 1,
-        'sig_figs': 3,
-        'show_isochrons': 1,
-        'show_legend_area': 1,
-        'show_title': 1,
-        'style': 'natural',
-        'title': '',
-        'format': ['png', 'csv']
-        }
+def construct_cps_dict(args,c,f,default_filename):
     if 'presentation' in vars(args):
         if args.presentation is not None:
-            cps0['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if cps0['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
-        cps0['xrange'] = cst.DEFAULT_XRANGE[cps0['presentation']]
-        cps0['yrange'] = cst.DEFAULT_YRANGE[cps0['presentation']]
-    if cps0['presentation']=='sequence':
-        cps0['legend']='A'
-    cps0['format'] = set(cps0['format']) if 'format' in cps0 else {}
+            c['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
+    if c['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
+        c['xrange'] = cst.DEFAULT_XRANGE[c['presentation']]
+        c['yrange'] = cst.DEFAULT_YRANGE[c['presentation']]
+    if c['presentation']=='sequence':
+        c['legend']='A'
+    c['format'] = set(c['format']) if 'format' in c else {}
 
     for k,v in vars(args).items():
         if v is None:
-            if k == 'out': cps0[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
+            if k == 'out': c[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
         else:
             if k in ('title',
                      'isochrons',
@@ -181,63 +202,46 @@ def construct_cps_dict(args,f,default_filename):
                      'style',
                      'xrange', 'yrange',
                      ):
-                cps0[k]=v
+                c[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
                 names = [e['name'] for e in f[k]]
-                cps0[k]=f[k][decode_abbreviation(names, v, one_based=True, allow_ambiguous=True)]['name']
+                c[k]=f[k][decode_abbreviation(names, v, one_based=True, allow_ambiguous=True)]['name']
 
             elif k == 'out':
                 if os.path.isdir(v):
-                    cps0[k] = os.path.normpath(v+'/'+default_filename)
+                    c[k] = os.path.normpath(v+'/'+default_filename)
                 else:
-                    cps0[k] = gm.filename(v, 'pn')
+                    c[k] = gm.filename(v, 'pn')
                     ext = gm.filename(v, 'e').lstrip('.')
-                    if ext: cps0['format'].add(ext)
+                    if ext: c['format'].add(ext)
             elif k == 'format':
-                cps0[k]=set(v)
+                c[k]=set(v)
 
 
-    cs=next((e for e in f['chronology_system'] if e['name'] == cps0['chronology_system']), None)
-    if cs is None: sys.exit('Chronology system not found:' + cps0['chronology_system'])
+    cs=next((e for e in f['chronology_system'] if e['name'] == c['chronology_system']), None)
+    if cs is None: sys.exit('Chronology system not found:' + c['chronology_system'])
 
-    cps0['cf'] = cst.Chronologyfn(f, cs['cf'])
-    cps0['pf'] = cst.Productionfn(f, cs['pf'])
+    c['cf'] = cst.Chronologyfn(f, cs['cf'])
+    c['pf'] = cst.Productionfn(f, cs['pf'])
 
-    if 'equilibrium' in cps0 and cps0['equilibrium'] not in (None,''):
-        cps0['ef'] = cst.Productionfn(f, cps0['equilibrium'], equilibrium=True)
-    if 'epochs' in cps0 and cps0['epochs'] not in (None,''):
-        cps0['ep'] = cst.Epochs(f, cps0['epochs'],cps0['pf'],cps0['cf'])
+    if 'equilibrium' in c and c['equilibrium'] not in (None,''):
+        c['ef'] = cst.Productionfn(f, c['equilibrium'], equilibrium=True)
+    if 'epochs' in c and c['epochs'] not in (None,''):
+        c['ep'] = cst.Epochs(f, c['epochs'],c['pf'],c['cf'])
 
-    if cps0['presentation'] == 'Hartmann':
-        if hasattr(cps0['pf'],'xrange'): #not possible to overwrite with user choice
-            cps0['xrange'] = cps0['pf'].xrange
-            cps0['yrange'] = cps0['pf'].yrange
+    if c['presentation'] == 'Hartmann':
+        if hasattr(c['pf'],'xrange'): #not possible to overwrite with user choice
+            c['xrange'] = c['pf'].xrange
+            c['yrange'] = c['pf'].yrange
         else:
-            cps0['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
-            cps0['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
+            c['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
+            c['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
 
-    return cps0
+    return c
 
 
-def construct_plot_dicts(args):
-    plot = {
-        'source': '',
-        'name': '',
-        'range': [0, float('inf')],
-        'type': 'data',
-        'error_bars': 1,
-        'hide': 0,
-        'colour': 0,
-        'psym': 1,
-        'binning': 'pseudo-log',
-        'age_left': 0,
-        'display_age': 1,
-        'resurf': 0,
-        'resurf_showall': 0,
-        'isochron': 0,
-        'offset_age': [0, 0]
-    }
-    if type(plot) is list: plot=plot[0] #take only first plot entry as template
+def construct_plot_dicts(args,plot):
+    #if type(plot) is list: plot=plot[0] #take only first plot entry as template
     cpl = []
     specified_source = False
     if args.plot is None: return []
@@ -350,15 +354,15 @@ def main(args0=None):
             s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
         except:
             print("Unable to read "+functions_user+" - ignoring.")
-    fm = gm.read_textstructure(s,from_string=True)
+    functions = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in fm['chronology_system']]))
+        print('\n'.join(['{0}'.format(e['name']) for e in functions['chronology_system']]))
         print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in fm['equilibrium']]))
+        print('\n'.join(['{0}'.format(e['name']) for e in functions['equilibrium']]))
         print(gm.bright("\nEpoch systems:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in fm['epochs']]))
+        print('\n'.join(['{0}'.format(e['name']) for e in functions['epochs']]))
         return
 
     if args.lpc:
@@ -380,15 +384,17 @@ def main(args0=None):
         demo()
         return
 
-    cp_dicts = construct_plot_dicts(args)
+    c = defaults()
+    cp_dicts = construct_plot_dicts(args,c['plot'])
     if args.input:
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-    cps_dict = construct_cps_dict(args, fm, default_filename)
+    cps_dict = construct_cps_dict(args, c['set'], functions, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
+
 
     cps=cst.Craterplotset(cps_dict) #,craterplot=cpl)
     for d in cp_dicts:
@@ -404,16 +410,16 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     drawn=False
-    for fm in cps.format:
-        if fm in {'png','pdf','svg','tif'}:
+    for functions in cps.format:
+        if functions in {'png','pdf','svg','tif'}:
             if not drawn:
                 cps.draw()
                 drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+fm, dpi=500, transparent=args.transparent,
+            cps.fig.savefig(cps_dict['out']+'.'+functions, dpi=500, transparent=args.transparent,
                             bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
-        if fm in {'csv'}:
-            cps.create_summary_table(f_out=cps_dict['out']+'.'+fm)
-        if fm in {'stat'}:
+        if functions in {'csv'}:
+            cps.create_summary_table(f_out=cps_dict['out']+'.'+functions)
+        if functions in {'stat'}:
             stat_files=set([(e.source,e.binning) for e in cpl])
             for stat in stat_files:
                 cc=cst.Cratercount(stat[0])
