@@ -19,6 +19,7 @@ class Craterplot:
             'source':'',
             'name':'',
             'range':['0','inf'],   #unconstrained
+            'snap':1,
             'type':'data',
             'error_bars':1,
             'hide':0,
@@ -33,7 +34,7 @@ class Craterplot:
             'offset_age':[0.,0.],
             },*args,kwargs)
 
-        self.range = self.cratercount.decode_range(self.range,self.binning)
+        self.range = self.cratercount.decode_range(self.range,self.binning,self.snap)
 
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
         a = {k: v for d in args for k, v in d.items()}
@@ -44,6 +45,7 @@ class Craterplot:
             if k == 'range':
                 pass #do nothing
             if k in ('error_bars',
+                     'snap',
                      'hide',
                      'age_left',
                      'display_age',
