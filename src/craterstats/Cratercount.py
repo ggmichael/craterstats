@@ -281,12 +281,13 @@ class Cratercount:
                      }
         self.binning=binning
 
-    def decode_range(self,range,binning):
+    def decode_range(self,range,binning,snap):
         if not self.prebinned:
             if self.binning != binning:
                 self.apply_binning(binning)
 
         r1 = [0.,0.]
+        snap1 = [snap,snap]
         q = np.where(self.binned['n'] > 0)
         for i,r in enumerate(range):
             try:
@@ -298,6 +299,7 @@ class Cratercount:
                     if v>0:
                         v-=1
                     r1[i]=self.binned['d_mean'][q[0][v]]
+                    snap1[i]=1
                 else:
                     r1[i]=float(r)
             except:
@@ -306,9 +308,9 @@ class Cratercount:
         if r1[1] < r1[0]: r1[1]=r1[0]
 
         if self.binning != 'none':
-            if r1[0]>0:
+            if snap1[0] and r1[0]>0:
                 r1[0] = self.binned['d_min'][np.searchsorted(self.binned['d_min'],r1[0]*(1.0000001))-1]
-            if r1[1] <= self.binned['d_max'][-1]-1e-7:
+            if snap1[1] and r1[1] <= self.binned['d_max'][-1]-1e-7:
                 r1[1] = self.binned['d_max'][np.searchsorted(self.binned['d_max'],r1[1]*(0.999999))]
 
         return r1

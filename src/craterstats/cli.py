@@ -91,6 +91,7 @@ def get_parser():
                              "source=txt,"
                              "name=txt,"
                              "range=[min,max],"
+                             "snap={1,0},"
                              "type={data,poisson,b-poisson,c-fit,d-fit},"
                              "error_bars={1,0},"
                              "hide={1,0},"
@@ -126,12 +127,13 @@ def defaults():
         'show_title': 1,
         'style': 'natural',
         'title': '',
-        'format': ['png', 'csv']
+        'format': {'png', 'csv'}
         }
     plot = {
         'source': '',
         'name': '',
         'range': ['0', 'inf'],
+        'snap': 1,
         'type': 'data',
         'error_bars': 1,
         'hide': 0,
@@ -180,7 +182,7 @@ def construct_cps_dict(args,c,f,default_filename):
         c['yrange'] = cst.DEFAULT_YRANGE[c['presentation']]
     if c['presentation']=='sequence':
         c['legend']='A'
-    c['format'] = set(c['format']) if 'format' in c else {}
+    #c['format'] = set(c['format']) if 'format' in c else {}
 
     for k,v in vars(args).items():
         if v is None:
@@ -248,7 +250,7 @@ def construct_plot_dicts(args,plot):
     for d in args.plot:
         p=plot.copy()
         if cpl: # for these items: if not given, carry over from previous
-            for k in ['source','psym','isochron','error_bars','colour','binning']:
+            for k in ['source','psym','snap','isochron','error_bars','colour','binning']:
                 p[k] = cpl[-1][k]
             if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
                 p['type'] = cpl[-1]['type']
@@ -257,6 +259,7 @@ def construct_plot_dicts(args,plot):
             k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
             if k in (
                     'name',
+                    'snap',
                     'error_bars',
                     'hide',
                     'age_left',
@@ -384,13 +387,13 @@ def main(args0=None):
         demo()
         return
 
-    c = defaults()
-    cp_dicts = construct_plot_dicts(args,c['plot'])
+    dflt = defaults()
+    cp_dicts = construct_plot_dicts(args,dflt['plot'])
     if args.input:
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-    cps_dict = construct_cps_dict(args, c['set'], functions, default_filename)
+    cps_dict = construct_cps_dict(args, dflt['set'], functions, default_filename)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson

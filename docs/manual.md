@@ -159,19 +159,20 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
                     specify overplot. All keys and string values can be abbreviated, e.g. `source` to `src` or  `differential-fit` to `d-fit` 
                         
   - source=filename
-  - name=txt
+  - name=txt, label for legend (filename is default)
   - range=[min,max]
     - either diameter range in km, e.g. `range=[0.2,0.7]` (will be expanded to closest bin boundaries)
     - or bin range, e.g. `range=[b7,b9]` include bin 7 to bin 9 (only bins with data) or `range=[b7,b-2]` (counting from 7th to 2nd-last point)
+  - snap={1,0}, snap diameter range to bin boundaries (default is 1 - yes)
   - type={data,cumulative-fit,differential-fit,poisson,b-poisson,sequence}
-  - error_bars={1,0}
-  - hide={1,0}
+  - error_bars={1,0}, show error bars (default is 1 - yes)
+  - hide={1,0}, hide overplot (default is 0 - no)
   - colour={black, red, blue, green...} Enter `craterstats -lpc` for full list
   - psym={circle, square, star, filled circle...} Enter `craterstats -lpc` for full list
   - binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}
-  - age_left={1,0}
-  - display_age={1,0}
-  - resurf={1,0}, apply resurfacing correction
+  - age_left={1,0}, move age label to left side (default is 0 - no)
+  - display_age={1,0}, display age label (default is 1 - yes)
+  - resurf={1,0}, apply resurfacing correction to cumulative fit (default is 0 - no)
   - resurf_showall={1,0}, show all data with resurfacing correction
-  - isochron={1,0}, extend isochron beyond selected range
+  - isochron={1,0}, extend isochron beyond selected range (default is 0 - no)
   - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
