@@ -27,7 +27,7 @@ class Craterplot:
             'psym':0,
             'binning':'pseudo-log',
             'age_left':0,
-            'display_age':1,
+            'show_age':1,
             'resurf':0,
             'resurf_showall':0,
             'isochron':0,
@@ -48,7 +48,7 @@ class Craterplot:
                      'snap',
                      'hide',
                      'age_left',
-                     'display_age',
+                     'show_age',
                      'resurf',
                      'resurf_showall',
                      'isochron',
@@ -131,7 +131,7 @@ class Craterplot:
             fit=cps.pf.getplotdata(cps.presentation,self.a0[0],range=self.range*expansion)
             cps.ax.plot(np.log10(fit['d']), fit['y'], label='fit', color=self.colour, lw=.7*cps.sz_ratio)
 
-            if self.display_age:
+            if self.show_age:
                 st=cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs, mu=cps.mu)
                 xy = cps.data_to_axis((np.log10(fit['d'][0]),fit['y'][0]))
                 x,y = xy + 0.02*np.ones(2)*(-1 if self.age_left else 1) +np.array(self.offset_age)/(cps.decades[0]*20) #(cps.decades[0]*10).
