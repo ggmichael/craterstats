@@ -19,7 +19,7 @@ with importlib_resources.path("craterstats.config", "demo_commands.txt") as path
 PRESENTATIONS=('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate', 'sequence', 'uncertainty')
 OPLOT_TYPES=('data','differential-fit','cumulative-fit','poisson','buffered-poisson')
 OPLOT_TYPES_SHORT=('data','d-fit','c-fit','poisson','b-poisson')
-CRATERPLOT_KEYS=('source','name','range','snap','type','error_bars','hide','colour','psym','binning','age_left','display_age',
+CRATERPLOT_KEYS=('source','name','range','snap','type','error_bars','hide','colour','psym','binning','age_left','show_age',
                  'resurf','resurf_showall','isochron','offset_age')
 
 DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0), (4.2, 1e-2), (4.2, 1e-5))

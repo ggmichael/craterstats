@@ -6,9 +6,6 @@ import sys
 import argparse
 import numpy as np
 import re
-import pathlib
-
-import importlib.resources as importlib_resources
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -99,7 +96,7 @@ def get_parser():
                              "psym={0-14},"
                              "binning={" +','.join(cst.Cratercount.BINNINGS) + "},"
                              "age_left={1,0},"
-                             "display_age={1,0},"
+                             "show_age={1,0},"
                              "resurf={1,0}, apply resurfacing correction,"
                              "resurf_showall={1,0}, show all data with resurfacing correction,"
                              "isochron={1,0}, show whole fitted isochron,"
@@ -123,8 +120,6 @@ def defaults():
         'ref_diam': 1,
         'sig_figs': 3,
         'show_isochrons': 1,
-        'show_legend_area': 1,
-        'show_title': 1,
         'style': 'natural',
         'title': '',
         'format': {'png', 'csv'}
@@ -141,7 +136,7 @@ def defaults():
         'psym': 1,
         'binning': 'pseudo-log',
         'age_left': 0,
-        'display_age': 1,
+        'show_age': 1,
         'resurf': 0,
         'resurf_showall': 0,
         'isochron': 0,
@@ -263,7 +258,7 @@ def construct_plot_dicts(args,plot):
                     'error_bars',
                     'hide',
                     'age_left',
-                    'display_age',
+                    'show_age',
                     'resurf',
                     'resurf_showall',
                     'isochron',

@@ -171,7 +171,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - psym={circle, square, star, filled circle...} Enter `craterstats -lpc` for full list
   - binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}
   - age_left={1,0}, move age label to left side (default is 0 - no)
-  - display_age={1,0}, display age label (default is 1 - yes)
+  - show_age={1,0}, display age label (default is 1 - yes)
   - resurf={1,0}, apply resurfacing correction to cumulative fit (default is 0 - no)
   - resurf_showall={1,0}, show all data with resurfacing correction
   - isochron={1,0}, extend isochron beyond selected range (default is 0 - no)
