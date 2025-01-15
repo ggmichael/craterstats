@@ -491,21 +491,21 @@ class Craterplotset:
         """
         x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
         mx = (.5, .9) # minimum empty margin
-        my = .7 * (2 if self.presentation=='differential' else 1) # minimum empty margin
+        my = .6 * (2 if self.presentation=='differential' else 1) # minimum empty margin
         xr = np.array([np.floor(np.log10(min(x0))-mx[0]), np.ceil(np.log10(max(x1))+mx[1])])
         yr = np.array([np.floor(np.log10(min(y0))-my), np.ceil(np.log10(max(y1))+my)])
 
-        #set to square
+        #set to square (better to add padding on side with least space)
         dx,dy= gm.mag(xr), gm.mag(yr)
         if self.presentation == 'differential':
-            if dy/2.-np.floor(dy/2.) > .01: yr+=[0,1]
+            if dy/2.-np.floor(dy/2.) > .01: yr+=[-1,0]
             dy= gm.mag(yr)
             d=dy/2-dx
             d0=abs(d)
             d2a=int(d0/2)
             d2b=d0-d2a
             if d<0: yr+=np.array([-d2b,d2a])*2
-            if d>0: xr+=np.array([-d2a,d2b])
+            if d>0: xr+=np.array([-d2b,d2a])
         else:
             d=dy-dx
             d0=abs(d)
