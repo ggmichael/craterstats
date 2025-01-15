@@ -22,7 +22,7 @@ class AppendPlotDict(argparse.Action):
             try:
                 k, v = kv.split("=")
             except:
-                sys.exit('Syntax error: ' + option_string+' '+kv)
+                sys.exit("Missing '=' in expression: " + option_string+' '+kv)
             d[k] = v
         list_of_d = getattr(namespace, self.dest)
         list_of_d=[d] if list_of_d is None else list_of_d+[d]
