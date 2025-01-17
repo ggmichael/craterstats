@@ -78,10 +78,13 @@ Sometimes it is useful to be able to specify the diameter range in terms of the 
 A plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. 
 Supported types are: png, tif, pdf, svg, csv, stat (multiple types can be specified, e.g. `-f png csv`)
 
-An additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Often it is convenient 
+One additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Often it is convenient 
 to edit this file to modify the plot, which can then be regenerated with the shorter command:
 
     craterstats -i Pickering.cs
+
+Another additional file, `Pickering.csv`, gives any dating results in tabular form for further analysis or transfer to a manuscript. 
+Preformatted ages and N(1) values, e.g. `$\mu630^{+37}_{-35}$ Ma` are provided in latex and in MathML (for Word). 
 
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
 
