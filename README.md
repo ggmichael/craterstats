@@ -83,7 +83,7 @@ to edit this file to modify the plot, which can then be regenerated with the sho
 
     craterstats -i Pickering.cs
 
-Another additional file, `Pickering.csv`, gives any dating results in tabular form for further analysis or transfer to a manuscript. 
+Another  file, `Pickering.csv`, gives dating results in tabular form for further analysis or transfer to a manuscript. 
 Preformatted ages and N(1) values, e.g. $\mu630^{+37}_{-35}$ Ma, are provided in latex and in MathML (for Word). 
 
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
