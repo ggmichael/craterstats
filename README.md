@@ -90,7 +90,7 @@ Tables of chronology systems, equilibrium functions and epoch systems – which 
 
     craterstats -lcs
 
-These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` will obtain equilibrium function 1. 
+These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` will obtain the `Standard lunar equilibrium (Trask, 1966)` equilibrium function. 
 
 Tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
