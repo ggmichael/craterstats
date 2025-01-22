@@ -446,8 +446,10 @@ class Craterplotset:
                 h1.append(h[i])
                 b1.append(e)
 
-        self.ax.legend(h1,b1,frameon=False, loc='upper right', borderaxespad=1,handletextpad=0.5,labelspacing=.4,handlelength=1.5)
-
+        legend=self.ax.legend(h1,b1,frameon=False, loc='upper right', borderaxespad=1,handletextpad=0.5,labelspacing=.4,handlelength=1.5)
+        for item in legend.get_texts(): #inverted shadow for improved contrast
+            item.set_path_effects(
+                [patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white', alpha=0.7)])
 
     def plot_isochrons(self):
         """
