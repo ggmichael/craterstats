@@ -8,6 +8,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import matplotlib.figure as mfig
+from matplotlib import patheffects
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -398,7 +399,8 @@ class Craterplotset:
             if not (self.presentation in ['chronology', 'rate'] and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
             txt += "CF: " + self.cf.name
             #offset would be better specified in pts (1.5 * fontsize) [for many-decade plots]:
-            self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
+            text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
+            text.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white',alpha=0.7)])  # White shadow beneath text
 
         if self.presentation in ['chronology', 'rate']:
             phi=self.presentation=='rate'
