@@ -58,10 +58,6 @@ class Craterplotset:
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.
-        self.marker_def = [e[2].copy() for e in cst.MARKERS]
-        for e in self.marker_def:
-            e['markersize'] *= self.sz_ratio
-            e['markeredgewidth'] = .5 * self.sz_ratio
         self.grey = cst.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cst.PALETTE]
 
@@ -149,7 +145,7 @@ class Craterplotset:
             plot_dims[0]/self.decades[0] if self.presentation=='Hartmann' else
             min(np.clip(plot_dims*np.array([1,self.data_aspect]),1,None)/self.decades)
             )
-                
+
         randomness_plot=int(self.randomness and not self.presentation in ['chronology', 'rate']) #boolean as 0,1
         margin=self.pt_size*.2  #plot margin in cm
         xsize=self.decades[0]*self.print_scale+2*margin #in cm
@@ -164,7 +160,12 @@ class Craterplotset:
         position_randomness=margin*np.array([1,ysize/margin-.8-randomness_plot,xsize/margin-2,ysize/margin-2]) #cm - not yet used
         normalised_position=self.position/np.array([xsize,ysize,xsize,ysize])  #pos, width for matplotlib axes
 
-
+# set up marker size
+        self.marker_def = [e[2].copy() for e in cst.MARKERS]
+        f = self.decades[0]*self.print_scale/7.5
+        for e in self.marker_def:
+            e['markersize'] *= 0.8 * f # * self.print_scale/1.875
+            e['markeredgewidth'] = .5 * f # * self.print_scale/1.875
 
 # set up titles, tick marks, and tick labels
 
