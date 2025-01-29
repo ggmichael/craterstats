@@ -23,7 +23,7 @@ CRATERPLOT_KEYS=('source','name','range','snap','type','error_bars','hide','colo
                  'resurf','resurf_showall','isochron','offset_age')
 
 DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0), (4.2, 1e-2), (4.2, 1e-5))
-DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3), (0,0),(0,0))
+DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5),       (-6, 2),  (-6, 3),  (0,0),       (2,8))
 DEFAULT_XRANGE = dict(zip(PRESENTATIONS,DEFAULT_XRANGE0))
 DEFAULT_YRANGE = dict(zip(PRESENTATIONS,DEFAULT_YRANGE0))
 
