@@ -408,16 +408,16 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     drawn=False
-    for functions in cps.format:
-        if functions in {'png','pdf','svg','tif'}:
+    for f in cps.format:
+        if f in {'png','pdf','svg','tif'}:
             if not drawn:
                 cps.draw()
                 drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+functions, dpi=500, transparent=args.transparent,
+            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent,
                             bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
-        if functions in {'csv'}:
-            cps.create_summary_table(f_out=cps_dict['out']+'.'+functions)
-        if functions in {'stat'}:
+        if f in {'csv'}:
+            cps.create_summary_table(f_out=cps_dict['out']+'.'+f)
+        if f in {'stat'}:
             stat_files=set([(e.source,e.binning) for e in cpl])
             for stat in stat_files:
                 cc=cst.Cratercount(stat[0])
