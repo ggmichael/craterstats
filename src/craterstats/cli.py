@@ -83,6 +83,9 @@ def get_parser():
 
     parser.add_argument("-st","--sequence_table", help="generate sequence probability table", action='store_true')
 
+    parser.add_argument("-d_min","--min_diameter", type=float, help="minimum diameter for uncertainty plot")
+    parser.add_argument("-ns", "--n_samples", type=int, help="number of samples for uncertainty plot")
+
     parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
                         help="specify overplot. Allowed keys:   \n"
                              "source=txt,"
@@ -122,7 +125,10 @@ def defaults():
         'show_isochrons': 1,
         'style': 'natural',
         'title': '',
-        'format': {'png', 'csv'}
+        'format': {'png', 'csv'},
+        'min_diameter':0.15,
+        'global_area':1e12, # default larger than all terrestrial planets
+        'n_samples':200,
         }
     plot = {
         'source': '',
@@ -145,7 +151,7 @@ def defaults():
     return {'set':set,'plot':plot}
 
 
-def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
+def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False,allow_invalid=False):
     """
     decode arbitrary abbreviation of list member into index
 
@@ -162,7 +168,10 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False):
     res = [(i,e) for i,e in enumerate(s) if re.search(regex, e) is not None]
     res.sort(key=lambda x: len(x[1]))
     if len(res) == 0:
-        sys.exit('Invalid abbreviation: ' + v)
+        if allow_invalid:
+            return -1
+        else:
+            sys.exit('Invalid abbreviation: ' + v)
     elif len(res) > 1 and not allow_ambiguous:
         sys.exit('Ambiguous abbreviation: ' + v)
     return res[0][0]
@@ -172,7 +181,7 @@ def construct_cps_dict(args,c,f,default_filename):
     if 'presentation' in vars(args):
         if args.presentation is not None:
             c['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if c['presentation'] in ['chronology', 'rate', 'sequence']: #possible to overwrite with user-choice
+    if c['presentation'] in ['chronology', 'rate', 'sequence','uncertainty']: #possible to overwrite with user-choice
         c['xrange'] = cst.DEFAULT_XRANGE[c['presentation']]
         c['yrange'] = cst.DEFAULT_YRANGE[c['presentation']]
     if c['presentation']=='sequence':
@@ -198,6 +207,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'show_title',
                      'style',
                      'xrange', 'yrange',
+                     'min_diameter','n_samples',
                      ):
                 c[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
@@ -220,6 +230,9 @@ def construct_cps_dict(args,c,f,default_filename):
 
     c['cf'] = cst.Chronologyfn(f, cs['cf'])
     c['pf'] = cst.Productionfn(f, cs['pf'])
+    i=decode_abbreviation(cst.PLANETS,cs['body'],allow_invalid=True)
+    if i!=-1:
+        c['global_area']=cst.SURFACE_AREAS[i]
 
     if 'equilibrium' in c and c['equilibrium'] not in (None,''):
         c['ef'] = cst.Productionfn(f, c['equilibrium'], equilibrium=True)
@@ -389,6 +402,8 @@ def main(args0=None):
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
     cps_dict = construct_cps_dict(args, dflt['set'], functions, default_filename)
+    if gm.filename(cps_dict['out'],'n')=='out' and cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
+        cps_dict['out']=gm.filename(cps_dict['out'],'p')+cps_dict['presentation']
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
@@ -400,21 +415,31 @@ def main(args0=None):
     cpl = [cst.Craterplot(d) for d in cp_dicts]
     cps.craterplot=cpl
 
-    if cpl and cps.presentation not in ('sequence'):
+    if cpl and cps.presentation not in ('sequence','uncertainty'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
+    def savefig(tag=''):
+        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=args.transparent,
+                        bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
+
     drawn=False
     for f in cps.format:
         if f in {'png','pdf','svg','tif'}:
-            if not drawn:
-                cps.draw()
-                drawn=True
-            cps.fig.savefig(cps_dict['out']+'.'+f, dpi=500, transparent=args.transparent,
-                            bbox_inches='tight' if args.tight else None,pad_inches=.02 if args.tight else None)
+            if cps.presentation == 'uncertainty':
+                for plt in ('k','err','age'):
+                    cps.draw()
+                    cps.age_area_plot(plt)
+                    savefig('_'+plt)
+            else:
+                if not drawn:
+                    cps.draw()
+                    drawn = True
+                savefig()
+
         if f in {'csv'}:
             cps.create_summary_table(f_out=cps_dict['out']+'.'+f)
         if f in {'stat'}:

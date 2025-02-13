@@ -176,3 +176,6 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - resurf_showall={1,0}, show all data with resurfacing correction
   - isochron={1,0}, extend isochron beyond selected range (default is 0 - no)
   - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
+
+-d_min, --min_diameter
+    specify minimum observable crater diameter for complete count (uncertainty plot) 

@@ -65,6 +65,8 @@ class Craterpdf:
 
         pdf0 = gm.poisson(self.k, lam * 10 ** x)
         pdf0 = pdf0.astype(float)
+        if np.sum(pdf0)<1e-30: #force line peak if under-resolved
+            pdf0[np.searchsorted(lam * 10 ** x,self.k)]=1.
         self.lam = lam
         self.pdf = pdf0/np.sum(pdf0*self.dt)
         self.cdf = np.cumsum(self.pdf*self.dt)
