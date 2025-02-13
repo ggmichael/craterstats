@@ -4,7 +4,6 @@ kiwisolver
 matplotlib
 numpy
 palettable
-pandas
 Pillow
 progressbar2
 pyparsing
