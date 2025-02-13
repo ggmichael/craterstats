@@ -71,7 +71,7 @@ an additional overplot is specified: this time, a poisson age evaluation for the
 
     craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
-Sometimes it is useful to be able to specify the diameter range in terms of the plotted data points. Here we plot from the 8th to the 5th from last bins:
+Sometimes it is useful to be able to specify the diameter range in terms of the plotted data points. Here we plot from the 8th to the 5th-from-last bins:
 
     craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[b8,b-5]
 
@@ -107,6 +107,10 @@ The complete set of options can be seen with:
 
 To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=C:\tmp\area1.scc` in the first overplot, this becomes the default for subsequent overplots. Only when you wish to introduce a different source file do you need to specify it again. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
+Uncertainty plots for the evaluation of small-area, low-number counts, assuming a complete count of craters larger than d_min can be generated 
+(plots for k, measured error and measured/actual age - see Michael, Liu (2025)):
+
+    craterstats -pr uncertainty -cs n83 -d_min 0.15
 
 # Examples
 
@@ -126,9 +130,6 @@ Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
-Uncertainty plots for small-area, low-number count evaluation, assuming complete count of craters >150 m (plots for k, measured error and measured/actual age - see Michael, Liu (2025)).
-
-    craterstats -pr uncertainty -cs n83 -d_min 0.15
 
 # Manual
 [Complete command option list](docs/manual.md)
