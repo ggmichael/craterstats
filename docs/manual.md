@@ -179,3 +179,6 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -d_min, --min_diameter
     specify minimum observable crater diameter for complete count (uncertainty plot) 
+
+-ns, --n_samples
+    specify number of samples for uncertainty plot
