@@ -3,8 +3,10 @@ cycler
 kiwisolver
 matplotlib
 numpy
+palettable
 pandas
 Pillow
+progressbar2
 pyparsing
 python-dateutil
 pytz

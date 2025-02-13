@@ -10,6 +10,10 @@ import matplotlib.ticker as ticker
 import matplotlib.figure as mfig
 from matplotlib import patheffects
 
+import matplotlib.colors as colors
+from palettable.colorbrewer.diverging import Spectral_9
+from progressbar import progressbar
+
 import craterstats as cst
 import craterstats.gm as gm
 
@@ -259,17 +263,18 @@ class Craterplotset:
         """
         Set up plotspace with normal/split time axis for sequence, uncertainty plot
         """
-
         if self.fig: del self.fig
         self.EstablishFontandScaling()
 
         # set up plot dimensions
-
         margin = self.pt_size * .2  # plot margin in cm
-        xsize, ysize = [float(e)+2*margin for e in self.print_dimensions.split('x')]
-
-
-        #self.position = margin * np.array([1, 1, xsize / margin - 2, ysize / margin - 2])  # cm
+        plot_dims = [float(e) for e in self.print_dimensions.split('x')]
+        if len(plot_dims) == 1:
+            xsize = ysize = 5 * plot_dims[0] + 2 * margin
+            self.aspect_ratio=1
+        else:
+            xsize, ysize = (e + 2 * margin for e in plot_dims)
+            self.aspect_ratio = plot_dims[1]/plot_dims[0]
 
         def f(x): return np.clip(gm.mag(x), 1, None)
         self.decades=f(self.xrange),f(self.yrange)
@@ -283,17 +288,13 @@ class Craterplotset:
         else:
             self.crossover = False
 
-
         if self.crossover:
             t_crossover = 3.
-            log_t_min = np.log10(self.t_min)
-
             dec2lin = 0.7
+            xtickv = [3., 3.5, 4.]
+            log_t_min = np.log10(self.t_min)
             lin_units = max(self.t_max - t_crossover, 0) / dec2lin
             log_units = np.log10(t_crossover) - log_t_min
-
-            xtickv = [3., 3.5, 4.]
-
         else:
             t_crossover = self.t_min
             lin_units = 1
@@ -302,7 +303,6 @@ class Craterplotset:
 
         xticklabels = [str(e) for e in xtickv]
         xticklabels[-1] += ' Ga'
-
 
         xfrac_linear = lin_units / (lin_units + log_units)
         width_linear = xfrac_linear * (xsize - margin * 2)
@@ -317,9 +317,10 @@ class Craterplotset:
         ax = fig.add_axes(pos_all / np.array([xsize, ysize, xsize, ysize]))
 
         if self.presentation == 'uncertainty':
-            offset_cbar = [.3, .3]  # offset_x,w from main plot
+            offset_cbar = [.2, .2]  # offset_x,w from main plot
             pos_cbar = [xsize - margin + offset_cbar[0], margin, offset_cbar[1], ysize - margin*2]
             ax_cbar = fig.add_axes(pos_cbar / np.array([xsize, ysize, xsize, ysize]))
+            ax_cbar.tick_params(length=2, pad=1.5)
 
         #ax_log
         if self.crossover:
@@ -327,56 +328,54 @@ class Craterplotset:
             ax_log.set_xlim(left=t_crossover, right=10 ** log_t_min)
             def xlogFuncFormatter(x, pos):
                 return cst.str_age(x, simple=True)
-
             ax_log.xaxis.set_major_formatter(ticker.FuncFormatter(xlogFuncFormatter))
-
             ax_log.xaxis.set_major_locator(ticker.LogLocator(numticks=999))
             ax_log.xaxis.set_minor_locator(ticker.LogLocator(numticks=999, subs="auto"))
-
             ax_log.tick_params(length=2, pad=1.5)
             ax_log.tick_params(which='minor',length=1)
-
             ax_log.get_yaxis().set_visible(False)
-
             ax_log.spines[['left', 'right', 'top']].set_visible(False)
             ax_log.set_ylim(bottom=0, top=1)
-
-            ax_log.plot(t_crossover,0,marker='x',clip_on=False,markeredgewidth=.3, markersize=self.pt_size*.3,color='black')
         else:
             ax_log.set_axis_off()
 
-
         #ax_lin
         ax_lin.set_xlim(left=self.t_max, right=t_crossover)
-        ax_lin.set_ylim(bottom=0, top=1)
-
-
         ax_lin.set_xticks(xtickv, labels=xticklabels)
         ax_lin.tick_params(length=2, pad=1.5)
         ax_lin.tick_params(which='minor',length=1)
         ax_lin.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
 
-        ax_lin.get_yaxis().set_visible(False)
-        ax_lin.spines[['left', 'right', 'top']].set_visible(False)
+        if self.presentation == 'sequence':
+            ax_lin.set_ylim(bottom=0, top=1)
+            ax_lin.get_yaxis().set_visible(False)
+            ax_lin.spines[['left', 'right', 'top']].set_visible(False)
+        elif self.presentation == 'uncertainty':
+            ax_lin.set_yscale('log')
+            ax_lin.yaxis.set_major_locator(ticker.LogLocator(numticks=999))
+            ax_lin.yaxis.set_minor_locator(ticker.LogLocator(numticks=999, subs="auto"))
+            ax_lin.set_ylim(bottom=10 ** self.yrange[0], top=10 ** self.yrange[1])
+            ax_lin.set_ylabel('Area, km$^2$')
+            ax_lin.spines[['right', 'top']].set_visible(False)
 
         #ax_all
         ax.set_xlim(left=0, right=1)
         ax.get_xaxis().set_visible(False)
+        ax.set_ylim(bottom=0, top=1)
+        ax.get_yaxis().set_visible(False)
         if self.presentation == 'sequence':
-            ax.set_ylim(bottom=0, top=1)
-            ax.get_yaxis().set_visible(False)
             ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
         elif self.presentation == 'uncertainty':
-            ax.set_yscale('log')
-            ax.set_ylim(bottom=10 ** self.yrange[0], top=10 ** self.yrange[1])
-            ax.set_ylabel('Area, km$^2$')
+            ax.spines[['left', 'bottom']].set_visible(False)
 
+        ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
+                         markersize=self.pt_size * .3, zorder=2)
         ax.patch.set_facecolor('none')
+
         title = '\n'.join(self.title.split('|')) if self.show_title else None
         if title: ax.set_title(title)
 
         # create layout
-
         self.fig = fig
         self.ax = ax
         self.ax2 = (ax_lin,ax_log)
@@ -389,6 +388,9 @@ class Craterplotset:
         self.data_to_axis = a2d.inverted().transform
         self.axis_to_fig = (ax.transAxes + fig.transFigure.inverted()).transform
 
+        # pass on values
+        self.t_crossover = t_crossover
+        self.xfrac_linear = xfrac_linear
 
     def draw(self):
         """
@@ -411,8 +413,13 @@ class Craterplotset:
             if not (self.presentation in ['chronology', 'rate'] and self.ref_diameter==1) or self.ep: txt += "PF: " + self.pf.name + '\n'
             txt += "CF: " + self.cf.name
             #offset would be better specified in pts (1.5 * fontsize) [for many-decade plots]:
-            text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
-            text.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white',alpha=0.7)])  # White shadow beneath text
+            if self.presentation in ('uncertainty'):
+                text = self.ax.text(.95, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7,
+                                    ha='right',linespacing=1.5)
+            else:
+                text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
+            if self.presentation not in ('sequence', 'uncertainty'):
+                text.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white',alpha=0.7)])  # White shadow beneath text
 
         if self.presentation in ['chronology', 'rate']:
             phi=self.presentation=='rate'
@@ -439,8 +446,8 @@ class Craterplotset:
 
         if self.presentation == 'sequence' and self.ep: self.ep.sequence_oplot(self)
 
-        if self.presentation == 'uncertainty':
-            pass
+        # if self.presentation == 'uncertainty':
+        #     self.age_area_plot()
 
         if self.presentation in ['cumulative', 'differential', 'R-plot', 'Hartmann', 'sequence']:
             for cp in self.craterplot:
@@ -621,10 +628,6 @@ class Craterplotset:
 
         return st #for test routine
 
-
-
-
-
     def create_sequence_table(self,f_csv):
         """
         Output table of sequence probabilities from sequence plot
@@ -684,83 +687,63 @@ class Craterplotset:
         except:
             sys.exit(gm.bright("Unable to write file: ")+f_csv)
 
-    def age_area_plot(self):
-        #,pf,cf,out,min_diameters,min_areas,sample_plot_index=-1,max_area=3.8e7,cs_label=False,dark=False):
+    def age_area_plot(self,plt):
+        # import warnings
+        # warnings.filterwarnings('error', category=RuntimeWarning)
 
-        log_t_min=-5
-        t_crossover=3.
-        t_max=4.2
-        xfrac_linear = 0.3
-        ns = 300  # samples for plotting
-        area_decades=6 #6
+        cmap_k = 'Set2_r'
+        cmap_err = Spectral_9.mpl_colormap
+        cmap_ratio = colors.ListedColormap(Spectral_9.mpl_colors)
 
-        t_sample = 0.1
-        n_samples=6
-        sample_plot_labels='ghijklmn'
+        # new initialisation
+        dmin = self.min_diameter
+        max_area=self.global_area
 
-        cm2inch=1/2.54
-        xsize=18
-        ysize=10
-        nsy=ns*ysize//xsize
+        if self.aspect_ratio>1:
+            nsx = self.n_samples  # samples for plotting
+            nsy = int(nsx*self.aspect_ratio)
+        else:
+            nsy = self.n_samples
+            nsx = int(nsy/self.aspect_ratio)
 
-        p={}
-        pack=['log_t_min','t_crossover','t_max','xfrac_linear','cm2inch','xsize','ysize','dark']
-        for e in pack:
-            p[e]=eval(e)
+        ns_lin = round(nsx*self.xfrac_linear)
+        ns_log = nsx - ns_lin
 
-
-        ns_lin = round(ns*xfrac_linear)
-        ns_log = ns - ns_lin
-
-        log_age_range = [log_t_min, np.log10(t_crossover)]
-
+        log_age_range = [np.log10(self.t_min), np.log10(self.t_crossover)]
         log_age = np.concatenate((
             np.linspace(log_age_range[0], log_age_range[1], ns_log),
-            np.log10(np.linspace(t_crossover, t_max, ns_lin+1)[1:])
+            np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin+1)[1:])
             ))
 
+        log_area_range = self.yrange
+        log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
 
-        x_sample=(ns-1)-np.interp(np.log10(t_sample),log_age,range(ns))
-        y_sample = np.linspace(0, nsy, n_samples+2, dtype='int32')[1:n_samples+1]
+        d_range = [dmin, 1000.]
+        cc = cst.Cratercount()
+        mid_d = np.sqrt(d_range[0] * d_range[1])
+        cc.diam = [mid_d]  # shouldn't be empty
 
+        if not hasattr(self, 'age_area'): #store values first time, else retrieve
+            zz = np.zeros((nsx,nsy))
+            kk = np.zeros((nsx,nsy))
+            ee = np.zeros((nsx, nsy))
+            lm = np.zeros((nsx, nsy))
 
-        for di, dmin in enumerate(min_diameters):  # ,0,1
-
-            log_area_range = [min_areas[di], min_areas[di] + area_decades]
-            log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
-            p['log_area_range']=log_area_range
-
-            d_range = [10 ** dmin, 1000.]
-            cc = cst.Cratercount()
-            mid_d = np.sqrt(d_range[0] * d_range[1])
-            cc.diam = [mid_d]  # shouldn't be empty
-
-            zz = np.zeros((ns,nsy))
-            kk = np.zeros((ns,nsy))
-            ee = np.zeros((ns, nsy))
-            lm = np.zeros((ns, nsy))
-
-            a0 = cf.a0(10 ** log_age)
-            C = np.ndarray(ns)
+            a0 = self.cf.a0(10 ** log_age)
+            C = np.ndarray(nsx)
 
             for i,a in enumerate(a0):
-                r=pf.evaluate("cumulative",d_range,a0=a)
+                r=self.pf.evaluate("cumulative",d_range,a0=a)
                 C[i]=r[0]-r[1]
 
-            if dark: plt.style.use("dark_background")
-            fig,axs = plt.subplots(1,n_samples,  figsize=[xsize * 2 * cm2inch, ysize/3. * cm2inch], layout='constrained')
-            axs = [e for e in axs.flat]
-
-            for i,xx in enumerate(log_age):
+            for i,xx in progressbar(enumerate(log_age),max_value=nsx):
                 for j,yy in enumerate(log_area):
                     area=10**yy
                     lam=C[i]*area
-                    k=round(lam)
-                    k=np.random.poisson(lam) if lam < 1e5 else lam #prevent too large lam
+                    k=np.random.poisson(lam) if lam < 1e5 else int(lam) #prevent too large lam
                     cc.area=area
-                    pdf = cst.Craterpdf(pf, cf, cc, d_range, k=k, bcc=False,n_samples=2000)
+                    pdf = cst.Craterpdf(self.pf, self.cf, cc, d_range, k=k, bcc=False,n_samples=2000)
                     t = pdf.median1sigma()
-                    #err=(t[2]-t[1])/t[0]/2.
                     err = np.sqrt(t[2]/t[1]) - 1.
                     ratio=t[0]/(10**xx)
 
@@ -769,115 +752,59 @@ class Craterplotset:
                     ee[i,j]=1 if np.isnan(ratio) else ratio
                     lm[i,j]=lam
 
-            if di == sample_plot_index:
-                for jm in range(n_samples):
-                    area = 10 ** log_area[y_sample[jm]]
-                    a0 = cf.a0(t_sample)
-                    r = pf.evaluate("cumulative", d_range, a0=a0)
-                    C_sample = r[0] - r[1]
-                    lam=C_sample * area
-                    #k = round(lam)
-                    k = round(np.median(np.random.poisson(lam,5))) if lam < 1e5 else round(lam) #show typical plots for explanation
-                    cc.area = area
-                    pdf = cst.Craterpdf(pf, cf, cc, d_range, k=k, bcc=False, n_samples=6000)
-                    pdf.plot(axs[jm], logscale=True, t_range=[1e-3, 4.5],pt_size=12.,color='1' if dark else '0')
-                    t = pdf.median1sigma()
-                    t_txt = cst.str_age(t[0],t[2]-t[0],t[0]-t[1],unit="Ma")
-                    axs[jm].text(0.03, .25, f'$k={k:0g}$\n{t_txt}',transform=axs[jm].transAxes, size=10.)
-                    axs[jm].text(0,.75,sample_plot_labels[jm],transform=axs[jm].transAxes,size=16.)
+            self.age_area=(zz,kk,ee,lm)
+        else:
+            zz, kk, ee, lm = self.age_area
 
+        #saturation calculation
+        log_b = np.tile(log_area, (nsx, 1))
+        log_a = np.log10(lm*np.pi/4)+2*np.log10(dmin)
+        alpha = np.where(np.isnan(log_a), 1., 1. - (log_a > log_b)*.2 - (log_a > (log_b - 1))*.4)
+        alpha = np.where(log_b > np.log10(max_area), 0.4, alpha)
+        alpha_s = np.flip(np.transpose(alpha), 1)
+        q1 = np.where(log_a[:, 0] > (log_b[:, 0] - 1))
+        q2 = np.where(log_a[:, 0] > (log_b[:, 0]))
+        q3 = np.where(np.log10(max_area) < log_b[0,:])
 
-
-            id=f'{di:02d} {10.**dmin:0g}km '
-            if di == sample_plot_index:
-                fig.savefig(out+'4'+id + ' multi.png', dpi=500)
-
-            #saturation calculation
-            log_b = np.tile(log_area, (ns, 1))
-            log_a = np.log10(lm*np.pi/4)+2*dmin
-            alpha = np.where(np.isnan(log_a), 1., 1. - (log_a > log_b)*.2 - (log_a > (log_b - 1))*.4)
-            alpha = np.where(log_b > np.log10(max_area), 0.4, alpha)
-            alpha_s = np.flip(np.transpose(alpha), 1)
-            q1 = np.where(log_a[:, 0] > (log_b[:, 0] - 1))
-            q2 = np.where(log_a[:, 0] > (log_b[:, 0]))
-            q3 = np.where(np.log10(max_area) < log_b[0,:])
-            def add_saturation_text():
-                if q1[0].size > 0 and (q1[0][0]/ns < .98):
-                    ax.text(1 - q1[0][0]/ns , .87, '10% saturation', size=9., rotation=90,
-                            transform=ax.transAxes, horizontalalignment='right', verticalalignment='top')
-                if q2[0].size > 0 and (q2[0][0]/ns < .98):
-                    ax.text(1 - q2[0][0]/ns , .87, '100% saturation', size=9., rotation=90,
-                            transform=ax.transAxes, horizontalalignment='right', verticalalignment='top')
-                if q3[0].size > 0 and (q3[0][0]/nsy < .98):
-                    ax.text(.82, q3[0][0]/nsy , 'whole globe', size=9., rotation=0,
-                            transform=ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
-
-            def add_diameter_text():
-                fig.text(0.03, .96, '$d > ' + (f'{10. ** dmin:0g}$ km' if dmin >= 0 else f'{10. ** (dmin + 3):0g}$ m'),
-                         size=10., transform=ax.transAxes, horizontalalignment='left', verticalalignment='top')
-
-            def add_cs_text():
-                fig.text(0.97, .04, 'PF: '+pf.name+'\nCF: '+cf.name, size=9., transform = ax.transAxes,
-                         horizontalalignment='right', verticalalignment='bottom')
-
-            def add_sample_markers(invert=None):
-                if di == sample_plot_index:
-                    for i in range(n_samples):
-                        if dark and invert is not None:
-                            if invert[i]==1: plt.style.use("default")
-
-                        ax.text(x_sample, y_sample[i], r"$" + sample_plot_labels[i] + "$", size=12, #c='black',
-                                horizontalalignment='center', verticalalignment='center')
-
-                        if dark: plt.style.use("dark_background")
-
-            def add_subfig_label(n):
-                fig.text(0.02, .89, 'abcdefghijklmno'[di*3+n], size=18.)
-
-
-
-            fig,ax,cax = establish_linlog_fig(p)
+        if plt=='k':
             im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
-            im = ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=alpha_s, aspect='auto')
-            cbar = fig.colorbar(im,cax,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
+            imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=alpha_s, aspect='auto',extent=[0,1,0,1])
+            cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
             cbar.ax.set_yticklabels(['0','1','2','3','4','5','6','7+'])
             cbar.set_label('$k$', rotation=90)
-            if di == sample_plot_index: add_sample_markers()
-            add_saturation_text()
-            add_diameter_text()
-            if cs_label: add_cs_text()
-            add_subfig_label(0)
-            fig.savefig(out+'1'+id+ ' k.png', dpi=500)
 
-            fig,ax,cax = establish_linlog_fig(p)
-            im = ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=0.8*alpha_s,
-                             extent=[0,ns-1,0,nsy-1],aspect='auto', vmin=0) #, vmax=115)#, 'plasma_r'
-            cbar = fig.colorbar(im,cax)
+        elif plt=='err':
+            imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=0.8*alpha_s,
+                             aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
+            cbar = self.fig.colorbar(imo,self.ax_cbar)
             cbar.set_label('Measured uncertainty $\sigma$, %', rotation=90)
-            if di == sample_plot_index: add_sample_markers()
-            add_saturation_text()
-            add_diameter_text()
-            if cs_label: add_cs_text()
-            add_subfig_label(1)
-            fig.savefig(out+'2'+id + ' err.png', dpi=500)
 
-
-            fig,ax,cax = establish_linlog_fig(p)
+        elif plt == 'age':
             im = np.flip(np.transpose(np.log10(ee)),1)
             vmin=np.log10(1./5)
             vmax=np.log10(5.)
             alpha=np.where((im > vmin) & (im < vmax),1.,0.)
-            im = ax.imshow(im,
-                           cmap_ratio, origin="lower", interpolation='none',  #'Spectral'
-                           extent=[0,ns-1,0,nsy-1],aspect='auto', vmin=vmin,vmax=vmax,alpha=alpha*alpha_s)#, 'plasma_r'
-            cbar = fig.colorbar(im,cax,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
+            imo = self.ax.imshow(im,
+                           cmap_ratio, origin="lower", interpolation='none', #zorder=0,
+                           extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax,alpha=alpha*alpha_s)
+            cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
             cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
             cbar.set_label('Measured/actual age', rotation=90)
-            if di == sample_plot_index: add_sample_markers(invert=[0,1,1,1,1,1])
-            add_saturation_text()
-            add_diameter_text()
-            if cs_label: add_cs_text()
-            add_subfig_label(2)
-            fig.savefig(out+'3'+id +' ratio.png', dpi=500)
 
+        def add_saturation_text():
+            if q1[0].size > 0 and (q1[0][0]/nsx < .98):
+                self.ax.text(1 - q1[0][0]/nsx , .87, '10% saturation', size=self.scaled_pt_size * .7, rotation=90,
+                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='top')
+            if q2[0].size > 0 and (q2[0][0]/nsx < .98):
+                self.ax.text(1 - q2[0][0]/nsx , .87, '100% saturation', size=self.scaled_pt_size * .7, rotation=90,
+                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='top')
+            if q3[0].size > 0 and (q3[0][0]/nsy < .98):
+                self.ax.text(.82, q3[0][0]/nsy , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
+                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
+        def add_diameter_text():
+            self.fig.text(0.03, .96, '$d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin*1000:0.3g}$ m'),
+                     size=self.scaled_pt_size * .8, transform=self.ax.transAxes, horizontalalignment='left', verticalalignment='top')
+
+        add_saturation_text()
+        add_diameter_text()
 

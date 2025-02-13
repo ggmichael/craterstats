@@ -1,4 +1,4 @@
-#  Copyright (c) 2021, Greg Michael
+#  Copyright (c) 2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 from importlib.metadata import version
@@ -23,9 +23,12 @@ CRATERPLOT_KEYS=('source','name','range','snap','type','error_bars','hide','colo
                  'resurf','resurf_showall','isochron','offset_age')
 
 DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0), (4.2, 1e-2), (4.2, 1e-5))
-DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5),       (-6, 2),  (-6, 3),  (0,0),       (2,8))
+DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5),       (-6, 2),  (-6, 3),  (0,0),       (0,8))
 DEFAULT_XRANGE = dict(zip(PRESENTATIONS,DEFAULT_XRANGE0))
 DEFAULT_YRANGE = dict(zip(PRESENTATIONS,DEFAULT_YRANGE0))
+
+PLANETS = ('Moon','Mars','Mercury')
+SURFACE_AREAS = (3.79e7,1.44e8,7.48e7)
 
 GREYS = (['#aaaaaa', '#e0e0e0', '#ededed', '#f8f8f8'], #standard/inverted grey values
          ['#787878', '#464646', '#373737', '#282828'])
@@ -86,7 +89,7 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            )
 
 ABOUT=["",gm.bright("CraterstatsIII"),
-       "Copyright (c) 2021-2023, Greg Michael",
+       "Copyright (c) 2021-2025, Greg Michael",
        "Version:"+VERSION_NUM,
        "",
        "Explanations of concepts and calculations used in the software are given in publications below:",
@@ -110,6 +113,9 @@ ABOUT=["",gm.bright("CraterstatsIII"),
        gm.bright("Poisson calculation for buffered crater count"),
        "Michael G.G., Yue Z., Gou S., Di K., Dating individual several-km lunar impact craters from the rim annulus in "
        "region of planned Chang’E-5 landing Poisson age-likelihood calculation for a buffered crater counting area. EPSL 568, 2021.",
+       "",
+       gm.bright("Small-area and low number counts: age-area-uncertainty plots"),
+       "Michael G., Liu J., Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts. Icarus 431, 2025.",
        "",
        "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
        "",

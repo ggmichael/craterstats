@@ -126,6 +126,10 @@ Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
+Uncertainty plots for small-area, low-number count evaluation, assuming complete count of craters >150 m (plots for k, measured error and measured/actual age - see Michael, Liu (2025)).
+
+    craterstats -pr uncertainty -cs n83 -d_min 0.15
+
 # Manual
 [Complete command option list](docs/manual.md)
 
@@ -158,6 +162,9 @@ techniques for presentation and analysis of crater size–frequency data.</i>](h
 #### Poisson calculation for buffered crater count
        
 >Michael G.G., Yue Z., Gou S., Di K., [<i>Dating individual several-km lunar impact craters from the rim annulus in region of planned Chang’E-5 landing Poisson age-likelihood calculation.</i>](https://doi.org/10.1016/j.epsl.2021.117031) EPSL 568, 2021.
+
+#### Small-area and low number counts: age-area-uncertainty plots
+>Michael G., Liu J., [<i>Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts.</i>](https://doi.org/10.1016/j.icarus.2025.116489) Icarus 431, 2025.
 
 Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.
 

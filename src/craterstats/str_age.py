@@ -25,7 +25,7 @@ def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False,Ma
     if unit is not None:
         a = next((e, u) for e, u in zip(f, unit0) if unit == u)
     else:
-        a = next((e, u) for e, u in zip(f, unit0) if age >= e)
+        a = next((e, u) for e, u in zip(f, unit0) if age >= e or u =='a')
 
     v=age/a[0]
 
