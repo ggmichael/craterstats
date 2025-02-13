@@ -24,14 +24,13 @@ class TestCratercount(unittest.TestCase):
         self.assertTrue(np.array_equal(cc.binned['d_min'],[0.06, 0.07]))
         self.assertTrue(np.array_equal(cc.binned['ncum'], [477, 467]))
         # check initialisation
-        self.assertEqual(cc.binning,'unknown')
+        self.assertEqual(cc.binning,'pseudo-log')
         self.assertTrue(cc.prebinned)
         # check derived values - tests MakeBinGeometricMean()
         self.assertAlmostEqual(cc.area, 477/1.40e+00) # area found from C(D)/N_cum
         self.assertTrue(np.allclose(cc.binned['d_max'], [0.07, .07*(.07/.06)])) # extrapolated last bin width
         self.assertAlmostEqual(cc.binned['d_mean'][0], np.sqrt(.06*.07))
         self.assertAlmostEqual(cc.binned['bin_width'][0], .07-.06)
-
 
     def test_ReadDiamFile1(self):
         c = textwrap.dedent("""
@@ -166,8 +165,6 @@ class TestCratercount(unittest.TestCase):
         self.assertEqual(len(bins),11)
         np.testing.assert_allclose(bins[[0,-1]],[1.,10.])
         self.assertEqual(len(cc.generate_bins('20/decade', cc.diam)),21)
-
-
 
 if __name__ == '__main__':
     unittest.main()
