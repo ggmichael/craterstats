@@ -2,7 +2,6 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-import pandas as pd
 import itertools as it
 import re
 import sys
@@ -74,28 +73,31 @@ class Cratercount:
 # ;****************************************************
 
     def ReadStatFile(self):
+        # Valid stat file has either 7 or 11 columns:
+        col = ['diam', 'n', 'n_density', 'n_density_err', 'ncum', 'ncum_density', 'ncum_density_err',
+               'd_mean', 'n_diff', 'n_diff_err', 'n_event']
 
-        #valid stat file has either 7 or 11 columns:
-        col=['diam','n','n_density','n_density_err','ncum','ncum_density','ncum_density_err',
-             'd_mean','n_diff','n_diff_err','n_event']
+        s=gm.read_textfile(self.filename,ignore_blank=True,ignore_hash=True)
 
-        t=pd.read_csv(self.filename,sep='\s+',comment='#',skip_blank_lines=True,header=None)
+        nc = len(s[0].split()) # Number of columns
+        t=[e.split() for e in s]
 
-        nc=t.shape[1]
-        t.columns=col[:t.shape[1]]
+        diam = np.array([float(e[0]) for e in t])  # 'diam' is in the first column
+        n = np.array([float(e[1]) for e in t])  # 'n' is in the second column
+        ncum = np.array([float(e[4]) for e in t])  # 'ncum' is in the 5th column
+        ncum_density = np.array([float(e[5]) for e in t])  # 'ncum_density' is in the 6th column
 
-        self.area=t['ncum'][0]/t['ncum_density'][0]
-        self.binned={'d_min':t['diam'].to_numpy(),
-                     'n':t['n'].to_numpy(),
-                     'n_event':t['n'].to_numpy() if nc==7 else t['n_event'].to_numpy(),
-                     'ncum':t['ncum'].to_numpy(),
-                     'ncum_event':t['ncum'].to_numpy()
-                     }
-
-        self.prebinned=True
-        self.binning='unknown'
+        self.area = ncum[0] / ncum_density[0]
+        self.binned = {
+            'd_min': diam,
+            'n': n,
+            'n_event': n if nc == 7 else np.array([float(e[10]) for e in t]), # 'n_event' is in the 11th column (index 10) if nc == 11
+            'ncum': ncum,
+            'ncum_event': ncum
+        }
+        self.prebinned = True
+        self.binning = 'pseudo-log'
         self.MakeBinGeometricMean()
-
 
     def ReadDiamFile(self):
         s= gm.read_textstructure(self.filename)
@@ -123,7 +125,6 @@ class Cratercount:
         self.diam=diam
         self.fraction=frac
         self.prebinned=0
-
 
     def ReadBinnedFile(self):
         s= gm.read_textstructure(self.filename)
