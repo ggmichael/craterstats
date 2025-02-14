@@ -367,6 +367,7 @@ class Craterplotset:
             ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
         elif self.presentation == 'uncertainty':
             ax.spines[['left', 'bottom']].set_visible(False)
+            ax.set_xtitle('Actual age')
 
         ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
                          markersize=self.pt_size * .3, zorder=2)
