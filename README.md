@@ -25,6 +25,8 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
    pip install craterstats
    ```
 
+Alternative installation method for testing purposes [here](docs/github_install.md).
+
  
 # Quick demonstration
 
