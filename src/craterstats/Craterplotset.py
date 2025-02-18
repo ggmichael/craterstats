@@ -360,14 +360,15 @@ class Craterplotset:
 
         #ax_all
         ax.set_xlim(left=0, right=1)
-        ax.get_xaxis().set_visible(False)
+        ax.xaxis.set_ticks_position('none') #not hiding xaxis because want to show xlabel
+        ax.set_xticks([])
         ax.set_ylim(bottom=0, top=1)
         ax.get_yaxis().set_visible(False)
         if self.presentation == 'sequence':
             ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
         elif self.presentation == 'uncertainty':
             ax.spines[['left', 'bottom']].set_visible(False)
-            ax.set_xtitle('Actual age')
+            ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
         ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
                          markersize=self.pt_size * .3, zorder=2)
