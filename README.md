@@ -80,7 +80,7 @@ Sometimes it is useful to be able to specify the diameter range in terms of the 
 A plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. 
 Supported types are: png, tif, pdf, svg, csv, stat (multiple types can be specified, e.g. `-f png csv`)
 
-One additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Often it is convenient 
+An additional text file is created with the name `Pickering.cs` which contains the command line parameters used to create the plot. Often it is convenient 
 to edit this file to modify the plot, which can then be regenerated with the shorter command:
 
     craterstats -i Pickering.cs
@@ -92,7 +92,7 @@ Tables of chronology systems, equilibrium functions and epoch systems – which 
 
     craterstats -lcs
 
-These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Similarly, `-ef standard` or `-ef trask` will obtain the `Standard lunar equilibrium (Trask, 1966)` equilibrium function. 
+These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Thus, `-ef standard` or `-ef trask` will obtain the `Standard lunar equilibrium (Trask, 1966)` equilibrium function. 
 
 Tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
@@ -100,8 +100,8 @@ Tables of plot symbols and colours – which can be used with the `psym=` and `c
 
 and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `colour=gr` select green.  
 
-Differential plots are produced by default. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml` to the part 1 settings. 
-Other possibilities are: relative (R), Hartmann, chronology, or rate.
+Differential plots are the default data presentation. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml` to the part 1 settings. 
+Other possibilities are: relative (R), Hartmann, chronology, rate, sequential or uncertainty.
 
 The complete set of options can be seen with:
 
@@ -114,7 +114,7 @@ Uncertainty plots for the evaluation of small-area, low-number counts, assuming 
 
     craterstats -pr uncertainty -cs n83 -d_min 0.15
 
-# Examples
+# More examples
 
 Differential plot with Poisson age evaluations, equilibrium function, and epoch system
 

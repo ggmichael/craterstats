@@ -41,7 +41,7 @@ Since development features may be fragile, this is probably only advisable if yo
    ```
    echo "python $PWD/craterstats/src/craterstats.py $@" > $CONDA_PREFIX/craterstats.sh
    ```
-1. Check proper functioning with, e.g.:
+1. Check for successful installation with, e.g.:
    ```
-   cratetstats -about
+   craterstats -about
    ```
