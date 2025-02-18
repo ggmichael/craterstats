@@ -3,12 +3,12 @@
 
 usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
                       [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
-                      [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-p KEY=VAL, [KEY=VAL, ...]]`
+                      [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-d_min MIN_DIAMETER] [-ns N_SAMPLES]  [-p KEY=VAL, [KEY=VAL, ...]]`
 
 
 -h, --help            show help message
 
--i, --input [filename]   input args from file
+-i, --input [filename]   input command line arguments from file
 
 -lcs                  list chronology systems
 
@@ -155,6 +155,12 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 -st, --sequence_table
                     generate sequence probability table (with extension `_sequence.csv`)
 
+-d_min, --min_diameter
+    specify minimum observable crater diameter for complete count (uncertainty plot) 
+
+-ns, --n_samples
+    specify number of samples for uncertainty plot
+
 -p, --plot [KEY=VAL, ...]
                     specify overplot. All keys and string values can be abbreviated, e.g. `source` to `src` or  `differential-fit` to `d-fit` 
                         
@@ -176,9 +182,3 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - resurf_showall={1,0}, show all data with resurfacing correction
   - isochron={1,0}, extend isochron beyond selected range (default is 0 - no)
   - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
-
--d_min, --min_diameter
-    specify minimum observable crater diameter for complete count (uncertainty plot) 
-
--ns, --n_samples
-    specify number of samples for uncertainty plot
