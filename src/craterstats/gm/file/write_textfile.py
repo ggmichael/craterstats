@@ -1,4 +1,4 @@
-#  Copyright (c) 2021, Greg Michael
+#  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 def write_textfile(filename,s):
@@ -10,5 +10,5 @@ def write_textfile(filename,s):
     :return: none
     '''
     
-    with open(filename, 'w') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         file.writelines('\n'.join(s) if type(s) is list else s)
