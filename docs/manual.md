@@ -110,9 +110,6 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - a - place above instead of below
   - s - small font size
 
--show_isochrons {0,1}
-                    1 - show; 0 - suppress
-
 -legend [codes]       any combination of: 
   
   - n - name

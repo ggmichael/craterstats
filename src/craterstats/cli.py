@@ -64,7 +64,6 @@ def get_parser():
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
-    parser.add_argument("-show_isochrons", choices=['0', '1'], help="1 - show; 0 - suppress")
     parser.add_argument("-legend", help="0 - suppress; or any combination of: n - name, a - area, p - perimeter, c - number of craters, r - range, N - N(d_ref) value")
     parser.add_argument("-cite_functions", choices=['0','1'], help="1 - show; 0 - suppress")
     parser.add_argument("-mu", choices=['0','1'], help="1 - show; 0 - suppress")
