@@ -1,4 +1,4 @@
-#  Copyright (c) 2021, Greg Michael
+#  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import re
@@ -20,7 +20,10 @@ def read_textfile(filename,n_lines=-1,ignore_blank=False,ignore_hash=False,strip
             s=[]
             for i in range(n_lines): s.append(file.readline().strip())
         else:
-            s=file.read().splitlines()
+            content = file.read()
+            s=content.splitlines()
+            if content.endswith('\n'):
+                s.append('')  # preserve last empty line
 
     if ignore_blank:
         s = [e for e in s if e != '']

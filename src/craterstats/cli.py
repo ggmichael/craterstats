@@ -1,10 +1,9 @@
-#  Copyright (c) 2021, Greg Michael
+#  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import os
 import sys
 import argparse
-import numpy as np
 import re
 
 import craterstats as cst
@@ -451,5 +450,4 @@ def main(args0=None):
 
 if __name__ == '__main__': 
     main()
-
 
