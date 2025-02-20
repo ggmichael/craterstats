@@ -94,8 +94,8 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - Hartmann
   - chronology
   - rate
-  - sequence
-  - uncertainty (still incomplete)
+  - sequence - copy or create -p entries as for normal age measurements (Poisson or fit types) 
+  - uncertainty - note: also specify d_min value (-d_min XXX)
 
 
 -xrange 
