@@ -122,7 +122,7 @@ class Testgm(unittest.TestCase):
         f = r'd:\tmp\test.txt'
         with patch('builtins.open', m):
             gm.write_textfile(f,'test-string')
-            m.assert_called_once_with(f, 'w')
+            m.assert_called_once_with(f, 'w', encoding='utf-8')
             m().writelines.assert_called_once_with('test-string')
 
             gm.write_textfile(f, ['a','b'])
