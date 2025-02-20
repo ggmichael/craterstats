@@ -42,8 +42,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
-    parser.add_argument("-src", help="take command line parameters from text file", nargs='+', action=SpacedString)
-    #latter is used for demo. Maybe switch demo to use .cs files, too?
+    parser.add_argument("-src", nargs='+', action=SpacedString, help=argparse.SUPPRESS) #  help="take command line parameters from text file", for -demo
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
