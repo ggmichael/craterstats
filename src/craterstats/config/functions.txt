@@ -97,7 +97,7 @@ chronology={
 #
 
 equilibrium={
-   name='Standard lunar equilibrium (Trask, 1966)'
+   name='Lunar equilibrium (Trask, 1966)'
    type='polynomial'
    coefficients=[-1.1,-2.]
    range=[.001,1000.]
