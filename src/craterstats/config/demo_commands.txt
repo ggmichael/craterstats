@@ -3,7 +3,7 @@
 # Command line options to produce various demonstration results
 #
 
--cs neukumivanov -ep mars -ef standard -title Differential plot with Poisson age evaluations,|equilibrium function, and epoch system -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
+-cs neukumivanov -ep mars -ef trask -title Differential plot with Poisson age evaluations,|equilibrium function, and epoch system -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 
 -cs neukumivanov -title Differential plot|with two differential fit age evaluations -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
 
@@ -39,7 +39,7 @@
 
 -title Poisson calculation for buffered crater counting area -cs neukum83 -pr diff -p source=%sample%/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
 
--pr uncertainty -cs n83 -d_min 0.15 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
+-pr uncertainty -cs n83 -ef trask -d_min 0.15 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
 
 -cs neukumivanov -style root-2 -title Differential plot|with root-2 binning and root-2 diameter scale -p source=%sample%/Pickering.scc,psym=x,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
