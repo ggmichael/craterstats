@@ -51,7 +51,7 @@ class TestCraterFunctionObjects(unittest.TestCase):
                 self.assertAlmostEqual(pf.fit(r)[0],test_a0) # test whether fitting can recover a0
 
     def test_Equilibriumfn(self):
-        ef = cst.Productionfn(self.file_fns,'Standard lunar equilibrium (Trask, 1966)',equilibrium=True)
+        ef = cst.Productionfn(self.file_fns,'Lunar equilibrium (Trask, 1966)',equilibrium=True)
         self.assertEqual(ef.evaluate('cumulative', 1., a0=ef.a[0]), 10 ** (-1.1 - 2. * np.log10(1.)))
         self.assertEqual(ef.evaluate('cumulative', 10., a0=ef.a[0]), 10 ** (-1.1 - 2. * np.log10(10.)))
 
