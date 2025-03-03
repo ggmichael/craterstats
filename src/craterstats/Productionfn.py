@@ -81,7 +81,7 @@ class Productionfn:
         :return: y-values
         '''
         if not a0:
-            a0 = self.a[0]
+            a0 = self.a[0] if hasattr(self,'a') else 0.
         if presentation=='cumulative':
             return self.C(d,a0)
         elif presentation=='differential':
