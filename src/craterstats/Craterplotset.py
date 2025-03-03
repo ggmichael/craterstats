@@ -758,15 +758,18 @@ class Craterplotset:
         else:
             zz, kk, ee, lm = self.age_area
 
-        #saturation calculation
+        # saturation calculation
         log_b = np.tile(log_area, (nsx, 1))
-        log_a = np.log10(lm*np.pi/4)+2*np.log10(dmin)
-        alpha = np.where(np.isnan(log_a), 1., 1. - (log_a > log_b)*.2 - (log_a > (log_b - 1))*.4)
-        alpha = np.where(log_b > np.log10(max_area), 0.4, alpha)
+        log_a = np.transpose(np.tile(log_age, (nsy,1)))
+        alpha = np.where(log_b > np.log10(max_area), 0.4, 1.)
+        if self.ef:
+            C_ef_dmin = self.ef.evaluate("cumulative",dmin)
+            C = self.pf.evaluate("cumulative",[dmin,1.])
+            T_eq = self.cf.t(n1=C_ef_dmin * C[1]/C[0])
+            alpha = np.where(log_a > np.log10(T_eq), 0.4, alpha)
+            q_age = np.where(np.log10(T_eq) < log_age)
         alpha_s = np.flip(np.transpose(alpha), 1)
-        q1 = np.where(log_a[:, 0] > (log_b[:, 0] - 1))
-        q2 = np.where(log_a[:, 0] > (log_b[:, 0]))
-        q3 = np.where(np.log10(max_area) < log_b[0,:])
+        q_area = np.where(np.log10(max_area) < log_b[0,:])
 
         if plt=='k':
             im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
@@ -794,19 +797,22 @@ class Craterplotset:
             cbar.set_label('Measured/actual age', rotation=90)
 
         def add_saturation_text():
-            if q1[0].size > 0 and (q1[0][0]/nsx < .98):
-                self.ax.text(1 - q1[0][0]/nsx , .87, '10% saturation', size=self.scaled_pt_size * .7, rotation=90,
-                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='top')
-            if q2[0].size > 0 and (q2[0][0]/nsx < .98):
-                self.ax.text(1 - q2[0][0]/nsx , .87, '100% saturation', size=self.scaled_pt_size * .7, rotation=90,
-                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='top')
-            if q3[0].size > 0 and (q3[0][0]/nsy < .98):
-                self.ax.text(.82, q3[0][0]/nsy , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
+            if q_area[0].size > 0 and (q_area[0][0]/nsy < .98):
+                self.ax.text(.82, q_area[0][0]/nsy , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
                         transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
+            if self.ef:
+                if q_age[0].size >0 and (q_age[0][0]/nsx < .98):
+                    self.ax.text(1.-q_age[0][0]/nsx, .87, 'saturation', size=self.scaled_pt_size * .7, rotation=90,
+                                 horizontalalignment='right', verticalalignment='top')
+
         def add_diameter_text():
             self.fig.text(0.03, .96, '$d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin*1000:0.3g}$ m'),
                      size=self.scaled_pt_size * .8, transform=self.ax.transAxes, horizontalalignment='left', verticalalignment='top')
 
         add_saturation_text()
         add_diameter_text()
+
+
+
+
 

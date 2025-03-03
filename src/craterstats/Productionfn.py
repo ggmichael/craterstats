@@ -68,12 +68,10 @@ class Productionfn:
             self.R = self.hartmann_R
             self.H = self.hartmann_H
 
-
     def __str__(self):
         return self.name
 
-
-    def evaluate(self,presentation,d,a0=0.):
+    def evaluate(self,presentation,d,a0=None):
         '''
         Evaluate PF according to presentation string
 
@@ -82,6 +80,8 @@ class Productionfn:
         :param a0: a0
         :return: y-values
         '''
+        if not a0:
+            a0 = self.a[0]
         if presentation=='cumulative':
             return self.C(d,a0)
         elif presentation=='differential':
