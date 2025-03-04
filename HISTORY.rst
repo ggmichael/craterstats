@@ -16,3 +16,8 @@ History
 -----
 
 * uncertainty plots added
+
+3.2.1
+-----
+
+* uncertainty saturation calculation replaced with user-selected equilibrium function
