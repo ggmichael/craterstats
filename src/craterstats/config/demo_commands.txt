@@ -39,8 +39,6 @@
 
 -title Poisson calculation for buffered crater counting area -cs neukum83 -pr diff -p source=%sample%/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
 
--pr uncertainty -cs n83 -ef trask -d_min 0.15 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
-
 -cs neukumivanov -style root-2 -title Differential plot|with root-2 binning and root-2 diameter scale -p source=%sample%/Pickering.scc,psym=x,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
 -pr cumul -cs neukumivanov -title Cumulative plot|with no binning -p source=%sample%/Pickering.scc,binning=none,psym=point -p type=poisson,colour=red,range=[.22,.43],isochron=1 -p range=[2,5],colour=blue,offset_age=[2,-2]
@@ -55,11 +53,6 @@
 
 -f pdf -cs neukumivanov -title Plot in PDF format -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=blue,offset_age=[2,-3]
 
-# list plot symbol and colour options
--lpc
-
-# list supported chronology systems, equilibrium functions and epoch systems
--lcs
-
+-pr uncertainty -cs n83 -ef trask -d_min 0.15 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
 
 
