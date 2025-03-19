@@ -1,7 +1,7 @@
 
-# Craterstats
+# CraterstatsIII
 
-This is a reimplementation in Python 3.8 of the CraterstatsII software, a tool to analyse and plot crater count data for planetary surface dating.
+This is a Python reimplementation and extension of the CraterstatsII software, a tool to analyse and plot crater count data for planetary surface dating.
 
 # Installation
 
