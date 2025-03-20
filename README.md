@@ -12,7 +12,7 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
   
     ```
-    conda create -n craterstats python=3.8
+    conda create -n craterstats python=3.12
     ```
 1. Activate the virtual environment:
 
