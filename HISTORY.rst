@@ -21,3 +21,8 @@ History
 -----
 
 * uncertainty saturation calculation replaced with user-selected equilibrium function
+
+3.3.0
+-----
+
+* upgrade python version to 3.12
