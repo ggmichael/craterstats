@@ -52,7 +52,7 @@ class Epochs:
 
         """
         label_slant=int(self.formatting[0])
-        colour = [int(re.search('\d?', e)[0]) for e in self.formatting[1:]]
+        colour = [int(re.search(r'\d?', e)[0]) for e in self.formatting[1:]]
         offset = ['r' in e for e in self.formatting[1:]]
         boundary = ['b' in e for e in self.formatting[1:]]
         return label_slant,colour,offset,boundary

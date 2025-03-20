@@ -14,7 +14,7 @@ class AppendPlotDict(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         s=' '.join(values)
         d = {}
-        for kv in re.split(',(?=\w+=)',s): # only split on commas directly preceding keys
+        for kv in re.split(r',(?=\w+=)',s): # only split on commas directly preceding keys
             try:
                 k, v = kv.split("=")
             except:

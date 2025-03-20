@@ -5,7 +5,7 @@ import sys
 
 import numpy as np
 import math
-from scipy.integrate import simps
+from scipy.integrate import simpson
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -56,7 +56,7 @@ class Craterpdf:
                 d=np.linspace(d_range[0], d_range[1], ns)
                 F=pf.F(d,a0)
                 y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/8.)*F
-                I1=simps(y,d)
+                I1=simpson(y,d)
                 lam=I1
             else: #standard count
                 Ncum=pf.evaluate("cumulative",d_range,a0)

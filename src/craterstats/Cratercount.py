@@ -154,11 +154,11 @@ class Cratercount:
 
         q=[i for i,e in sorted(enumerate(diam),key=lambda x:x[1])]     #get sorted indices
 
-        self.area=float(re.findall('\s*[\d\.]*',s['Total_area'])[0])
+        self.area=float(re.findall(r'\s*[\d\.]*',s['Total_area'])[0])
         if 'Perimeter' in s.keys():
             self.perimeter = float(s['Perimeter'])
         if 'Total_perimeter' in s.keys(): #for Thomas Heyer's OpenCraterTool
-            self.perimeter = float(re.findall('\s*[\d\.]*',s['Total_perimeter'])[0])
+            self.perimeter = float(re.findall(r'\s*[\d\.]*',s['Total_perimeter'])[0])
         self.diam=[diam[e] for e in q]
         self.fraction=[frac[e] for e in q]
         self.prebinned=0
@@ -407,7 +407,7 @@ class Cratercount:
             r1=range.copy()
             if resurfacing == 1: r1[0]=0 # show all corrected points
             if r1[0] == 0: r1[0]=self.binned['d_min'][0]
-            if r1[1] == np.Inf: r1[1] = self.binned['d_max'][-1]
+            if r1[1] == np.inf: r1[1] = self.binned['d_max'][-1]
             bin_range = tuple(np.array(self.generate_bins(self.binning,r1,expand=False))[[0,-1]])  # extend selection to bin boundaries
         else:
             bin_range = self.binned['d_min'][q[0][0]], self.binned['d_max'][q[0][-1]] # data range

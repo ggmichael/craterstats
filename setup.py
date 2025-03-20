@@ -16,14 +16,12 @@ with open(here / 'requirements.txt') as f:
 setup(
     author="Greg Michael",
     author_email="ggmichael@users.noreply.github.com",
-    python_requires=">=3.8, <4",
+    python_requires=">=3.12, <4",
     classifiers=[
         "Development Status :: 4 - Beta",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.12",
     ],
     description="Craterstats - a tool to analyse and plot crater count data for planetary surface dating",
     entry_points={

@@ -62,11 +62,11 @@ def evaluate(s):
     '''evaluate first definition; join with recursively evaluated remainder'''
 
     # find keyword followed by either struct_value, multiline text_value, or simple value; then following keyword
-    m=re.search("(?ms)^\s*(?P<keyword>[\w\.]*\^?)\s*=\s*"
-                "(\{\s*$(?P<struct_value>[^{]*)^\s*\}.*?|"
-                "\"\s*$(?P<text_value>[^{]*)^\s*\".*?|"
-                "(?P<value>.*?))"
-                "^\s*(?P<keyword2>[\w\.]*\^?) *="
+    m=re.search(r"(?ms)^\s*(?P<keyword>[\w\.]*\^?)\s*=\s*"
+                r"(\{\s*$(?P<struct_value>[^{]*)^\s*\}.*?|"
+                r"\"\s*$(?P<text_value>[^{]*)^\s*\".*?|"
+                r"(?P<value>.*?))"
+                r"^\s*(?P<keyword2>[\w\.]*\^?) *="
                 ,s+"\nend=")
       
     if not m: return None #no definitions to process
