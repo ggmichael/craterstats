@@ -2,6 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
+from scipy.special import erf
 
 def normal(m,s,x,cumulative=False):
     '''
@@ -15,7 +16,7 @@ def normal(m,s,x,cumulative=False):
     '''
 
     if cumulative:
-        return 0.5 * (1 + np.math.erf((x - m) / (s * np.sqrt(2.))))
+        return 0.5 * (1 + erf((x - m) / (s * np.sqrt(2.))))
     else:
         return np.exp(-((x-m)**2)/(2*s**2))/(s*np.sqrt(2*np.pi))
 
