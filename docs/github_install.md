@@ -51,5 +51,5 @@ Since development features may be fragile, this is probably only advisable if yo
 You can update to the latest version on github using the command `git pull` from within the 
 `craterstats-github` directory. If a new version reports missing packages, repeat the command:
    ```
-   pip install -r craterstats/requirements.txt
+   pip install -U -r craterstats/requirements.txt
    ```
