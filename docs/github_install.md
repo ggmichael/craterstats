@@ -9,7 +9,7 @@ Since development features may be fragile, this is probably only advisable if yo
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats from github that is separate from the one for the PyPi version:
 
     ```
-    conda create -n craterstats-github python=3.8
+    conda create -n craterstats-github python=3.12
     ```
 1. Activate the virtual environment:
 
