@@ -12,7 +12,7 @@ def sigfigs(n, digits):
     f="{:."+str(digits-1)+"e}"
     s=f.format(n)
     
-    m=re.search("(?P<sign>-?)(?P<num>[\d\.]*)e(?P<exp>.*)",s)    
+    m=re.search(r"(?P<sign>-?)(?P<num>[\d\.]*)e(?P<exp>.*)",s)
     sf=m['num'].replace('.','')    
     e=int(m['exp'])
 

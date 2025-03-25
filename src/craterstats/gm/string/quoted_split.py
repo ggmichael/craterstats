@@ -5,8 +5,8 @@ import re
 
 from .strip_quotes import strip_quotes
 
-def quoted_split(s,separator='\s'):
-    '''
+def quoted_split(s,separator=r'\s'):
+    r'''
     split string using separator characters, leaving separators within quoted substrings
 
     :param s: source string

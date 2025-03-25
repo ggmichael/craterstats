@@ -4,7 +4,7 @@
 import re
 
 def filename(f,code,insert1=None,insert2=None,max_ext_length=4):
-    '''
+    r'''
     Split path, filename, extension into constituent parts and reconstruct as required
 
     :param f: file name or full path
