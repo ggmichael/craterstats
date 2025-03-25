@@ -82,7 +82,7 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.quoted_split('test'), ['test'])
         self.assertEqual(gm.quoted_split(r"9684  0 Inf 'test data' 1.76e+04 'D:\tmp\test.scc'"),
                          ['9684', '0', 'Inf', 'test data', '1.76e+04', r'D:\tmp\test.scc'])
-        self.assertEqual(gm.quoted_split(r"9684,  0, Inf, 'test, data', 1.76e+04 'D:\tmp\test.scc'",separator='\s,'),
+        self.assertEqual(gm.quoted_split(r"9684,  0, Inf, 'test, data', 1.76e+04 'D:\tmp\test.scc'",separator=r'\s,'),
                          ['9684', '0', 'Inf', 'test, data', '1.76e+04', r'D:\tmp\test.scc'])
 
     def test_sigfigs(self):
@@ -96,9 +96,9 @@ class Testgm(unittest.TestCase):
 
     def test_scientific_notation(self):
         self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, sf=2),'$3100$')
-        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, sf=2, force=True), '$3.1\cdot10^{3}$')
+        self.assertEqual(gm.scientific_notation(10 ** 3 * np.pi, sf=2, force=True), r'$3.1\cdot10^{3}$')
         self.assertEqual(gm.scientific_notation(10 ** -2 * np.pi, sf=2),'$0.031$')
-        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, sf=3), '$-3.14\cdot10^{-3}$')
+        self.assertEqual(gm.scientific_notation(10 ** -3 * -np.pi, sf=3), r'$-3.14\cdot10^{-3}$')
 
     def test_diameter_range(self):
         self.assertEqual(gm.diameter_range(np.array([.65, 1.2])),'0.65–1.2 km')
@@ -115,7 +115,7 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.filename(f, 'p'), 'd:\\aaa\\bbb\\')
         self.assertEqual(gm.filename(f, 'b'), 'bbb\\')
         self.assertEqual(gm.filename(f, 'u'), 'd:\\aaa\\')
-        self.assertEqual(gm.filename(f, 'pn1e', '_tag'), r'd:\aaa\bbb\test_tag.txt')
+        self.assertEqual(gm.filename(f, 'pn12e', '_tag','(1)'), r'd:\aaa\bbb\test_tag(1).txt')
 
     def test_write_textfile(self):
         m = mock_open()

@@ -206,7 +206,7 @@ class Craterplotset:
                 
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
-                xtickname=[format(10**e,'0g')+'$\,$km' if e>=0 else format(10**(e+3),'0g')+'$\,$m' for e in v]
+                xtickname=[format(10**e,'0g')+r'$\,$km' if e>=0 else format(10**(e+3),'0g')+r'$\,$m' for e in v]
                 xtickv=v
                 add_xminorlogticks=True
 
@@ -792,7 +792,7 @@ class Craterplotset:
             imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=0.8*alpha_s,
                              aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
             cbar = self.fig.colorbar(imo,self.ax_cbar)
-            cbar.set_label('Measured uncertainty $\sigma$, %', rotation=90)
+            cbar.set_label(r'Measured uncertainty $\sigma$, %', rotation=90)
 
         elif plt == 'age':
             im = np.flip(np.transpose(np.log10(ee)),1)
