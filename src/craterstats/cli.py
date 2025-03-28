@@ -348,6 +348,7 @@ def do_functions_user(args):
     if args.functions_user:
         s=['#path to functions_user.txt',args.functions_user]
         gm.write_textfile(config,s)
+        print(': '.join(s))
     return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
 
 def main(args0=None):
