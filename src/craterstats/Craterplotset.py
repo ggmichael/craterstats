@@ -311,7 +311,7 @@ class Craterplotset:
             log_units = 0
             xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
 
-        xticklabels = [str(e) for e in xtickv]
+        xticklabels = [f"{e:.2g}" for e in xtickv]
         xticklabels[-1] += ' Ga'
 
         xfrac_linear = lin_units / (lin_units + log_units)
@@ -381,7 +381,7 @@ class Craterplotset:
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
         ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
-                         markersize=self.pt_size * .3, zorder=2)
+                         markersize=self.pt_size * .4, zorder=2)
         ax.patch.set_facecolor('none')
 
         title = '\n'.join(self.title.split('|')) if self.show_title else None
