@@ -214,7 +214,7 @@ class Cratercount:
         :param expand: create one boundary beyond data (default True)
         :return: bin boundaries
         '''
-        r10=np.log10(gm.range(d))
+        r10=np.log10(gm.range(d)) if len(d)>0 else np.array([0.,0.])
         eps=.001 # small vs smallest possible bin factor
         if expand:
             r10[1] += eps

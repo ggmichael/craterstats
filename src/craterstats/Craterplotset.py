@@ -538,7 +538,9 @@ class Craterplotset:
         #set to square (better to add padding on side with least space)
         #optimal padding should consider margins mx, my as well
         dx,dy= gm.mag(xr), gm.mag(yr)
-        if self.presentation == 'differential':
+        if np.isnan(dx): #only empty crater files
+            xr=yr=np.array([-2.,0.])
+        elif self.presentation == 'differential':
             if dy/2.-np.floor(dy/2.) > .01: yr+=[-1,0]
             dy= gm.mag(yr)
             d=dy/2-dx
