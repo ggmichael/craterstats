@@ -25,7 +25,7 @@ def scientific_notation(v,e1=None,e2=0,sf=3,force=False, MathML=False, unit=None
              'km2': (r'$ km$^{2}', '<msup><mtext>&#8239;km</mtext><mtext>2</mtext></msup>')
              }[unit]
 
-    if -2 < np.log10(abs(v)) < 4 and not force:
+    if v==0 or -2 < np.log10(abs(v)) < 4 and not force: # avoid log(0)
         st = sigfigs(v, sf)
         exp = 0
     else:
