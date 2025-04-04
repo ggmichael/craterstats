@@ -289,7 +289,7 @@ class Craterplotset:
         def f(x): return np.clip(gm.mag(x), 1, None)
         self.decades=f(self.xrange),f(self.yrange)
 
-        self.t_max = np.clip(max(self.xrange), 1e-8, 4.5)
+        self.t_max = np.clip(max(self.xrange), 3., 4.5)
         self.t_min = np.clip(min(self.xrange), 0., 3.5)
 
         if self.t_min<1 and self.t_min !=0:
@@ -301,7 +301,7 @@ class Craterplotset:
         if self.crossover:
             t_crossover = 3.
             dec2lin = 0.7
-            xtickv = [3., 3.5, 4.]
+            xtickv = [e for e in [3., 3.5, 4.] if e<=self.t_max]
             log_t_min = np.log10(self.t_min)
             lin_units = max(self.t_max - t_crossover, 0) / dec2lin
             log_units = np.log10(t_crossover) - log_t_min
@@ -350,7 +350,8 @@ class Craterplotset:
             ax_log.set_axis_off()
 
         #ax_lin
-        ax_lin.set_xlim(left=self.t_max, right=t_crossover)
+
+        ax_lin.set_xlim(left=self.t_max if self.t_max>t_crossover else t_crossover+.1, right=t_crossover)
         ax_lin.set_xticks(xtickv, labels=xticklabels)
         ax_lin.tick_params(length=2, pad=1.5)
         ax_lin.tick_params(which='minor',length=1)
@@ -380,8 +381,9 @@ class Craterplotset:
             ax.spines[['left', 'bottom']].set_visible(False)
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
-        ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
-                         markersize=self.pt_size * .4, zorder=2)
+        if self.t_max>3.:
+            ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
+                             markersize=self.pt_size * .4, zorder=2)
         ax.patch.set_facecolor('none')
 
         title = '\n'.join(self.title.split('|')) if self.show_title else None
