@@ -55,4 +55,5 @@
 
 -pr uncertainty -cs n83 -ef trask -d_min 0.15 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
 
+--bins -cs neukumivanov -title Bin overlay to aid diameter selection|(normally remove before publication) -p source=%sample%/Pickering.scc,binning=pseudo-log -p type=poisson,range=[.26,.63]
 
