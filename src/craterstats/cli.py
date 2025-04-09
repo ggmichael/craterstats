@@ -65,7 +65,6 @@ def get_parser():
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
     parser.add_argument("-legend", help="0 - suppress; or any combination of: n - name, a - area, p - perimeter, c - number of craters, r - range, N - N(d_ref) value")
-    parser.add_argument("-cite_functions", choices=['0','1'], help="1 - show; 0 - suppress")
     parser.add_argument("-mu", choices=['0','1'], help="1 - show; 0 - suppress")
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
@@ -108,11 +107,11 @@ def defaults():
     set = {
         'chronology_system': 'Moon, Neukum (1983)',
         'cite_functions': 1,
-        'epochs': '',
-        'equilibrium': '',
+        'epochs': None,
+        'equilibrium': None,
         'invert': 0,
-        'isochrons': '',
-        'legend': 'nacr',
+        'isochrons': None,
+        'legend': 'fnacr',
         'mu': 1,
         'presentation': 'differential',
         'print_dimensions': '7.5x7.5',
@@ -120,9 +119,8 @@ def defaults():
         'randomness': 0,
         'ref_diam': 1,
         'sig_figs': 3,
-        'show_isochrons': 1,
         'style': 'natural',
-        'title': '',
+        'title': None,
         'format': {'png', 'csv'},
         'min_diameter':0.15,
         'global_area':1e12, # default larger than all terrestrial planets
@@ -192,17 +190,14 @@ def construct_cps_dict(args,c,f,default_filename):
         else:
             if k in ('title',
                      'isochrons',
-                     'show_isochrons',
                      'legend',
                      'print_dimensions',
                      'pt_size',
                      'ref_diameter',
-                     'cite_functions',
                      'sig_figs',
                      'randomness',
                      'mu',
                      'invert',
-                     'show_title',
                      'style',
                      'xrange', 'yrange',
                      'min_diameter','n_samples',

@@ -17,9 +17,9 @@
 
 -pr cumul -cs neukumivanov -ep mars -ef trask -title Cumulative fits showing resurfacing correction,|equilibrium function and epoch system -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[2,5] -p range=[.2,.7],resurf=1,psym=fsq
 
--pr cumul -cs neukumivanov -legend naN -title Modified legend 1:|renamed data series, N(1) value but no count or range -p source=%sample%/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
+-pr cumul -cs neukumivanov -legend fnaN -title Modified legend 1:|renamed data series, N(1) value but no count or diameter range -p source=%sample%/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
--pr cumul -cs neukumivanov -legend #r -cite_functions 0 -title Modified legend 2:|only count and diameter range, hide function citations -p source=%sample%/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
+-pr cumul -cs neukumivanov -legend cr -title Modified legend 2:|only count and diameter range; no function citations -p source=%sample%/Pickering.scc,psym=sq,name=Area 1 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
 -pr rplot -cs neukumivanov -ep mars -title R-plot|with 10/decade binning -p source=%sample%/Pickering.scc,psym=o,binning=10/decade -p type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]
 
@@ -27,9 +27,9 @@
 
 -pr hartmann -cs h&d2016 --equilibrium hartmann -title Hartmann style plot|with H&D 2016 production function -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9 -p source=%sample%/Pickering.scc,psym=o
 
--pr hartmann -cs hartmann2010 -ef hart84 -isochrons 4s,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
+-pr hartmann -cs hartmann2010 -ef hart84 -isochrons 4s,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9 -title Hartmann 2010 crater count template
 
--pr hartmann -cs neukumivanov -mu 0 -ef trask -title Hartmann-style plot with other chronology|system and without $\mu$-notation -p source=%sample%/Pickering.scc,psym=*4,isochron=1 -p type=poisson,colour=blue,range=[.2,.7] -p colour=red,range=[2,5],offset_age=[3,0]
+-pr hartmann -cs neukumivanov -mu 0 -ef trask -title Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation -p source=%sample%/Pickering.scc,psym=*4,isochron=1 -p type=poisson,colour=blue,range=[.2,.7] -p colour=red,range=[2,5],offset_age=[3,0]
 
 -pr rate -ref_diameter 10 -yrange -7 2 -title Impact rate function|with alternative specified reference diameter
 
@@ -37,15 +37,13 @@
 
 -pr chronology -ep wilhelms -title Chronology function|with lunar epochs and transition times
 
--title Poisson calculation for buffered crater counting area -cs neukum83 -pr diff -p source=%sample%/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
+-title Poisson calculation for buffered crater count|indicating area and perimeter -cs neukum83 -pr diff -p source=%sample%/c7_Michael-et-al-2021.scc,name=c7 -p type=b-poisson,range=[.25,2]
 
 -cs neukumivanov -style root-2 -title Differential plot|with root-2 binning and root-2 diameter scale -p source=%sample%/Pickering.scc,psym=x,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
 -pr cumul -cs neukumivanov -title Cumulative plot|with no binning -p source=%sample%/Pickering.scc,binning=none,psym=point -p type=poisson,colour=red,range=[.22,.43],isochron=1 -p range=[2,5],colour=blue,offset_age=[2,-2]
 
 -cs neukumivanov -invert 1 -title Plot with inverted colour -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
-
--cs neukumivanov -transparent -title Plot with transparent background -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=violet,offset_age=[2,-3]
 
 -cs neukumivanov -title Plot with left-positioned age annotation -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=blue,age_left=1
 
