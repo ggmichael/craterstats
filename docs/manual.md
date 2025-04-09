@@ -1,7 +1,7 @@
 
 # Command options
 
-usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
+usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
                       [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
                       [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-d_min MIN_DIAMETER] [-ns N_SAMPLES]  [-p KEY=VAL, [KEY=VAL, ...]]`
 
@@ -61,6 +61,8 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -demo                 run sequence of demonstration commands: output in ./demo
 
+-b, --bins            show bin overlay (to aid diamater selection - normally remove before publication)
+
 -o, --out [filename]   output filename (omit extension for default) or directory
 
 -f, --format [{png,tif,pdf,svg,csv,stat}] 
@@ -112,6 +114,7 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -legend [codes]       any combination of: 
   
+  - f - functions
   - n - name
   - a - area 
   - p - perimeter 
@@ -121,11 +124,8 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
   - A - age (sequence plot)
   - 0 - suppress legend completely
 
-      e.g. `-legend nacr`
+      e.g. `-legend fnacr`
 
-
--cite_functions {0,1}
-                    1 - show; 0 - suppress
 
 -mu {0,1}             1 - show; 0 - suppress
 

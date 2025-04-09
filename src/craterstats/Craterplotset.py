@@ -41,24 +41,19 @@ class Craterplotset:
         self.cm2inch=1/2.54
 
         self.UpdateSettings({
-            'title':'',
+            'title':None,
             'presentation':'differential',
             'xrange':[-3,2],
             'yrange':[-5,5],
             'style':'natural',
-            'isochrons':'',
-            'show_isochrons':0,
-            'legend_data':'a', # a show counting area
-            'legend_fit':'r', # n - show N(d_ref); r - show diam range
+            'isochrons':None,
             'print_dimensions':'7.5x7.5',
             'pt_size':9.,
             'ref_diameter':1.,
-            'cite_functions':1,
             'sig_figs':3,
             'randomness':0,
             'mu':1,
             'invert':0,
-            'show_title':1,
             'bins':False,
             },*args,kwargs)
 
@@ -74,12 +69,10 @@ class Craterplotset:
             #if k == 'source': self.cratercount = cst.Cratercount(v)
             if k in ('xrange','yrange'): v=[float(e) for e in v]
             if k in ('pt_size','ref_diameter'): v = float(v)
-            if k in ('show_isochrons',
-                    'cite_functions',
+            if k in (
                     'randomness',
                     'mu',
                     'invert',
-                    'show_title',
                     'sig_figs',
                      ):
                 v = int(v)
@@ -186,7 +179,7 @@ class Craterplotset:
             'rate':         'Crater formation rate N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$ Ga$^{-1}$',
             }[self.presentation]
         
-        title = ('\n'.join(self.title.split('|')) if self.show_title else None)
+        title = ('\n'.join(self.title.split('|')) if self.title else None)
 
         xminor=xmajor=xtickv=None
         add_xminorlogticks=False
@@ -387,7 +380,7 @@ class Craterplotset:
                              markersize=self.pt_size * .4, zorder=2)
         ax.patch.set_facecolor('none')
 
-        title = '\n'.join(self.title.split('|')) if self.show_title else None
+        title = '\n'.join(self.title.split('|')) if self.title else None
         if title: ax.set_title(title)
 
         # create layout
@@ -421,7 +414,7 @@ class Craterplotset:
         N=self.pf.evaluate("cumulative",[self.ref_diameter,1.]) if self.pf else [1,1]
         ref_diam_ratio=N[0]/N[1]
 
-        if self.cite_functions:
+        if 'f' in self.legend:
             txt=''
             if self.ep: txt += "Epochs: " + self.ep.name + '\n'
             if self.ef and self.presentation not in ['sequence']: txt += "EF: " + self.ef.name + '\n'
@@ -456,7 +449,7 @@ class Craterplotset:
                 e = self.ef.getplotdata(self.presentation)
                 self.ax.plot(np.log10(e['d']), e['y'], color=self.grey[0], lw=.7)
 
-            if self.show_isochrons and self.isochrons:
+            if self.isochrons:
                 self.plot_isochrons()
 
         if self.presentation == 'sequence' and self.ep: self.ep.sequence_oplot(self)
