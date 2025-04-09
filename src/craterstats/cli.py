@@ -48,6 +48,7 @@ def get_parser():
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
+    parser.add_argument("-b","--bins", help="show bin boundaries", action='store_true')
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
@@ -205,6 +206,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'style',
                      'xrange', 'yrange',
                      'min_diameter','n_samples',
+                     'bins',
                      ):
                 c[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
