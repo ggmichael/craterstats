@@ -10,4 +10,4 @@ dist/
 sdist/
 demo/
 .coverage
-craterstats-3.0.0-py3-none-any.whl
+*.whl
