@@ -750,14 +750,14 @@ class Craterplotset:
                 for j,yy in enumerate(log_area):
                     area=10**yy
                     lam=C[i]*area
-                    k=np.random.poisson(lam) if lam < 1e5 else int(lam) #prevent too large lam
+                    k=np.random.poisson(lam) if lam < 1e5 else int(lam)  # prevent too large lam
                     cc.area=area
                     pdf = cst.Craterpdf(self.pf, self.cf, cc, d_range, k=k, bcc=False,n_samples=2000)
                     t = pdf.median1sigma()
                     err = np.sqrt(t[2]/t[1]) - 1.
                     ratio=t[0]/(10**xx)
 
-                    zz[i,j]=0 if np.isnan(err) else err #clear underflow errors
+                    zz[i,j]=0 if np.isnan(err) else err  # clear underflow errors
                     kk[i,j]=k
                     ee[i,j]=1 if np.isnan(ratio) else ratio
                     lm[i,j]=lam
