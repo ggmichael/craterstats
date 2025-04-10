@@ -156,7 +156,7 @@ class Craterplot:
                     pos2=cps.axis_to_fig(pos)
                     pos3=np.concatenate([pos2[0:2],pos2[2:4]-pos2[0:2]])
                     ax = cps.fig.add_axes(pos3)
-                    self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=self.colour)
+                    self.pdf.plot(ax,pt_size=cps.scaled_pt_size,color=self.colour,logscale=False)
 
         legend_label=self.make_legend_label(cps)
         cps.ax.plot(np.log10(p['d']),p['y'],label=', '.join(legend_label) if legend_label else None,
