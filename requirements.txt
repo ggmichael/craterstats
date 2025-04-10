@@ -1,13 +1,7 @@
 colorama
-cycler
-kiwisolver
 matplotlib
 numpy
 palettable
-Pillow
 progressbar2
-pyparsing
-python-dateutil
-pytz
 scipy>=1.14
-six
+
