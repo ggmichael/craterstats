@@ -35,8 +35,7 @@ class Cratercount:
             #elif filetype=='csv': self.read_JMARS_file  #need new model data file
             elif filetype==None: pass #just create empty object
         except:
-            print("Unable to read file: "+filename)
-            raise SystemExit(0)
+            sys.exit("Unable to read file: "+filename)
 
     def __str__(self):
         return self.filename
