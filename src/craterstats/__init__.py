@@ -13,6 +13,7 @@ from .Epochs import Epochs
 
 from .bin_bias_correction import bin_bias_correction
 from .str_age import str_age
+from .merge_cratercounts import merge_cratercounts
 
 from .constants import *
 

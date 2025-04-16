@@ -52,6 +52,7 @@ def get_parser():
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
+    parser.add_argument("-m", "--merge", help="merge crater count files", nargs='+', action=SpacedString)
 
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
 
@@ -382,8 +383,8 @@ def main(args0=None):
         print('\n'.join(cst.ABOUT))
         return
 
-    if args.src:
-        source_cmds(args.src)
+    if args.merge:
+        cst.merge_cratercounts(args)
         return
 
     if args.demo:

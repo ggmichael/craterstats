@@ -1,10 +1,10 @@
 
 # Command options
 
-usage: `craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT] [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE]
-                      [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS] [-show_isochrons {0,1}] [-legend LEGEND] [-cite_functions {0,1}] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight]
-                      [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st] [-d_min MIN_DIAMETER] [-ns N_SAMPLES]  [-p KEY=VAL, [KEY=VAL, ...]]`
-
+usage: craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT [OUT ...]] [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]] [--merge MERGE [MERGE ...]]
+                      [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE [TITLE ...]] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE]
+                      [-isochrons ISOCHRONS] [-legend LEGEND] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight] [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
+                      [-d_min MIN_DIAMETER] [-ns N_SAMPLES] [-p KEY=VAL, [KEY=VAL, ...]]
 
 -h, --help            show help message
 
@@ -74,6 +74,8 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 - Filepath will be persistent across conda sessions
 - Check new systems are recognised with `craterstats -lcs`
 
+
+-m, --merge             merge two or more crater count files into single file
 
 -cs, --chronology_system 
                     chronology system, abbreviated (Enter `craterstats -lcs` for full list)
