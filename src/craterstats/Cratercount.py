@@ -34,8 +34,11 @@ class Cratercount:
             elif filetype=='.scc': self.ReadSCCfile()
             #elif filetype=='csv': self.read_JMARS_file  #need new model data file
             elif filetype==None: pass #just create empty object
+            else: bad_filetype=True
         except:
             sys.exit("Unable to read file: "+filename)
+
+        if bad_filetype: sys.exit("Unrecognised crater count file type: " + filename)
 
     def __str__(self):
         return self.filename
