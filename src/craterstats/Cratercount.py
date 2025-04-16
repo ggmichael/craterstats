@@ -24,6 +24,7 @@ class Cratercount:
         self.buffered=False
         self.prebinned=False
 
+        bad_filetype = False
         try:
             if filetype=='.stat': self.ReadStatFile()
             elif filetype=='.diam': self.ReadDiamFile()
@@ -34,7 +35,7 @@ class Cratercount:
             elif filetype=='.scc': self.ReadSCCfile()
             #elif filetype=='csv': self.read_JMARS_file  #need new model data file
             elif filetype==None: pass #just create empty object
-            else: bad_filetype=True
+            else: bad_filetype = True
         except:
             sys.exit("Unable to read file: "+filename)
 
