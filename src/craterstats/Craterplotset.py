@@ -632,7 +632,7 @@ class Craterplotset:
 
         if f_out:
             try:
-                gm.write_textfile(f_out, st)
+                gm.write_textfile(f_out, st, BOM=True)  # excel misreads long dash if no BOM
             except:
                 sys.exit(gm.bright("Unable to write file: ") + f_out)
 
