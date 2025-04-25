@@ -37,12 +37,13 @@ usage: craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OU
   
 
 - Equilibrium functions: 
-  - Standard lunar equilibrium (Trask, 1966)
+  - Lunar equilibrium (Trask, 1966)
   - Hartmann (1984)
   
 
 - Epoch systems:
   - Moon, Wilhelms (1987)
+  - Moon, Guo et al (2024)
   - Mars, Michael (2013)
 
 
