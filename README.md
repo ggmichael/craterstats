@@ -3,6 +3,8 @@
 
 This is a Python reimplementation and extension of the CraterstatsII software, a tool to analyse and plot crater count data for planetary surface dating.
 
+[Command option quick reference](docs/manual.md)
+
 # Installation
 
 The `craterstats` package is available through the Python Package Index (PyPi).
@@ -131,7 +133,6 @@ Differential age fits with 10/decade binning
 Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
-
 
 # Manual
 [Complete command option list](docs/manual.md)
