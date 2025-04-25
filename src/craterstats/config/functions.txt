@@ -130,6 +130,14 @@ epochs={
 }
 
 epochs={
+  name='Moon, Guo et al (2024)'
+  epoch=['Copernican','Eratosthenian','Late Imbrian','Early Imbrian','Nectarian','Aitkenian','Magma-oceanian']
+  time=[0.,.8,3.16,3.8,3.85,3.92,4.31]
+  formatting=[60,0b,1b,0,2b,1r,2,2]
+  reference='Guo, Liu, Head et al, 2024 - A lunar time scale from the perspective of the Moon’s dynamic evolution.'
+}
+
+epochs={
   name='Mars, Michael (2013)'
   epoch=*['Late Amazonian','Middle Amazonian','Early Amazonian','Late Hesperian','Early Hesperian','Late Noachian','Middle Noachian','Early Noachian']
   formatting=[90,0,1,2b,0,2b,0,1,2]
