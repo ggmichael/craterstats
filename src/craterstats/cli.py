@@ -360,7 +360,7 @@ def main(args0=None):
         try:
             s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
         except:
-            print("Unable to read "+functions_user+" - ignoring.")
+            print("Unable to read user functions file: "+functions_user+" - ignoring.")
     functions = gm.read_textstructure(s,from_string=True)
 
     if args.lcs:
