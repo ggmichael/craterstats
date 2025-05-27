@@ -170,6 +170,9 @@ techniques for presentation and analysis of crater size–frequency data.</i>](h
 #### Small-area and low number counts: age-area-uncertainty plots
 >Michael G., Liu J., [<i>Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts.</i>](https://doi.org/10.1016/j.icarus.2025.116489) Icarus 431, 2025.
 
+#### Sequence probability and simultaneous formation
+>Michael G., Zhang L., Wu C., Liu J. [<i>Planetary surface dating from crater size–frequency distribution measurements: Sequence probability and simultaneous formation. Did the close Chang’E-6 mare units form simultaneously?](https://doi.org/10.1016/j.icarus.2025.116644) Icarus 438, 2025.
+
 Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.
 
 A set of introductory slides to the methods and an earlier version of the software is [here](https://github.com/ggmichael/craterstats/tree/main/docs),
