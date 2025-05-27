@@ -42,6 +42,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
+    parser.add_argument('-inc', '--include', help="include settings from external file", type=open, action=LoadFromFile)
     parser.add_argument("-src", nargs='+', action=SpacedString, help=argparse.SUPPRESS) #  help="take command line parameters from text file", for -demo
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')

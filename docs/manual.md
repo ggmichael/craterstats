@@ -1,14 +1,27 @@
 
 # Command options
 
-usage: craterstats.py [-h] [-i INPUT] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT [OUT ...]] [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]] [--merge MERGE [MERGE ...]]
+usage: craterstats.py [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT [OUT ...]] [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]] [--merge MERGE [MERGE ...]]
                       [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE [TITLE ...]] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE]
                       [-isochrons ISOCHRONS] [-legend LEGEND] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight] [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
                       [-d_min MIN_DIAMETER] [-ns N_SAMPLES] [-p KEY=VAL, [KEY=VAL, ...]]
 
 -h, --help            show help message
 
--i, --input [filename]   input command line arguments from file
+-i, --input [filename.cs]   input command line arguments from file
+
+-inc, --include [filename.txt]  include commands from external file (same format as .cs file) e.g., to share layout settings between a set of plots: 
+
+```txt {title="general.txt"}
+-cs neukum01
+-pr cml
+-ef trask
+-xrange -2 1
+-yrange -2 1
+-sf 3
+-pt_size 11
+-tight
+```
 
 -lcs                  list chronology systems
 
