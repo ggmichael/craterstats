@@ -10,7 +10,7 @@ This is a Python reimplementation and extension of the CraterstatsII software, a
 The `craterstats` package is available through the Python Package Index (PyPi).
 The following procedure for installation on Windows, MacOS or Linux is recommended:
 
-1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS. 
+1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
   
     ```
@@ -42,10 +42,10 @@ Launch the miniforge prompt and activate the virtual environment:
    ```
    conda activate craterstats
    ```
-On Windows, you can alternatively create a desktop shortcut with this target: 
+On Windows, you can instead create a desktop shortcut to start an activated prompt window by copy-pasting this command: 
 
 ```
-%windir%\system32\cmd.exe "/K" %homedrive%%homepath%\miniforge3\Scripts\activate.bat craterstats
+powershell -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('%USERPROFILE%\Desktop\craterstats-III.lnk'); $s.TargetPath='%windir%\system32\cmd.exe'; $s.Arguments='/K \"%HOMEDRIVE%%HOMEPATH%\miniforge3\Scripts\activate.bat craterstats\"'; $s.WorkingDirectory='%HOMEDRIVE%%HOMEPATH%\'; $s.Save()"
 ```
 
 # Upgrade 
