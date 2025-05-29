@@ -1,0 +1,7 @@
+-o demo/09-demo
+-pr rplot
+-cs neukumivanov
+-ep mars
+-title R-plot|with 10/decade binning
+-p source=%sample%/Pickering.scc,psym=o,binning=10/decade
+-p type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]

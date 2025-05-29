@@ -1,0 +1,7 @@
+-o demo/08-demo
+-pr cumul
+-cs neukumivanov
+-legend cr
+-title Modified legend 2:|only count and diameter range; no function citations
+-p source=%sample%/Pickering.scc,psym=sq,name=Area 1
+-p type=c-fit,range=[.2,.7],resurf=1,psym=fsq

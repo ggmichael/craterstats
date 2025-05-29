@@ -1,0 +1,6 @@
+-o demo/17-demo
+-title Poisson calculation for buffered crater count|indicating area and perimeter
+-cs neukum83
+-pr diff
+-p source=%sample%/c7_Michael-et-al-2021.scc,name=c7
+-p type=b-poisson,range=[.25,2]
