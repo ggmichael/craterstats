@@ -5,10 +5,16 @@ import craterstats.cli as cli
 import craterstats.gm as gm
 from pathlib import Path
 import glob
+import os
+
+
 
 
 def main():
     root = 'https://ggmichael.github.io/craterstats/'
+    os.makedirs('gallery', exist_ok=True)
+    os.chdir('gallery')
+
     n = [5,6,7] #None #[5,6,7,24] range(0,26) #
     n=cli.demo(n)
 
@@ -24,8 +30,7 @@ def main():
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]
 
-    gm.write_textfile(r'docs/gallery.md',s)
-
+    gm.write_textfile(r'../docs/gallery.md',s)
 
 if __name__ == '__main__':
     main()

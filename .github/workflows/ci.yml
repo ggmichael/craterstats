@@ -49,6 +49,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./demo
+          publish_dir: ./gallery
           publish_branch: gh-pages
-          clean: true  # remove old files on gh-pages
