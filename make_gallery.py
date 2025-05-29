@@ -7,15 +7,12 @@ from pathlib import Path
 import glob
 import os
 
-
-
-
 def main():
     root = 'https://ggmichael.github.io/craterstats/'
     os.makedirs('gallery', exist_ok=True)
     os.chdir('gallery')
 
-    n = [5,6,7] #None #[5,6,7,24] range(0,26) #
+    n = None #[5,6,7,24]
     n=cli.demo(n)
 
     s=['','# Gallery','']
