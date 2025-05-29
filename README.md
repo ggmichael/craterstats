@@ -32,11 +32,15 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
 Alternative installation method for testing purposes [here](docs/github_install.md).
 
  
-# Quick demonstration
+# Quick demonstration and try-out
 
-After installation, the following command will produce a series of example output plots and data, demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/` of the current folder, while text output – including the full command lines as they could be typed to generate the output – goes to the terminal window.
+After installation, the following command will produce a series of example output plots as in the gallery, 
+demonstrating the main features of the software. Plot image files are placed into the subfolder `demo/` of the 
+current folder.
     
     craterstats -demo
+
+Visit the [Gallery](docs/gallery.md) and copy the commands to recreate some of the example plots.
 
 # Normal start
 
@@ -44,7 +48,7 @@ Launch the miniforge prompt and activate the virtual environment:
    ```
    conda activate craterstats
    ```
-On Windows, you can instead create a desktop shortcut to start an activated prompt window by copy-pasting this command: 
+On Windows, you can instead create a desktop shortcut to start an activated prompt window by copy-pasting this to the command prompt: 
 
 ```
 powershell -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('%USERPROFILE%\Desktop\craterstats-III.lnk'); $s.TargetPath='%windir%\system32\cmd.exe'; $s.Arguments='/K \"%HOMEDRIVE%%HOMEPATH%\miniforge3\Scripts\activate.bat craterstats\"'; $s.WorkingDirectory='%HOMEDRIVE%%HOMEPATH%\'; $s.Save()"
@@ -56,7 +60,6 @@ If you later need to upgrade to a newer version, use:
    ```
    pip install --upgrade craterstats
    ```
-
 
 # Usage
 
@@ -136,8 +139,6 @@ Cumulative fit with resurfacing correction
 
     craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
-# Manual
-[Complete command option list](docs/manual.md)
 
 # References
 
