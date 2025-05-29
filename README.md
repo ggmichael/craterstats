@@ -3,9 +3,9 @@
 
 This is a Python reimplementation and extension of the CraterstatsII software, a tool to analyse and plot crater count data for planetary surface dating.
 
-[Command option quick reference](docs/manual.md)
-
 [Gallery of plots](docs/gallery.md)
+
+[Command option quick reference](docs/manual.md)
 
 # Installation
 
