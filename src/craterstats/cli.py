@@ -338,6 +338,7 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
         a = (f.format(i) + c).split()
         main(a)
     print('\nDemo output written to: '+out)
+    return d
 
 def do_functions_user(args):
     if os.environ.get('CONDA_PREFIX'):

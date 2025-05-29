@@ -41,3 +41,14 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: demo/*
+
+      - name: Generate gallery images
+        run: |
+          python make_gallery.py  #outputs images to ./gallery_images
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./demo
+          publish_branch: gh-pages
+          clean: true  # remove old files on gh-pages
