@@ -1,6 +1,0 @@
--o demo/04-demo
--pr cumul
--cs neukumivanov
--title Cumulative fit with resurfacing correction|showing all corrected data points
--p source=%sample%/Pickering.scc,psym=sq
--p type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1

@@ -1,6 +1,0 @@
--o demo/21-demo
--cs neukumivanov
--title Plot with left-positioned age annotation
--p source=%sample%/Pickering.scc,psym=fo
--p type=poisson,range=[.2,.7]
--p range=[2,5],colour=blue,age_left=1

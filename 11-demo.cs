@@ -1,7 +1,0 @@
--o demo/11-demo
--pr hartmann
--cs h&d2016
---equilibrium hartmann
--title Hartmann style plot|with H&D 2016 production function
--isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc,psym=o

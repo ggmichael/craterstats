@@ -1,5 +1,0 @@
--o demo/15-demo
--pr chronology
--ep mars
--cs neukumivanov
--title Chronology function|with Mars epochs and transition times

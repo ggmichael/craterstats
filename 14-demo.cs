@@ -1,5 +1,0 @@
--o demo/14-demo
--pr rate
--ref_diameter 10
--yrange -7 2
--title Impact rate function|with alternative specified reference diameter
