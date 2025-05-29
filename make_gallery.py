@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#  Copyright (c) 2021-2025, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import craterstats.cli as cli
 import craterstats.gm as gm
@@ -7,6 +8,7 @@ import glob
 
 
 def main():
+    root = 'https://ggmichael.github.io/craterstats/'
     n = [5,6,7] #None #[5,6,7,24] range(0,26) #
     n=cli.demo(n)
 
@@ -17,7 +19,7 @@ def main():
         cs = gm.read_textfile('demo/'+fn+'.cs')
         im = glob.glob("demo/"+fn+"*.p*")
         im = [Path(p).as_posix() for p in im]
-        lnk = ['!['+fn+'](../'+e+')' if gm.filename(e,'e')=='.png' else f'[View the PDF]({e})' for e in im]
+        lnk = ['!['+fn+']('root+e+')' if gm.filename(e,'e')=='.png' else f'[View the PDF]({e})' for e in im]
         s+=[*lnk,
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]
@@ -27,6 +29,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
 
