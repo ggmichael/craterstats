@@ -1,7 +1,7 @@
 
 # Gallery
 
-![05-demo](../demo/05-demo.png)
+![05-demo](https://ggmichael.github.io/craterstats/demo/05-demo.png)
 
 Demo 5
 
@@ -14,7 +14,7 @@ Demo 5
 -p range=[.2,.7],resurf=1,psym=fsq
 ```
 
-![06-demo](../demo/06-demo.png)
+![06-demo](https://ggmichael.github.io/craterstats/demo/06-demo.png)
 
 Demo 6
 
@@ -29,7 +29,7 @@ Demo 6
 -p range=[.2,.7],resurf=1,psym=fsq
 ```
 
-![07-demo](../demo/07-demo.png)
+![07-demo](https://ggmichael.github.io/craterstats/demo/07-demo.png)
 
 Demo 7
 
