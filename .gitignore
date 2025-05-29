@@ -5,6 +5,7 @@ build/
 eggs/
 .eggs/
 *.egg-info/
+.idea/
 .installed.cfg
 dist/
 sdist/

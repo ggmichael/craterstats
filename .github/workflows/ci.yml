@@ -34,17 +34,9 @@ jobs:
         run: |
           coverage run -m unittest discover craterstats.tests -s src
           coverage report 
-#      - name: Run Demo
-#        run: |
-#          craterstats -demo
-#      - name: Upload Demo Plots
-#        uses: actions/upload-artifact@v4
-#        with:
-#          path: demo/*
-
       - name: Generate gallery images
         run: |
-          python make_gallery.py  #outputs images to ./gallery_images
+          python .github/make_gallery.py
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
