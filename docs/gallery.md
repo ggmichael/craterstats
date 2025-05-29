@@ -1,7 +1,7 @@
 
 # Gallery
 
-![05-demo](demo/05-demo.png)
+![05-demo](../demo/05-demo.png)
 
 Demo 5
 
@@ -14,7 +14,7 @@ Demo 5
 -p range=[.2,.7],resurf=1,psym=fsq
 ```
 
-![06-demo](demo/06-demo.png)
+![06-demo](../demo/06-demo.png)
 
 Demo 6
 
@@ -29,7 +29,7 @@ Demo 6
 -p range=[.2,.7],resurf=1,psym=fsq
 ```
 
-![07-demo](demo/07-demo.png)
+![07-demo](../demo/07-demo.png)
 
 Demo 7
 
@@ -40,18 +40,4 @@ Demo 7
 -title Modified legend 1:|renamed data series, N(1) value but no count or diameter range
 -p source=%sample%/Pickering.scc,psym=sq,name=Area 1
 -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
-```
-
-![24-demo](demo/24-demo_age.png)
-![24-demo](demo/24-demo_err.png)
-![24-demo](demo/24-demo_k.png)
-
-Demo 24
-
-```
--pr uncertainty
--cs n83
--ef trask
--d_min 0.15
--title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
 ```
