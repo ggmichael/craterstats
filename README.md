@@ -5,6 +5,8 @@ This is a Python reimplementation and extension of the CraterstatsII software, a
 
 [Command option quick reference](docs/manual.md)
 
+[Gallery of plots](docs/gallery.md)
+
 # Installation
 
 The `craterstats` package is available through the Python Package Index (PyPi).
