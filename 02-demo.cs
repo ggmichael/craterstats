@@ -1,0 +1,6 @@
+-o demo/02-demo
+-cs neukumivanov
+-title Differential age fits|with 10/decade binning
+-p source=%sample%/Pickering.scc,psym=o,binning=10/decade
+-p type=d-fit,range=[.2,.7],isochron=1
+-p range=[2,5],colour=red
