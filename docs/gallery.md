@@ -1,6 +1,10 @@
 
 # Gallery
 
+This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them. 
+These may be typed on single line following the command `craterstats`, or saved in a file with `.cs` extension 
+and run with the command `craterstats -i <filename>.cs`.
+
 ![00-demo](https://ggmichael.github.io/craterstats/demo/00-demo.png)
 
 Demo 0
