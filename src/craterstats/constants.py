@@ -123,8 +123,3 @@ ABOUT=["",gm.bright("Craterstats-III"),
        "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
        "",
        ]
-
-
-
-####
->

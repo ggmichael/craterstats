@@ -15,7 +15,7 @@ class TestCraterstats(unittest.TestCase):
 
     def test_str_age(self):
         self.assertEqual(cst.str_age(.314, .11, .14),'$314^{+110}_{-140}$ Ma')
-        self.assertEqual(cst.str_age(.314, .11, .14, unit='Ga', mu=True), '$\mu0.314^{+0.11}_{-0.14}$ Ga')
+        self.assertEqual(cst.str_age(.314, .11, .14, unit='Ga', mu=True), r'$\mu0.314^{+0.11}_{-0.14}$ Ga')
         self.assertEqual(cst.str_age(.314, simple=True), '314 Ma')
         self.assertEqual(cst.str_age(1.), '$1.00$ Ga')
         self.assertEqual(cst.str_age(1., simple=True), '1 Ga')
