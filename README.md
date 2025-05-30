@@ -5,11 +5,10 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 [Gallery of plots](docs/gallery.md)
 
-[Command option quick reference](docs/manual.md)
+[Quick reference](docs/manual.md)
 
 # Installation
 
-The `craterstats` package is available through the Python Package Index (PyPi).
 The following procedure for installation on Windows, MacOS or Linux is recommended:
 
 1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
