@@ -159,7 +159,7 @@ class Cratercount:
 
         self.area=float(re.findall(r'\s*[\d\.]*',s['Total_area'])[0])
         if 'Perimeter' in s.keys():
-            self.perimeter = float(s['Perimeter'])
+            self.perimeter = float(s['Perimeter'].split()[0])
         if 'Total_perimeter' in s.keys(): #for Thomas Heyer's OpenCraterTool
             self.perimeter = float(re.findall(r'\s*[\d\.]*',s['Total_perimeter'])[0])
         self.diam=[diam[e] for e in q]

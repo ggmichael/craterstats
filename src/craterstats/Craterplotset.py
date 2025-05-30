@@ -458,7 +458,7 @@ class Craterplotset:
         #     self.age_area_plot()
 
         if self.presentation in ['cumulative', 'differential', 'R-plot', 'Hartmann', 'sequence']:
-            for cp in self.craterplot:
+            for cp in reversed(self.craterplot):
                 cp.overplot(self)
 
         # aggregate legend entries
@@ -478,6 +478,8 @@ class Craterplotset:
                 h1.append(h[i])
                 b1.append(e)
 
+        h1.reverse()
+        b1.reverse()
         legend=self.ax.legend(h1,b1,frameon=False, loc='upper right', borderaxespad=1,handletextpad=0.5,labelspacing=.4,handlelength=1.5)
         for item in legend.get_texts(): #inverted shadow for improved contrast
             item.set_path_effects(
@@ -497,15 +499,16 @@ class Craterplotset:
             iso = self.pf.getisochron(self.presentation, a0, self.ef)
             d10 = np.log10(iso['d'])
             self.ax.plot(d10, iso['y'], color=self.grey[0], lw=.5*self.sz_ratio)
+            y_factor = self.data_aspect
 
-            q = gm.where(np.abs(np.log10(iso['y']) - (self.yrange[1] - .1)) < .1)
+            q = gm.where(np.abs(np.log10(iso['y']) - (self.yrange[1] - .1 * y_factor)) < .1)
             if not q or (d10[q[0]] < self.xrange[0]):  # (d10[q[0][0]] < self.xrange[0]):
                 q= gm.where(abs(d10 - np.max([self.xrange[0] + .15, d10[0]])) < .1)
 
             if q and not hide:
                 sx = np.mean(d10[q])
                 sy = np.log10(self.pf.evaluate(self.presentation, 10**sx, a0))-.05
-                y_factor = self.data_aspect
+
                 th = np.rad2deg(np.arctan2(np.log10(self.pf.evaluate(self.presentation, 10**(sx + .3), a0))-sy, .3 * y_factor))
 
                 self.ax.text(sx, 10 ** sy, cst.str_age(t, simple=True),
@@ -513,7 +516,8 @@ class Craterplotset:
                              rotation=th, rotation_mode='anchor',
                              verticalalignment='bottom' if above else 'top',
                              horizontalalignment='left',
-                             bbox=dict(facecolor='none', edgecolor='none', boxstyle='square,pad=0.5'))
+                             #bbox=dict(facecolor='none', edgecolor='black', boxstyle='square,pad=0.6')
+                             )
 
     def autoscale(self,xrange=None,yrange=None):
         """

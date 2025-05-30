@@ -83,7 +83,7 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            ('fs', 'filled square', {'marker': 's', 'markersize': 2.5}),
            ('fo', 'filled circle', {'marker': 'o', 'markersize': 2.5}),
            ('f*4', 'filled star4', {'marker': star4, 'markersize': 3.8}),
-           ('ft', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
+           ('f^', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
            ('f*', 'filled star5', {'marker': '*', 'markersize': 3.5}),
            ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
            )
