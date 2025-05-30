@@ -317,7 +317,6 @@ Demo 23
 ```
 
 [View the PDF](https://ggmichael.github.io/craterstats/demo/24-demo.pdf)
-![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo.png)
 
 Demo 24
 
@@ -330,7 +329,6 @@ Demo 24
 -p range=[2,5],colour=blue,offset_age=[2,-3]
 ```
 
-[View the PDF](https://ggmichael.github.io/craterstats/demo/25-demo.pdf)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_age.png)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_err.png)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_k.png)
@@ -346,9 +344,6 @@ Demo 25
 ```
 
 ![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo.png)
-![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_age.png)
-![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_err.png)
-![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_k.png)
 
 Demo 26
 

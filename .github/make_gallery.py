@@ -11,6 +11,10 @@ def main():
     root = 'https://ggmichael.github.io/craterstats/'
     os.makedirs('gallery', exist_ok=True)
     os.chdir('gallery')
+    if os.path.isdir('demo'):
+        fs = glob.glob("demo/*")
+        for f in fs:
+            Path(f).unlink()
 
     n = None #[5,6,7,24]
     n=cli.demo(n)
