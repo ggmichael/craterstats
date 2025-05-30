@@ -1,6 +1,7 @@
 -o demo/24-demo
--pr uncertainty
--cs n83
--ef trask
--d_min 0.15
--title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
+-f pdf
+-cs neukumivanov
+-title Plot in PDF format
+-p source=%sample%/Pickering.scc,psym=fo
+-p type=poisson,range=[.2,.7],isochron=1
+-p range=[2,5],colour=blue,offset_age=[2,-3]
