@@ -3,7 +3,7 @@
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
 These may be typed on single line following the command `craterstats`, or saved in a file with `.cs` extension
-and run with the command `craterstats -i <filename>.cs`.
+and generate with the command `craterstats -i <filename>.cs`.
 
 ![00-demo](https://ggmichael.github.io/craterstats/demo/00-demo.png)
 
@@ -168,7 +168,7 @@ Demo 12
 -pr hartmann
 -cs hartmann2010
 -ef hart84
--isochrons 4s,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
+-isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
 -title Hartmann 2010 crater count template
 ```
 
@@ -227,7 +227,7 @@ Demo 17
 -title Poisson calculation for buffered crater count|indicating area and perimeter
 -cs neukum83
 -pr diff
--p source=%sample%/c7_Michael-et-al-2021.scc,name=c7
+-p source=%sample%/c7.scc
 -p type=b-poisson,range=[.25,2]
 ```
 
@@ -294,9 +294,31 @@ Demo 22
 -p range=[2,5],colour=blue,age_left=1,offset_age=[1,4]
 ```
 
-[View the PDF](demo/23-demo.pdf)
+![23-demo](https://ggmichael.github.io/craterstats/demo/23-demo.png)
 
 Demo 23
+
+```
+-title Fig 3, Michael et al (2021)
+-p src=%sample%/c1.scc,sym=^,err=0
+-p src=%sample%/c2.scc,sym=f^,col=grey
+-p src=%sample%/c3.scc,sym=s4
+-p src=%sample%/c4.scc,sym=o
+-p src=%sample%/c5.scc,sym=x
+-p src=%sample%/c6.scc,sym=s5,col=pink3
+-p src=%sample%/c7.scc,sym=sq
+-p src=%sample%/Im2.scc,sym=fo,col=blk,err=1
+-p type=poisson,range=[1.8,20],snap=0,offset=[-5,2]
+-isochrons .5a,.05a,.005s
+-xrange -3 2
+-yrange -5 5
+-pt_size 9
+-sf 2
+```
+
+[View the PDF](https://ggmichael.github.io/craterstats/demo/24-demo.pdf)
+
+Demo 24
 
 ```
 -f pdf
@@ -307,11 +329,11 @@ Demo 23
 -p range=[2,5],colour=blue,offset_age=[2,-3]
 ```
 
-![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo_age.png)
-![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo_err.png)
-![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo_k.png)
+![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_age.png)
+![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_err.png)
+![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_k.png)
 
-Demo 24
+Demo 25
 
 ```
 -pr uncertainty
@@ -321,9 +343,9 @@ Demo 24
 -title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
 ```
 
-![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo.png)
 
-Demo 25
+Demo 26
 
 ```
 --bins

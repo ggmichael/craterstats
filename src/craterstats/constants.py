@@ -88,7 +88,7 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
            )
 
-ABOUT=["",gm.bright("CraterstatsIII"),
+ABOUT=["",gm.bright("Craterstats-III"),
        "Copyright (c) 2021-2025, Greg Michael",
        "Version:"+VERSION_NUM,
        "",
@@ -117,8 +117,14 @@ ABOUT=["",gm.bright("CraterstatsIII"),
        gm.bright("Small-area and low number counts: age-area-uncertainty plots"),
        "Michael G., Liu J., Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts. Icarus 431, 2025.",
        "",
+       gm.bright("Sequence probability and simultaneous formation"),
+       "Michael G., Zhang L., Wu C., Liu J., Planetary surface dating from crater size–frequency distribution measurements: Sequence probability and simultaneous formation. Did the close Chang’E-6 mare units form simultaneously? Icarus 438, 2025.",
+       "",
        "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
        "",
        ]
 
 
+
+####
+>
