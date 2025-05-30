@@ -118,7 +118,7 @@ class Craterplot:
         self.n_event=p['n_event']
 
         if self.error_bars:
-            cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.7*cps.sz_ratio,ecolor=cps.grey[0])
+            cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.5*cps.sz_ratio,ecolor=cps.grey[0])
 
         if self.type in ['c-fit','d-fit','poisson','b-poisson']:
             self.calculate_age(cps)
