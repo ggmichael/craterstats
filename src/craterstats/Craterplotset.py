@@ -371,6 +371,7 @@ class Craterplotset:
         ax.get_yaxis().set_visible(False)
         if self.presentation == 'sequence':
             ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
+            ax.set_xlabel('Age', labelpad=2 * self.scaled_pt_size)
         elif self.presentation == 'uncertainty':
             ax.spines[['left', 'bottom']].set_visible(False)
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)

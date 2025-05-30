@@ -317,6 +317,7 @@ Demo 23
 ```
 
 [View the PDF](https://ggmichael.github.io/craterstats/demo/24-demo.pdf)
+![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo.png)
 
 Demo 24
 
@@ -329,6 +330,7 @@ Demo 24
 -p range=[2,5],colour=blue,offset_age=[2,-3]
 ```
 
+[View the PDF](https://ggmichael.github.io/craterstats/demo/25-demo.pdf)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_age.png)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_err.png)
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_k.png)
@@ -344,8 +346,41 @@ Demo 25
 ```
 
 ![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_age.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_err.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_k.png)
 
 Demo 26
+
+```
+-title Sequence plot
+-pr seq
+-cs n83
+-ep moon
+-xrange 4.0 1
+-legend fA
+-p src=%sample%/e1.diam,range=[0.24,1.5],name=E1,type=poisson,snap=0
+-p src=%sample%/e2.diam,range=[0.25,1.5],name=E2
+-p src=%sample%/e3.diam,range=[0.24,1.5],name=E3
+-p src=%sample%/w1.diam,range=[0.21,1.2],colour=red
+-p src=%sample%/w2.diam,range=[0.18,1]
+-p src=%sample%/w2.diam,range=[1.5,5]
+-p src=%sample%/w2_h.diam,range=[0.16,0.6],name=W2h
+-p src=%sample%/w2_h.diam,range=[0.8,1.9],name=W2h
+-p src=%sample%/w2_l.diam,range=[0.19,1.1],name=W2l
+-p src=%sample%/w3.diam,range=[0.16,1.5],colour=red1
+-p src=%sample%/w4.diam,range=[0.185,1.55]
+-p src=%sample%/w5_h1.diam,range=[0.17,1],colour=blue,name=W5h1
+-p src=%sample%/w5_h2.diam,range=[0.13,1.35],name=W5h2
+-p src=%sample%/w5_h3.diam,range=[0.14,0.85],name=W5h3
+-p src=%sample%/w5_l1.diam,range=[0.165,0.85],colour=blue2,name=W5l1
+-p src=%sample%/w5_l2.diam,range=[0.12,0.8],name=W5l2
+-p src=%sample%/w5_l3.diam,range=[0.15,0.8],name=W5l3
+```
+
+![27-demo](https://ggmichael.github.io/craterstats/demo/27-demo.png)
+
+Demo 27
 
 ```
 --bins
