@@ -88,6 +88,9 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 - Filepath will be persistent across conda sessions
 - Check new systems are recognised with `craterstats -lcs`
 
+--create_desktop_icon   
+
+- On Windows, generate desktop shortcut to start up Craterstats-III 
 
 -m, --merge             merge two or more crater count files into single file
 

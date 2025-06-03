@@ -5,6 +5,8 @@ import os
 import sys
 import argparse
 import re
+import platform
+import subprocess
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -53,6 +55,7 @@ def get_parser():
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
+    parser.add_argument("--create_desktop_icon", help="create desktop icon for activated window", action='store_true')
     parser.add_argument("-m", "--merge", help="merge crater count files", nargs='+', action=SpacedString)
 
     parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
@@ -351,6 +354,25 @@ def do_functions_user(args):
         print(': '.join(s))
     return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
 
+def create_desktop_icon():
+    system = platform.system()
+    match system:
+        case 'Windows':
+            subprocess.run([
+                "powershell", "-NoProfile", "-Command", '''
+                $s = New-Object -ComObject WScript.Shell
+                $sc = $s.CreateShortcut("$env:USERPROFILE\\Desktop\\craterstats-III.lnk")
+                $sc.TargetPath = "$env:windir\\system32\\cmd.exe"
+                $sc.Arguments = '/K "%USERPROFILE%\\miniforge3\\Scripts\\activate.bat craterstats"'
+                $sc.WorkingDirectory = "$env:USERPROFILE"
+                $sc.Save()
+                '''
+            ], check=True)
+            print('Desktop shortcut created.')
+
+        case _:
+            print(f"Desktop shortcut creation is not yet implemented for: {system}.")
+
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
@@ -364,6 +386,10 @@ def main(args0=None):
         except:
             print("Unable to read user functions file: "+functions_user+" - ignoring.")
     functions = gm.read_textstructure(s,from_string=True)
+
+    if args.create_desktop_icon:
+        create_desktop_icon()
+        return
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))

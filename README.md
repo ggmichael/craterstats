@@ -27,7 +27,11 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
    ```
    pip install craterstats
    ```
-
+1. If on Windows, create a desktop shortcut for future start-up:
+   ```
+   craterstats --create_desktop_icon
+   ```
+   
 Alternative installation method for testing purposes [here](docs/github_install.md).
 
  
@@ -39,26 +43,18 @@ current folder.
     
     craterstats -demo
 
-Visit the [Gallery](docs/gallery.md) and copy the commands to recreate some of the example plots.
+Visit the [Gallery](docs/gallery.md) and copy some of the commands there to recreate the example plots.
 
-# Normal start
+# Normal start-up
 
-Launch the miniforge prompt and activate the virtual environment:
+1. On Windows, double-click the desktop icon if present. 
+
+1. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
    ```
    conda activate craterstats
    ```
-On Windows, you can instead create a desktop shortcut to start an activated prompt window by copy-pasting this to the command prompt: 
+1. Begin entering `craterstats` commands.
 
-```
-powershell -Command "$s=(New-Object -ComObject WScript.Shell).CreateShortcut('%USERPROFILE%\Desktop\craterstats-III.lnk'); $s.TargetPath='%windir%\system32\cmd.exe'; $s.Arguments='/K \"%HOMEDRIVE%%HOMEPATH%\miniforge3\Scripts\activate.bat craterstats\"'; $s.WorkingDirectory='%HOMEDRIVE%%HOMEPATH%\'; $s.Save()"
-```
-
-# Upgrade 
-
-If you later need to upgrade to a newer version, use:
-   ```
-   pip install --upgrade craterstats
-   ```
 
 # Usage
 
@@ -73,8 +69,8 @@ There are two parts to creating a Craterstats plot:
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies the chronology system, *Mars, Neukum-Ivanov (2001)* 
 (any unambiguous abbreviation is acceptable), and the `-title Example plot` adds the chosen title.
 
-The `-p` indicates the start of an overplot definition, which should come after the part 1 settings. Following this, the path to the data source is given 
-(note that %sample% is a path abbreviation to a craterstats installation directory): this will produce a simple data plot with the default binning, colour and plot symbol. After the second `-p`, 
+The `-p` indicates the start of an overplot definition. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol
+(note that %sample% is a special path abbreviation to a craterstats installation directory - it's not needed for your own data). After the second `-p`, 
 an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
@@ -82,6 +78,10 @@ an additional overplot is specified: this time, a poisson age evaluation for the
 Sometimes it is useful to be able to specify the diameter range in terms of the plotted data points. Here we plot from the 8th to the 5th-from-last bins:
 
     craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[b8,b-5]
+
+Or it may be easier to use a temporary bin overlay by adding the option `--bins`
+
+    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[b8,b-5] --bins
 
 A plot image file is created in the current folder with the same name `Pickering.png`. The output path or name can be changed with the `-o` option.  Different file types can be produced by giving the appropriate extension or with the `-f` option. 
 Supported types are: png, tif, pdf, svg, csv, stat (multiple types can be specified, e.g. `-f png csv`)
@@ -92,19 +92,19 @@ to edit this file to modify the plot, which can then be regenerated with the sho
     craterstats -i Pickering.cs
 
 Another  file, `Pickering.csv`, gives dating results in tabular form for further analysis or transfer to a manuscript. 
-Preformatted ages and N(1) values, e.g. $\mu630^{+37}_{-35}$ Ma, are provided in latex and in MathML (for Word). 
-
+Preformatted ages and N(1) values, e.g. $\mu630^{+37}_{-35}$ Ma for <img src="images/formatted_age.svg" alt="mu 630" height="20" style="vertical-align: middle;">, are provided in latex and in MathML (copy and paste into Word with CTRL-SHIFT-V to get formatted expression). 
+   
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
 
     craterstats -lcs
 
-These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Thus, `-ef standard` or `-ef trask` will obtain the `Standard lunar equilibrium (Trask, 1966)` equilibrium function. 
+These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Thus, `-ef standard` or `-ef trask` will obtain the `Lunar equilibrium (Trask, 1966)` equilibrium function. 
 
 Tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
     craterstats -lpc
 
-and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `colour=gr` select green.  
+and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `colour=gr` select green. 
 
 Differential plots are the default data presentation. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml` to the part 1 settings. 
 Other possibilities are: relative (R), Hartmann, chronology, rate, sequential or uncertainty.
@@ -113,31 +113,25 @@ The complete set of options can be seen with:
 
     craterstats --help
 
-To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=C:\tmp\area1.scc` in the first overplot, this becomes the default for subsequent overplots. Only when you wish to introduce a different source file do you need to specify it again. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
+To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=C:\tmp\area1.scc` in the first overplot, this becomes the default for subsequent overplots until you specify a different source file. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
 Uncertainty plots for the evaluation of small-area, low-number counts, assuming a complete count of craters larger than d_min can be generated 
 (plots for k, measured error and measured/actual age - see Michael, Liu (2025)):
 
     craterstats -pr uncertainty -cs n83 -d_min 0.15
 
-# More examples
+as well as plots for comparing the sequence of events (Michael, Zhang, Wu, Liu, (2025)):
 
-Differential plot with Poisson age evaluations, equilibrium function, and epoch system
+   craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
 
-    craterstats -cs neukumivanov -ep mars -ef standard -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 
-Differential plot with two differential fit age evaluations
 
-    craterstats -cs NI2001 -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
+# Upgrade 
 
-Differential age fits with 10/decade binning
-
-    craterstats -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
-
-Cumulative fit with resurfacing correction
-
-    craterstats -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
-
+If you later need to upgrade to a newer version, use:
+   ```
+   pip install --upgrade craterstats
+   ```
 
 # References
 
