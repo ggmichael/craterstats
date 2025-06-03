@@ -256,7 +256,7 @@ class Craterplotset:
                     if i%3!=0:
                         ax.fill_between(np.log10([b,bins[i+1]]), 10**self.yrange[0], 10**self.yrange[1], color=c, ec=None, alpha=0.1,zorder=3)
                     if b > 10 ** self.xrange[0]:
-                        for y in [.16,.84]:
+                        for y in [.16,.5,.84]:
                             ax.text(np.log10(b), y, f" {b:.1e}"[0:4], ha='center', va='bottom' if (i%2)==0 else 'top',
                                     color=c, fontsize=self.scaled_pt_size * .4, rotation=90, transform = ax.get_xaxis_transform())
 
