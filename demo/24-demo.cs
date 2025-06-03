@@ -1,7 +1,7 @@
 -o demo/24-demo
--f pdf
+-f svg
 -cs neukumivanov
--title Plot in PDF format
+-title Plot in SVG vector format
 -p source=%sample%/Pickering.scc,psym=fo
 -p type=poisson,range=[.2,.7],isochron=1
 -p range=[2,5],colour=blue,offset_age=[2,-3]
