@@ -92,7 +92,7 @@ to edit this file to modify the plot, which can then be regenerated with the sho
     craterstats -i Pickering.cs
 
 Another  file, `Pickering.csv`, gives dating results in tabular form for further analysis or transfer to a manuscript. 
-Preformatted ages and N(1) values, e.g. $\mu630^{+37}_{-35}$ Ma for <img src="images/formatted_age.svg" alt="mu 630" height="20" style="vertical-align: middle;">, are provided in latex and in MathML (copy and paste into Word with CTRL-SHIFT-V to get formatted expression). 
+Preformatted ages and N(1) values, e.g. $\mu630^{+37}_{-35}$ Ma or $N(1) = 3.07^{+0.18}_{-0.17}\cdot10^{-4}$ km$^{-2}$, are provided in latex and in MathML (copy and paste into Word with CTRL-SHIFT-V to get formatted expression). 
    
 Tables of chronology systems, equilibrium functions and epoch systems – which can be used with the `-cs`, `-ef` and `-ep` options – may be listed with the following command:
 
