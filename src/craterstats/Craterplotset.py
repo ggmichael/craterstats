@@ -251,10 +251,11 @@ class Craterplotset:
             cpb = next((cp for cp in self.craterplot if cp.type=='data'), None)
             bins = cpb.cratercount.generate_bins(cpb.binning, 10**self.xrange)
             for i,b in enumerate(bins):
-                if b>10**self.xrange[0] and b<10**self.xrange[1]:
-                    ax.vlines(np.log10(b), ymin=10**self.yrange[0], ymax=10**self.yrange[1], colors=['pink','lightblue'][i%2], lw=0.3)
-                    ax.text(np.log10(b), 10**self.yrange[1], f" {b:.1e}"[0:4], ha='center', va='bottom', color=['red','dodgerblue'][i%2], fontsize=self.scaled_pt_size/4, rotation=60)
-
+                c = [self.palette[0],'red','dodgerblue'][i%3]
+                if i%3!=0 and b < 10 ** self.xrange[1]:
+                    ax.fill_between(np.log10([b,bins[i+1]]), 10**self.yrange[0], 10**self.yrange[1], color=c, ec=None, alpha=0.1,zorder=3)
+                if b <= 10 ** self.xrange[1]:
+                    ax.text(np.log10(b), 10 ** self.yrange[1], f" {b:.1e}"[0:4], ha='center', va='bottom', color=c, fontsize=self.scaled_pt_size / 4, rotation=60)
 
 # set up coordinate transformations
         a2d=ax.transAxes + ax.transData.inverted()
