@@ -7,6 +7,7 @@ import argparse
 import re
 import platform
 import subprocess
+import shlex
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -36,7 +37,7 @@ class LoadFromFile(argparse.Action):
             # parse arguments in the file and store them in the target namespace
             a=f.read()
             a=('\n').join([e for e in a.split('\n') if e.strip() and (e+' ')[0]!='#'] ) #remove '#' commented lines
-            parser.parse_args(a.split(), namespace)
+            parser.parse_args(shlex.split(a), namespace)
             namespace.input_filename = f.name
             setattr(namespace, self.dest, True)
 
