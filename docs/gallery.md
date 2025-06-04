@@ -3,14 +3,14 @@
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
 These may be typed on single line following the command `craterstats`, or saved in a file with `.cs` extension
-and generate with the command `craterstats -i <filename>.cs`.
+and generate with the command `craterstats -i <filename>.cs`. 
 
 ![00-demo](https://ggmichael.github.io/craterstats/demo/00-demo.png)
 
 Demo 0
 
 ```
--title Differential plot with Poisson age evaluations,|equilibrium function, and epoch system
+-title "Differential plot with Poisson age evaluations,|equilibrium function, and epoch system"
 -cs neukumivanov
 -ep mars
 -ef trask
@@ -36,7 +36,7 @@ Demo 1
 Demo 2
 
 ```
--title Differential age fits|with 10/decade binning
+-title "Differential age fits|with 10/decade binning"
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=o,binning=10/decade
 -p type=d-fit,range=[.2,.7],isochron=1
@@ -48,7 +48,7 @@ Demo 2
 Demo 3
 
 ```
--title Cumulative fit|with resurfacing correction
+-title "Cumulative fit|with resurfacing correction"
 -pr cumul
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=sq
@@ -60,7 +60,7 @@ Demo 3
 Demo 4
 
 ```
--title Cumulative fit with resurfacing correction|showing all corrected data points
+-title "Cumulative fit with resurfacing correction|showing all corrected data points"
 -pr cumul
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=sq
@@ -72,7 +72,7 @@ Demo 4
 Demo 5
 
 ```
--title Cumulative fits showing resurfacing correction|and fitted isochrons
+-title "Cumulative fits showing resurfacing correction|and fitted isochrons"
 -pr cumul
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=sq
@@ -85,7 +85,7 @@ Demo 5
 Demo 6
 
 ```
--title Cumulative fits showing resurfacing correction,|equilibrium function and epoch system
+-title "Cumulative fits showing resurfacing correction,|equilibrium function and epoch system"
 -pr cumul
 -cs neukumivanov
 -ep mars
@@ -100,7 +100,7 @@ Demo 6
 Demo 7
 
 ```
--title Modified legend 1:|renamed data series, N(1) value but no count or diameter range
+-title "Modified legend 1:|renamed data series, N(1) value but no count or diameter range"
 -pr cumul
 -cs neukumivanov
 -legend fnaN
@@ -113,7 +113,7 @@ Demo 7
 Demo 8
 
 ```
--title Modified legend 2:|only count and diameter range; no function citations
+-title "Modified legend 2:|only count and diameter range; no function citations"
 -pr cumul
 -cs neukumivanov
 -legend cr
@@ -126,7 +126,7 @@ Demo 8
 Demo 9
 
 ```
--title R-plot|with 10/decade binning
+-title R-plot with 10/decade binning
 -pr rplot
 -cs neukumivanov
 -ep mars
@@ -139,12 +139,12 @@ Demo 9
 Demo 10
 
 ```
--title Hartmann-style plot|with specified isochrons
+-title Hartmann style plot
 -pr hartmann
--cs hart04
--ef hart84
+-cs hartmanndaubar2016
+--equilibrium hartmann
 -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc,psym=o
+-p source=%sample%/Pickering.scc,binning=root2
 ```
 
 ![11-demo](https://ggmichael.github.io/craterstats/demo/11-demo.png)
@@ -152,12 +152,12 @@ Demo 10
 Demo 11
 
 ```
--title Hartmann style plot|with H&D 2016 production function
+-title Hartmann-style plot with other binning
 -pr hartmann
--cs h&d2016
---equilibrium hartmann
+-cs hart04
+-ef hart84
 -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc,psym=o
+-p source=%sample%/Pickering.scc
 ```
 
 ![12-demo](https://ggmichael.github.io/craterstats/demo/12-demo.png)
@@ -177,7 +177,7 @@ Demo 12
 Demo 13
 
 ```
--title Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation
+-title "Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation"
 -pr hartmann
 -cs neukumivanov
 -mu 0
@@ -192,7 +192,7 @@ Demo 13
 Demo 14
 
 ```
--title Impact rate function|with alternative specified reference diameter
+-title "Impact rate function|with alternative specified reference diameter"
 -pr rate
 -ref_diameter 10
 -yrange -7 2
@@ -203,7 +203,7 @@ Demo 14
 Demo 15
 
 ```
--title Chronology function|with Mars epochs and transition times
+-title Chronology function with Mars epochs and transition times
 -pr chronology
 -ep mars
 -cs neukumivanov
@@ -214,7 +214,7 @@ Demo 15
 Demo 16
 
 ```
--title Chronology function|with lunar epochs and transition times
+-title Chronology function with lunar epochs and transition times
 -pr chronology
 -ep wilhelms
 ```
@@ -224,7 +224,7 @@ Demo 16
 Demo 17
 
 ```
--title Poisson calculation for buffered crater count|indicating area and perimeter
+-title "Poisson calculation for buffered crater count|indicating area and perimeter"
 -cs neukum83
 -pr diff
 -p source=%sample%/c7.scc
@@ -236,7 +236,7 @@ Demo 17
 Demo 18
 
 ```
--title Differential plot|with root-2 binning and root-2 diameter scale
+-title "Differential plot|with root-2 binning and root-2 diameter scale"
 -cs neukumivanov
 -style root-2
 -p source=%sample%/Pickering.scc,psym=x,binning=root-2
@@ -287,7 +287,7 @@ Demo 21
 Demo 22
 
 ```
--title Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)
+-title "Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)""
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=fo
 -p type=poisson,range=[.2,.7]
@@ -336,7 +336,7 @@ Demo 24
 Demo 25
 
 ```
--title Evaluation of small-area, low-number count|assuming complete count of craters >150 m
+-title "Evaluation of small-area, low-number count|assuming complete count of craters >150 m"
 -pr uncertainty
 -cs n83
 -ef trask
@@ -378,7 +378,7 @@ Demo 26
 Demo 27
 
 ```
--title Bin overlay to aid diameter selection|(normally remove before publication)
+-title "Bin overlay to aid diameter selection|(normally remove before publication)""
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,binning=pseudo-log
 -p type=poisson,range=[.26,.63]
