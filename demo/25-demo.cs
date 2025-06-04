@@ -1,6 +1,0 @@
--o demo/25-demo
---bins
--cs neukumivanov
--title Bin overlay to aid diameter selection|(normally remove before publication)
--p source=%sample%/Pickering.scc,binning=pseudo-log
--p type=poisson,range=[.26,.63]

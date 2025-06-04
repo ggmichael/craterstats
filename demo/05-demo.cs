@@ -1,7 +1,0 @@
--o demo/05-demo
--pr cumul
--cs neukumivanov
--title Cumulative fits showing resurfacing correction|and fitted isochrons
--p source=%sample%/Pickering.scc,psym=sq
--p type=c-fit,range=[2,5],isochron=1
--p range=[.2,.7],resurf=1,psym=fsq

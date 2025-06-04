@@ -1,9 +1,0 @@
--o demo/06-demo
--pr cumul
--cs neukumivanov
--ep mars
--ef trask
--title Cumulative fits showing resurfacing correction,|equilibrium function and epoch system
--p source=%sample%/Pickering.scc,psym=sq
--p type=c-fit,range=[2,5]
--p range=[.2,.7],resurf=1,psym=fsq
