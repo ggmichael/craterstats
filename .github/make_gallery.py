@@ -6,6 +6,7 @@ import craterstats.gm as gm
 from pathlib import Path
 import glob
 import os
+import re
 
 def main():
     root = 'https://ggmichael.github.io/craterstats/'
@@ -28,9 +29,12 @@ and generate with the command `craterstats -i <filename>.cs`.
 ''']
 
     for i in n:
-        fn = '{:02d}-demo'.format(i)
+        fn = f'{i:02d}-demo'
         cs = gm.read_textfile('demo/'+fn+'.cs')
-        im = glob.glob("demo/"+fn+"*.p*")
+        f = glob.glob(f"demo/{fn}*.*")
+        pattern = re.compile(r"\.(png|pdf|svg)$", re.IGNORECASE)
+        im = [e for e in f if pattern.search(e)]
+
         im = [Path(p).as_posix() for p in im]
         lnk = ['!['+fn+']('+root+e+')' if gm.filename(e,'e')=='.png' else f'[View the PDF]({root+e})' for e in im]
         s+=[*lnk,
@@ -41,4 +45,3 @@ and generate with the command `craterstats -i <filename>.cs`.
 
 if __name__ == '__main__':
     main()
-
