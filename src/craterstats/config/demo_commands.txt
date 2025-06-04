@@ -47,7 +47,7 @@
 
 -title Plot with left-positioned age annotation -cs neukumivanov -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=blue,age_left=1
 
--title "Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)"" -cs neukumivanov -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=blue,age_left=1,offset_age=[1,4]
+-title "Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)" -cs neukumivanov -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7] -p range=[2,5],colour=blue,age_left=1,offset_age=[1,4]
 
 -title Fig 3, Michael et al (2021) -p src=%sample%/c1.scc,sym=^,err=0 -p src=%sample%/c2.scc,sym=f^,col=grey -p src=%sample%/c3.scc,sym=s4 -p src=%sample%/c4.scc,sym=o -p src=%sample%/c5.scc,sym=x -p src=%sample%/c6.scc,sym=s5,col=pink3 -p src=%sample%/c7.scc,sym=sq -p src=%sample%/Im2.scc,sym=fo,col=blk,err=1 -p type=poisson,range=[1.8,20],snap=0,offset=[-5,2] -isochrons .5a,.05a,.005s -xrange -3 2 -yrange -5 5 -pt_size 9 -sf 2
 
@@ -57,5 +57,5 @@
 
 -title Sequence plot -pr seq -cs n83 -ep moon -xrange 4.0 1 -legend fA -p src=%sample%/e1.diam,range=[0.24,1.5],name=E1,type=poisson,snap=0 -p src=%sample%/e2.diam,rng=[0.25,1.5],nm=E2 -p src=%sample%/e3.diam,rng=[0.24,1.5],nm=E3 -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red,nm=W1 -p src=%sample%/w2.diam,rng=[0.18,1],nm=W2 -p src=%sample%/w2.diam,rng=[1.5,5],nm=W2 -p src=%sample%/w2_h.diam,rng=[0.16,0.6],nm=W2h -p src=%sample%/w2_h.diam,rng=[0.8,1.9],nm=W2h -p src=%sample%/w2_l.diam,rng=[0.19,1.1],nm=W2l -p src=%sample%/w3.diam,rng=[0.16,1.5],colour=red1,nm=W3 -p src=%sample%/w4.diam,rng=[0.185,1.55],nm=W4 -p src=%sample%/w5_h1.diam,rng=[0.17,1],colour=blue,nm=W5h1 -p src=%sample%/w5_h2.diam,rng=[0.13,1.35],nm=W5h2 -p src=%sample%/w5_h3.diam,rng=[0.14,0.85],nm=W5h3 -p src=%sample%/w5_l1.diam,rng=[0.165,0.85],colour=blue2,nm=W5l1 -p src=%sample%/w5_l2.diam,rng=[0.12,0.8],nm=W5l2 -p src=%sample%/w5_l3.diam,rng=[0.15,0.8],nm=W5l3
 
--title "Bin overlay to aid diameter selection|(normally remove before publication)"" -cs neukumivanov -p source=%sample%/Pickering.scc,binning=pseudo-log -p type=poisson,range=[.26,.63] --bins
+-title "Bin overlay to aid diameter selection|(normally remove before publication)" -cs neukumivanov -p source=%sample%/Pickering.scc,binning=pseudo-log -p type=poisson,range=[.26,.63] --bins
 

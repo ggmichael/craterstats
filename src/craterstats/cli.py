@@ -333,13 +333,12 @@ def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
     cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
-    f = '-o '+out+'{:02d}-demo '
     if d is None:
         d=range(0,len(cmd))
     for i in d:
         c=cmd[i]
         print(f'\nDemo {i}\ncraterstats '+c)
-        a = (f.format(i) + c).split()
+        a = shlex.split(f'-o {out}{i:02d}-demo {c}')
         main(a)
     print('\nDemo output written to: '+out)
     return d
