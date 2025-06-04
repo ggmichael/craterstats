@@ -318,6 +318,9 @@ Demo 23
 
 <img src = "https://ggmichael.github.io/craterstats/demo/24-demo.svg" width = "100%" />
 
+
+<img src="https://ggmichael.github.io/craterstats/demo/24-demo.svg" width="100%" />
+
 Demo 24
 
 ```
