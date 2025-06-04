@@ -1,0 +1,7 @@
+-o demo/20-demo
+-title Plot with inverted colour
+-cs neukumivanov
+-invert 1
+-p source=%sample%/Pickering.scc,psym=fo
+-p type=poisson,range=[.2,.7],isochron=1
+-p range=[2,5],colour=violet,offset_age=[2,-3]
