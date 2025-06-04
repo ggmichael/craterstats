@@ -13,17 +13,14 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
 
 1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
-  
     ```
     conda create -n craterstats python=3.12
     ```
 1. Activate the virtual environment:
-
    ```
    conda activate craterstats
    ```
 1. Install the craterstats package with its dependencies:
-
    ```
    pip install craterstats
    ```
@@ -31,9 +28,9 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
    ```
    craterstats --create_desktop_icon
    ```
-   
-Alternative installation method for testing purposes [here](docs/github_install.md).
+   Modify properties for preferred start-up folder if desired.
 
+Alternative installation method for testing purposes [here](docs/github_install.md).
  
 # Quick demonstration and try-out
 
@@ -52,9 +49,8 @@ Visit the [Gallery](docs/gallery.md) and copy some of the commands there to recr
 1. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
    ```
    conda activate craterstats
-   ```
+   ```   
 1. Begin entering `craterstats` commands.
-
 
 # Usage
 
@@ -122,16 +118,15 @@ Uncertainty plots for the evaluation of small-area, low-number counts, assuming 
 
 as well as plots for comparing the sequence of events (Michael, Zhang, Wu, Liu, (2025)):
 
-   craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
-
-
+    craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
 
 # Upgrade 
 
 If you later need to upgrade to a newer version, use:
-   ```
-   pip install --upgrade craterstats
-   ```
+
+    pip install --upgrade craterstats
+
+In case of failure, it is always safe to delete the craterstats environment directory from `<userhome>/miniforge3/envs`, and reinstall fresh.
 
 # References
 
