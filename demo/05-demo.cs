@@ -1,5 +1,5 @@
 -o demo/05-demo
--title Cumulative fits showing resurfacing correction|and fitted isochrons
+-title "Cumulative fits showing resurfacing correction|and fitted isochrons"
 -pr cumul
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=sq

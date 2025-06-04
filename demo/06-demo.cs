@@ -1,5 +1,5 @@
 -o demo/06-demo
--title Cumulative fits showing resurfacing correction,|equilibrium function and epoch system
+-title "Cumulative fits showing resurfacing correction,|equilibrium function and epoch system"
 -pr cumul
 -cs neukumivanov
 -ep mars

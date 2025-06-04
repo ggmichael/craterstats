@@ -1,5 +1,5 @@
 -o demo/04-demo
--title Cumulative fit with resurfacing correction|showing all corrected data points
+-title "Cumulative fit with resurfacing correction|showing all corrected data points"
 -pr cumul
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=sq

@@ -1,5 +1,5 @@
 -o demo/13-demo
--title Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation
+-title "Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation"
 -pr hartmann
 -cs neukumivanov
 -mu 0

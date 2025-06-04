@@ -1,5 +1,5 @@
 -o demo/18-demo
--title Differential plot|with root-2 binning and root-2 diameter scale
+-title "Differential plot|with root-2 binning and root-2 diameter scale"
 -cs neukumivanov
 -style root-2
 -p source=%sample%/Pickering.scc,psym=x,binning=root-2

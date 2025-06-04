@@ -1,5 +1,5 @@
 -o demo/00-demo
--title Differential plot with Poisson age evaluations,|equilibrium function, and epoch system
+-title "Differential plot with Poisson age evaluations,|equilibrium function, and epoch system"
 -cs neukumivanov
 -ep mars
 -ef trask

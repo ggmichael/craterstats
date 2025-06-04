@@ -1,5 +1,5 @@
 -o demo/09-demo
--title R-plot|with 10/decade binning
+-title R-plot with 10/decade binning
 -pr rplot
 -cs neukumivanov
 -ep mars
