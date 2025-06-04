@@ -36,7 +36,7 @@ and generate with the command `craterstats -i <filename>.cs`.
         im = [e for e in f if pattern.search(e)]
 
         im = [Path(p).as_posix() for p in im]
-        lnk = ['!['+fn+']('+root+e+')' if gm.filename(e,'e')=='.png' else f'[View the PDF]({root+e})' for e in im]
+        lnk = ['!['+fn+']('+root+e+')' if gm.filename(e,'e')!='.pdf' else f'[View the PDF]({root+e})' for e in im]
         s+=[*lnk,
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]

@@ -105,7 +105,8 @@ Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown
 
 -title [title]        plot title
 
-- use `|` as separator for multi-line title
+- use `|` as separator for multi-line title (nb: enclose whole title in double-quotes if using this or other special 
+characters on the command line)
 
 -pr, --presentation   data presentation, abbreviated: 
   

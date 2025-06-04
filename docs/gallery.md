@@ -316,7 +316,7 @@ Demo 23
 -sf 2
 ```
 
-[View the PDF](https://ggmichael.github.io/craterstats/demo/24-demo.svg)
+![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo.svg)
 
 Demo 24
 
