@@ -1,0 +1,8 @@
+-o demo/00-demo
+-title Differential plot with Poisson age evaluations,|equilibrium function, and epoch system
+-cs neukumivanov
+-ep mars
+-ef trask
+-p source=%sample%/Pickering.scc
+-p type=poisson,range=[2,5],offset_age=[2,-2]
+-p range=[.2,.7]
