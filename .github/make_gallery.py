@@ -17,7 +17,7 @@ def main():
         for f in fs:
             Path(f).unlink()
 
-    n = None #[5,6,7,24]
+    n = None #[5,6,7,24,25]
     n=cli.demo(n)
 
     s=['''
@@ -33,11 +33,20 @@ and generate with the command `craterstats -i <filename>.cs`.
         cs = gm.read_textfile('demo/'+fn+'.cs')
         f = glob.glob(f"demo/{fn}*.*")
         pattern = re.compile(r"\.(png|pdf|svg)$", re.IGNORECASE)
-        im = [e for e in f if pattern.search(e)]
+        im0 = [e for e in f if pattern.search(e)]
+        im1 = [Path(p).as_posix() for p in im0]
+        lnks = []
+        for im in im1:
+            match gm.filename(im,'e'):
+                case '.png':
+                    lnk = f'![{fn}]({root}{im})'
+                case '.pdf':
+                    lnk = f'[View the PDF]({root}{im})'
+                case '.svg':
+                    lnk = f'<img src = "{root}{im}" width = "100%" />'
+            lnks += [lnk]
 
-        im = [Path(p).as_posix() for p in im]
-        lnk = ['!['+fn+']('+root+e+')' if gm.filename(e,'e')!='.pdf' else f'[View the PDF]({root+e})' for e in im]
-        s+=[*lnk,
+        s+=[*lnks,
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]
 

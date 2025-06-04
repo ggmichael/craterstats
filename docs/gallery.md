@@ -316,7 +316,7 @@ Demo 23
 -sf 2
 ```
 
-![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo.svg)
+<img src = "https://ggmichael.github.io/craterstats/demo/24-demo.svg" width = "100%" />
 
 Demo 24
 
