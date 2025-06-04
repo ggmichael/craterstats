@@ -1,5 +1,5 @@
 -o demo/14-demo
--title "Impact rate function|with alternative specified reference diameter"
+-title Impact rate function|with alternative specified reference diameter
 -pr rate
 -ref_diameter 10
 -yrange -7 2

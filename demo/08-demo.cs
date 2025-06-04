@@ -1,5 +1,5 @@
 -o demo/08-demo
--title "Modified legend 2:|only count and diameter range; no function citations"
+-title Modified legend 2:|only count and diameter range; no function citations
 -pr cumul
 -cs neukumivanov
 -legend cr
