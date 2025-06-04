@@ -321,12 +321,22 @@ Demo 23
 Demo 24
 
 ```
--title Plot in SVG vector format
+-title Plot in SVG vector format (PDF also possible)
 -f svg
--cs neukumivanov
--p source=%sample%/Pickering.scc,psym=fo
--p type=poisson,range=[.2,.7],isochron=1
--p range=[2,5],colour=blue,offset_age=[2,-3]
+-p src=%sample%/c1.scc,sym=^,err=0
+-p src=%sample%/c2.scc,sym=f^,col=grey
+-p src=%sample%/c3.scc,sym=s4
+-p src=%sample%/c4.scc,sym=o
+-p src=%sample%/c5.scc,sym=x
+-p src=%sample%/c6.scc,sym=s5,col=pink3
+-p src=%sample%/c7.scc,sym=sq
+-p src=%sample%/Im2.scc,sym=fo,col=blk,err=1
+-p type=poisson,range=[1.8,20],snap=0,offset=[-5,2]
+-isochrons .5a,.05a,.005s
+-xrange -3 2
+-yrange -5 5
+-pt_size 9
+-sf 2
 ```
 
 ![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_age.png)
