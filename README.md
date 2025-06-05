@@ -11,7 +11,7 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 The following procedure for installation on Windows, MacOS or Linux is recommended:
 
-1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
+1. Install the Python environment manager, Conda, using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
 1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
     ```
     conda create -n craterstats python=3.12
@@ -44,9 +44,7 @@ Visit the [Gallery](docs/gallery.md) and copy some of the commands there to recr
 
 # Normal start-up
 
-1. On Windows, double-click the desktop icon if present. 
-
-1. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
+1. Double-click the desktop icon if present. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
    ```
    conda activate craterstats
    ```   
@@ -94,15 +92,15 @@ Tables of chronology systems, equilibrium functions and epoch systems – which 
 
     craterstats -lcs
 
-These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Thus, `-ef standard` or `-ef trask` will obtain the `Lunar equilibrium (Trask, 1966)` equilibrium function. 
+These items may specifed using any unambiguous abbreviated form, e.g. `-cs ida`. Thus, `-ef lunar` or `-ef trask` will obtain the `Lunar equilibrium (Trask, 1966)` equilibrium function. 
 
 Tables of plot symbols and colours – which can be used with the `psym=` and `colour=` options – may be listed with the following command:
 
     craterstats -lpc
 
-and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `colour=gr` select green. 
+and can likewise be specified by name or abbreviation, e.g. `psym=circle` or `psym=o` select a circle; `colour=green` or `col=gr` select green. 
 
-Differential plots are the default data presentation. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml` to the part 1 settings. 
+Differential plots are the default data presentation. To switch to a different kind, e.g. cumulative, add `-pr cumulative` or `-pr cml`. 
 Other possibilities are: relative (R), Hartmann, chronology, rate, sequential or uncertainty.
 
 The complete set of options can be seen with:
@@ -116,7 +114,7 @@ Uncertainty plots for the evaluation of small-area, low-number counts, assuming 
 
     craterstats -pr uncertainty -cs n83 -d_min 0.15
 
-as well as plots for comparing the sequence of events (Michael, Zhang, Wu, Liu, (2025)):
+as well as plots for comparing a sequence of events (Michael, Zhang, Wu, Liu, (2025)):
 
     craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
 
