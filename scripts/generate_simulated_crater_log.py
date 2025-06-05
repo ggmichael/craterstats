@@ -2,7 +2,9 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 # This example illustrates how to generate a random sequence of crater diameters for
-# specified time interval which will conform to a chosen chronology model
+# specified time interval which will conform to a chosen chronology model using
+# method described in Michael G.G., Kneissl T., Neesemann A., Planetary surface dating
+# from crater size-frequency distribution measurements: Poisson timing analysis. Icarus, 2016.
 
 
 import numpy as np
