@@ -11,6 +11,7 @@ import matplotlib.figure as mfig
 from matplotlib import patheffects
 from matplotlib.patches import Polygon
 import matplotlib.colors as colors
+import matplotlib.patches as patches
 
 from palettable.colorbrewer.diverging import Spectral_9
 from progressbar import progressbar
@@ -98,6 +99,9 @@ class Craterplotset:
         plt.rc('mathtext', fontset='custom', rm=available_font, bf=available_font + ':bold',
               cal=available_font + ':italic')
 
+        #plt.rcParams['svg.fonttype'] = 'none' # makes text editable, but then not portable
+        plt.rcParams['image.composite_image'] = False # prevent optimisation of svg raster
+
         tw = .4 * self.sz_ratio
         plt.rcParams.update({
             'legend.fontsize': 'x-small',
@@ -113,6 +117,9 @@ class Craterplotset:
             'ytick.major.width': tw,
             'ytick.minor.width': tw,
         })
+
+
+
 
             
     def CreatePlotSpace(self):
@@ -207,11 +214,16 @@ class Craterplotset:
 
 #create layout
 
-        fig = mfig.Figure(figsize=[xsize*self.cm2inch,ysize*self.cm2inch],dpi=200) # bypass pyplot figure manager (causes issues, and not needed for non-interactive)
+        fig = mfig.Figure(figsize=[xsize*self.cm2inch,ysize*self.cm2inch],dpi=200)
 
         ax=fig.add_axes(normalised_position)
         ax.set_axisbelow(False) # draw axis on top of other elements
-        
+
+        # Add solid background rectangle for -transparent option (only axis labels transparent)
+        bg = patches.Rectangle((0, 0), 1, 1,
+            transform=ax.transAxes, zorder=-10,  color= 'black' if self.invert else 'white', linewidth=0)
+        ax.add_patch(bg)
+
         if add_xminorlogticks:                      #draw minor xlog ticks using different axes, since main x axis is linear
             ax2=fig.add_axes(normalised_position,frameon=False)
             ax2.set_axisbelow(False)
@@ -325,6 +337,15 @@ class Craterplotset:
         ax_log = fig.add_axes(pos_log / np.array([xsize, ysize, xsize, ysize]))
         ax = fig.add_axes(pos_all / np.array([xsize, ysize, xsize, ysize]))
 
+        # Add solid background rectangle for -transparent option (only axis labels transparent)
+        bg_ax = fig.add_axes(pos_all / np.array([xsize, ysize, xsize, ysize]), zorder=-1)
+        bg = patches.Rectangle((0, 0), 1, 1,
+            transform=bg_ax.transAxes, zorder=-10,  color= 'black' if self.invert else 'white', linewidth=0)
+        bg_ax.add_patch(bg)
+        bg_ax.set_xticks([])
+        bg_ax.set_yticks([])
+        bg_ax.set_frame_on(False)
+
         if self.presentation == 'uncertainty':
             offset_cbar = [.2, .2]  # offset_x,w from main plot
             pos_cbar = [xsize - margin + offset_cbar[0], margin, offset_cbar[1], ysize - margin*2]
@@ -349,7 +370,6 @@ class Craterplotset:
             ax_log.set_axis_off()
 
         #ax_lin
-
         ax_lin.set_xlim(left=self.t_max if self.t_max>t_crossover else t_crossover+.1, right=t_crossover)
         ax_lin.set_xticks(xtickv, labels=xticklabels)
         ax_lin.tick_params(length=2, pad=1.5)
@@ -359,7 +379,7 @@ class Craterplotset:
         if self.presentation == 'sequence':
             ax_lin.set_ylim(bottom=0, top=1)
             ax_lin.get_yaxis().set_visible(False)
-            ax_lin.spines[['left', 'right', 'top']].set_visible(False)
+            ax_lin.spines[['left', 'right']].set_visible(False)
         elif self.presentation == 'uncertainty':
             ax_lin.set_yscale('log')
             ax_lin.yaxis.set_major_locator(ticker.LogLocator(numticks=999))
@@ -378,7 +398,7 @@ class Craterplotset:
             ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
             ax.set_xlabel('Age', labelpad=2 * self.scaled_pt_size)
         elif self.presentation == 'uncertainty':
-            ax.spines[['left', 'bottom']].set_visible(False)
+            #ax.spines[['left', 'bottom']].set_visible(False)
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
         if self.t_max>3.:
@@ -825,14 +845,15 @@ class Craterplotset:
             im = np.flip(np.transpose(np.log10(ee)),1)
             vmin=np.log10(1./5)
             vmax=np.log10(5.)
-            alpha=np.where((im > vmin) & (im < vmax),1.,0.)
+            # svg output does not respect alpha; both png and svg respect np.nan
+            im=np.where((im > vmin) & (im < vmax),im,np.nan)
             imo = self.ax.imshow(im,
                            cmap_ratio, origin="lower", interpolation='none', #zorder=0,
-                           extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax,alpha=alpha)
+                           extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax)
             cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
             cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
             cbar.set_label('Measured/actual age', rotation=90)
-            poly.set_alpha(0.75)
+            poly.set_alpha(0.7)
 
         def add_saturation_text():
             if y_exceed and (y_exceed < .98):

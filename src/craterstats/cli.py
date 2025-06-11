@@ -447,7 +447,8 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     def savefig(tag=''):
-        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=args.transparent,
+        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500,
+                        transparent=args.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
 
     drawn=False
