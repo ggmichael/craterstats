@@ -1,5 +1,5 @@
 
-# Alternative installation method for Windows
+# 1. Alternative installation method for Windows
 
 This method uses `pipx` instead of `conda` to isolate the Python environment. If Craterstats will be the only Python
 software you use, this is a simpler set-up. 
@@ -26,7 +26,7 @@ The `craterstats` command is subsequently available in every command prompt wind
 
 (Pipx can be used on Linux/MacOS, but requires additional steps to ensure no conflict with the system Python)
 
-# Installation from github
+# 2. Installation from github
 
 This method of installation may allow you to test features in development that have not yet been included in the versioned PyPi release.
 Since development features may be fragile, this is probably only advisable if you are in contact with the author about a specific issue.

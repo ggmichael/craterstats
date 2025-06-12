@@ -40,7 +40,7 @@ current folder.
     
     craterstats -demo
 
-Visit the [Gallery](docs/gallery.md) and copy some of the commands there to recreate the example plots.
+Visit the [Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md) and copy some of the commands there to recreate the example plots.
 
 # Normal start-up
 
