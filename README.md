@@ -3,9 +3,9 @@
 
 This is a Python reimplementation and extension of the Craterstats-II software, a tool to analyse and plot crater count data for planetary surface dating.
 
-[Gallery](docs/gallery.md)
+[Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md)
 
-[Quick reference](docs/manual.md)
+[Quick reference](https://github.com/ggmichael/craterstats/blob/main/docs/manual.md)
 
 # Installation
 
@@ -30,7 +30,7 @@ The following procedure for installation on Windows, MacOS or Linux is recommend
    ```
    Modify properties for preferred start-up folder if desired.
 
-Alternative installation method for testing purposes [here](docs/github_install.md).
+Alternative installation methods [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
  
 # Quick demonstration and try-out
 

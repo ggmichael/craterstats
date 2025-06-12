@@ -1,4 +1,31 @@
 
+# Alternative installation method for Windows
+
+This method uses `pipx` instead of `conda` to isolate the Python environment. If Craterstats will be the only Python
+software you use, this is a simpler set-up. 
+
+1. Install Python
+- Download Python 3.12 from https://www.python.org/downloads/
+- Select _Add python.exe to PATH_ (but not _Use admin privileges_); choose _Install Now_
+
+2. Install pipx
+
+ - Open command prompt and enter
+```
+python -m pip install --user pipx
+python -m pipx ensurepath
+```
+- Close command prompt
+
+4. Install craterstats
+ - Open fresh command prompt and enter 
+```
+pipx install craterstats
+```
+The `craterstats` command is subsequently available in every command prompt window.
+
+(Pipx can be used on Linux/MacOS, but requires additional steps to ensure no conflict with the system Python)
+
 # Installation from github
 
 This method of installation may allow you to test features in development that have not yet been included in the versioned PyPi release.
@@ -46,7 +73,7 @@ Since development features may be fragile, this is probably only advisable if yo
    craterstats -about
    ```
 
-# Updating
+## Updating
 
 You can update to the latest version on github using the command `git pull` from within the 
 `craterstats-github` directory. If a new version reports missing packages, repeat the command:
