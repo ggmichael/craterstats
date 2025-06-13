@@ -75,6 +75,7 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
     parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
+    parser.add_argument("-text_halo", choices=['0', '1'], help="1 - on [default]; 0 - off")
     parser.add_argument("-transparent", help="set transparent background", action='store_true')
     #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
     parser.add_argument("-tight", help="tight layout", action='store_true')
@@ -116,6 +117,7 @@ def defaults():
         'epochs': None,
         'equilibrium': None,
         'invert': 0,
+        'text_halo':1,
         'isochrons': None,
         'legend': 'fnacr',
         'mu': 1,
@@ -204,6 +206,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'randomness',
                      'mu',
                      'invert',
+                     'text_halo',
                      'style',
                      'xrange', 'yrange',
                      'min_diameter','n_samples',

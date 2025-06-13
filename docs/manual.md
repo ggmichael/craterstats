@@ -3,7 +3,7 @@
 
 usage: craterstats.py [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT [OUT ...]] [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]] [--merge MERGE [MERGE ...]]
                       [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE [TITLE ...]] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE]
-                      [-isochrons ISOCHRONS] [-legend LEGEND] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-transparent] [-tight] [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
+                      [-isochrons ISOCHRONS] [-legend LEGEND] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-text_halo {0,1}] [-transparent] [-tight] [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
                       [-d_min MIN_DIAMETER] [-ns N_SAMPLES] [-p KEY=VAL, [KEY=VAL, ...]]
 
 -h, --help            show help message
@@ -153,6 +153,9 @@ characters on the command line)
                     diameter axis style
 
 -invert {0,1}         1 - invert to black background; 0 - white background
+
+-text_halo {0,1}      1 - on [default]; 0 - off. 
+Makes legend better readable if overlapping graphic elements, but renders svg/pdf text non-editable. 
 
 -transparent          set transparent background
 

@@ -172,8 +172,9 @@ class Craterpdf:
             ax.set_xlim(xt[0], max_t, auto=False)
             ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
 
-        ax.set_ylim(bottom=0) # eliminates tiny gap between axis and fill area
+
         ax.plot(self.ts, self.pdf, lw=linewidth * 1.5, color=color)
+        ax.set_ylim(bottom=0) # eliminates tiny gap between axis and fill area
         ax.fill_between(self.ts[p[1]:p[3]], self.pdf[p[1]:p[3]], 0, color=color, alpha=0.35,
                         edgecolor=None, lw=None)
         ax.fill_between(self.ts[p[2]:p[2] + 1], self.pdf[p[2]:p[2] + 1], edgecolor=color, lw=linewidth, alpha=.5)
