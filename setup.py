@@ -16,9 +16,9 @@ with open(here / 'requirements.txt') as f:
 setup(
     author="Greg Michael",
     author_email="ggmichael@users.noreply.github.com",
-    python_requires=">=3.12, <4",
+    python_requires=">=3.12",
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: BSD License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3.12",
@@ -32,7 +32,7 @@ setup(
     license="BSD license",
     long_description=readme,
     long_description_content_type='text/markdown',
-    keywords=["craters"],
+    keywords=["planetary","chronology","crater"],
     name="craterstats",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
