@@ -1,5 +1,5 @@
 
-# Craterstats-III command options
+# Craterstats-III command options quick reference
 
     craterstats [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc]
                           [-about] [-demo] [-b] [-o OUT [OUT ...]]
