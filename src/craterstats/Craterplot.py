@@ -170,12 +170,12 @@ class Craterplot:
         if self.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
             if 'c' in cps.legend:
                 if self.cratercount.buffered:
-                    legend_label += ['{:.1f}'.format(self.n_event)]
+                    legend_label += [f'{self.n_event:.1f}']
                 else:
                     if np.abs(self.n_event - self.n) < .001:
-                        legend_label += ['{:0g}'.format(self.n)]
+                        legend_label += [f'{self.n:0g}']
                     else:
-                        legend_label += ['{0:.1f} (of {1:d})'.format(self.n,self.n_event)]
+                        legend_label += [f'{self.n:.1f} (of {self.n_event:d})']
                 legend_label[-1] += " craters"
             if 'r' in cps.legend:
                 if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
@@ -184,7 +184,7 @@ class Craterplot:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
                 legend_label += [gm.diameter_range(r)]
             if 'N' in cps.legend:
-                legend_label += ['N({0:0g})'.format(cps.ref_diameter) +'=' + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
+                legend_label += [f'N({cps.ref_diameter:0g})' +'=' + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
             if cps.presentation == 'sequence':
                 if 'a' in cps.legend:
                     legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]

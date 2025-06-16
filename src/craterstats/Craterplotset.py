@@ -464,7 +464,7 @@ class Craterplotset:
             t,y=self.cf.getplotdata(linear=True,phi=phi)
 
             if self.ref_diameter != 1.:  # only show legend if not N(1)
-                self.ax.plot(t, y * ref_diam_ratio, label='N(>{:g} km)'.format(self.ref_diameter),
+                self.ax.plot(t, y * ref_diam_ratio, label=f'N(>{self.ref_diameter:g} km)',
                              lw=1, color=self.palette[0], marker=None)
                 self.ax.plot(t, y, label='N(>1 km)', color=self.grey[0], lw=1, marker=None)
             else:
@@ -605,7 +605,7 @@ class Craterplotset:
 
         if not s: return
 
-        n_d_lbl='N({:0g})'.format(self.ref_diameter)
+        n_d_lbl=f'N({self.ref_diameter:0g})'
         # w now obsolete in this table (width)
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
@@ -639,11 +639,11 @@ class Craterplotset:
                 if k=='name' and d[k]=='':
                     d[k]= gm.filename(d['source'], 'n')
                 if k in ('range','bin_range','t','a0'):
-                    v=','.join([('{:'+f+'}').format(e) for e in d[k]])
+                    v = ','.join([f"{e:{f}}" for e in d[k]])
                     if k in ('range','bin_range'):
                         txt_range=gm.diameter_range(d[k])
                 elif k=='n_d':
-                    v = ','.join([('{:' + f + '}').format(10**e) for e in d['a0']])
+                    v = ','.join([f"{10**e:{f}}" for e in d['a0']])
                 elif k in ('Latex','MathML'):
                     t = d['t']
                     v0 = cst.str_age(t[0], t[2] - t[0], t[0] - t[1], mu=self.mu, MathML = k=='MathML')
@@ -654,7 +654,7 @@ class Craterplotset:
                 elif k == 'Range':
                     v=txt_range
                 else:
-                    v=('{:'+f+'}').format(d[k])
+                    v = f"{d[k]:{f}}"
                 ln+=[v]
             st += '\n'+','.join(ln)+'," "'
 
@@ -702,8 +702,8 @@ class Craterplotset:
         t = [cp.pdf.t(0.5) for cp in cpl]
         t_mean= sum(t)/float(n)
 
-        st += '\nt_median:,'+','.join(['{0:.3g}'.format(tt) for tt in t])
-        st += '\nmean(t_median):,'+'{0:.4g}'.format(t_mean)
+        st += '\nt_median:,'+','.join([f'{tt:.3g}' for tt in t])
+        st += '\nmean(t_median):,'+f'{t_mean:.4g}'
 
         # second calculation of same
 
@@ -722,7 +722,7 @@ class Craterplotset:
         prob_worse = sum(worse)/sum(pdf3.dt * pdf3.pdf)
 
         st += ('\n\nProbability of more distant time configuration than observed if all surfaces formed at t_mean:\n,'
-               +'{0:g}'.format(prob_worse) )
+               +f'{prob_worse:g}' )
 
         try:
             gm.write_textfile(f_csv,st)

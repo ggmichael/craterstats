@@ -19,10 +19,10 @@ def diameter_range(d,sf=2):
 
     if d[1] >=1:
         s = gm.sigfigs(d, sf)
-        return '{0[0]}\u2013{0[1]} km'.format(s)
+        return f"{s[0]}\u2013{s[1]} km"
     else:
         s = gm.sigfigs(np.array(d)*1000, sf)
-        return '{0[0]}\u2013{0[1]} m'.format(s)
+        return f"{s[0]}\u2013{s[1]} m"
 
 
 if __name__ == '__main__':

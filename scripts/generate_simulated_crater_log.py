@@ -70,8 +70,7 @@ def main():
 
         t += dt
         i += 1
-
-        print('{:6d} {:10.6f} {:10.4f}'.format(i, t, d))
+        print(f"{i:6d} {t:10.6f} {d:10.4f}")
 
 
 if __name__ == '__main__':

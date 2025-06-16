@@ -9,9 +9,7 @@ def sigfigs(n, digits):
     if isinstance(n, (list, tuple, np.ndarray)):
         return [sigfigs(e,digits) for e in n]
 
-    f="{:."+str(digits-1)+"e}"
-    s=f.format(n)
-    
+    s=f"{n:.{digits - 1}e}"
     m=re.search(r"(?P<sign>-?)(?P<num>[\d\.]*)e(?P<exp>.*)",s)
     sf=m['num'].replace('.','')    
     e=int(m['exp'])

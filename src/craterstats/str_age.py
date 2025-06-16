@@ -30,7 +30,7 @@ def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False,Ma
     v=age/a[0]
 
     if simple:
-        st='{:g}'.format(v)
+        st=f'{v:g}'
     else:
         st= gm.sigfigs(v, sf)
 

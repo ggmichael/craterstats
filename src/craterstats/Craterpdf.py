@@ -167,7 +167,7 @@ class Craterpdf:
             max_text = cst.str_age(xt[max_i], simple=True)
             a = max_text.split(' ')
             xt_units = float(a[0]) / xt[max_i] * xt
-            xt_label = ['{:g}'.format(e) for e in xt_units]
+            xt_label = [f'{e:g}' for e in xt_units]
             xt_label[max_i] = "      " + xt_label[max_i] + " " + a[1]  # add unit to last label, e.g. "Ga"
             ax.set_xlim(xt[0], max_t, auto=False)
             ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())

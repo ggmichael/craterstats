@@ -90,7 +90,7 @@ class Epochs:
         y = self.cf.phi(self.time[1])*.7 if phi else self.cf.N1(self.time[1])/2.5
         for i,t in enumerate(self.time): # write epoch times
             if t!=0:
-                cps.ax.annotate(' {:0.3g} '.format(t),xy=(t, y),
+                cps.ax.annotate(f' {t:0.3g} ',xy=(t, y),
                             xytext=(cps.pt_size * .04, 0), textcoords="offset points",
                             size=cps.pt_size * .7, rotation=90,
                             verticalalignment='bottom' if offset[i] else 'top',

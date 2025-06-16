@@ -325,7 +325,7 @@ def source_cmds(src):
         a = c.split()
         args = parser.parse_args(a)
         if args.out is None:
-            f='{:02d}-out'.format(i)
+            f=f'{i:02d}-out'
             a+=['-o',f]
             c+=' -o '+f
         print(f'\nCommand: {i}\ncraterstats ' + c)
@@ -396,18 +396,18 @@ def main(args0=None):
 
     if args.lcs:
         print(gm.bright("\nChronology systems:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in functions['chronology_system']]))
+        print('\n'.join([f'{e['name']}' for e in functions['chronology_system']]))
         print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in functions['equilibrium']]))
+        print('\n'.join([f'{e['name']}' for e in functions['equilibrium']]))
         print(gm.bright("\nEpoch systems:"))
-        print('\n'.join(['{0}'.format(e['name']) for e in functions['epochs']]))
+        print('\n'.join([f'{e['name']}' for e in functions['epochs']]))
         return
 
     if args.lpc:
         print(gm.bright("\nPlot symbols:"))
-        print(', '.join(['{0} ({1})'.format(e[1], e[0]) for e in cst.MARKERS]))
+        print(', '.join([f'{e[1]} ({e[0]})' for e in cst.MARKERS]))
         print(gm.bright("\nColours:"))
-        print(', '.join(['{0}'.format(e[2]) for e in cst.PALETTE]))
+        print(', '.join([f'{e[2]}' for e in cst.PALETTE]))
         return
 
     if args.about:
