@@ -193,7 +193,7 @@
   * `colour={black,red,green,blue,yellow,violet,grey,blue1,blue2,blue3,blue4,brown1,brown2,brown3,brown4,green1,green2,green3,orange,pink1,pink2,pink3,purple1,purple2,red1,red2,red3,teal1,teal2,yellow1,yellow2,yellow-green}`
     Colour for overplot. 
 
-  * `psym={square (s),circle (o),star4 (\*4),triangle (^),star5 (\*),diagonal cross (x),cross (+),point (.),inverted triangle (v),filled square (fs),filled circle (fo),filled star4 (f\*4),filled triangle (ft),filled star5 (f\*),filled inverted triangle (fv)}`
+  * `psym={square (s), circle (o), star4 (*4), triangle (^), star5 (*), diagonal cross (x), cross (+), point (.), inverted triangle (v), filled square (fs), filled circle (fo), filled star4 (f*4), filled triangle (ft),filled star5 (f*), filled inverted triangle (fv)}`
     Plot symbol.  
 
   * `binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}`
