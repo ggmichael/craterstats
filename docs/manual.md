@@ -1,18 +1,36 @@
 
-# Command options
+# Craterstats-III command options
 
-usage: craterstats.py [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc] [-about] [-demo] [-b] [-o OUT [OUT ...]] [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]] [--merge MERGE [MERGE ...]]
-                      [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]] [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM] [-ep EPOCHS] [-title TITLE [TITLE ...]] [-pr PRESENTATION] [-xrange XRANGE XRANGE] [-yrange YRANGE YRANGE]
-                      [-isochrons ISOCHRONS] [-legend LEGEND] [-mu {0,1}] [-style {natural,root-2}] [-invert {0,1}] [-text_halo {0,1}] [-transparent] [-tight] [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE] [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
-                      [-d_min MIN_DIAMETER] [-ns N_SAMPLES] [-p KEY=VAL, [KEY=VAL, ...]]
+    craterstats [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc]
+                          [-about] [-demo] [-b] [-o OUT [OUT ...]]
+                          [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]]
+                          [--create_desktop_icon] [-m MERGE [MERGE ...]]
+                          [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]]
+                          [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM]
+                          [-ep EPOCHS] [-title TITLE [TITLE ...]]
+                          [-pr PRESENTATION] [-xrange XRANGE XRANGE]
+                          [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS]
+                          [-legend LEGEND] [-mu {0,1}]
+                          [-style {natural,root-2}] [-invert {0,1}]
+                          [-text_halo {0,1}] [-transparent] [-tight]
+                          [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE]
+                          [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
+                          [-d_min MIN_DIAMETER] [-ns N_SAMPLES]
+                          [-p KEY=VAL, [KEY=VAL, ...]]
 
--h, --help            show help message
 
--i, --input [filename.cs]   input command line arguments from file
+## Options
 
--inc, --include [filename.txt]  include commands from external file (same format as .cs file) e.g., to share layout settings between a set of plots: 
+`-h, --help`
+  Show this help message and exit.
 
-```
+`-i, --input FILE`
+  Input command line arguments from a file.
+
+`-inc, --include FILE`
+  Include commands from an external .txt file, e.g. to share layout settings:
+
+```txt
 -cs neukum01
 -pr cml
 -ef trask
@@ -23,184 +41,199 @@ usage: craterstats.py [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc] [-about] [-de
 -tight
 ```
 
--lcs                  list chronology systems
+`-lcs`
+  List available chronology systems.
 
-- Chronology systems:
-  - Moon, Neukum (1983)
-  - Moon, Neukum et al. (2001)
-  - Moon, Hartmann 2010 iteration
-  - Moon, Yue et al. (2022)
-  - Mars, Neukum-Ivanov (2001)
-  - Mars, Ivanov (2001)
-  - Mars, Hartmann 2004 iteration
-  - Mars, Hartmann & Daubar (2016)
-  - Mercury, Strom & Neukum (1988)
-  - Mercury, Neukum et al. (2001)
-  - Mercury, Le Feuvre and Wieczorek 2011 non-porous
-  - Mercury, Le Feuvre and Wieczorek 2011 porous
-  - Vesta, Rev4, Schmedemann et al (2014)
-  - Vesta, Rev3, Schmedemann et al (2014)
-  - Vesta, Marchi & O'Brien (2014)
-  - Ceres, Hiesinger et al. (2016)
-  - Ida, Schmedemann et al (2014)
-  - Gaspra, Schmedemann et al (2014)
-  - Lutetia, Schmedemann et al (2014)
-  - Phobos, Case A - SOM, Schmedemann et al (2014)
-  - Phobos, Case B - MBA, Schmedemann et al (2014)
-  
+`-lpc`
+  List plot symbols and colours.
 
-- Equilibrium functions: 
-  - Lunar equilibrium (Trask, 1966)
-  - Hartmann (1984)
-  
-
-- Epoch systems:
-  - Moon, Wilhelms (1987)
-  - Moon, Guo et al (2024)
-  - Mars, Michael (2013)
-
-
--lpc                  list plot symbols and colours
-
-- Plot symbols:
-square (s), circle (o), star4 (\*4), triangle (^), star5 (\*), diagonal cross (x), cross (+), point (.), inverted triangle (v), filled square (fs), filled circle (fo), filled star4 (f*4), filled triangle (ft), filled star5 (f\*), filled inverted triangle
+-  Plot symbols: square (s), circle (o), star4 (\*4), triangle (^), star5 (\*), diagonal cross (x), cross (+), point (.), inverted triangle (v), filled square (fs), filled circle (fo), filled star4 (f*4), filled triangle (ft), filled star5 (f\*), filled inverted triangle
  (fv)
 
+- Colours: Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown1, brown2, brown3, brown4, green1, green2, green3, orange, pink1, pink2, pink3, purple1, purple2, red1, red2, red3, teal1, teal2, yellow1, yellow2, yellow-green
 
-- Colours:
-Black, Red, Green, Blue, Yellow, Violet, Grey, blue1, blue2, blue3, blue4, brown1, brown2, brown3, brown4, green1, green2, green3, orange, pink1, pink2, pink3, purple1, purple2, red1, red2, red3, teal1, teal2, yellow1, yellow2, yellow-green
+`-about`
+  Show program details.
 
+`-demo`
+  Run demonstration commands; outputs saved in `./demo`.
 
--about                show program details
+`-b, --bins`
+  Show bin overlay to aid diameter selection.
 
--demo                 run sequence of demonstration commands: output in ./demo
+`-o, --out FILE_OR_DIR`
+  Output filename (omit extension for default) or directory.
 
--b, --bins            show bin overlay (to aid diamater selection - normally remove before publication)
+`-f, --format [png|tif|pdf|svg|csv|stat]`
+  Output format(s).
 
--o, --out [filename]   output filename (omit extension for default) or directory
-
--f, --format [{png,tif,pdf,svg,csv,stat}] 
-                output formats
-
---functions_user [filepath] set path to user-defined chronology system file.
-
+`--functions_user FILE`
+  Set path to user-defined chronology system file.
 - Chronology system definitions should be modelled on those in `src/craterstats/config/functions.txt`
 - Filepath will be persistent across conda sessions
-- Check new systems are recognised with `craterstats -lcs`
 
---create_desktop_icon   
+`--create_desktop_icon`
+  On Windows, generate a desktop shortcut for Craterstats-III.
 
-- On Windows, generate desktop shortcut to start up Craterstats-III 
+`-m, --merge FILES`
+  Merge multiple crater count files.
 
--m, --merge             merge two or more crater count files into single file
+`-cs, --chronology_system NAME`
+  Set chronology system (run `-lcs` for list). e.g. Mars, Hartmann & Daubar (2016) or abbreviated as HD16
 
--cs, --chronology_system 
-                    chronology system, abbreviated (Enter `craterstats -lcs` for full list)
+`-ef, --equilibrium NAME`
+  Set equilibrium function (run `-lcs` for list).
 
--ef, --equilibrium 
-                    equilibrium function, abbreviated (Enter `craterstats -lcs` for full list)
+`-ep, --epochs NAME`
+  Set epoch system (run `-lcs` for list).
 
--ep, --epochs
-                    epoch system, abbreviated (Enter `craterstats -lcs` for full list)
+`-title TITLE`
+  Plot title. Use `|` for multiline; wrap in quotes if needed.
 
--title [title]        plot title
+`-pr, --presentation TYPE`
+  Data presentation style. Valid values:
+  * `cumulative`
+  * `differential`
+  * `R-plot`
+  * `Hartmann`
+  * `chronology`
+  * `rate`
+  * `sequence` (copy or create `-p` entries for age measurements)
+  * `uncertainty` (also specify `-d_min` value)
 
-- use `|` as separator for multi-line title (nb: enclose whole title in double-quotes if using this or other special 
-characters on the command line)
+`-xrange MIN MAX`
+  X-axis range (log scale).
 
--pr, --presentation   data presentation, abbreviated: 
-  
-  - cumulative
-  - differential
-  - R-plot
-  - Hartmann
-  - chronology
-  - rate
-  - sequence - copy or create -p entries as for normal age measurements (Poisson or fit types) 
-  - uncertainty - note: also specify d_min value (-d_min XXX)
+`-yrange MIN MAX`
+  Y-axis range (log scale).
 
+`-isochrons LIST`
+  Comma-separated isochrons (e.g. `1,3,3.7a,4a`). Suffix options:
 
--xrange 
-                    x-axis range, log(min) log(max)
+  * `n` — suppress label
+  * `a` — place label above instead of below
+  * `s` — small font size
 
--yrange
-                    y-axis range, log(min) log(max)
+`-legend CODES`
+  Legend elements. Codes can be combined in any order, e.g. `-legend fnacr`:
 
--isochrons comma-separated isochron list in Ga, e.g. `-isochrons 1,3,3.7a,4a`.
-                    Each with optional suffix to modify label: 
-  - n - suppress label
-  - a - place above instead of below
-  - s - small font size
+  * `f` — functions
+  * `n` — name
+  * `a` — area
+  * `p` — perimeter
+  * `c` — number of craters
+  * `r` — range
+  * `N` — N(d_ref) value
+  * `A` — age (sequence plot)
+  * `0` — suppress legend completely
 
--legend [codes]       any combination of: 
-  
-  - f - functions
-  - n - name
-  - a - area 
-  - p - perimeter 
-  - c - number of craters
-  - r - range
-  - N - N(d_ref) value
-  - A - age (sequence plot)
-  - 0 - suppress legend completely
+`-mu {0,1}`
+  Legend visibility: `1` = show; `0` = suppress.
 
-      e.g. `-legend fnacr`
+`-style {natural,root-2}`
+  Diameter axis style.
 
+`-invert {0,1}`
+  Background color: `0` = white (default), `1` = black.
 
--mu {0,1}             1 - show; 0 - suppress
+`-text_halo {0,1}`
+  Text halo for better legend readability. Note: enabling makes text in SVG/PDF non-editable.
 
--style {natural,root-2}
-                    diameter axis style
+`-transparent`
+  Use transparent background.
 
--invert {0,1}         1 - invert to black background; 0 - white background
+`-tight`
+  Use tight layout.
 
--text_halo {0,1}      1 - on [default]; 0 - off. 
-Makes legend better readable if overlapping graphic elements, but renders svg/pdf text non-editable. 
+`-pd, --print_dimensions VALUE_OR_DIMENSIONS`
+  Print dimensions in cm per decade or bounding box (e.g. `1.5` or `8x8`).
 
--transparent          set transparent background
+`-pt_size VALUE`
+  Font point size for figure text.
 
--tight                use tight layout
+`-ref_diameter VALUE`
+  Alternative reference diameter for N(d_ref) values.
 
--pd, --print_dimensions 
-                    either single value (cm/decade) or enclosing box for axes in cm (AxB), e.g. `-pd 1.5` or `-pd 8x8`
+`-sf, --sig_figs {2,3}`
+  Number of significant figures for displayed ages.
 
--pt_size              point size for figure text
+`-st, --sequence_table`
+  Generate sequence probability table (`_sequence.csv` output).
 
--ref_diameter 
-                    alternative reference diameter for displayed N(d_ref) values
+`-d_min, --min_diameter VALUE`
+  Minimum crater diameter for dating (for uncertainty plots).
 
--sf, --sig_figs {2,3}
-                    number of significant figures for displayed ages, e.g. `-sf 3`
+`-ns, --n_samples VALUE`
+  Number of samples for uncertainty plot.
 
--st, --sequence_table
-                    generate sequence probability table (with extension `_sequence.csv`)
+`-p, --plot KEY=VAL[,KEY=VAL...]`
+  Specify overplot options. Keys and values can be abbreviated (e.g. `source` to `src` or  `differential-fit` to `d-fit`). 
+  Multiple key-value pairs should be separated by commas. Available options:
 
--d_min, --min_diameter
-    specify minimum observable crater diameter for complete count (uncertainty plot) 
+  * `source=filename`
+    Data source filename.
 
--ns, --n_samples
-    specify number of samples for uncertainty plot
+  * `name=label`
+    Label for legend (filename used by default).
 
--p, --plot [KEY=VAL, ...]
-                    specify overplot. All keys and string values can be abbreviated, e.g. `source` to `src` or  `differential-fit` to `d-fit` 
-                        
-  - source=filename
-  - name=txt, label for legend (filename is default)
-  - range=[min,max]
-    - either diameter range in km, e.g. `range=[0.2,0.7]` (will be expanded to closest bin boundaries)
-    - or bin range, e.g. `range=[b7,b9]` include bin 7 to bin 9 (only bins with data) or `range=[b7,b-2]` (counting from 7th to 2nd-last point)
-  - snap={1,0}, snap diameter range to bin boundaries (default is 1 - yes)
-  - type={data,cumulative-fit,differential-fit,poisson,b-poisson,sequence}
-  - error_bars={1,0}, show error bars (default is 1 - yes)
-  - hide={1,0}, hide overplot (default is 0 - no)
-  - colour={black, red, blue, green...} Enter `craterstats -lpc` for full list
-    - black, red, green, blue, yellow, violet, grey, blue1, blue2, blue3, blue4, brown1, brown2, brown3, brown4, green1, green2, green3, orange, pink1, pink2, pink3, purple1, purple2, red1, red2, red3, teal1, teal2, yellow1, yellow2, yellow-green
-  - psym={circle, square, star5, filled circle...} Enter `craterstats -lpc` for full list
-    - square (s), circle (o), star4 (\*4), triangle (^), star5 (\*), diagonal cross (x), cross (+), point (.), inverted triangle (v), filled square (fs), filled circle (fo), filled star4 (f\*4), filled triangle (f^), filled star5 (f\*), filled inverted triangle (fv)
-  - binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}
-  - age_left={1,0}, move age label to left side (default is 0 - no)
-  - show_age={1,0}, display age label (default is 1 - yes)
-  - resurf={1,0}, apply resurfacing correction to cumulative fit (default is 0 - no)
-  - resurf_showall={1,0}, show all data with resurfacing correction
-  - isochron={1,0}, extend isochron beyond selected range (default is 0 - no)
-  - offset_age=[x,y], offset position of age label (in units of 1/20th of decade)
+  * `range=[min,max]` or `range=[b7,b9]`
+    Diameter or bin range to plot. Examples:
+
+    * `range=[0.2,0.7]` (km range, expanded to nearest bin boundaries)
+    * `range=[b7,b9]` (bins 7 to 9)
+    * `range=[b7,b-2]` (7th to 2nd-last bin)
+
+  * `snap={1,0}`
+    Snap diameter range to bin boundaries (`1` = yes, default).
+
+  * `type={data,cumulative-fit,differential-fit,poisson,b-poisson}`
+    Plot data only or choose age-estimate method.
+
+  * `error_bars={1,0}`
+    Show error bars (`1` = yes, default).
+
+  * `hide={1,0}`
+    Hide this overplot (`1` = yes).
+
+  * `colour={black,red,green,blue,yellow,violet,grey,blue1,blue2,blue3,blue4,brown1,brown2,brown3,brown4,green1,green2,green3,orange,pink1,pink2,pink3,purple1,purple2,red1,red2,red3,teal1,teal2,yellow1,yellow2,yellow-green}`
+    Colour for overplot. 
+
+  * `psym={square,circle...}`
+    Plot symbol. 
+
+    * square (s)
+    * circle (o)
+    * star4 (\*4)
+    * triangle (^)
+    * star5 (\*)
+    * diagonal cross (x)
+    * cross (+)
+    * point (.)
+    * inverted triangle (v)
+    * filled square (fs)
+    * filled circle (fo)
+    * filled star4 (f\*4)
+    * filled triangle (ft)
+    * filled star5 (f\*)
+    * filled inverted triangle (fv)
+
+  * `binning={pseudo-log,20/decade,10/decade,x2,root-2,4th root-2,none}`
+    Binning divisions.
+
+  * `age_left={1,0}`
+    Move age label to left side (`0` default).
+
+  * `show_age={1,0}`
+    Display age label (`1` default).
+
+  * `resurf={1,0}`
+    Apply resurfacing correction (`0` default).
+
+  * `resurf_showall={1,0}`
+    Show all data with resurfacing correction.
+
+  * `isochron={1,0}`
+    Extend isochron beyond selected range (`0` default).
+
+  * `offset_age=[x,y]`
+    Offset position of age label (in units of 1/20th of decade).

@@ -91,7 +91,7 @@ def get_parser():
     parser.add_argument("-ns", "--n_samples", type=int, help="number of samples for uncertainty plot")
 
     parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
-                        help="specify overplot. Allowed keys:   \n"
+                        help="Specify overplot.\nAllowed keys:   \n"
                              "source=txt,"
                              "name=txt,"
                              "range=[min,max],"
