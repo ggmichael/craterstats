@@ -1,3 +1,3 @@
 recursive-include src/craterstats/config *.txt *.plt
 recursive-include src/craterstats/sample *.scc *.diam *.r *.stat *.binned *.md
-
+recursive-include src/craterstats/fonts *.txt *.ttf
