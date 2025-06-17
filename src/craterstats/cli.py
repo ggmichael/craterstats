@@ -37,19 +37,22 @@ class LoadFromFile(argparse.Action):
             with open(values) as f:
                 # parse arguments in the file and store them in the target namespace
                 a=f.read()
-                a=('\n').join([e for e in a.split('\n') if e.strip() and not e.startswith('#')] ) #remove '#' commented lines
+                a=('\n').join([e for e in a.split('\n') if e.strip() and not e.strip().startswith('#')] ) #remove '#' commented lines
                 parser.parse_args(shlex.split(a), namespace)
                 namespace.input_filename = f.name
                 setattr(namespace, self.dest, True)
-        except:
-            sys.exit('Could not read: ' + values)
+        except FileNotFoundError:
+            raise argparse.ArgumentError(self, f"File not found: {values}")
+        except PermissionError:
+            raise argparse.ArgumentError(self, f"Permission denied: {values}")
+        except Exception as e:
+            raise argparse.ArgumentError(self, e)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
     parser.add_argument('-i','--input', help="input args from file", metavar='filename.cs', action=LoadFromFile)
     parser.add_argument('-inc', '--include', help="include settings from external file", metavar='filename.txt', action=LoadFromFile)
-    parser.add_argument("-src", nargs='+', action=SpacedString, help=argparse.SUPPRESS) #  help="take command line parameters from text file", for -demo
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
@@ -74,12 +77,12 @@ def get_parser():
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: n - suppress; a - above; s - small)")
     parser.add_argument("-legend", help="0 - suppress; or any combination of: n - name, a - area, p - perimeter, c - number of craters, r - range, N - N(d_ref) value")
-    parser.add_argument("-mu", choices=['0','1'], help="1 - show; 0 - suppress")
+    parser.add_argument("-mu", nargs='?', choices=[0,1], type=int, const=1, help="1 - show; 0 - suppress")
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
-    parser.add_argument("-invert", choices=['0','1'], help="1 - invert to black background; 0 - white background")
-    parser.add_argument("-text_halo", choices=['0', '1'], help="1 - on [default]; 0 - off")
-    parser.add_argument("-transparent", help="set transparent background", action='store_true')
+    parser.add_argument("-invert",  nargs='?', choices=[0,1], type=int, const=1, help="1 - invert to black background; 0 - white background")
+    parser.add_argument("-text_halo", nargs='?', choices=[0,1], type=int, const=1, help="1 - on [default]; 0 - off")
+    parser.add_argument("-transparent", nargs='?', choices=[0,1], type=int, const=1, help="set transparent background")
     #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
     parser.add_argument("-tight", help="tight layout", action='store_true')
 
@@ -120,6 +123,7 @@ def defaults():
         'epochs': None,
         'equilibrium': None,
         'invert': 0,
+        'transparent':0,
         'text_halo':1,
         'isochrons': None,
         'legend': 'fnacr',
@@ -193,7 +197,6 @@ def construct_cps_dict(args,c,f,default_filename):
         c['yrange'] = cst.DEFAULT_YRANGE[c['presentation']]
     if c['presentation']=='sequence':
         c['legend']='A'
-    #c['format'] = set(c['format']) if 'format' in c else {}
 
     for k,v in vars(args).items():
         if v is None:
@@ -209,6 +212,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'randomness',
                      'mu',
                      'invert',
+                     'transparent',
                      'text_halo',
                      'style',
                      'xrange', 'yrange',
@@ -453,8 +457,7 @@ def main(args0=None):
         gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
 
     def savefig(tag=''):
-        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500,
-                        transparent=args.transparent,
+        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=cps.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
 
     drawn=False
