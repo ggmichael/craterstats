@@ -4,6 +4,7 @@ import copy
 
 import numpy as np
 import sys
+import os
 
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
@@ -12,6 +13,7 @@ from matplotlib import patheffects
 from matplotlib.patches import Polygon
 import matplotlib.colors as colors
 import matplotlib.patches as patches
+import matplotlib.font_manager as fm
 
 from palettable.colorbrewer.diverging import Spectral_9
 from progressbar import progressbar
@@ -84,13 +86,19 @@ class Craterplotset:
 
 
     def EstablishFontandScaling(self):
-        # set up font and scaled font size
 
         plt.style.use(('default', 'dark_background')[self.invert])
 
-        desired_font = ['Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
+        # set up font and scaled font size
+        font_dir = os.path.join(os.path.dirname(__file__), 'fonts')
+        font_files = [os.path.join(font_dir, f) for f in os.listdir(font_dir) if f.endswith('.ttf')]
+
+        for font_file in font_files:
+            fm.fontManager.addfont(font_file)
+        desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference 'Noto Sans','Times New Roman': 1.,
         available_font = gm.mpl_check_font(desired_font)
-        scale_factor = {'Myriad Pro': 1.,
+        scale_factor = {'Noto Sans':.89,
+                        'Myriad Pro': 1.,
                        'Verdana': .83,
                        'DejaVu Sans': .83,
                        'Tahoma': .93,
