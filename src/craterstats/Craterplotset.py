@@ -97,7 +97,9 @@ class Craterplotset:
             fm.fontManager.addfont(font_file)
         if os.getenv("CI", "").lower() == "true":
             plt.rcParams['font.family'] = 'Noto Sans' #need to rebuild font cache for github action
-        desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference 'Noto Sans','Times New Roman': 1.,
+        desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
+
+        #Noto Sans now default, but leave selection code in case need to change
         available_font = gm.mpl_check_font(desired_font)
         scale_factor = {'Noto Sans':.89,
                         'Myriad Pro': 1.,

@@ -33,19 +33,22 @@ class SpacedString(argparse.Action):
 
 class LoadFromFile(argparse.Action):
     def __call__ (self, parser, namespace, values, option_string = None):
-        with values as f:
-            # parse arguments in the file and store them in the target namespace
-            a=f.read()
-            a=('\n').join([e for e in a.split('\n') if e.strip() and (e+' ')[0]!='#'] ) #remove '#' commented lines
-            parser.parse_args(shlex.split(a), namespace)
-            namespace.input_filename = f.name
-            setattr(namespace, self.dest, True)
+        try:
+            with open(values) as f:
+                # parse arguments in the file and store them in the target namespace
+                a=f.read()
+                a=('\n').join([e for e in a.split('\n') if e.strip() and not e.startswith('#')] ) #remove '#' commented lines
+                parser.parse_args(shlex.split(a), namespace)
+                namespace.input_filename = f.name
+                setattr(namespace, self.dest, True)
+        except:
+            sys.exit('Could not read: ' + values)
 
 def get_parser():
     parser = argparse.ArgumentParser(description='Craterstats: a tool to analyse and plot crater count data for planetary surface dating.')
 
-    parser.add_argument('-i','--input', help="input args from file", type=open, action=LoadFromFile)
-    parser.add_argument('-inc', '--include', help="include settings from external file", type=open, action=LoadFromFile)
+    parser.add_argument('-i','--input', help="input args from file", metavar='filename.cs', action=LoadFromFile)
+    parser.add_argument('-inc', '--include', help="include settings from external file", metavar='filename.txt', action=LoadFromFile)
     parser.add_argument("-src", nargs='+', action=SpacedString, help=argparse.SUPPRESS) #  help="take command line parameters from text file", for -demo
 
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
