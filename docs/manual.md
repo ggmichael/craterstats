@@ -122,20 +122,20 @@
   * `A` — age (sequence plot)
   * `0` — suppress legend completely
 
-`-mu {0,1}`
-  Legend visibility: `1` = show; `0` = suppress.
+`-mu [{0,1}]`
+  Legend visibility: `1` = show (default); `0` = suppress.
 
 `-style {natural,root-2}`
   Diameter axis style.
 
-`-invert {0,1}`
-  Background color: `0` = white (default), `1` = black.
+`-invert [{0,1}]`
+  Background color: `0` = white (default), `1` or no parameter = black.
 
-`-text_halo {0,1}`
-  Text halo for better legend readability. Note: enabling makes text in SVG/PDF non-editable.
+`-text_halo [{0,1}]`
+  Text halo for better legend readability: `0` = no, `1` = yes (default). Note: enabling makes text in SVG/PDF non-editable.
 
-`-transparent`
-  Use transparent background.
+`-transparent [{0,1}]`
+  Use transparent background (`1` or no parameter = yes).
 
 `-tight`
   Use tight layout.
