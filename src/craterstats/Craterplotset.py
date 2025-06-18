@@ -95,12 +95,16 @@ class Craterplotset:
 
         for font_file in font_files:
             fm.fontManager.addfont(font_file)
-        if os.getenv("CI", "").lower() == "true":
-            plt.rcParams['font.family'] = 'Noto Sans' #need to rebuild font cache for github action
-        desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
+        # if os.getenv("CI", "").lower() == "true":
+        #     plt.rcParams['font.family'] = 'Noto Sans' #need to rebuild font cache for github action
+        plt.rcParams['font.family'] = 'Noto Sans'
 
+        #desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
         #Noto Sans now default, but leave selection code in case need to change
-        available_font = gm.mpl_check_font(desired_font)
+        #available_font = gm.mpl_check_font(desired_font)
+        available_font = 'Noto Sans'
+
+
         scale_factor = {'Noto Sans':.89,
                         'Myriad Pro': 1.,
                        'Verdana': .83,
@@ -109,9 +113,11 @@ class Craterplotset:
                        }[available_font]
         self.scaled_pt_size = self.pt_size * scale_factor
 
+        maths_font = 'DejaVu Sans'
+
         plt.rc('font', family=available_font, size=self.scaled_pt_size)
-        plt.rc('mathtext', fontset='custom', rm=available_font, bf=available_font + ':bold',
-              cal=available_font + ':italic')
+        #allow maths to fall-back automatically?
+        #plt.rc('mathtext', fontset='custom', rm=maths_font, bf=maths_font + ':bold', cal=maths_font + ':italic')
 
         #plt.rcParams['svg.fonttype'] = 'none' # makes text editable, but then not portable
         plt.rcParams['image.composite_image'] = False # prevent optimisation of svg raster
@@ -196,7 +202,7 @@ class Craterplotset:
             'cumulative':   'Cumulative crater density, km$^{-2}$',           
             'differential': 'Differential crater density, km$^{-3}$',
             'R-plot': 'Relative crater density (R)',
-            'Hartmann':     'Craters per √2-bin'+(' (equivalent)' if nonroot2 else '')+', km$^{-2}$',
+            'Hartmann':     'Craters per $√$2-bin'+(' (equivalent)' if nonroot2 else '')+', km$^{-2}$',
             'chronology':   'Cumulative crater density N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$',
             'rate':         'Crater formation rate N(>'+format(self.ref_diameter,'.0f')+' km), km$^{-2}$ Ga$^{-1}$',
             }[self.presentation]
