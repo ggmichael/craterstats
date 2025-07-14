@@ -57,6 +57,7 @@ def get_parser():
     parser.add_argument("-lcs", help="list chronology systems", action='store_true')
     parser.add_argument("-lpc", help="list plot symbols and colours", action='store_true')
     parser.add_argument("-about", help="show program details", action='store_true')
+    parser.add_argument("-v","--version", help="show program version", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
     parser.add_argument("-b","--bins", help="show bin boundaries", action='store_true')
 
@@ -419,6 +420,10 @@ def main(args0=None):
 
     if args.about:
         print('\n'.join(cst.ABOUT))
+        return
+
+    if args.version:
+        print('\n'.join(cst.ABOUT[0:5]))
         return
 
     if args.merge:

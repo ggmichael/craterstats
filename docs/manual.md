@@ -2,7 +2,7 @@
 # Craterstats-III command options quick reference
 
     craterstats [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc]
-                          [-about] [-demo] [-b] [-o OUT [OUT ...]]
+                          [-about] [-v] [-demo] [-b] [-o OUT [OUT ...]]
                           [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]]
                           [--create_desktop_icon] [-m MERGE [MERGE ...]]
                           [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]]
@@ -49,6 +49,9 @@
 
 `-about`
   Show program details.
+
+`-v, --version`
+  show program version
 
 `-demo`
   Run demonstration commands; outputs saved in `./demo`.

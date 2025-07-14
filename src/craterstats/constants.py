@@ -88,8 +88,9 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
            ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
            )
 
-ABOUT=["",gm.bright("Craterstats-III"),
+ABOUT=[gm.bright("Craterstats-III"),
        "Copyright (c) 2021-2025, Greg Michael",
+       "Licensed under BSD 3-Clause License. See LICENSE.txt for details.",
        "Version:"+VERSION_NUM,
        "",
        "Explanations of concepts and calculations used in the software are given in publications below:",
