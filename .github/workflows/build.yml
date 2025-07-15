@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest]  # ubuntu-latest, macos-latest,
+        os: [windows-latest, macos-latest]  # ubuntu-latest,
 
     runs-on: ${{ matrix.os }}
 
@@ -35,15 +35,6 @@ jobs:
         run: |
           pyinstaller craterstats.spec
 
-#      - name: Zip binary
-#        run: |
-#          # Get version number from git tag (e.g., 'v3.3.3' -> '3.3.3')
-#          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-#          ZIP_NAME="craterstats-$VERSION-win.zip"
-#          powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
-#          echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-#        shell: bash  # use for all platforms
-
       - name: Zip binary
         run: |
           # get version number from git tag (e.g., 'v3.3.3' -> '3.3.3')
@@ -57,30 +48,11 @@ jobs:
             zip -r dist/$ZIP_NAME dist/craterstats
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-        shell: bash  # use for all platforms
+        shell: bash  # also on Windows
 
-      - name: Upload release binaries
+      - name: Upload release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
-
-#      - name: Create release on GitHub
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          gh release create ${{ github.ref }} dist/${{ env.ZIP_NAME }} --title "Release ${{ github.ref }}" --notes "Release notes for version ${{ github.ref }}"
-
-
-#
-#      - name: Upload release binaries
-#        uses: softprops/action-gh-release@v1
-#        with:
-#          files: |
-#            dist/${{ env.ZIP_NAME }}
-#
-#      - name: Create release on GitHub
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          gh release create ${{ github.ref }} dist/${{ env.ZIP_NAME }} --title "Release ${{ github.ref }}" --notes "Release notes for version ${{ github.ref }}"
+          no-source: true
