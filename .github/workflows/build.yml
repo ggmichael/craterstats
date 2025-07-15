@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, macos-latest] # ubuntu-latest
 
     runs-on: ${{ matrix.os }}
 
@@ -45,7 +45,9 @@ jobs:
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
           else # Linux/macOS
             ZIP_NAME="craterstats-$VERSION-${{ runner.os }}.zip"
-            zip -r dist/$ZIP_NAME dist/craterstats
+            cd dist
+            zip -r $ZIP_NAME craterstats
+            cd ..
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
         shell: bash  # also on Windows
