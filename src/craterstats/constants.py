@@ -1,15 +1,10 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-from importlib.metadata import version
-try:
-    VERSION_NUM = version("craterstats")
-except:
-    VERSION_NUM = 'non-distro version'
-
 import numpy as np
 import matplotlib.path as mpath
 import craterstats.gm as gm
+from craterstats import __version__
 
 import importlib.resources as importlib_resources
 
@@ -91,9 +86,9 @@ MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.
 ABOUT=[gm.bright("Craterstats-III"),
        "Copyright (c) 2021-2025, Greg Michael",
        "Licensed under BSD 3-Clause License. See LICENSE.txt for details.",
-       "Version: "+VERSION_NUM,
+       "Version: "+__version__,
        "",
-       "Explanations of concepts and calculations used in the software are given in publications below:",
+       "Explanations of concepts and calculations used in the software are given in:",
        "",
        gm.bright("Standardisation of crater count data presentation"),
        "Arvidson R.E., Boyce J., Chapman C., Cintala M., Fulchignoni M., Moore H., Neukum G., Schultz P., Soderblom L., Strom R., Woronow A., Young R. "
