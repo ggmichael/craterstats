@@ -26,3 +26,8 @@ History
 -----
 
 * upgrade python version to 3.12
+
+3.4.0
+-----
+
+* add Windows binary release
