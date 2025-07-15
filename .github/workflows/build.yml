@@ -44,7 +44,11 @@ jobs:
             ZIP_NAME="craterstats-$VERSION-win.zip"
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
           else # Linux/macOS
-            ZIP_NAME="craterstats-$VERSION-${{ runner.os | toLowerCase }}-UNTESTED.zip"
+            if [ "${{ runner.os }}" == "Linux" ]; then
+              ZIP_NAME="craterstats-$VERSION-linux-UNTESTED.zip"
+            else
+              ZIP_NAME="craterstats-$VERSION-macOS-UNTESTED.zip"
+            fi
             cd dist
             zip -r $ZIP_NAME craterstats
             cd ..
