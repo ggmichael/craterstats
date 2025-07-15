@@ -50,9 +50,15 @@ jobs:
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
         shell: bash  # also on Windows
 
-      - name: Upload release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            dist/${{ env.ZIP_NAME }}
-          no-source: true
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |          
+          gh release create ${{ github.ref }} dist/${{ env.ZIP_NAME }} --title "Release ${{ github.ref }}" --notes "Binary release version ${{ github.ref }}"
+
+#      - name: Upload release
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          files: |
+#            dist/${{ env.ZIP_NAME }}
+
