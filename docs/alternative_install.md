@@ -1,8 +1,40 @@
 
-## 1. Easiest installation method for Windows
+## 1. Simple conda environment and pip (Windows, MacOS, Linux)
 
-This method uses `pipx` instead of `conda` to isolate the Python environment. If Craterstats will be the only Python
-software you use, this is a simpler set-up. 
+Recommended if you plan to use other Python software in addition to Craterstats-III:
+
+1. Install the conda environment manager using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
+1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
+    ```
+    conda create -n craterstats python=3.12
+    ```
+1. Activate the virtual environment:
+   ```
+   conda activate craterstats
+   ```
+1. Install the craterstats package with its dependencies:
+   ```
+   pip install craterstats
+   ```
+1. If on Windows, create a desktop shortcut for future start-up:
+   ```
+   craterstats --create_desktop_icon
+   ```
+   Modify properties for preferred start-up folder if desired.
+
+### Normal start-up
+
+1. Double-click the desktop icon if present. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
+   ```
+   conda activate craterstats
+   ```   
+1. Begin entering `craterstats` commands.
+
+
+## 2. Pipx (Windows)
+
+If Craterstats will be the only Python software you use, this is a straightforward set-up. 
+Pipx can also be used on Linux/MacOS, but steps may differ slightly.
 
 1. Install Python
 - Download Python 3.12 from https://www.python.org/downloads/
@@ -24,8 +56,6 @@ pipx install craterstats
 ```
 The `craterstats` command is subsequently available in every command prompt window.
 
-(Pipx can be used on Linux/MacOS, but requires additional steps to ensure no conflict with the system Python)
-
 ### Upgrade
 
 If you later need to upgrade your version of Craterstats-III, enter 
@@ -33,9 +63,9 @@ If you later need to upgrade your version of Craterstats-III, enter
 pipx upgrade craterstats
 ```
 
-## 2. Installation from github
+## 3. From github
 
-This method of installation may allow you to test features in development that have not yet been included in the versioned PyPi release.
+This method of installation may allow you to test features in development that have not yet been included in a versioned release.
 Since development features may be fragile, this is probably only advisable if you are in contact with the author about a specific issue.
 
 1. Install `conda` using the [miniforge installer](https://github.com/conda-forge/miniforge#miniforge3) for your OS, if not present.

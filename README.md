@@ -9,26 +9,7 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 # Installation
 
-The following procedure for installation on Windows, MacOS or Linux is recommended:
-
-1. Install the Python environment manager, Conda, using the [miniforge installer](https://github.com/conda-forge/miniforge#install) for your OS. 
-1. Launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and enter the following to create a virtual environment for craterstats:
-    ```
-    conda create -n craterstats python=3.12
-    ```
-1. Activate the virtual environment:
-   ```
-   conda activate craterstats
-   ```
-1. Install the craterstats package with its dependencies:
-   ```
-   pip install craterstats
-   ```
-1. If on Windows, create a desktop shortcut for future start-up:
-   ```
-   craterstats --create_desktop_icon
-   ```
-   Modify properties for preferred start-up folder if desired.
+Craterstats-III can be now installed as a standalone executable for Windows. Equivalent files are provided for MacOS and Linux, but these are currently untested  
 
 Alternative installation methods [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
  
@@ -42,13 +23,6 @@ current folder.
 
 Visit the [Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md) and copy some of the commands there to recreate the example plots.
 
-# Normal start-up
-
-1. Double-click the desktop icon if present. Otherwise, launch the Miniforge prompt (Windows) or any command prompt (MacOS, Linux) and activate the virtual environment:
-   ```
-   conda activate craterstats
-   ```   
-1. Begin entering `craterstats` commands.
 
 # Usage
 
