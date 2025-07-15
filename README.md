@@ -9,7 +9,11 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 # Installation
 
-Craterstats-III can be now installed as a standalone executable for Windows. Equivalent files are provided for MacOS and Linux, but these are currently untested  
+Craterstats can be now installed as a standalone executable for Windows. 
+Download the latest version [here](https://github.com/ggmichael/craterstats/releases). 
+Unzip to wherever you prefer and double-click `create_desktop_shortcut.bat` to create a start-up icon.
+
+Executables are also provided for MacOS and Linux but are not yet tested: feedback is welcome.   
 
 Alternative installation methods [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
  
