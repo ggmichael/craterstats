@@ -44,5 +44,5 @@ setup(
     tests_require=required,
     install_requires=required,
     url="https://github.com/ggmichael/craterstats",
-    version="3.3.7",
+    version="3.3.8",
 )
