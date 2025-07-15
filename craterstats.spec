@@ -13,7 +13,7 @@ sample_files = abs_glob([f'src/craterstats/sample/*.{ext}' for ext in ['scc', 'd
 font_files = abs_glob([f'src/craterstats/fonts/*.{ext}' for ext in ['txt', 'ttf']])
 
 a = Analysis(
-    ['src\\craterstats\\cli.py'],
+    ['src/craterstats/cli.py'],
     pathex=[os.path.abspath('src')],
     binaries=[],
     datas = [
@@ -66,6 +66,6 @@ coll = COLLECT(
     name='craterstats',
 )
 
-shutil.move(r'dist\craterstats\_internal\LICENSE.txt', r'dist\craterstats')
+shutil.move(r'dist/craterstats/_internal/LICENSE.txt', r'dist/craterstats')
 if platform.system()=='Windows':
-    shutil.move(r'dist\craterstats\_internal\create_desktop_shortcut.bat', r'dist\craterstats')
+    shutil.move(r'dist/craterstats/_internal/create_desktop_shortcut.bat', r'dist/craterstats')
