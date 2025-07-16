@@ -9,8 +9,6 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Set Git user name and email
         run: |
@@ -22,7 +20,8 @@ jobs:
           git checkout gh-pages
           git rm -rf .
           git commit -am "Cleanup old deployment"
-          git push origin gh-pages          
+          git push origin gh-pages    
+          git checkout main
 
       - name: Set up Python
         uses: actions/setup-python@v4
