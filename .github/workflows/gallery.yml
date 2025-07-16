@@ -30,6 +30,8 @@ jobs:
           git rm -rf . || echo "No files to remove in gh-pages branch"
           git commit --allow-empty -m "Reset gh-pages deployment history" || echo "Nothing to commit"         
           git push origin gh-pages --force     # Force push to overwrite old deployments
+          git tag -l | xargs git tag -d  # Delete local tags
+          git push origin --delete $(git tag -l)  # Remove remote tags          
           git checkout main
 
       - name: Set up Python
