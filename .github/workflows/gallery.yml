@@ -4,7 +4,22 @@ on:
   workflow_dispatch:
 
 jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to delete deployments
+      deployments: write # Permissions to delete deployments
+
+    steps:
+      - name: 🗑 Delete old deployment
+        uses: strumwolf/delete-deployment-environment@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: github-pages  # Specify the environment name
+          onlyRemoveDeployments: true  # This will remove only deployments, not other resources
+
   ci:
+    needs: cleanup  # Ensure this job runs after cleanup
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
@@ -23,18 +38,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Clean old deployment
-        run: |
-          git fetch --prune --unshallow                    
-          git checkout --orphan gh-pages
-          git rm -rf . || echo "No files to remove in gh-pages branch"
-          git commit --allow-empty -m "Reset gh-pages deployment history" || echo "Nothing to commit"         
-          git push origin gh-pages --force     # Force push to overwrite old deployments
-          for tag in $(git tag -l); do
-            git push origin --delete $tag || echo "No tags to delete"
-          done       
-          git checkout main
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -50,10 +53,6 @@ jobs:
       - name: Install Craterstats
         run: |
           python setup.py install
-      - name: Run Tests with Coverage
-        run: |
-          coverage run -m unittest discover craterstats.tests -s src
-          coverage report
       - name: Generate gallery images
         run: |
           python .github/make_gallery.py

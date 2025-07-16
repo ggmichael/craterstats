@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # on any tag push
+  workflow_dispatch:
 
 jobs:
   build:
