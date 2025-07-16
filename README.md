@@ -43,7 +43,7 @@ In the following example, the first items define characteristics for the whole p
 
 The `-p` indicates the start of an overplot definition. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol
 (note that %sample% is a special path abbreviation to a craterstats installation directory - it's not needed for your own data). After the second `-p`, 
-an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Note that parameters within an overplot definition are separated by a `,`.  
+an additional overplot is specified: this time, a poisson age evaluation for the diameter range 0.2–0.7 km. Parameters within an overplot definition are separated by a `,`.  
 
     craterstats -cs neukumivanov -p source=%sample%/Pickering.scc -p type=poisson,range=[.2,.7]
 
@@ -88,21 +88,13 @@ The complete set of options can be seen with:
 To simplify the construction of the command line, certain plot properties are persistent. If, for example, you specify `source=C:\tmp\area1.scc` in the first overplot, this becomes the default for subsequent overplots until you specify a different source file. This also applies to other properties where it is useful, including `binning=`, `colour=` and `psym=`.
 
 Uncertainty plots for the evaluation of small-area, low-number counts, assuming a complete count of craters larger than d_min can be generated 
-(plots for k, measured error and measured/actual age - see Michael, Liu (2025)):
+(plots for k, measured error and measured/actual age - see Michael & Liu, 2025):
 
     craterstats -pr uncertainty -cs n83 -d_min 0.15
 
-as well as plots for comparing a sequence of events (Michael, Zhang, Wu, Liu, (2025)):
+as well as plots for comparing a sequence of events (Michael, Zhang et al., 2025):
 
     craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
-
-# Upgrade 
-
-If you later need to upgrade to a newer version, use:
-
-    pip install --upgrade craterstats
-
-In case of failure, it is always safe to delete the craterstats environment directory from `<userhome>/miniforge3/envs`, and reinstall fresh.
 
 # References
 
