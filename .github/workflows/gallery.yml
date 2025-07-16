@@ -1,21 +1,17 @@
-name: Test Craterstats
+name: Build gallery
 
 on:
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
   workflow_dispatch:
-    
+
 jobs:
   ci:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source 
+      - name: Checkout source
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-      - name: Set up Python 
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.12
@@ -33,5 +29,13 @@ jobs:
       - name: Run Tests with Coverage
         run: |
           coverage run -m unittest discover craterstats.tests -s src
-          coverage report 
-
+          coverage report
+      - name: Generate gallery images
+        run: |
+          python .github/make_gallery.py
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gallery
+          publish_branch: gh-pages
