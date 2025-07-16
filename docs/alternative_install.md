@@ -110,7 +110,7 @@ Since development features may be fragile, this is probably only advisable if yo
    craterstats -about
    ```
 
-## Updating
+### Updating
 
 You can update to the latest version on github using the command `git pull` from within the 
 `craterstats-github` directory. If a new version reports missing packages, repeat the command:

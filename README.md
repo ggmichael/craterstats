@@ -39,7 +39,7 @@ There are two parts to creating a Craterstats plot:
 2. Specify the data to be overplotted, and which chronology model evaluations should be applied to it
 
 In the following example, the first items define characteristics for the whole plot: `-cs neukumivanov` specifies the chronology system, *Mars, Neukum-Ivanov (2001)* 
-(any unambiguous abbreviation is acceptable), and the `-title Example plot` adds the chosen title.
+(any unambiguous abbreviation is acceptable, e.g. ni2001 or marsNI), and the `-title Example plot` adds the chosen title.
 
 The `-p` indicates the start of an overplot definition. Following this, the path to the data source is given: this will produce a simple data plot with the default binning, colour and plot symbol
 (note that %sample% is a special path abbreviation to a craterstats installation directory - it's not needed for your own data). After the second `-p`, 
