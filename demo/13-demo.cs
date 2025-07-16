@@ -1,0 +1,9 @@
+-o demo/13-demo
+-title Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation
+-pr hartmann
+-cs neukumivanov
+-mu 0
+-ef trask
+-p source=%sample%/Pickering.scc,psym=*4,isochron=1
+-p type=poisson,colour=blue,range=[.2,.7]
+-p colour=red,range=[2,5],offset_age=[3,0]
