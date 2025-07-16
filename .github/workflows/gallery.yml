@@ -12,6 +12,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Set Git user name and email
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
       - name: Clean old deployment
         run: |
           git fetch --prune --unshallow
