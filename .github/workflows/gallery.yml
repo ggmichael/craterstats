@@ -26,7 +26,7 @@ jobs:
       - name: Clean old deployment
         run: |
           git fetch --prune --unshallow                    
-          git checkout gh-pages || git checkout --orphan gh-pages
+          git checkout --orphan gh-pages
           git rm -rf . || echo "No files to remove in gh-pages branch"
           git commit -am "Cleanup old deployment" || echo "Nothing to commit"          
           git push origin gh-pages --force     # Force push to overwrite old deployments
