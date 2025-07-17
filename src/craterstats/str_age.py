@@ -48,7 +48,7 @@ def str_age(age,e1=0,e2=0,sf=3,unit=None,simple=False,no_error=False,mu=False,Ma
         st = ('<math xmlns="http://www.w3.org/1998/Math/MathML">'
               +('<mi>&#956;</mi>' if mu else '')+st+'<mtext>&#8239;'+a[1]+'</mtext></math>')
     else:
-        st = '$' + (r'\mu' if mu else '') + st + '$ ' + a[1]
+        st = '$' + (r'𝜇' if mu else '') + st + '$ ' + a[1]
 
     return st
 

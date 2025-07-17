@@ -98,9 +98,7 @@ class Craterplotset:
                 path = os.path.join(font_dir, fname)
                 fm.fontManager.addfont(path)
 
-        # Use the font (assuming "Noto Sans" is one of the loaded fonts)
-        available_font = 'Noto Sans'
-        #plt.rcParams['font.family'] = available_font
+        available_font = 'Open Sans'
 
         # Set mathtext font set and fallback
         plt.rc('mathtext', fontset='custom',
@@ -109,42 +107,17 @@ class Craterplotset:
                it=available_font,
                cal=available_font)
 
-        plt.rcParams['mathtext.fallback'] = 'stixsans'
+        plt.rcParams['mathtext.fallback'] = 'stix' #'stixsans'
 
-        # available = sorted({f.name for f in fm.fontManager.ttflist if 'Noto' in f.name})
-        # print("Loaded Noto fonts:", available)
-
-        # if os.getenv("CI", "").lower() == "true":
-        #     plt.rcParams['font.family'] = 'Noto Sans' #need to rebuild font cache for github action
-        #plt.rcParams['font.family'] = 'Noto Sans'
-
-        #desired_font = ['Noto Sans','Myriad Pro', 'Verdana', 'DejaVu Sans', 'Tahoma']  # in order of preference
-        #Noto Sans now default, but leave selection code in case need to change
-        #available_font = gm.mpl_check_font(desired_font)
-
-        scale_factor = {'Noto Sans':.89,
+        scale_factor = {'Open Sans':.89,
+                        'Noto Sans':.89,
                         'Myriad Pro': 1.,
-                       'Verdana': .83,
-                       'DejaVu Sans': .83,
-                       'Tahoma': .93,
-                       }[available_font]
+                        'Verdana': .83,
+                        'DejaVu Sans': .83,
+                        'Tahoma': .93,
+                        }[available_font]
         self.scaled_pt_size = self.pt_size * scale_factor
         plt.rc('font', family=available_font, size=self.scaled_pt_size)
-
-        # import matplotlib
-        # print(sorted([k for k in matplotlib.rcParams.keys() if 'mathtext' in k]))
-
-        #maths_font = gm.mpl_check_font(['Myriad Pro','Verdana','DejaVu Sans'])
-
-        #allow maths to fall-back automatically?
-        #plt.rc('mathtext', fontset='custom', rm=maths_font, bf=maths_font + ':bold', cal=maths_font + ':italic')
-        # maths_font = 'Noto Sans'
-        # plt.rc('mathtext', fontset='custom',
-        #        rm=maths_font,
-        #        bf=maths_font+' Bold',
-        #        it=maths_font+' Italic',
-        #        cal=maths_font+' Italic')
-        # plt.rcParams['mathtext.fallback'] = 'cm'
 
         #plt.rcParams['svg.fonttype'] = 'none' # makes text editable, but then not portable
         plt.rcParams['image.composite_image'] = False # prevent optimisation of svg raster
@@ -164,9 +137,6 @@ class Craterplotset:
             'ytick.major.width': tw,
             'ytick.minor.width': tw,
         })
-
-
-
 
             
     def CreatePlotSpace(self):
