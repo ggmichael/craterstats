@@ -3,6 +3,7 @@
 
 import numpy as np
 from matplotlib.textpath import TextPath
+import re
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -61,7 +62,7 @@ class Craterplot:
         if not self.source and self.cratercount:
             self.source = self.cratercount.filename
         if not self.name and self.source:
-            self.name = gm.filename(self.source,"n")
+            self.name = re.sub(r'_?CRATER_?', '', gm.filename(self.source,"n"))  # remove if present from shp file
 
 
     def calculate_age(self,cps):

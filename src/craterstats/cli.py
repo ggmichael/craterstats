@@ -440,6 +440,7 @@ def main(args0=None):
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+        default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
     cps_dict = construct_cps_dict(args, dflt['set'], functions, default_filename)
     if gm.filename(cps_dict['out'],'n')=='out' and cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
         cps_dict['out']=gm.filename(cps_dict['out'],'p')+cps_dict['presentation']

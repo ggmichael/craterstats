@@ -10,10 +10,12 @@ from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
 from .Epochs import Epochs
+from .Fractional_crater_fn import Fractional_crater_fn
 
 from .bin_bias_correction import bin_bias_correction
 from .str_age import str_age
 from .merge_cratercounts import merge_cratercounts
+from .read_crater_shapefiles import read_crater_shapefiles
 
 from .constants import *
 

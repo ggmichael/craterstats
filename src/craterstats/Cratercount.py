@@ -14,11 +14,12 @@ class Cratercount:
 
     BINNINGS = ['pseudo-log', '20/decade', '10/decade', 'x2', 'root-2', '4th root-2', 'none'] #allowed binnings
 
-    def __init__(self,filename=None):
+    def __init__(self,filename=None,filename2=None):
         self.filename=filename
         filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
 
-        self.binning=None                                                                 #current binning
+        self.filename2 = filename2 # shp allows 2 files
+        self.binning=None
         self.binned={}
         self.perimeter=None
         self.buffered=False
@@ -26,16 +27,18 @@ class Cratercount:
 
         bad_filetype = False
         try:
-            if filetype=='.stat': self.ReadStatFile()
-            elif filetype=='.diam': self.ReadDiamFile()
+            if filetype == '.stat': self.ReadStatFile()
+            elif filetype == '.diam': self.ReadDiamFile()
             # '.binned' disallowed for now
             # requires dedicated code to interact with 'range' specification beyond given bins
             # needs further consideration (e.g. for poisson range), but better not to use data in this format anyway
             #elif filetype=='.binned': self.ReadBinnedFile()
-            elif filetype=='.scc': self.ReadSCCfile()
-            #elif filetype=='csv': self.read_JMARS_file  #need new model data file
-            elif filetype==None: pass #just create empty object
+            elif filetype == '.scc': self.ReadSCCfile()
+            elif filetype == '.shp': self.ReadSHPfile()
+            elif filetype == None: pass #just create empty object
             else: bad_filetype = True
+        except SystemExit:
+            sys.exit()
         except:
             sys.exit("Unable to read file: "+filename)
 
@@ -166,6 +169,18 @@ class Cratercount:
         self.fraction=[frac[e] for e in q]
         self.prebinned=0
 
+    def ReadSHPfile(self):
+        try:
+            d, frac, area, perimeter = cst.read_crater_shapefiles(self.filename,self.filename2)
+        except ValueError as e:
+            print(f"{str(e)}")
+            sys.exit()
+
+        self.diam = d
+        self.fraction = frac
+        self.area = area
+        self.perimeter = perimeter
+        self.prebinned=0
 
 # ;****************************************************
 # ;                 File writers
