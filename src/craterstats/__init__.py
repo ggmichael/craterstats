@@ -10,6 +10,7 @@ from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
 from .Epochs import Epochs
+from .Spatialcount import Spatialcount
 
 from .bin_bias_correction import bin_bias_correction
 from .str_age import str_age
