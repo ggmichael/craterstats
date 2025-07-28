@@ -53,11 +53,7 @@ jobs:
           else
             # workflow_dispatch      
             VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
-            # Create temporary tag for manual builds
-            git tag "v${VERSION}"
-            git push origin "v${VERSION}" 
-            MESSAGE=$"Development build: this version may contain bugs or incomplete features."
-          
+         
             # Delete the old tag and release if they exist
             git fetch --tags  # Ensure we have the latest tags from the remote
             if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
@@ -70,7 +66,11 @@ jobs:
               if [ -n "$release_id" ]; then
                 gh release delete "$release_id" --repo ${{ github.repository }} --yes
               fi
-            fi                    
+            fi
+            # Create temporary tag for manual builds
+            git tag "v${VERSION}"
+            git push origin "v${VERSION}" 
+            MESSAGE=$"Development build: this version may contain bugs or incomplete features."
           fi
           
           echo "VERSION=v${VERSION}\nMESSAGE=$MESSAGE" >> $GITHUB_ENV
