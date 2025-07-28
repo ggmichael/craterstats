@@ -73,7 +73,8 @@ jobs:
             MESSAGE="Development build: this version may contain bugs or incomplete features."
           fi
           
-          echo "VERSION=v${VERSION}\nMESSAGE=$MESSAGE" >> $GITHUB_ENV
+          echo "VERSION=v${VERSION}" >> $GITHUB_ENV
+          echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
           
           if [ "${{ runner.os }}" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
