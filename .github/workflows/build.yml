@@ -91,12 +91,19 @@ jobs:
         run: |
           echo "Tag name: ${{ env.VERSION }}"
 
-      - name: Upload release
-        uses: softprops/action-gh-release@v2
+      - name: Create GitHub Release
+        uses: gh-cli-actions/gh-release@v1
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
-        env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag_name: ${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}  # Use direct tag_name input
+
+#      - name: Upload release
+#        uses: softprops/action-gh-release@v2
+#        with:
+#          files: |
+#            dist/${{ env.ZIP_NAME }}
+#        env:
+#          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          tag_name: ${{ env.VERSION }}
 
