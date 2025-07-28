@@ -38,6 +38,8 @@ def read_crater_shapefiles(crater_file,area_file=None):
     if rc != ra:
         raise ValueError("Crater/Area shapefile coordinate systems disagree")
 
+    print(f"Planetary radius: {rc:0g} km")
+
     multipolygon=[]
     for shape in sa:
         parts = shape.parts
@@ -53,12 +55,12 @@ def read_crater_shapefiles(crater_file,area_file=None):
                 end_idx = parts[i + 1] if i + 1 < len(parts) else len(points)
                 int += [points[start_idx:end_idx]]
             p = sph.create_polygon(shell=ext,holes=int)
-        print(f"Polygon has {n_rings} hole(s). Area: {sph.area(p, radius=ra):.5g} km2")
+        print(f"Polygon has {n_rings} hole(s). Sub-area: {sph.area(p, radius=ra):.5g} km2")
         multipolygon += [p]
     p = sph.create_multipolygon(multipolygon)
     area = sph.area(p, radius=ra)
     perimeter = sph.perimeter(p, radius=ra)
-    print(f"Perimeter: {perimeter:.5g} km; area {area:.5g} km2\nDiameter, km")
+    print(f"Total area {area:.5g} km2; perimeter: {perimeter:.5g} km\nDiameter, km")
 
     d=[]
     frac=[]
