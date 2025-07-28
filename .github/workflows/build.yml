@@ -57,6 +57,20 @@ jobs:
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
             MESSAGE=$"Development build: this version may contain bugs or incomplete features."
+          
+            # Delete the old tag and release if they exist
+            git fetch --tags  # Ensure we have the latest tags from the remote
+            if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+              # If the tag exists, delete it
+              git tag -d "v${VERSION}"  # Delete the local tag
+              git push --delete origin "v${VERSION}"  # Delete the remote tag
+              
+              # Now delete the associated release
+              release_id=$(gh release list --repo ${{ github.repository }} | grep "v${VERSION}" | awk '{print $1}')
+              if [ -n "$release_id" ]; then
+                gh release delete "$release_id" --repo ${{ github.repository }} --yes
+              fi
+            fi                    
           fi
           
           echo "VERSION=v${VERSION}\nMESSAGE=$MESSAGE" >> $GITHUB_ENV
