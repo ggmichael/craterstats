@@ -60,6 +60,8 @@ jobs:
             git tag -l  # List all tags for debugging
           fi
           
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          
           if [ "${{ runner.os }}" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
@@ -81,5 +83,7 @@ jobs:
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
-
+        env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ env.VERSION }}
 
