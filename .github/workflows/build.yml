@@ -54,7 +54,7 @@ jobs:
             # Use the manually specified version when triggered by workflow_dispatch
             #VERSION="$(date +'%y-%m-%d')-dev"  
             #VERSION=$(python -c "from craterstats import __version__; print(__version__+'-dev')")          
-            VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1/p' < src/craterstats/__init__.py)          
+            VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
