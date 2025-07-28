@@ -31,3 +31,9 @@ History
 -----
 
 * add Windows binary release
+
+3.4.1
+-----
+
+* add support for *_CRATER.shp as input format from ArcPro (requires paired *_AREA.shp file and unprojected (geographic)
+coordinate system for both layers)
