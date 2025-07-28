@@ -460,7 +460,7 @@ def main(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
+        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+shlex.quote(e) for e in args0])[1:])
 
     def savefig(tag=''):
         cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=cps.transparent,
