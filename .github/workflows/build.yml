@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # on any tag push
-  workflow_dispatch: #not working
+  workflow_dispatch:
 
 jobs:
   build:
@@ -51,7 +51,8 @@ jobs:
             VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
           else
             # Use the manually specified version when triggered by workflow_dispatch
-            VERSION="$(date +'%y-%m-%d')-dev"  
+            #VERSION="$(date +'%y-%m-%d')-dev"  
+            VERSION=$(python -c "from craterstats import __version__; print(__version__+'-dev')")
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
@@ -81,7 +82,5 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             dist/${{ env.ZIP_NAME }}
-#        env:
-#          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
