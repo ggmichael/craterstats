@@ -54,10 +54,16 @@ jobs:
             VERSION="$(date +'%y-%m-%d')-dev"  
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
-            git push origin "v${VERSION}"
-            #git fetch --tags  # Fetch the latest tags
+            git push origin "v${VERSION}" || exit 1  # Make sure this step succeeds
+            echo "Tag pushed successfully!"
+            
+            sleep 5
+            git tag -l  # List all tags for debugging
+            git fetch --tags  # Fetch the latest tags
+            
             echo "Available tags:"
             git tag -l  # List all tags for debugging
+            git remote -v
           fi
           
           echo "VERSION=v${VERSION}" >> $GITHUB_ENV
