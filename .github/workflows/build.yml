@@ -51,7 +51,7 @@ jobs:
             VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
           else
             # Use the manually specified version when triggered by workflow_dispatch
-            VERSION="$(date +'%Y-%m-%d')-dev"  
+            VERSION="$(date +'%y-%m-%d')-dev"  
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
             git push origin "v${VERSION}"
@@ -79,7 +79,7 @@ jobs:
         shell: bash  # also on Windows
 
       - name: Upload release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
