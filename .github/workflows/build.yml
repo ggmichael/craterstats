@@ -49,7 +49,7 @@ jobs:
           if [ "${{ github.event_name }}" == "push" ]; then
             # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
             VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-            MESSAGE=$"Release build: this version should be stable for general use."
+            MESSAGE="Release build: this version should be stable for general use."
           else
             # workflow_dispatch      
             VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
@@ -70,7 +70,7 @@ jobs:
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
-            MESSAGE=$"Development build: this version may contain bugs or incomplete features."
+            MESSAGE="Development build: this version may contain bugs or incomplete features."
           fi
           
           echo "VERSION=v${VERSION}\nMESSAGE=$MESSAGE" >> $GITHUB_ENV
