@@ -81,6 +81,5 @@ jobs:
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
