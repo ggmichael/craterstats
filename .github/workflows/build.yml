@@ -55,6 +55,9 @@ jobs:
             # Create temporary tag for manual builds
             git tag "manual-build-${VERSION}"
             git push origin "manual-build-${VERSION}"
+            git fetch --tags  # Fetch the latest tags
+            echo "Available tags:"
+            git tag -l  # List all tags for debugging
           fi
           
           if [ "${{ runner.os }}" == "Windows" ]; then
