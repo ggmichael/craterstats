@@ -60,7 +60,7 @@ jobs:
             git tag -l  # List all tags for debugging
           fi
           
-          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "VERSION=v${VERSION}" >> $GITHUB_ENV
           
           if [ "${{ runner.os }}" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
