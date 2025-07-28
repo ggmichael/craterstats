@@ -81,7 +81,7 @@ jobs:
           tag_name: ${{ env.VERSION }}
           files: |
             dist/${{ env.ZIP_NAME }}
-        env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        env:
+#          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
