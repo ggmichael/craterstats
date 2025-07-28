@@ -49,19 +49,17 @@ jobs:
           if [ "${{ github.event_name }}" == "push" ]; then
             # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
             VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-            MESSAGE="Release build: this version should be stable for general use."
+            MESSAGE=$"Release build: this version should be stable for general use."
           else
-            # Use the manually specified version when triggered by workflow_dispatch
-            #VERSION="$(date +'%y-%m-%d')-dev"  
-            #VERSION=$(python -c "from craterstats import __version__; print(__version__+'-dev')")          
+            # workflow_dispatch      
             VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
-            MESSAGE="Development build: this version may contain bugs or incomplete features."
+            MESSAGE=$"Development build: this version may contain bugs or incomplete features."
           fi
           
-          echo "VERSION=v${VERSION}" >> $GITHUB_ENV
+          echo "VERSION=v${VERSION}\nMESSAGE=$MESSAGE" >> $GITHUB_ENV
           
           if [ "${{ runner.os }}" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
@@ -83,6 +81,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.VERSION }}
+          body: ${{ env.MESSAGE }}
           files: |
             dist/${{ env.ZIP_NAME }}
 
