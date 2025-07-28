@@ -78,6 +78,12 @@ jobs:
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
         shell: bash  # also on Windows
 
+      - name: Fetch tags
+        run: git fetch --tags
+
+      - name: Debug: Check TAG_NAME
+        run: echo "Tag name: ${{ env.VERSION }}"
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
