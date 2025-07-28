@@ -53,9 +53,9 @@ jobs:
             # Use the manually specified version when triggered by workflow_dispatch
             VERSION="$(date +'%Y-%m-%d')-dev"  
             # Create temporary tag for manual builds
-            git tag "manual-build-${VERSION}"
-            git push origin "manual-build-${VERSION}"
-            git fetch --tags  # Fetch the latest tags
+            git tag "v${VERSION}"
+            git push origin "v${VERSION}"
+            #git fetch --tags  # Fetch the latest tags
             echo "Available tags:"
             git tag -l  # List all tags for debugging
           fi
