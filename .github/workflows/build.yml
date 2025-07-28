@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # on any tag push
-  workflow_dispatch:
+  workflow_dispatch: #not working
 
 jobs:
   build:
@@ -54,16 +54,7 @@ jobs:
             VERSION="$(date +'%y-%m-%d')-dev"  
             # Create temporary tag for manual builds
             git tag "v${VERSION}"
-            git push origin "v${VERSION}" || exit 1  # Make sure this step succeeds
-            echo "Tag pushed successfully!"
-            
-            sleep 5
-            git tag -l  # List all tags for debugging
-            git fetch --tags  # Fetch the latest tags
-            
-            echo "Available tags:"
-            git tag -l  # List all tags for debugging
-            git remote -v
+            git push origin "v${VERSION}" 
           fi
           
           echo "VERSION=v${VERSION}" >> $GITHUB_ENV
@@ -84,26 +75,13 @@ jobs:
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
         shell: bash  # also on Windows
 
-      - name: Fetch tags
-        run: git fetch --tags
-
-      - name: Check TAG_NAME
-        run: |
-          echo "Tag name: ${{ env.VERSION }}"
-
-      - name: Create GitHub Release
-        uses: gh-cli-actions/gh-release@v1
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.VERSION }}
           files: |
             dist/${{ env.ZIP_NAME }}
-          tag_name: ${{ env.VERSION }}  # Use direct tag_name input
+        env:
+          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-#      - name: Upload release
-#        uses: softprops/action-gh-release@v2
-#        with:
-#          files: |
-#            dist/${{ env.ZIP_NAME }}
-#        env:
-#          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#          tag_name: ${{ env.VERSION }}
 
