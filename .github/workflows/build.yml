@@ -52,6 +52,9 @@ jobs:
           else
             # Use the manually specified version when triggered by workflow_dispatch
             VERSION="$(date +'%Y-%m-%d')-dev"  
+            # Create temporary tag for manual builds
+            git tag "manual-build-${VERSION}"
+            git push origin "manual-build-${VERSION}"
           fi
           
           if [ "${{ runner.os }}" == "Windows" ]; then
@@ -75,4 +78,6 @@ jobs:
         with:
           files: |
             dist/${{ env.ZIP_NAME }}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
