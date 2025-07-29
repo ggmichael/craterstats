@@ -64,13 +64,19 @@ def read_crater_shapefiles(crater_file,area_file=None):
 
     d=[]
     frac=[]
+    lon=[]
+    lat=[]
     transform = cst.Fractional_crater_fn()
     for shape in sc:
         c = sph.create_polygon(shell=shape.points)
         c_area = sph.area(c,radius = rc)
         diam = math.sqrt(4*c_area/math.pi)
-        print(f"{diam:.5g}")
+        p = sph.centroid(c)
+        x,y = (sph.get_x(p),sph.get_y(p))
+        print(f"{diam:.5g} {x} {y}")
         d += [diam]
+        lon += [x]
+        lat += [y]
         if sph.covered_by(c,p):
             f = 1
         else:
@@ -79,5 +85,5 @@ def read_crater_shapefiles(crater_file,area_file=None):
             f = transform.af2lf(area_frac)
         frac += [f]
 
-    return d,frac,area,perimeter
+    return d,frac,area,perimeter,lon,lat
 
