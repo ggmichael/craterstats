@@ -70,11 +70,17 @@ def read_crater_shapefiles(crater_file,area_file=None):
     for shape in sc:
         c = sph.create_polygon(shell=shape.points)
         c_area = sph.area(c,radius = rc)
-        diam = math.sqrt(4*c_area/math.pi)
+
+        diam1 = math.sqrt(4*c_area/math.pi)  # flat diameter from area: better behaviour if noisy vertex positions
+        diam2 = sph.perimeter(c,radius = rc)/math.pi # flat diameter from perimeter: greater error if noisy vertex positions
+        diam3 = 2 * rc * math.acos(1 - c_area/(2 * math.pi * rc**2)) # spherical diameter from area
+
         p = sph.centroid(c)
         x,y = (sph.get_x(p),sph.get_y(p))
-        print(f"{diam:.5g} {x} {y}")
-        d += [diam]
+        n_pts = len(shape.points)
+
+        print(f"{n_pts} {(diam2-diam1)/diam1:12.3g} {diam1:12.7g} {diam2:12.7g} {diam3:12.9g} {x:20.12f} {y:20.12f} ")
+        d += [diam3]
         lon += [x]
         lat += [y]
         if sph.covered_by(c,p):
