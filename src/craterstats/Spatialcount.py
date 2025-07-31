@@ -6,7 +6,8 @@ import craterstats as cst
 import craterstats.gm as gm
 import spherely as sph
 import random
-#from math import radians, degrees, sin
+import math
+import re
 
 
 class Spatialcount:
@@ -19,13 +20,23 @@ class Spatialcount:
         if filetype == '.scc':
             self.readSCCfile()
 
-
-
-
     def readSCCfile(self):
+        def llr2xyz(lon,lat,r):
+            lat_rad = math.radians(lat)
+            lon_rad = math.radians(lon)
+            x = r * math.cos(lat_rad) * math.cos(lon_rad)
+            y = r * math.cos(lat_rad) * math.sin(lon_rad)
+            z = r * math.sin(lat_rad)
+            return x,y,z
+        def xyz(pts):
+            return [llr2xyz(lon,lat,self.planetary_radius) for lon,lat in pts]
+
+
         self.cratercount = cst.Cratercount(self.filename)
 
-        c = gm.read_textstructure(self.filename)
+        s = gm.read_textfile(self.filename,ignore_hash=True,strip=';', as_string=True)
+        s = re.sub(r"a-axis radius", "a_axis_radius", s) # fix OpenCraterTool misformatting
+        c = gm.read_textstructure(s,from_string=True)
         self.planetary_radius = float(c['a_axis_radius'].split(' ')[0])
 
         b = c['unit_boundary']
@@ -35,7 +46,7 @@ class Spatialcount:
         for i, _ in z:
             pts = [(float(x),float(y)) for x,y, sub_area in zip(c['unit_boundary']['lon'],c['unit_boundary']['lat'], c['unit_boundary']['sub_area']) if int(sub_area) == i]
             p = sph.create_polygon(shell=pts)
-            d[i] = (pts, p)
+            d[i] = (pts, p, xyz(pts))
             xr1 = gm.range([x for x,y in pts])
             yr1 = gm.range([y for x, y in pts])
             if i == 1:
@@ -45,20 +56,29 @@ class Spatialcount:
                 xr = (min(xr1[0], xr[0]), max(xr1[1], xr[1]))
                 yr = (min(yr1[0], yr[0]), max(yr1[1], yr[1]))
 
+        import shapely as shp
+        q=[]
         p=[]
         for i, internal in z:
             if not internal:
                 holes=[]
+                qholes = []
                 for j, internal1 in z[i:]:
                     if sph.within(d[j][1],d[i][1]):
                         holes += [d[j][0]]
+                        #qholes += [d[j][2]]
                 p += [sph.create_polygon(shell=d[i][0], holes=holes)]
+                q += [shp.Polygon(shell=d[i][2], holes=qholes)]
 
         p = sph.create_multipolygon(p) #merge if multiple
+
         self.area=sph.area(p, radius=self.planetary_radius)
         self.perimeter=sph.perimeter(p, radius=self.planetary_radius)
         self.polygon=p
+        self.shape=shp.MultiPolygon(q)
+        self.q=d[1][0]
 
+        print(f"Planetary radius: {self.planetary_radius:0g} km")
         print(f"Area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km")
 
         n_pole = sph.create_point(longitude=0, latitude=90)

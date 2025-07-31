@@ -19,6 +19,3 @@ from .merge_cratercounts import merge_cratercounts
 from .read_crater_shapefiles import read_crater_shapefiles
 
 from .constants import *
-
-
-
