@@ -170,8 +170,9 @@ class Cratercount:
         self.prebinned=0
 
     def ReadSHPfile(self):
+        shp = cst.Cratershapefile(self.filename,self.filename2)
         try:
-            d, frac, area, perimeter, _, _ = cst.read_crater_shapefiles(self.filename,self.filename2)
+            d, frac, area, perimeter, _, _ = shp.read()
         except ValueError as e:
             print(f"{str(e)}")
             sys.exit()
