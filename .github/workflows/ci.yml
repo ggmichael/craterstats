@@ -28,17 +28,21 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.12
+
       - name: Install pip
         run: |
           python -m pip install --upgrade pip
           pip install setuptools
+
       - name: Install dependencies
         run: |
           python -m pip install -U -r requirements.txt
           python -m pip install coverage
+
       - name: Install Craterstats
         run: |
           python setup.py install
+
       - name: Run Tests with Coverage
         run: |
           coverage run -m unittest discover craterstats.tests -s src

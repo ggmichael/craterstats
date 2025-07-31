@@ -440,6 +440,7 @@ def main(args0=None):
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+        default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
     cps_dict = construct_cps_dict(args, dflt['set'], functions, default_filename)
     if gm.filename(cps_dict['out'],'n')=='out' and cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
         cps_dict['out']=gm.filename(cps_dict['out'],'p')+cps_dict['presentation']
@@ -459,7 +460,7 @@ def main(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+e for e in args0])[1:])
+        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+shlex.quote(e) for e in args0])[1:])
 
     def savefig(tag=''):
         cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=cps.transparent,

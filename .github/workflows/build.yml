@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # on any tag push
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,8 +26,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v2
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.12
 
@@ -44,10 +45,37 @@ jobs:
           pyinstaller craterstats.spec
 
       - name: Zip binary
-        run: |
-          # get version number from git tag (e.g., 'v3.3.3' -> '3.3.3')
-          VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-
+        run: |          
+          if [ "${{ github.event_name }}" == "push" ]; then
+            # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
+            VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
+            MESSAGE="Release build: this version should be stable for general use."
+          else
+            # workflow_dispatch      
+            VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
+         
+            # Delete the old tag and release if they exist
+            git fetch --tags  # Ensure we have the latest tags from the remote
+            if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
+              # If the tag exists, delete it
+              git tag -d "v${VERSION}"  # Delete the local tag
+              git push --delete origin "v${VERSION}"  # Delete the remote tag
+              
+              # Now delete the associated release
+              release_id=$(gh release list --repo ${{ github.repository }} | grep "v${VERSION}" | awk '{print $1}')
+              if [ -n "$release_id" ]; then
+                gh release delete "$release_id" --repo ${{ github.repository }} --yes
+              fi
+            fi
+            # Create temporary tag for manual builds
+            git tag "v${VERSION}"
+            git push origin "v${VERSION}" 
+            MESSAGE="Development build: this version may contain bugs or incomplete features."
+          fi
+          
+          echo "VERSION=v${VERSION}" >> $GITHUB_ENV
+          echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
+          
           if [ "${{ runner.os }}" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
@@ -65,8 +93,11 @@ jobs:
         shell: bash  # also on Windows
 
       - name: Upload release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.VERSION }}
+          body: ${{ env.MESSAGE }}
           files: |
             dist/${{ env.ZIP_NAME }}
+
 

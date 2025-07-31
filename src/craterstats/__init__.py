@@ -1,7 +1,7 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-__version__ = "3.4.1"
+__version__ = "3.4.2"
 
 from .Chronologyfn import Chronologyfn
 from .Productionfn import Productionfn
@@ -10,11 +10,13 @@ from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
 from .Epochs import Epochs
+from .Fractional_crater_fn import Fractional_crater_fn
 from .Spatialcount import Spatialcount
 
 from .bin_bias_correction import bin_bias_correction
 from .str_age import str_age
 from .merge_cratercounts import merge_cratercounts
+from .read_crater_shapefiles import read_crater_shapefiles
 
 from .constants import *
 
