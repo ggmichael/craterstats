@@ -22,6 +22,7 @@ class Cratershapefile:
             area_file = gm.filename(crater_file, 'p1e', f)
         self.crater_file = crater_file
         self.area_file = area_file
+        self.name = re.sub(r'_?CRATER_?', '', gm.filename(crater_file, "n"))
 
     def read(self):
         """
@@ -128,8 +129,14 @@ class Cratershapefile:
         boundary_table = [f"{i:<5}\t{a:<5}\t{b:<4}\t{c[0]:23.15f}\t{c[1]:23.15f}"
                           for i, (a, b, c) in enumerate(zip(sub_area, tag, pts), start=1)]
 
-        crater_table = [f"{d:<12.7g} {f:9.3g} {x:23.15f} {y:23.15f}"
+        crater_table = [f"{d:<12.7g}\t{f:9.3g}\t{x:23.15f}\t{y:23.15f}\t{1}"
                         for d, f, x, y in zip(self.diam, self.fraction, self.lon, self.lat)]
+
+        # include so that can import into OpenCratertool (also requires col 5 for craters)
+        s2 = (['#', '# Extra lines for OpenCraterTool compatibility:',
+               f"a-axis radius = {self.planetary_radius:0g} <km>", ]
+              + [f"# Area_name {i} = NULL" for i in range(1, sub_area[-1] + 1)]
+              + ['#'])
 
         s = (['# Spatial crater count',
               'craterstats_version = '+ cst.__version__,'#',
@@ -140,13 +147,15 @@ class Cratershapefile:
               f"a_axis_radius = {self.planetary_radius:0g} <km>",
               f"Total_area = {self.area:0g} <km2>",
               f"Total_perimeter = {self.perimeter:0g} <km>",
-              '#',
+              '#',] + s2 + [
               'unit_boundary = {vertex, sub_area, tag, lon, lat']
              + boundary_table +
              ['}',
-              'crater = {diam, fraction, lon, lat']
+              'crater = {diam, fraction, lon, lat, topo_scale_factor']
               + crater_table +
               ['}'])
+
+
 
         if filename:
             gm.write_textfile(filename,s)

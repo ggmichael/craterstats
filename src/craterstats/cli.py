@@ -60,6 +60,7 @@ def get_parser():
     parser.add_argument("-v","--version", help="show program version", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
     parser.add_argument("-b","--bins", help="show bin boundaries", action='store_true')
+    parser.add_argument("--to_scc", help="convert _CRATER.shp file to scc format", type=str)
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
@@ -326,6 +327,26 @@ def construct_plot_dicts(args,plot):
     return cpl
 
 
+def to_scc(src,out):
+    if gm.filename(src,'e') != '.shp':
+        sys.exit('Cannot convert this filetype.')
+    shp = cst.Cratershapefile(src)
+    try:
+        shp.read()
+    except ValueError as e:
+        print(f"{str(e)}")
+        sys.exit()
+    if out:
+        if os.path.isdir(out):
+            outfile = out + shp.name + '.scc'
+        else:
+            outfile = gm.filename(out,'pn') + '.scc'
+    else:
+        outfile = shp.name + '.scc'
+    shp.write_scc(outfile)
+    print(f"Conversion written to: {outfile}")
+    return
+
 def source_cmds(src):
     cmd=gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     parser=get_parser()
@@ -432,6 +453,10 @@ def main(args0=None):
 
     if args.demo:
         demo()
+        return
+
+    if args.to_scc:
+        to_scc(args.to_scc,args.out)
         return
 
     dflt = defaults()
