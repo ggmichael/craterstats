@@ -327,23 +327,31 @@ def construct_plot_dicts(args,plot):
     return cpl
 
 
+def outfile(name,out,ext):
+    if out:
+        if os.path.isdir(out):
+            outfile = out + name + ext
+        else:
+            outfile = gm.filename(out,'pn') + ext
+    else:
+        outfile = name + ext
+    return outfile
+
 def to_scc(src,out):
     if gm.filename(src,'e') != '.shp':
         sys.exit('Cannot convert this filetype.')
-    shp = cst.Cratershapefile(src)
-    try:
-        shp.read()
-    except ValueError as e:
-        print(f"{str(e)}")
-        sys.exit()
-    if out:
-        if os.path.isdir(out):
-            outfile = out + shp.name + '.scc'
-        else:
-            outfile = gm.filename(out,'pn') + '.scc'
-    else:
-        outfile = shp.name + '.scc'
-    shp.write_scc(outfile)
+    scc = cst.Spatialcount(src)
+    outfile=outfile(scc.name,out,'.scc')
+    scc.write_scc(outfile)
+    print(f"Conversion written to: {outfile}")
+    return
+
+def to_shp(src,out):
+    if gm.filename(src,'e') != '.scc':
+        sys.exit('Cannot convert this filetype.')
+    outfile=outfile(gm.filename(src,'n'),out,'.shp')
+    scc = cst.Spatialcount(src)
+    scc.write_shapefiles(src)
     print(f"Conversion written to: {outfile}")
     return
 

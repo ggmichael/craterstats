@@ -9,7 +9,6 @@ from .Cratercount import Cratercount
 from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
-from .Cratershapefile import Cratershapefile
 from .Epochs import Epochs
 from .Fractional_crater_fn import Fractional_crater_fn
 from .Spatialcount import Spatialcount
