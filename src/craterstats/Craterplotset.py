@@ -813,11 +813,11 @@ class Craterplotset:
         else:
             zz, kk, ee, lm = self.age_area
 
+        x_exceed = y_exceed = None
+
         if np.searchsorted(log_area_range,np.log10(max_area)) == 1:
             y_exceed = (np.log10(max_area) - log_area_range[0])/gm.mag(log_area_range)
             p = [[0, y_exceed], [1, y_exceed], [1, 1], [0, 1]]
-        else:
-            y_exceed = None
 
         if self.ef:
             C_ef_dmin = self.ef.evaluate("cumulative",dmin)
@@ -833,10 +833,11 @@ class Craterplotset:
                     x_exceed = (self.xfrac_linear *
                                 (self.t_max - T_eq) / (self.t_max - self.t_crossover))
                 case _:
-                    x_exceed = None
+                    pass
 
             if x_exceed:
                 p = [[0,0],[x_exceed, 0], [x_exceed, 1], [0, 1]]
+
         if x_exceed and y_exceed:
             p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
         if x_exceed or y_exceed:

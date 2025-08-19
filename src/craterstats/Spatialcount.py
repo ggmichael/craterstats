@@ -65,7 +65,7 @@ class Spatialcount:
         for i, _ in z:
             pts = [(float(x),float(y)) for x,y, sub_area in zip(c['unit_boundary']['lon'],c['unit_boundary']['lat'], c['unit_boundary']['sub_area']) if int(sub_area) == i]
             p = sph.create_polygon(shell=pts)
-            d[i] = (pts, p, xyz(pts))
+            d[i] = (pts, p, xyz(pts)) # xyz needs to be moved out
             xr1 = gm.range([x for x,y in pts])
             yr1 = gm.range([y for x, y in pts])
             if i == 1:
