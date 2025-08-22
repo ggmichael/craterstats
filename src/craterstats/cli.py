@@ -61,6 +61,7 @@ def get_parser():
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
     parser.add_argument("-b","--bins", help="show bin boundaries", action='store_true')
     parser.add_argument("--to_scc", help="convert _CRATER.shp file to scc format", type=str)
+    parser.add_argument("--to_shp", help="convert .scc file to _CRATER.shp, _AREA.shp files", type=str)
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
@@ -340,19 +341,19 @@ def outfile(name,out,ext):
 def to_scc(src,out):
     if gm.filename(src,'e') != '.shp':
         sys.exit('Cannot convert this filetype.')
+    f = outfile(scc.name, out, '.scc')
     scc = cst.Spatialcount(src)
-    outfile=outfile(scc.name,out,'.scc')
-    scc.write_scc(outfile)
-    print(f"Conversion written to: {outfile}")
+    scc.writeSCCfile(f)
+    print(f"Conversion written to: {f}")
     return
 
 def to_shp(src,out):
     if gm.filename(src,'e') != '.scc':
         sys.exit('Cannot convert this filetype.')
-    outfile=outfile(gm.filename(src,'n'),out,'.shp')
+    f = outfile(gm.filename(src, 'n'), out, '.shp')
     scc = cst.Spatialcount(src)
-    scc.write_shapefiles(src)
-    print(f"Conversion written to: {outfile}")
+    scc.writeSHPfiles(f)
+    print(f"Conversion written to: {f}")
     return
 
 def source_cmds(src):
@@ -465,6 +466,10 @@ def main(args0=None):
 
     if args.to_scc:
         to_scc(args.to_scc,args.out)
+        return
+
+    if args.to_shp:
+        to_shp(args.to_shp,args.out)
         return
 
     dflt = defaults()

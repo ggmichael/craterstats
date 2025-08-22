@@ -1,9 +1,11 @@
 #  Copyright (c) 2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import numpy as np
 import math
 import re
 import shapefile  # pyshp
+import shapely as shp
 import spherely as sph
 import pyproj as prj
 import os
@@ -31,32 +33,42 @@ class Spatialcount:
             self.name = re.sub(r'_?CRATER_?', '', gm.filename(filename, "n"))
             self.readSHPfiles()
 
-
-    def __str__(self):
+    def summary(self):
         print(f"\nPlanetary radius: {self.planetary_radius:0g} km")
         print(f"Total area {self.area:.7g} km2\nperimeter: {self.perimeter:.5g} km")
         print("\nDiameter, km  fraction      lon                  lat")
         for d, f, x, y in zip(self.diam, self.fraction, self.lon, self.lat):
             print(f"{d:<12.7g} {f:9.3g} {x:20.12f} {y:20.12f}")
 
-    def readSCCfile(self):
-        # def llr2xyz(lon,lat,r):
-        #     lat_rad = math.radians(lat)
-        #     lon_rad = math.radians(lon)
-        #     x = r * math.cos(lat_rad) * math.cos(lon_rad)
-        #     y = r * math.cos(lat_rad) * math.sin(lon_rad)
-        #     z = r * math.sin(lat_rad)
-        #     return x,y,z
-        # def xyz(pts):
-        #     return [llr2xyz(lon,lat,self.planetary_radius) for lon,lat in pts]
-        # - maybe move to own method
+    # def llr2xyz(lon,lat,r):
+    #     lat_rad = math.radians(lat)
+    #     lon_rad = math.radians(lon)
+    #     x = r * math.cos(lat_rad) * math.cos(lon_rad)
+    #     y = r * math.cos(lat_rad) * math.sin(lon_rad)
+    #     z = r * math.sin(lat_rad)
+    #     return x,y,z
+    # def xyz(pts):
+    #     return [llr2xyz(lon,lat,self.planetary_radius) for lon,lat in pts]
 
-        self.cratercount = cst.Cratercount(self.filename)
+    def readSCCfile(self):
 
         s = gm.read_textfile(self.filename,ignore_hash=True,strip=';', as_string=True)
-        s = re.sub(r"a-axis radius", "a_axis_radius", s) # fix OpenCraterTool misformatting
+        s = re.sub(r"a-axis radius", "oct_a_axis_radius", s) # fix OpenCraterTool misformatting
         c = gm.read_textstructure(s,from_string=True)
-        self.planetary_radius = float(c['a_axis_radius'].split(' ')[0])
+
+        crater=c['crater']
+        diam=[float(e) for e in crater['diam']]
+        frac=[float(e) for e in crater['fraction']] if 'fraction' in c else [1. for e in diam]
+        lon=[float(e) for e in crater['lon']]
+        lat = [float(e) for e in crater['lat']]
+        q=[i for i,e in sorted(enumerate(diam),key=lambda x:x[1])]     #get sorted indices
+        self.diam=[diam[e] for e in q]
+        self.fraction=[frac[e] for e in q]
+        self.lon = [lon[e] for e in q]
+        self.lat = [lat[e] for e in q]
+
+        radius_key = next((k for k in ("a_axis_radius", "oct_a_axis_radius") if k in c), None) # remove later
+        self.planetary_radius = float(c[radius_key].split(' ')[0])
 
         b = c['unit_boundary']
         z = sorted(set([(int(a), b == 'int') for a, b in zip(b['sub_area'], b['tag'])]))
@@ -65,7 +77,7 @@ class Spatialcount:
         for i, _ in z:
             pts = [(float(x),float(y)) for x,y, sub_area in zip(c['unit_boundary']['lon'],c['unit_boundary']['lat'], c['unit_boundary']['sub_area']) if int(sub_area) == i]
             p = sph.create_polygon(shell=pts)
-            d[i] = (pts, p, xyz(pts)) # xyz needs to be moved out
+            d[i] = (pts, p) #, xyz(pts)) # xyz needs to be moved out
             xr1 = gm.range([x for x,y in pts])
             yr1 = gm.range([y for x, y in pts])
             if i == 1:
@@ -87,15 +99,15 @@ class Spatialcount:
                         holes += [d[j][0]]
                         #qholes += [d[j][2]]
                 p += [sph.create_polygon(shell=d[i][0], holes=holes)]
-                q += [shp.Polygon(shell=d[i][2], holes=qholes)]
+                #q += [shp.Polygon(shell=d[i][2], holes=qholes)]
 
         p = sph.create_multipolygon(p) #merge if multiple
 
         self.area=sph.area(p, radius=self.planetary_radius)
         self.perimeter=sph.perimeter(p, radius=self.planetary_radius)
         self.polygon=p
-        self.shape=shp.MultiPolygon(q)
-        self.q=d[1][0]
+        #self.shape=shp.MultiPolygon(q)
+        #self.q=d[1][0]
 
         print(f"Planetary radius: {self.planetary_radius:0g} km")
         print(f"Area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km")
@@ -166,6 +178,7 @@ class Spatialcount:
             # print(f"Polygon has {n_rings} hole(s). Sub-area: {sph.area(p, radius=ra):.5g} km2")
             multipolygon += [p]
         p = sph.create_multipolygon(multipolygon)
+        self.polygon = p
         self.area = sph.area(p, radius=ra)
         self.perimeter = sph.perimeter(p, radius=ra)
 
@@ -202,10 +215,10 @@ class Spatialcount:
         return
 
 
-    def write_scc(self,filename=None):
+    def writeSCCfile(self, filename=None):
         sub_area, tag, pts = [],[],[]
         i = 1
-        for shape in self.sa:
+        for shape in self.sa: # might be better to use technique from write_SHP, i.e. dismantle self.polygon
             parts = list(shape.parts) + [len(shape.points)]
             pts += shape.points
             for j in range(len(shape.parts)):
@@ -248,8 +261,10 @@ class Spatialcount:
             print('\n'.join(s))
 
 
-    def write_shapefiles(self,filename):
-        c = shapefile.Writer(filename)
+    def writeSHPfiles(self, filename):
+        # do crater file
+        fc = gm.filename(filename,'pn1e',"_CRATER")
+        c = shapefile.Writer(fc)
         c.field('Diam_km', 'F', 12,6)
         c.field('x_coord', 'F', 20,15)
         c.field('y_coord', 'F', 20, 15)
@@ -257,50 +272,43 @@ class Spatialcount:
 
         ns = 100
         theta = [2 * math.pi * i / ns for i in range(ns + 1)]
+        cx,cy = np.array([(math.cos(e), math.sin(e)) for e in theta]).T
+
+        rs = f'{self.planetary_radius * 1e3:0.0f}'
+        wkt = f'GEOGCS["Spherical_GCS_{rs}", DATUM["Sphere_{rs}", SPHEROID["Sphere_{rs}", {rs}, 0]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]'
+        geod = prj.CRS(wkt)
 
         for d,x,y in zip(self.diam,self.lon,self.lat):
-            c.record(Diam_km=d,x_coord=x,y_coord=y,tag='standard')
+            proj4 = f"+proj=laea +lat_ts=0 +lat_0={y} +lon_0={x} +R={self.planetary_radius * 1e3:0.0f} +units=m +no_defs"
+            laea=prj.CRS(proj4)
+            transformer = prj.Transformer.from_crs(laea, geod, always_xy=True) #laea.geodetic_crs
+            r = d * 1e3 / 2
+            ll_pts = transformer.transform(cx * r, cy * r)
+            c.record(Diam_km=d, x_coord=x, y_coord=y, tag='standard')
+            c.poly([list(zip(*ll_pts))])
+        c.close()
+        gm.write_textfile(gm.filename(fc,'pn1','.prj'),wkt)
 
-            proj4 = f"+proj=laea +lat_ts=0 +lat_0={y} +lon_0={x} +R={self.planetary_radius * 1e3} +units=m +no_defs"
-            laea=pyproj.CRS(proj4)
+        fa = gm.filename(filename, 'pn1e', "_AREA")
+        a = shapefile.Writer(fa)
+        a.field('area', 'F', 12,6)
+        a.field('area_name', 'C', 30)
 
-            transformer = prj.Transformer.from_crs(laea, laea.geodetic_crs, always_xy=True)
-            lons, lats = transformer.transform(xy[0], xy[1])
-
-
-
-            r = d/2
-            xy = [(r * math.cos(e), r * math.sin(e)) for e in theta]
-
-
-            c.poly(parts=[outer_ring, inner_ring])
-
-
-        outer_ring = [
-            (0, 0),  # Point 1
-            (10, 0),  # Point 2
-            (10, 10),  # Point 3
-            (0, 10),  # Point 4
-            (0, 0)  # Close the loop
-        ]
-
-        # Inner ring (hole inside the polygon)
-        inner_ring = [
-            (3, 3),  # Point 1 (hole)
-            (7, 3),  # Point 2 (hole)
-            (7, 7),  # Point 3 (hole)
-            (3, 7),  # Point 4 (hole)
-            (3, 3)  # Close the hole
-        ]
-
-        # Add the record (attributes) for the polygon
-        w.record(ID=1, Name="Polygon with Hole")
-
-        # Add the polygon geometry: pass a list of rings (outer and inner rings)
+        # do area file
+        for i,p in enumerate(self.polygon if isinstance(self.polygon, list) else [self.polygon]):
+            z = sph.to_wkb(p)
+            y = shp.from_wkb(z)
+            x = shp.get_exterior_ring(y)
+            rings = [list(x.coords)]
+            for j in range(shp.get_num_interior_rings(y)):
+                x = shp.get_interior_ring(y,j)
+                rings.append(list(x.coords))  # Append holes
+            a.poly(rings)
+            a.record(None, f'Area_{i + 1}')
+        a.close()
+        gm.write_textfile(gm.filename(fa, 'pn1', '.prj'), wkt)
 
 
-        # Save the shapefile
-        w.close()
 
 
 

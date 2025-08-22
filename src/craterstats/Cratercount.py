@@ -155,7 +155,6 @@ class Cratercount:
         s= gm.read_textstructure(self.filename)
         c=s['crater']
         diam=[float(e) for e in c['diam']]
-
         frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1. for e in diam]
 
         q=[i for i,e in sorted(enumerate(diam),key=lambda x:x[1])]     #get sorted indices
@@ -185,11 +184,11 @@ class Cratercount:
             if self.binning != binning:
                 self.apply_binning(binning)
 
-        out=['# Craterstats3 exported stat file',\
-             '#--------------------------------',\
-             '#','# Source: '+self.filename,'# Binning: '+self.binning,\
-             '#','# Total area = '+format(self.area,'0g'),'#',\
-             '#  D_min       F(D)       N_inc       Error        C(D)       N_cum       Error      D_mean      N_diff       Error     N_event','#',\
+        out=['# Craterstats3 exported stat file',
+             '#--------------------------------',
+             '#','# Source: '+self.filename,'# Binning: '+self.binning,
+             '#','# Total area = '+format(self.area,'0g'),'#',
+             '#  D_min       F(D)       N_inc       Error        C(D)       N_cum       Error      D_mean      N_diff       Error     N_event','#',
              '#------------------------------------------------------------------------------------------------------------------------------']
 
         a=self.area
