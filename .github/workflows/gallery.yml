@@ -2,6 +2,10 @@ name: Build gallery
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'src/craterstats/config/demo_commands.txt'
+      - 'workflows/make_gallery.py'
 
 jobs:
   cleanup:

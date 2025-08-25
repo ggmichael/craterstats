@@ -5,6 +5,8 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 [Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md)
 
+[Gallery_new](https://ggmichael.github.io/craterstats/gallery.md)
+
 [Quick reference](https://github.com/ggmichael/craterstats/blob/main/docs/manual.md)
 
 # Installation
