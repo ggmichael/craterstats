@@ -99,5 +99,6 @@ jobs:
           body: ${{ env.MESSAGE }}
           files: |
             dist/${{ env.ZIP_NAME }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' }}
 
 
