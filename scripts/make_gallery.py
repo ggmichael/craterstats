@@ -21,8 +21,7 @@ def main():
     n=cli.demo(n)
 
 
-    s=['''
----
+    s=['''---
 layout: default
 title: Gallery
 ---
