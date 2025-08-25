@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - 'src/craterstats/config/demo_commands.txt'
-      - 'workflows/make_gallery.py'
+      - 'scripts/make_gallery.py'
 
 jobs:
   cleanup:
@@ -59,7 +59,7 @@ jobs:
           python setup.py install
       - name: Generate gallery images
         run: |
-          python .github/make_gallery.py
+          python scripts/make_gallery.py
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
