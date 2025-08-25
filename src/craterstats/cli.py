@@ -132,7 +132,7 @@ def defaults():
         'mu': 1,
         'presentation': 'differential',
         'print_dimensions': '7.5x7.5',
-        'pt_size': 8.0,
+        'pt_size': 9.0,
         'randomness': 0,
         'ref_diam': 1,
         'sig_figs': 3,

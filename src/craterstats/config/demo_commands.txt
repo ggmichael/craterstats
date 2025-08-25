@@ -11,7 +11,7 @@
 
 -title "Cumulative fit|with resurfacing correction" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
--title "Cumulative fit with resurfacing correction|showing all corrected data points" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1
+#-title "Cumulative fit with resurfacing correction|showing all corrected data points" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1
 
 -title "Cumulative fits showing resurfacing correction|and fitted isochrons" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[2,5],isochron=1 -p range=[.2,.7],resurf=1,psym=fsq
 
@@ -29,19 +29,19 @@
 
 -title Hartmann 2010 crater count template -pr hartmann -cs hartmann2010 -ef hart84 -isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
 
--title "Hartmann-style plot with other chronology system|Poisson age analysis and without $\mu$-notation" -pr hartmann -cs neukumivanov -mu 0 -ef trask -p source=%sample%/Pickering.scc,psym=*4,isochron=1 -p type=poisson,colour=blue,range=[.2,.7] -p colour=red,range=[2,5],offset_age=[3,0]
-
--title "Impact rate function|with alternative specified reference diameter" -pr rate -ref_diameter 10 -yrange -7 2
+-title "Hartmann-style plot with other chronology system,|Poisson age analysis, and without $\mu$-notation" -pr hartmann -cs neukumivanov -mu 0 -ef trask -p source=%sample%/Pickering.scc,psym=tri,isochron=1,col=red -p type=poisson,range=[.2,.7] -p colour=red1,psym=filltriangle,range=[2,5],offset=[3,0]
 
 -title Chronology function with Mars epochs and transition times -pr chronology -ep mars -cs neukumivanov
 
 -title Chronology function with lunar epochs and transition times -pr chronology -ep wilhelms
 
--title "Poisson calculation for buffered crater count|indicating area and perimeter" -cs neukum83 -pr diff -p source=%sample%/c7.scc -p type=b-poisson,range=[.25,2]
+-title "Impact rate function|with alternative specified reference diameter" -pr rate -ref_diameter 10 -yrange -7 2 -ep wilhelms
+
+-title "Poisson calculation for buffered crater count|indicating area and perimeter" -cs neukum83 -pr diff -p source=%sample%/c7.scc -p type=b-poisson,range=[.25,2],offset=[-3,2]
 
 -title "Differential plot|with root-2 binning and root-2 diameter scale" -cs neukumivanov -style root-2 -p source=%sample%/Pickering.scc,psym=x,binning=root-2 -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 
--title Cumulative plot|with no binning -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,binning=none,psym=point -p type=poisson,colour=red,range=[.22,.43],isochron=1 -p range=[2,5],colour=blue,offset_age=[2,-2]
+-title Cumulative plot with no binning -pr cumul -cs neukumivanov -xrange -2 3 -yrange -5 0 -p source=%sample%/Pickering.scc,binning=none,psym=point -p type=poisson,colour=red,range=[.22,.43],isochron=1 -p range=[2,5],colour=blue,offset=[2,-2]
 
 -title Plot with inverted colour -cs neukumivanov -invert 1 -p source=%sample%/Pickering.scc,psym=fo -p type=poisson,range=[.2,.7],isochron=1 -p range=[2,5],colour=violet,offset_age=[2,-3]
 

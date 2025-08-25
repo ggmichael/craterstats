@@ -36,7 +36,7 @@ class TestPlottingClasses(unittest.TestCase):
         cp = cst.Craterplot(cratercount=self.cc)
         cps = cst.Craterplotset(craterplot=[cp])
         cps.autoscale()
-        self.assertEqual(list(cps.xrange)+list(cps.yrange),[-2, 2, -5, 3])
+        self.assertEqual(list(cps.xrange)+list(cps.yrange),[-2, 2, -6, 2])
 
     def test_Craterplotset_summary(self):
         cp = cst.Craterplot(cratercount=self.cc,range=[.2,.7],type='d-fit')

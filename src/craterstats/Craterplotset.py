@@ -573,12 +573,16 @@ class Craterplotset:
         :return: none
         """
         x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
-        mx = (.5, .9) # minimum empty margin
-        my = [e * (2 if self.presentation=='differential' else 1) for e in [.3,.7]] # minimum empty margin
-        xr = np.array([np.floor(np.log10(min(x0))-mx[0]), np.ceil(np.log10(max(x1))+mx[1])])
+        mx = (.3, .8) # minimum empty margin
+        my = [e * (2 if self.presentation=='differential' else 1) for e in [.3,.3]] # minimum empty margin
+        min_x, max_x = np.log10(min(x0)), np.log10(max(x1))
+        min_y, max_y = np.log10(min(y0)), np.log10(max(y1))
+        xr = np.array([np.floor(min_x-mx[0]), np.ceil(max_x+mx[1])])
         yr = np.array([np.floor(np.log10(min(y0))-my[0]), np.ceil(np.log10(max(y1))+my[1])])
 
-        #set to square (better to add padding on side with least space)
+        big_left = min_x - xr[0] + mx[0] > xr[1] - max_x + mx[1] #still want biassed to left
+        big_bottom = min_y - yr[0] > yr[1] - max_y
+
         #optimal padding should consider margins mx, my as well
         dx,dy= gm.mag(xr), gm.mag(yr)
         if np.isnan(dx): #only empty crater files
@@ -590,15 +594,15 @@ class Craterplotset:
             d0=abs(d)
             d2a=int(d0/2)
             d2b=d0-d2a
-            if d<0: yr+=np.array([-d2b,d2a])*2
-            if d>0: xr+=np.array([-d2b,d2a])
+            if d<0: yr+=np.array([-d2a,d2b])*2 if big_bottom else np.array([-d2b,d2a])*2
+            if d>0: xr+=np.array([-d2a,d2b]) if big_left else np.array([-d2b,d2a])
         else:
             d=dy-dx
             d0=abs(d)
             d2a=int(d0/2)
             d2b=d0-d2a
-            if d < 0: yr += [-d2a,d2b]
-            if d > 0: xr += [-d2a,d2b]
+            if d < 0: yr += [-d2a,d2b] if big_bottom else [-d2b,d2a]
+            if d > 0: xr += [-d2a,d2b] if big_left else [-d2b,d2a]
 
         self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
         self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
