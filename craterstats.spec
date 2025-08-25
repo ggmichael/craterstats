@@ -5,12 +5,12 @@ import os
 import shutil
 import platform
 
-def abs_glob(patterns):
-    return [file for pattern in patterns for file in glob.glob(pattern)]
+def abs_glob(root, extensions):
+    return [file for ext in extensions for file in glob.glob(root + f"*.{ext}")]
 
-config_files = abs_glob(['src/craterstats/config/*.txt'])
-sample_files = abs_glob([f'src/craterstats/sample/*.{ext}' for ext in ['scc', 'diam', 'r', 'stat', 'binned', 'md']])
-font_files = abs_glob([f'src/craterstats/fonts/*.{ext}' for ext in ['txt', 'ttf']])
+config_files = abs_glob('src/craterstats/config/', ['txt', 'qml'])
+sample_files = abs_glob('src/craterstats/sample/', ['scc', 'diam', 'r', 'stat', 'binned', 'md'])
+font_files = abs_glob('src/craterstats/fonts/', ['txt', 'ttf'])
 
 a = Analysis(
     ['src/craterstats/cli.py'],

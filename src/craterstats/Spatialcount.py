@@ -9,6 +9,7 @@ import shapely as shp
 import spherely as sph
 import pyproj as prj
 import os
+import shutil
 from datetime import datetime
 
 import craterstats as cst
@@ -40,6 +41,7 @@ class Spatialcount:
         for d, f, x, y in zip(self.diam, self.fraction, self.lon, self.lat):
             print(f"{d:<12.7g} {f:9.3g} {x:20.12f} {y:20.12f}")
 
+    # may be useful later again, but not used now:
     # def llr2xyz(lon,lat,r):
     #     lat_rad = math.radians(lat)
     #     lon_rad = math.radians(lon)
@@ -87,27 +89,20 @@ class Spatialcount:
                 xr = (min(xr1[0], xr[0]), max(xr1[1], xr[1]))
                 yr = (min(yr1[0], yr[0]), max(yr1[1], yr[1]))
 
-        import shapely as shp
-        q=[]
         p=[]
         for i, internal in z:
             if not internal:
                 holes=[]
-                qholes = []
                 for j, internal1 in z[i:]:
                     if sph.within(d[j][1],d[i][1]):
                         holes += [d[j][0]]
-                        #qholes += [d[j][2]]
                 p += [sph.create_polygon(shell=d[i][0], holes=holes)]
-                #q += [shp.Polygon(shell=d[i][2], holes=qholes)]
 
         p = sph.create_multipolygon(p) #merge if multiple
 
         self.area=sph.area(p, radius=self.planetary_radius)
         self.perimeter=sph.perimeter(p, radius=self.planetary_radius)
         self.polygon=p
-        #self.shape=shp.MultiPolygon(q)
-        #self.q=d[1][0]
 
         print(f"Planetary radius: {self.planetary_radius:0g} km")
         print(f"Area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km")
@@ -288,13 +283,14 @@ class Spatialcount:
             c.poly([list(zip(*ll_pts))])
         c.close()
         gm.write_textfile(gm.filename(fc,'pn1','.prj'),wkt)
+        shutil.copy(cst.PATH + 'config/_CRATER.qml', gm.filename(fc,'pn1','.qml'))
 
+        # do area file
         fa = gm.filename(filename, 'pn1e', "_AREA")
         a = shapefile.Writer(fa)
         a.field('area', 'F', 12,6)
         a.field('area_name', 'C', 30)
 
-        # do area file
         for i,p in enumerate(self.polygon if isinstance(self.polygon, list) else [self.polygon]):
             z = sph.to_wkb(p)
             y = shp.from_wkb(z)
@@ -307,6 +303,9 @@ class Spatialcount:
             a.record(None, f'Area_{i + 1}')
         a.close()
         gm.write_textfile(gm.filename(fa, 'pn1', '.prj'), wkt)
+        shutil.copy(cst.PATH + 'config/_AREA.qml', gm.filename(fa, 'pn1', '.qml'))
+
+
 
 
 

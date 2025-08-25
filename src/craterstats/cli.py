@@ -60,15 +60,14 @@ def get_parser():
     parser.add_argument("-v","--version", help="show program version", action='store_true')
     parser.add_argument("-demo", help="run sequence of demonstration commands: output in ./demo", action='store_true')
     parser.add_argument("-b","--bins", help="show bin boundaries", action='store_true')
-    parser.add_argument("--to_scc", help="convert _CRATER.shp file to scc format", type=str)
-    parser.add_argument("--to_shp", help="convert .scc file to _CRATER.shp, _AREA.shp files", type=str)
+    parser.add_argument("--convert", help="desired format [stat|scc|shp], source file", nargs=2, type=str)
 
     parser.add_argument("-o","--out", help="output filename (omit extension for default) or directory", nargs='+', action=SpacedString)
     parser.add_argument("--functions_user", help="path to file containing user defined chronology systems", nargs='+', action=SpacedString)
     parser.add_argument("--create_desktop_icon", help="create desktop icon for activated window", action='store_true')
     parser.add_argument("-m", "--merge", help="merge crater count files", nargs='+', action=SpacedString)
 
-    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv','stat'])
+    parser.add_argument("-f", "--format", help="output formats",  nargs='+', choices=['png','tif','pdf','svg','csv'])
 
     parser.add_argument("-cs", "--chronology_system", help="chronology system index")
     parser.add_argument("-ef", "--equilibrium", help="equilibrium function index")
@@ -338,22 +337,30 @@ def outfile(name,out,ext):
         outfile = name + ext
     return outfile
 
-def to_scc(src,out):
-    if gm.filename(src,'e') != '.shp':
-        sys.exit('Cannot convert this filetype.')
-    f = outfile(scc.name, out, '.scc')
-    scc = cst.Spatialcount(src)
-    scc.writeSCCfile(f)
-    print(f"Conversion written to: {f}")
-    return
-
-def to_shp(src,out):
-    if gm.filename(src,'e') != '.scc':
-        sys.exit('Cannot convert this filetype.')
-    f = outfile(gm.filename(src, 'n'), out, '.shp')
-    scc = cst.Spatialcount(src)
-    scc.writeSHPfiles(f)
-    print(f"Conversion written to: {f}")
+def convert_format(convert, out0):
+    fmt, src = convert
+    fmt1 = fmt.lstrip(".")
+    fmt0 = gm.filename(src,'e').lstrip(".")
+    out = outfile(gm.filename(src, 'n'), out0, '.'+fmt1)
+    match fmt1:
+        case 'stat' if fmt0 in ['diam','scc','shp']:
+            cc = cst.Cratercount(src)
+            out = gm.filename(out, 'p1e', cc.name)
+            cc.WriteStatFile(out)
+        case 'scc':
+            if fmt0 == 'shp':
+                scc = cst.Spatialcount(src)
+                out = gm.filename(out, 'p1e', scc.name)
+                scc.writeSCCfile(out)
+        case 'shp':
+            if fmt0 == 'scc':
+                scc = cst.Spatialcount(src)
+                scc.writeSHPfiles(out)
+                out = gm.filename(out,'pn1e', '[_CRATER,_AREA]')
+        case _:
+            print(f"{fmt0} to {fmt1} conversion not supported")
+            return
+    print(f"Conversion written to: {out}")
     return
 
 def source_cmds(src):
@@ -464,12 +471,8 @@ def main(args0=None):
         demo()
         return
 
-    if args.to_scc:
-        to_scc(args.to_scc,args.out)
-        return
-
-    if args.to_shp:
-        to_shp(args.to_shp,args.out)
+    if args.convert:
+        convert_format(args.convert, args.out)
         return
 
     dflt = defaults()
@@ -520,12 +523,6 @@ def main(args0=None):
 
         if f in {'csv'}:
             cps.create_summary_table(f_out=cps_dict['out']+'.'+f)
-        if f in {'stat'}:
-            stat_files=set([(e.source,e.binning) for e in cpl])
-            for stat in stat_files:
-                cc=cst.Cratercount(stat[0])
-                cc.WriteStatFile(gm.filename(stat[0],"n12", '_'+stat[1],".stat"),stat[1])
-
 
 if __name__ == '__main__': 
     main()

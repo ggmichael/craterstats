@@ -24,6 +24,8 @@ class Cratercount:
         self.perimeter=None
         self.buffered=False
         self.prebinned=False
+        if filetype:
+            self.name = gm.filename(filename, 'n')
 
         bad_filetype = False
         try:
@@ -152,7 +154,7 @@ class Cratercount:
 
 
     def ReadSCCfile(self):
-        s= gm.read_textstructure(self.filename)
+        s = gm.read_textstructure(self.filename)
         c=s['crater']
         diam=[float(e) for e in c['diam']]
         frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1. for e in diam]
@@ -173,6 +175,7 @@ class Cratercount:
         self.diam, self.fraction  = shp.diam, shp.fraction
         self.area, self.perimeter = shp.area, shp.perimeter
         self.prebinned=0
+        self.name = shp.name
 
 # ;****************************************************
 # ;                 File writers

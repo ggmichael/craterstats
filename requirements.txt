@@ -6,5 +6,6 @@ progressbar2
 pyproj
 pyshp
 scipy>=1.14
+shapely
 spherely
 

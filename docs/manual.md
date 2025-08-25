@@ -1,22 +1,23 @@
 
 # Craterstats-III command options quick reference
 
-    craterstats [-h] [-i INPUT] [-inc INCLUDE] [-lcs] [-lpc]
-                          [-about] [-v] [-demo] [-b] [-o OUT [OUT ...]]
+    craterstats [-h] [-i filename.cs] [-inc filename.txt] [-lcs]
+                          [-lpc] [-about] [-v] [-demo] [-b]
+                          [--convert CONVERT CONVERT] [-o OUT [OUT ...]]
                           [--functions_user FUNCTIONS_USER [FUNCTIONS_USER ...]]
                           [--create_desktop_icon] [-m MERGE [MERGE ...]]
-                          [-f {png,tif,pdf,svg,csv,stat} [{png,tif,pdf,svg,csv,stat} ...]]
+                          [-f {png,tif,pdf,svg,csv} [{png,tif,pdf,svg,csv} ...]]
                           [-cs CHRONOLOGY_SYSTEM] [-ef EQUILIBRIUM]
                           [-ep EPOCHS] [-title TITLE [TITLE ...]]
                           [-pr PRESENTATION] [-xrange XRANGE XRANGE]
                           [-yrange YRANGE YRANGE] [-isochrons ISOCHRONS]
-                          [-legend LEGEND] [-mu {0,1}]
-                          [-style {natural,root-2}] [-invert {0,1}]
-                          [-text_halo {0,1}] [-transparent] [-tight]
+                          [-legend LEGEND] [-mu [{0,1}]]
+                          [-style {natural,root-2}] [-invert [{0,1}]]
+                          [-text_halo [{0,1}]] [-transparent [{0,1}]] [-tight]
                           [-pd PRINT_DIMENSIONS] [-pt_size PT_SIZE]
                           [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
                           [-d_min MIN_DIAMETER] [-ns N_SAMPLES]
-                          [-p KEY=VAL,[KEY=VAL,...]]
+                          [-p KEY=VAL, [KEY=VAL, ...]]
 
 
 ## Options
@@ -59,11 +60,17 @@
 `-b, --bins`
   Show bin overlay to aid diameter selection.
 
+`--convert FORMAT SOURCE`
+  Translate file to desired format [stat|scc|shp] from given source file.
+
 `-o, --out FILE_OR_DIR`
   Output filename (omit extension for default) or directory.
 
-`-f, --format [png|tif|pdf|svg|csv|stat]`
-  Output format(s).
+`-f, --format [png|tif|pdf|svg|csv]`
+  Output format (can specify more than one).
+ * `png tif` - raster image plots
+ * `svg pdf` - vector image plots
+ * `csv` - tabular results
 
 `--functions_user FILE`
   Set path to user-defined chronology system file.
