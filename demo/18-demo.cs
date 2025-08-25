@@ -1,7 +1,9 @@
 -o demo/18-demo
--title Differential plot|with root-2 binning and root-2 diameter scale
+-title Cumulative plot with no binning
+-pr cumul
 -cs neukumivanov
--style root-2
--p source=%sample%/Pickering.scc,psym=x,binning=root-2
--p type=poisson,range=[.2,.7],isochron=1
--p range=[2,5],colour=violet,offset_age=[2,-3]
+-xrange -2 3
+-yrange -5 0
+-p source=%sample%/Pickering.scc,binning=none,psym=point
+-p 'type=poisson,colour=red,range=[.22,.43],isochron=1'
+-p 'range=[2,5],colour=blue,offset=[2,-2]'

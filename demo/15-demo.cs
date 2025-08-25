@@ -1,5 +1,6 @@
 -o demo/15-demo
--title Chronology function with Mars epochs and transition times
--pr chronology
--ep mars
--cs neukumivanov
+-title 'Impact rate function|with alternative specified reference diameter'
+-pr rate
+-ref_diameter 10
+-yrange -7 2
+-ep wilhelms

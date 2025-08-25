@@ -1,7 +1,7 @@
 -o demo/19-demo
--title Cumulative plot|with no binning
--pr cumul
+-title Plot with inverted colour
 -cs neukumivanov
--p source=%sample%/Pickering.scc,binning=none,psym=point
--p type=poisson,colour=red,range=[.22,.43],isochron=1
--p range=[2,5],colour=blue,offset_age=[2,-2]
+-invert 1
+-p source=%sample%/Pickering.scc,psym=fo
+-p 'type=poisson,range=[.2,.7],isochron=1'
+-p 'range=[2,5],colour=violet,offset_age=[2,-3]'

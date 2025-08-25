@@ -1,7 +1,7 @@
 -o demo/10-demo
--title Hartmann style plot
+-title Hartmann-style plot with finer binning
 -pr hartmann
--cs hartmanndaubar2016
---equilibrium hartmann
+-cs hart04
+-ef hart84
 -isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc,binning=root2
+-p source=%sample%/Pickering.scc

@@ -1,7 +1,6 @@
 -o demo/11-demo
--title Hartmann-style plot with other binning
+-title Hartmann 2010 crater count template
 -pr hartmann
--cs hart04
+-cs hartmann2010
 -ef hart84
--isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc
+-isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9

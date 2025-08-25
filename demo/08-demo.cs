@@ -1,7 +1,7 @@
 -o demo/08-demo
--title Modified legend 2:|only count and diameter range; no function citations
--pr cumul
+-title R-plot with 10/decade binning
+-pr rplot
 -cs neukumivanov
--legend cr
--p source=%sample%/Pickering.scc,psym=sq,name=Area 1
--p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
+-ep mars
+-p source=%sample%/Pickering.scc,psym=o,binning=10/decade
+-p 'type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]'

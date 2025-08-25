@@ -1,6 +1,9 @@
 -o demo/12-demo
--title Hartmann 2010 crater count template
+-title 'Hartmann-style plot with other chronology system,|Poisson age analysis, and without $\mu$-notation'
 -pr hartmann
--cs hartmann2010
--ef hart84
--isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
+-cs neukumivanov
+-mu 0
+-ef trask
+-p source=%sample%/Pickering.scc,psym=tri,isochron=1,col=red
+-p 'type=poisson,range=[.2,.7]'
+-p 'colour=red1,psym=filltriangle,range=[2,5],offset=[3,0]'
