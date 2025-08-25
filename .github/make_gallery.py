@@ -26,7 +26,7 @@ def main():
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
 These may be typed on single line following the command `craterstats`, or saved in a file with `.cs` extension
-and generate with the command `craterstats -i <filename>.cs`. 
+and generated with the command `craterstats -i <filename>.cs`. 
 ''']
 
     for i in n:
