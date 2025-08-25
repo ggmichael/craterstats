@@ -22,6 +22,11 @@ def main():
 
 
     s=['''
+---
+layout: default
+title: Gallery
+---
+    
 # Gallery
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
