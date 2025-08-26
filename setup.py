@@ -1,7 +1,5 @@
 #!/usr/bin/env python
 
-"""The setup script."""
-
 from setuptools import setup, find_packages
 import pathlib
 
@@ -37,9 +35,6 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     include_package_data=True,
-    # package_data={
-    #     "craterstats": ["config/*.txt", "sample/*.diam", "sample/*.r", "sample/*.scc",  "sample/*.binned", "sample/*.stat", "sample/README.md"]
-    # },
     test_suite="tests",
     tests_require=required,
     install_requires=required,
