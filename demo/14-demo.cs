@@ -1,4 +1,5 @@
 -o demo/14-demo
--title Chronology function with lunar epochs and transition times
+-title Chronology function with Mars epochs and transition times
 -pr chronology
--ep wilhelms
+-ep mars
+-cs neukumivanov

@@ -1,6 +1,4 @@
 -o demo/15-demo
--title 'Impact rate function|with alternative specified reference diameter'
--pr rate
--ref_diameter 10
--yrange -7 2
+-title Chronology function with lunar epochs and transition times
+-pr chronology
 -ep wilhelms

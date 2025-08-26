@@ -1,6 +1,6 @@
 -o demo/21-demo
--title 'Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)'
+-title Plot with left-positioned age annotation
 -cs neukumivanov
 -p source=%sample%/Pickering.scc,psym=fo
 -p 'type=poisson,range=[.2,.7]'
--p 'range=[2,5],colour=blue,age_left=1,offset_age=[1,4]'
+-p 'range=[2,5],colour=blue,age_left=1'

@@ -1,6 +1,5 @@
 -o demo/23-demo
--title Plot in SVG vector format '(PDF' also 'possible)'
--f svg
+-title Fig 3, Michael et al '(2021)'
 -p 'src=%sample%/c1.scc,sym=^,err=0'
 -p 'src=%sample%/c2.scc,sym=f^,col=grey'
 -p src=%sample%/c3.scc,sym=s4
