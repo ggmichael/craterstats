@@ -1,0 +1,7 @@
+-o demo/06-demo
+-title 'Modified legend 1:|renamed data series, N(1) value but no count or diameter range'
+-pr cumul
+-cs neukumivanov
+-legend fnaN
+-p source=%sample%/Pickering.scc,psym=sq,name=Area 1
+-p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq'

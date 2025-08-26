@@ -1,0 +1,6 @@
+-o demo/01-demo
+-title Differential 'plot|with' two differential fit age evaluations
+-cs neukumivanov
+-p source=%sample%/Pickering.scc,psym=o
+-p 'type=d-fit,range=[.2,.7],isochron=1'
+-p 'range=[2,5],colour=red'

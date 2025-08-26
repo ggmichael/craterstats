@@ -1,0 +1,6 @@
+-o demo/02-demo
+-title 'Differential age fits|with 10/decade binning'
+-cs neukumivanov
+-p source=%sample%/Pickering.scc,psym=o,binning=10/decade
+-p 'type=d-fit,range=[.2,.7],isochron=1'
+-p 'range=[2,5],colour=red'
