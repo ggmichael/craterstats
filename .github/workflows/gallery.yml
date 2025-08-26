@@ -66,3 +66,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./gallery
           publish_branch: gh-pages
+          nojekyll: false
