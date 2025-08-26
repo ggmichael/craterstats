@@ -57,32 +57,11 @@ jobs:
         run: |
           ls -R gallery/  
 
-#      - name: Checkout gh-pages branch
-#        uses: actions/checkout@v4
-#        with:
-#          ref: gh-pages
-
-      - name: Checkout gh-pages branch
-        run: |
-          git fetch origin gh-pages:gh-pages
-          git checkout gh-pages          
-
-#      - name: Fetch main branch
-#        run: |
-#          git fetch origin main
-#
-#      - name: Copy images from main to gh-pages
-#        run: |
-#          git checkout origin/main -- gallery/demo/*
-
-      - name: List files after generating gallery
-        run: |
-          ls -R gallery/
-
-      - name: Commit and push changes to gh-pages
-        run: |
-          git add -A gallery/demo/*
-          git commit -m "Deploy images to gh-pages" || echo "No changes to commit"
-          git push origin gh-pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gallery
+          publish_branch: gh-pages
 
 
