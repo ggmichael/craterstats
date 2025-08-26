@@ -57,10 +57,14 @@ jobs:
         run: |
           ls -R gallery/  
 
+#      - name: Checkout gh-pages branch
+#        uses: actions/checkout@v4
+#        with:
+#          ref: gh-pages
+
       - name: Checkout gh-pages branch
-        uses: actions/checkout@v4
-        with:
-          ref: gh-pages
+        run: |
+          git checkout gh-pages          
 
 #      - name: Fetch main branch
 #        run: |
