@@ -19,7 +19,6 @@ def main():
 
     n = None #[5,6,7,24,25]
     n=cli.demo(n)
-
     s=['''  
 # Gallery
 

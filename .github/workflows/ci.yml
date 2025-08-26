@@ -16,18 +16,18 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+
       - name: Cache pip dependencies
         uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}  # key based on requirements.txt
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}  # Cache key based on requirements.txt
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Set up Python 
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
 
       - name: Install pip
         run: |
