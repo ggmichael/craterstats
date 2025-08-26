@@ -58,13 +58,13 @@ jobs:
         with:
           ref: gh-pages
 
-      - name: Fetch main branch
-        run: |
-          git fetch origin main  
-
-      - name: Copy images from main to gh-pages
-        run: |
-          git checkout origin/main -- gallery/demo/*  
+#      - name: Fetch main branch
+#        run: |
+#          git fetch origin main
+#
+#      - name: Copy images from main to gh-pages
+#        run: |
+#          git checkout origin/main -- gallery/demo/*
 
       - name: Commit and push changes to gh-pages
         run: |
