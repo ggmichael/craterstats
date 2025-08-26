@@ -83,7 +83,7 @@ class Craterplot:
         else:
             if self.type=='c-fit':
                 p0=self.cratercount.getplotdata("cumulative",self.binning, range=self.range,
-                    resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+                    resurfacing=1 if self.resurf and self.type == 'c-fit' else 0,
                     pf=cps.pf)
             elif self.type=='d-fit':
                 p0=self.cratercount.getplotdata("differential",self.binning,range=self.range,pf=cps.pf)
@@ -112,7 +112,7 @@ class Craterplot:
             return
 
         p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
-            resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+            resurfacing=1 if self.resurf and self.type == 'c-fit' else 0, showall=self.resurf_showall,
             pf=cps.pf)
 
         self.n=p['n']
@@ -213,7 +213,7 @@ class Craterplot:
         :return: (d_min,d_max,y_min,y_max)
         """
         p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
-             resurfacing=self.resurf_showall if self.resurf and self.type == 'c-fit' else None,
+             resurfacing=1 if self.resurf and self.type == 'c-fit' else 0, showall=self.resurf_showall,
              pf=cps.pf)
         return gm.range(p['d']) + gm.range(p['y'])
 

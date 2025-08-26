@@ -354,7 +354,8 @@ class Cratercount:
 
     def getplotdata(self,presentation,binning,
                     range=None,
-                    resurfacing=None,
+                    resurfacing=0,
+                    showall=0,
                     pf=None):
         '''
         Return cratercount data in one of several presentation forms suitable for plotting
@@ -371,7 +372,7 @@ class Cratercount:
             if self.binning != binning:
                 self.apply_binning(binning)
 
-        adj=0 if resurfacing is None else self.resurf_adj(pf,range)
+        adj = 0 if resurfacing==0 else self.resurf_adj(pf,range)
 
         q=np.where(self.binned['n']>0)
 
@@ -411,14 +412,15 @@ class Cratercount:
 
         if range:
             d_mean_q=self.binned['d_mean'][q]
-            q1=np.where((range[0] < d_mean_q)  & (d_mean_q < range[1]))
+            q1=np.where(((0 if showall == 1 else range[0]) < d_mean_q)  & (d_mean_q < range[1]))
             d=d[q1]
             y=y[q1]
             err=err[q1]
             q=q[0][q1]  #[0] takes first dim of tuple
 
             r1=range.copy()
-            if resurfacing == 1: r1[0]=0 # show all corrected points
+            if resurfacing == 1:
+                r1[0]=0 # show all corrected points
             if r1[0] == 0: r1[0]=self.binned['d_min'][0]
             if r1[1] == np.inf: r1[1] = self.binned['d_max'][-1]
             bin_range = tuple(np.array(self.generate_bins(self.binning,r1,expand=False))[[0,-1]])  # extend selection to bin boundaries

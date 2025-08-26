@@ -609,9 +609,8 @@ class Craterplotset:
 
     def create_summary_table(self,f_out=None):
         """
-        Output table of Craterplot age calculations to stdout
+        :return: Output ascii table of Craterplot age calculations
 
-        :return: none
         """
         s=[]
         for cp in self.craterplot:
@@ -629,7 +628,7 @@ class Craterplotset:
         table = (('name', '24', '', None),
                  ('area', '8', '.5g', None),
                  ('binning', '>10', '', None),
-                 ('bin_range' if d['type'] in ('c-fit','d-fit') else 'range', '5', '.2g', ('d_min', 'd_max')),
+                 ('bin_range' if d['type'] in ('c-fit','d-fit') and d['resurf'] != 1 else 'range', '5', '.2g', ('d_min', 'd_max')),
                  ('type', '>9', '', ('Method',)),
                  ('resurf', '6', '', None),
                  ('n', '7', '', None),
