@@ -1,0 +1,6 @@
+-o demo/16-demo
+-title 'Poisson calculation for buffered crater count|indicating area and perimeter'
+-cs neukum83
+-pr diff
+-p source=%sample%/c7.scc
+-p 'type=b-poisson,range=[.25,2],offset=[-3,2]'

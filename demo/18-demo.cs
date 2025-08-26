@@ -1,0 +1,9 @@
+-o demo/18-demo
+-title Cumulative plot with no binning
+-pr cumul
+-cs neukumivanov
+-xrange -2 3
+-yrange -5 0
+-p source=%sample%/Pickering.scc,binning=none,psym=point
+-p 'type=poisson,colour=red,range=[.22,.43],isochron=1'
+-p 'range=[2,5],colour=blue,offset=[2,-2]'
