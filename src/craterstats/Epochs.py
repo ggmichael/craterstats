@@ -83,7 +83,7 @@ class Epochs:
             t=(t0[i]+t0[i+1])/2
             y = self.cf.phi(t) if phi else self.cf.N1(t)
             cps.ax.text(t-.03, y*1.5, e,
-                        size=cps.pt_size * .7, rotation=label_slant,
+                        size=cps.pt_size * .6, rotation=label_slant,
                         rotation_mode='anchor', verticalalignment='center', horizontalalignment='left',
                         bbox=dict(facecolor='none', edgecolor='none', pad=50))
 
@@ -92,7 +92,7 @@ class Epochs:
             if t!=0:
                 cps.ax.annotate(f' {t:0.3g} ',xy=(t, y),
                             xytext=(cps.pt_size * .04, 0), textcoords="offset points",
-                            size=cps.pt_size * .7, rotation=90,
+                            size=cps.pt_size * .6, rotation=90,
                             verticalalignment='bottom' if offset[i] else 'top',
                             horizontalalignment='center',
                             bbox=dict(facecolor='none', edgecolor='none', pad=50))
