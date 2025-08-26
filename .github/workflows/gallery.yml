@@ -68,7 +68,7 @@ jobs:
 
       - name: Commit and push changes to gh-pages
         run: |
-          git add gallery/demo/*
+          git add -A gallery/demo/*
           git commit -m "Deploy images to gh-pages" || echo "No changes to commit"
           git push origin gh-pages
 
