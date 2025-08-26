@@ -20,11 +20,7 @@ def main():
     n = None #[5,6,7,24,25]
     n=cli.demo(n)
 
-    s=['''---
-layout: default
-title: Gallery
----
-    
+    s=['''  
 # Gallery
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.

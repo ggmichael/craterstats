@@ -13,8 +13,6 @@ jobs:
     steps:
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
-        with:
-          ref: gh-pages
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -42,20 +40,25 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"          
 
-      - name: Generate gallery.md and images in gh-pages
+      - name: Generate gallery.md and images
         run: |
           python scripts/make_gallery.py
-
-          # Commit and push everything to gh-pages
-          git add gallery/demo
-          git commit -m "Generate gallery and images"
-          git push origin gh-pages
-
-      - name: Copy gallery.md to main
-        run: |
-          git checkout main
-          git checkout gh-pages -- docs/gallery.md
-
+          
           git add docs/gallery.md
           git commit -m "Build gallery.md"
           git push origin main
+
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - name: Copy images from main to gh-pages
+        run: |
+          git checkout main -- gallery/demo/*
+
+          git add gallery/demo/*
+          git commit -m "Deploy images to gh-pages"
+          git push origin gh-pages
+
+
