@@ -1,4 +1,4 @@
-name: Build gallery
+name: Build Gallery
 
 on:
   workflow_dispatch:
@@ -8,62 +8,54 @@ on:
       - 'scripts/make_gallery.py'
 
 jobs:
-  cleanup:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write # Required to delete deployments
-      deployments: write # Permissions to delete deployments
-
-    steps:
-      - name: 🗑 Delete old deployment
-        uses: strumwolf/delete-deployment-environment@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          environment: github-pages  # Specify the environment name
-          onlyRemoveDeployments: true  # This will remove only deployments, not other resources
-
-  ci:
-    needs: cleanup  # Ensure this job runs after cleanup
+  generate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source
+      - name: Checkout gh-pages branch
         uses: actions/checkout@v4
-
-      - name: Set Git user name and email
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-
-      - name: Cache pip dependencies
-        uses: actions/cache@v3
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}  # key based on requirements.txt
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          ref: gh-pages
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.12
-      - name: Install pip
-        run: |
-          python -m pip install --upgrade pip
-          pip install setuptools
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}  # Cache key based on requirements.txt
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
       - name: Install dependencies
         run: |
           python -m pip install -U -r requirements.txt
-          python -m pip install coverage
+
       - name: Install Craterstats
         run: |
           python setup.py install
-      - name: Generate gallery images
+
+      - name: Set Git user name and email
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"          
+
+      - name: Generate gallery.md and images in gh-pages
         run: |
           python scripts/make_gallery.py
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gallery
-          publish_branch: gh-pages
-          nojekyll: false
+
+          # Commit and push everything to gh-pages
+          git add gallery/demo
+          git commit -m "Generate gallery and images"
+          git push origin gh-pages
+
+      - name: Copy gallery.md to main
+        run: |
+          git checkout main
+          git checkout gh-pages -- docs/gallery.md
+
+          git add docs/gallery.md
+          git commit -m "Build gallery.md"
+          git push origin main

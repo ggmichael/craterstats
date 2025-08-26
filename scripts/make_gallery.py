@@ -54,7 +54,7 @@ and generated with the command `craterstats -i <filename>.cs`.
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]
 
-    gm.write_textfile(r'gallery.md',s)
+    gm.write_textfile(r'../docs/gallery.md',s)
 
 if __name__ == '__main__':
     main()
