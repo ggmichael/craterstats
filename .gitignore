@@ -12,5 +12,4 @@ sdist/
 demo/
 .coverage
 *.whl
-docs/gallery.md
 gallery/
