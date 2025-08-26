@@ -64,6 +64,7 @@ jobs:
 
       - name: Checkout gh-pages branch
         run: |
+          git fetch origin gh-pages:gh-pages
           git checkout gh-pages          
 
 #      - name: Fetch main branch
