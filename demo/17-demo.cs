@@ -1,7 +1,0 @@
--o demo/17-demo
--title 'Differential plot|with root-2 binning and root-2 diameter scale'
--cs neukumivanov
--style root-2
--p source=%sample%/Pickering.scc,psym=x,binning=root-2
--p 'type=poisson,range=[.2,.7],isochron=1'
--p 'range=[2,5],colour=violet,offset_age=[2,-3]'
