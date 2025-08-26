@@ -50,7 +50,7 @@ jobs:
           python scripts/make_gallery.py
           
           git add docs/gallery.md
-          git commit -m "Build gallery.md"
+          git commit -m "Build gallery.md" || echo "No changes to commit"
           git push origin main
 
       - name: Checkout gh-pages branch
@@ -64,7 +64,7 @@ jobs:
           git checkout main -- gallery/demo/*
 
           git add gallery/demo/*
-          git commit -m "Deploy images to gh-pages"
+          git commit -m "Deploy images to gh-pages" || echo "No changes to commit"
           git push origin gh-pages
 
 
