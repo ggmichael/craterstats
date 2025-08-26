@@ -60,6 +60,7 @@ jobs:
 
       - name: Copy images from main to gh-pages
         run: |
+          git fetch origin main
           git checkout main -- gallery/demo/*
 
           git add gallery/demo/*
