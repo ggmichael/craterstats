@@ -29,7 +29,7 @@
   Input command line arguments from a file.
 
 `-inc, --include FILE`
-  Include commands from an external .txt file, typically to share layout settings:
+  Include commands from an external .txt file, typically to share layout settings, e.g.:
 
 ```txt
 -cs neukum01
