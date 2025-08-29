@@ -5,9 +5,9 @@ import numpy as np
 import craterstats.gm as gm
 import matplotlib.pyplot as plt
 
-class Fractional_crater_fn:
+class fractional_crater_transform:
     '''
-    Transform function between area fraction and linear fraction over boundary.
+    Transform function between area fraction and linear penetration across boundary.
     Easy to measure the polygon area overlap, but require fractional linear overlap for
     statistics. (Originally suggested by Misha Kreslavsky)
 

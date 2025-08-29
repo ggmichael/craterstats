@@ -10,7 +10,7 @@ from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
 from .Epochs import Epochs
-from .Fractional_crater_fn import Fractional_crater_fn
+from .fractional_crater_transform import fractional_crater_transform
 from .Spatialcount import Spatialcount
 
 from .bin_bias_correction import bin_bias_correction

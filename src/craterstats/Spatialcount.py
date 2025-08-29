@@ -181,7 +181,7 @@ class Spatialcount:
         frac = []
         lon = []
         lat = []
-        transform = cst.Fractional_crater_fn()
+        transform = cst.fractional_crater_transform()
         for shape in sc:
             c = sph.create_polygon(shell=shape.points)
             c_area = sph.area(c, radius=rc)
