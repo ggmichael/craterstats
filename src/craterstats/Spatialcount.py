@@ -3,6 +3,7 @@
 
 import numpy as np
 import math
+import matplotlib.pyplot as plt
 import re
 import shapefile  # pyshp
 import shapely as shp
@@ -15,13 +16,13 @@ from datetime import datetime
 import craterstats as cst
 import craterstats.gm as gm
 
-
 class Spatialcount:
     '''Reads spatial crater count data'''
 
     def __init__(self,filename=None,area_file=None):
         self.filename=filename
         filetype = gm.filename(filename, 'e') if filename else None
+        self.name = gm.filename(filename, "n")
 
         if filetype == '.scc':
             self.readSCCfile()
@@ -41,16 +42,14 @@ class Spatialcount:
         for d, f, x, y in zip(self.diam, self.fraction, self.lon, self.lat):
             print(f"{d:<12.7g} {f:9.3g} {x:20.12f} {y:20.12f}")
 
-    # may be useful later again, but not used now:
-    # def llr2xyz(lon,lat,r):
-    #     lat_rad = math.radians(lat)
-    #     lon_rad = math.radians(lon)
-    #     x = r * math.cos(lat_rad) * math.cos(lon_rad)
-    #     y = r * math.cos(lat_rad) * math.sin(lon_rad)
-    #     z = r * math.sin(lat_rad)
-    #     return x,y,z
-    # def xyz(pts):
-    #     return [llr2xyz(lon,lat,self.planetary_radius) for lon,lat in pts]
+    def llr2xyz(self,lon,lat,r = None):
+        if not r: r = self.planetary_radius
+        lat_rad = np.radians(lat)
+        lon_rad = np.radians(lon)
+        x = r * np.cos(lat_rad) * np.cos(lon_rad)
+        y = r * np.cos(lat_rad) * np.sin(lon_rad)
+        z = r * np.sin(lat_rad)
+        return x,y,z
 
     def readSCCfile(self):
 
@@ -257,6 +256,9 @@ class Spatialcount:
 
 
     def writeSHPfiles(self, filename):
+        """
+        Write shapefile pair
+        """
         # do crater file
         fc = gm.filename(filename,'pn1e',"_CRATER")
         c = shapefile.Writer(fc)
@@ -264,23 +266,10 @@ class Spatialcount:
         c.field('x_coord', 'F', 20,15)
         c.field('y_coord', 'F', 20, 15)
         c.field('tag', 'C', 20)
-
-        ns = 100
-        theta = [2 * math.pi * i / ns for i in range(ns + 1)]
-        cx,cy = np.array([(math.cos(e), math.sin(e)) for e in theta]).T
-
-        rs = f'{self.planetary_radius * 1e3:0.0f}'
-        wkt = f'GEOGCS["Spherical_GCS_{rs}", DATUM["Sphere_{rs}", SPHEROID["Sphere_{rs}", {rs}, 0]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]'
-        geod = prj.CRS(wkt)
-
-        for d,x,y in zip(self.diam,self.lon,self.lat):
-            proj4 = f"+proj=laea +lat_ts=0 +lat_0={y} +lon_0={x} +R={self.planetary_radius * 1e3:0.0f} +units=m +no_defs"
-            laea=prj.CRS(proj4)
-            transformer = prj.Transformer.from_crs(laea, geod, always_xy=True) #laea.geodetic_crs
-            r = d * 1e3 / 2
-            ll_pts = transformer.transform(cx * r, cy * r)
+        rims,wkt = self.find_rims()
+        for d, x, y, r in zip(self.diam, self.lon, self.lat, rims):
             c.record(Diam_km=d, x_coord=x, y_coord=y, tag='standard')
-            c.poly([list(zip(*ll_pts))])
+            c.poly([list(zip(*r))])
         c.close()
         gm.write_textfile(gm.filename(fc,'pn1','.prj'),wkt)
         shutil.copy(cst.PATH + 'config/_CRATER.qml', gm.filename(fc,'pn1','.qml'))
@@ -290,8 +279,47 @@ class Spatialcount:
         a = shapefile.Writer(fa)
         a.field('area', 'F', 12,6)
         a.field('area_name', 'C', 30)
+        decomposed = self.polygon_to_pts()
+        for i, p in enumerate(decomposed):
+            a.poly(p)
+            a.record(None, f'Area_{i + 1}')
+        a.close()
+        gm.write_textfile(gm.filename(fa, 'pn1', '.prj'), wkt)
+        shutil.copy(cst.PATH + 'config/_AREA.qml', gm.filename(fa, 'pn1', '.qml'))
 
-        for i,p in enumerate(self.polygon if isinstance(self.polygon, list) else [self.polygon]):
+    def find_rims(self,ns=100):
+        """
+        Calculate crater rim lon lat points given centres and diameters
+        """
+        theta = [2 * math.pi * i / ns for i in range(ns + 1)]
+        cx, cy = np.array([(math.cos(e), math.sin(e)) for e in theta]).T
+        rs = f'{self.planetary_radius * 1e3:0.0f}'
+        wkt = f'GEOGCS["Spherical_GCS_{rs}", DATUM["Sphere_{rs}", SPHEROID["Sphere_{rs}", {rs}, 0]], PRIMEM["Greenwich", 0], UNIT["Degree", 0.0174532925199433]]'
+        geod = prj.CRS(wkt)
+        rims = []
+        # make projection centre transformers at this spacing for speed (Distance distortion: 0.061% at 2 deg)
+        # nb: max offset from projection centre is grid/2
+        grid = 5
+        t_dict = {}
+        for d, x, y in zip(self.diam, self.lon, self.lat):
+            origin = (round(x/grid)*grid,round(y/grid)*grid)
+            if not origin in t_dict:
+                proj4 = f"+proj=laea +lat_ts=0 +lat_0={origin[1]} +lon_0={origin[0]} +R={self.planetary_radius * 1e3:0.0f} +units=m +no_defs"
+                laea = prj.CRS(proj4)
+                t_dict[origin] = prj.Transformer.from_crs(laea, geod, always_xy=True)  # laea.geodetic_crs
+                t_dict[(origin,'inverse')] = prj.Transformer.from_crs(geod, laea, always_xy=True)
+            dx,dy = t_dict[(origin,'inverse')].transform(x,y)
+            r = d * 1e3 / 2
+            ll_pts = t_dict[origin].transform(dx+ cx * r, dy + cy * r)
+            rims += [ll_pts]
+        return rims,wkt
+
+    def polygon_to_pts(self):
+        """
+        Decompose polygon/multipolygon into list of lists of rings/holes
+        """
+        decomposed=[]
+        for p in self.polygon if isinstance(self.polygon, list) else [self.polygon]:
             z = sph.to_wkb(p)
             y = shp.from_wkb(z)
             x = shp.get_exterior_ring(y)
@@ -299,16 +327,79 @@ class Spatialcount:
             for j in range(shp.get_num_interior_rings(y)):
                 x = shp.get_interior_ring(y,j)
                 rings.append(list(x.coords))  # Append holes
-            a.poly(rings)
-            a.record(None, f'Area_{i + 1}')
-        a.close()
-        gm.write_textfile(gm.filename(fa, 'pn1', '.prj'), wkt)
-        shutil.copy(cst.PATH + 'config/_AREA.qml', gm.filename(fa, 'pn1', '.qml'))
+            decomposed += [rings]
+        return decomposed
+
+    def plot(self,cps):
+        """
+        Plot Spatialcount
+
+        """
+        ax=cps.ax
+
+        cenlon = sum(gm.range(self.lon))/2
+        cenlat = sum(gm.range(self.lat)) / 2
+        ortho_proj = prj.Proj(proj='ortho', lat_0=cenlat, lon_0=cenlon, R=self.planetary_radius)
+
+        #fig, ax = plt.subplots(figsize=(8, 8))
+        x, y = ortho_proj(self.lon, self.lat)
+        #ax.scatter(x, y, color='red', marker='o', s=5, zorder=5)
+
+        xr = np.array(gm.range(x))+np.array([-1,1])*gm.mag(x)*.1
+        yr = np.array(gm.range(y))+np.array([-1,1])*gm.mag(y)*.1
+        ax.set_xlim(xr[0],xr[1])
+        ax.set_ylim(yr[0],yr[1])
+        #lon_r, lat_r = ortho_proj(xr, yr, inverse=True)
+        xtickv = gm.ticks(self.lon, 6)
+        ytickv = gm.ticks(self.lat, 6)
 
 
+        n=50
+        dlat = ytickv[1]-ytickv[0]
+        dlon = xtickv[1]-xtickv[0]
+        offset = (ax.transData.transform_point((0, dlat))[1] - ax.transData.transform_point((0, 0))[1])/2000*cps.scaled_pt_size
+        # Plot parallels (latitude lines) and meridians (longitude lines)
+        for lat in ytickv[1:-1]:
+            x_par, y_par = ortho_proj(np.linspace(xtickv[0]-dlat, xtickv[-1]+dlat, n), np.repeat(lat,n))  # plot meridians
+            ax.plot(x_par, y_par, color='grey', linewidth=0.3*cps.sz_ratio)
+            ax.text(np.clip(x_par[-1],xr[0],xr[1]),np.clip(y_par[-1],yr[0],yr[1])-offset,f'{lat:.7g}°',
+                    ha='right',va='top',color='grey',fontsize=cps.scaled_pt_size*.7)
+        for lon in xtickv[1:-1]:
+            x_mer, y_mer = ortho_proj( np.repeat(lon,n), np.linspace(ytickv[0]-dlon, ytickv[-1]+dlon, n))  # plot parallels
+            ax.plot(x_mer, y_mer, color='grey', linewidth=0.3*cps.sz_ratio)
+            ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
+                    ha='left',va='bottom',color='grey',fontsize=cps.scaled_pt_size*.7)
 
 
+        z = sph.to_wkb(self.polygon)
+        multipolygon = shp.from_wkb(z)
 
+        if not isinstance(multipolygon, shp.MultiPolygon):
+            multipolygon = shp.MultiPolygon([multipolygon])
 
+        for poly in multipolygon.geoms:
+            exterior_x, exterior_y = poly.exterior.xy
+            interior_coords = [interior.xy for interior in poly.interiors]
+            x_exterior, y_exterior = ortho_proj(exterior_x, exterior_y)
+            x_interior = []
+            y_interior = []
+            for interior_x, interior_y in interior_coords:
+                x_interior_tmp, y_interior_tmp = ortho_proj(interior_x, interior_y)
+                x_interior.append(x_interior_tmp)
+                y_interior.append(y_interior_tmp)
+
+            # Reassemble the projected polygon
+            projected_polygon = shp.Polygon(zip(x_exterior, y_exterior),
+                holes=[list(zip(xi, yi)) for xi, yi in zip(x_interior, y_interior)] if x_interior else None)
+
+            gm.shp_plot_polygon(ax, projected_polygon, facecolor='#e0e0e0', edgecolor='#c0c0c0', linewidth=0.5, alpha=0.5)
+
+        rims,wkt = self.find_rims(ns=30)
+        for r in rims:
+            x, y = ortho_proj(r[0],r[1])
+            ax.plot(x, y, color='black', linewidth=0.3*cps.sz_ratio)
+
+        ax.set_axis_off()
+        ax.set_aspect('equal', adjustable='box')
 
 

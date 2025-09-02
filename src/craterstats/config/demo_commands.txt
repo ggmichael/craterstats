@@ -9,6 +9,8 @@
 
 -title "Differential age fits|with 10/decade binning" -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o,binning=10/decade -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
 
+-title Pickering Crater, Mars: craters on volcanic flow --convert png %sample%/Pickering.scc
+
 -title "Cumulative fit with resurfacing correction" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq
 
 -title "Cumulative fit with resurfacing correction|showing all corrected data points" -pr cumul -cs neukumivanov -p source=%sample%/Pickering.scc,psym=sq -p type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1

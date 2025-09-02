@@ -895,6 +895,29 @@ class Craterplotset:
         add_diameter_text()
 
 
+    def create_map_plotspace(self):
+        """
+        Set up plotspace for Spatialcount map
+        """
+        if self.fig: del self.fig
+        self.EstablishFontandScaling()
 
+        # set up plot dimensions
+        margin = self.pt_size * .2  # plot margin in cm
+        plot_dims = [float(e) for e in self.print_dimensions.split('x')]
+        if len(plot_dims) == 1:
+            xsize = ysize = 5 * plot_dims[0] + 2 * margin
+            self.aspect_ratio=1
+        else:
+            xsize, ysize = (e + 2 * margin for e in plot_dims)
+            self.aspect_ratio = plot_dims[1]/plot_dims[0]
 
+        self.position = margin * np.array([1, 1, xsize / margin - 2, ysize / margin - 2])  # cm
+        normalised_position = self.position / np.array([xsize, ysize, xsize, ysize])
+
+        self.fig = mfig.Figure(figsize=[xsize * self.cm2inch, ysize * self.cm2inch], dpi=500)
+        self.ax = self.fig.add_axes(normalised_position)
+
+        title = '\n'.join(self.title.split('|')) if self.title else None
+        if title: self.ax.set_title(title)
 

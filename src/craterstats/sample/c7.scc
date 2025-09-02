@@ -2,10 +2,10 @@
 #
 # Date of measurement = 07/08/2018
 #
-# Ellipsoid axes: (modified by hand)
-a-axis radius = 1737.4
-b-axis radius = 1737.4
-c-axis radius = 1737.4
+# Ellipsoid axes:
+a-axis radius = 1737.4 <km>
+b-axis radius = 1737.4 <km>
+c-axis radius = 1737.4 <km>
 coordinate_system_name = New_Projected_Coordinate_System
 #
 # area_shapes:

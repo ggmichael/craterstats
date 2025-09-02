@@ -337,11 +337,12 @@ def outfile(name,out,ext):
         outfile = name + ext
     return outfile
 
-def convert_format(convert, out0):
-    fmt, src = convert
+def convert_format(args, cps, cs_content):
+    fmt, src = args.convert
+    scc = cst.Spatialcount(src.replace('%sample%/', cst.PATH + 'sample/'))
     fmt1 = fmt.lstrip(".")
     fmt0 = gm.filename(src,'e').lstrip(".")
-    out = outfile(gm.filename(src, 'n'), out0, '.'+fmt1)
+    out = outfile(gm.filename(src, 'n'), args.out, '.'+fmt1)
     match fmt1:
         case 'stat' if fmt0 in ['diam','scc','shp']:
             cc = cst.Cratercount(src)
@@ -357,6 +358,14 @@ def convert_format(convert, out0):
                 scc = cst.Spatialcount(src)
                 scc.writeSHPfiles(out)
                 out = gm.filename(out,'pn1e', '[_CRATER,_AREA]')
+        case 'png'|'svg'|'pdf':
+            if fmt0 in ['shp','scc']:
+                out = re.sub(r'_?CRATER_?', '', out)
+                out = gm.filename(out, 'pn1e','_map')
+                cps.create_map_plotspace()
+                scc.plot(cps)
+                cps.fig.savefig(out, dpi=500, transparent=cps.transparent, bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
+                gm.write_textfile(gm.filename(out,'pn1','.cs'), cs_content)
         case _:
             print(f"{fmt0} to {fmt1} conversion not supported")
             return
@@ -471,10 +480,6 @@ def main(args0=None):
         demo()
         return
 
-    if args.convert:
-        convert_format(args.convert, args.out)
-        return
-
     dflt = defaults()
     cp_dicts = construct_plot_dicts(args,dflt['plot'])
     if args.input:
@@ -489,19 +494,24 @@ def main(args0=None):
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
 
-
     cps=cst.Craterplotset(cps_dict) #,craterplot=cpl)
     for d in cp_dicts:
         if isinstance(d['colour'], int):d['colour']=cps.palette[d['colour']]
     cpl = [cst.Craterplot(d) for d in cp_dicts]
     cps.craterplot=cpl
 
+    cs_content = ''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+shlex.quote(e) for e in args0])[1:]
+
+    if args.convert:
+        convert_format(args, cps, cs_content)
+        return
+
     if cpl and cps.presentation not in ('sequence','uncertainty'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',''.join(['\n'+e if e[0]=='-' and not (e+' ')[1].isdigit() else ' '+shlex.quote(e) for e in args0])[1:])
+        gm.write_textfile(cps_dict['out']+'.cs',cs_content)
 
     def savefig(tag=''):
         cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=cps.transparent,
