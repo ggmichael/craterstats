@@ -1,7 +1,6 @@
 -o demo/18-demo
--title 'Differential plot|with root-2 binning and root-2 diameter scale'
--cs neukumivanov
--style root-2
--p source=%sample%/Pickering.scc,psym=x,binning=root-2
--p 'type=poisson,range=[.2,.7],isochron=1'
--p 'range=[2,5],colour=violet,offset_age=[2,-3]'
+-title 'Poisson calculation for buffered crater count|indicating area and perimeter'
+-cs neukum83
+-pr diff
+-p source=%sample%/c7.scc
+-p 'type=b-poisson,range=[.25,2],offset=[-3,2]'

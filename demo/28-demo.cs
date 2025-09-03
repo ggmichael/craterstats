@@ -1,0 +1,6 @@
+-o demo/28-demo
+-title 'Bin overlay to aid diameter selection|(normally remove before publication)'
+-cs neukumivanov
+-p source=%sample%/Pickering.scc,binning=pseudo-log
+-p 'type=poisson,range=[.26,.63]'
+--bins

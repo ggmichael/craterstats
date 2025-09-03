@@ -1,0 +1,3 @@
+-o demo/03-demo
+-title Pickering Crater, Mars: craters on volcanic flow
+--convert png %sample%/Pickering.scc

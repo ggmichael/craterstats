@@ -1,7 +1,7 @@
 -o demo/10-demo
--title Hartmann style plot
--pr hartmann
--cs hartmanndaubar2016
---equilibrium hartmann
--isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
--p source=%sample%/Pickering.scc,binning=root2
+-title R-plot with 10/decade binning
+-pr rplot
+-cs neukumivanov
+-ep mars
+-p source=%sample%/Pickering.scc,psym=o,binning=10/decade
+-p 'type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]'
