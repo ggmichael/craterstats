@@ -61,7 +61,10 @@
   Show bin overlay to aid diameter selection.
 
 `--convert FORMAT SOURCE`
-  Translate file to desired format [stat|scc|shp] from given source file.
+  Translate file from one format to another. Possible translations:
+ * `diam`, `scc`, `shp` to `stat`
+ * `scc` to `shp` or inverse (`shp` is a _CRATER, _AREA set of shapefiles)
+ * `scc`, `shp` to `png`, `svg`, `pdf` (convert to map)
 
 `-o, --out FILE_OR_DIR`
   Output filename (omit extension for default) or directory.
@@ -176,7 +179,7 @@
   Multiple key-value pairs should be separated by commas. Available options:
 
   * `source=filename`
-    Data source filename.
+    Data source filename (of type `.stat`, `.diam`, `.scc`, `_CRATER.shp`)
 
   * `name=label`
     Label for legend (filename used by default).
