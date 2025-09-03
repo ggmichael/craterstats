@@ -43,9 +43,18 @@ Demo 2
 -p 'range=[2,5],colour=red'
 ```
 
-![03-demo](https://ggmichael.github.io/craterstats/demo/03-demo.png)
+![03-demo](https://ggmichael.github.io/craterstats/demo/03-demo_map.png)
 
 Demo 3
+
+```
+-title Pickering Crater, Mars: craters on volcanic flow
+--convert png %sample%/Pickering.scc
+```
+
+![04-demo](https://ggmichael.github.io/craterstats/demo/04-demo.png)
+
+Demo 4
 
 ```
 -title 'Cumulative fit with resurfacing correction'
@@ -55,9 +64,9 @@ Demo 3
 -p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq'
 ```
 
-![04-demo](https://ggmichael.github.io/craterstats/demo/04-demo.png)
+![05-demo](https://ggmichael.github.io/craterstats/demo/05-demo.png)
 
-Demo 4
+Demo 5
 
 ```
 -title 'Cumulative fit with resurfacing correction|showing all corrected data points'
@@ -67,9 +76,9 @@ Demo 4
 -p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1'
 ```
 
-![05-demo](https://ggmichael.github.io/craterstats/demo/05-demo.png)
+![06-demo](https://ggmichael.github.io/craterstats/demo/06-demo.png)
 
-Demo 5
+Demo 6
 
 ```
 -title 'Cumulative fits showing resurfacing correction|and fitted isochrons'
@@ -80,9 +89,9 @@ Demo 5
 -p 'range=[.2,.7],resurf=1,psym=fsq'
 ```
 
-![06-demo](https://ggmichael.github.io/craterstats/demo/06-demo.png)
+![07-demo](https://ggmichael.github.io/craterstats/demo/07-demo.png)
 
-Demo 6
+Demo 7
 
 ```
 -title 'Cumulative fits showing resurfacing correction,|equilibrium function and epoch system'
@@ -95,9 +104,9 @@ Demo 6
 -p 'range=[.2,.7],resurf=1,psym=fsq'
 ```
 
-![07-demo](https://ggmichael.github.io/craterstats/demo/07-demo.png)
+![08-demo](https://ggmichael.github.io/craterstats/demo/08-demo.png)
 
-Demo 7
+Demo 8
 
 ```
 -title 'Modified legend 1:|renamed data series, N(1) value, but no count or diameter range'
@@ -108,9 +117,9 @@ Demo 7
 -p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq'
 ```
 
-![08-demo](https://ggmichael.github.io/craterstats/demo/08-demo.png)
+![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo.png)
 
-Demo 8
+Demo 9
 
 ```
 -title 'Modified legend 2:|only count and diameter range; no function citations'
@@ -121,9 +130,9 @@ Demo 8
 -p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq'
 ```
 
-![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo.png)
+![10-demo](https://ggmichael.github.io/craterstats/demo/10-demo.png)
 
-Demo 9
+Demo 10
 
 ```
 -title R-plot with 10/decade binning
@@ -134,9 +143,9 @@ Demo 9
 -p 'type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]'
 ```
 
-![10-demo](https://ggmichael.github.io/craterstats/demo/10-demo.png)
+![11-demo](https://ggmichael.github.io/craterstats/demo/11-demo.png)
 
-Demo 10
+Demo 11
 
 ```
 -title Hartmann style plot
@@ -147,9 +156,9 @@ Demo 10
 -p source=%sample%/Pickering.scc,binning=root2
 ```
 
-![11-demo](https://ggmichael.github.io/craterstats/demo/11-demo.png)
+![12-demo](https://ggmichael.github.io/craterstats/demo/12-demo.png)
 
-Demo 11
+Demo 12
 
 ```
 -title Hartmann-style plot with finer binning
@@ -160,9 +169,9 @@ Demo 11
 -p source=%sample%/Pickering.scc
 ```
 
-![12-demo](https://ggmichael.github.io/craterstats/demo/12-demo.png)
+![13-demo](https://ggmichael.github.io/craterstats/demo/13-demo.png)
 
-Demo 12
+Demo 13
 
 ```
 -title Hartmann 2010 crater count template
@@ -172,9 +181,9 @@ Demo 12
 -isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
 ```
 
-![13-demo](https://ggmichael.github.io/craterstats/demo/13-demo.png)
+![14-demo](https://ggmichael.github.io/craterstats/demo/14-demo.png)
 
-Demo 13
+Demo 14
 
 ```
 -title 'Hartmann-style plot with other chronology system,|Poisson age analysis, and without $\mu$-notation'
@@ -187,9 +196,9 @@ Demo 13
 -p 'colour=red1,psym=filltriangle,range=[2,5],offset=[3,0]'
 ```
 
-![14-demo](https://ggmichael.github.io/craterstats/demo/14-demo.png)
+![15-demo](https://ggmichael.github.io/craterstats/demo/15-demo.png)
 
-Demo 14
+Demo 15
 
 ```
 -title Chronology function with Mars epochs and transition times
@@ -198,9 +207,9 @@ Demo 14
 -cs neukumivanov
 ```
 
-![15-demo](https://ggmichael.github.io/craterstats/demo/15-demo.png)
+![16-demo](https://ggmichael.github.io/craterstats/demo/16-demo.png)
 
-Demo 15
+Demo 16
 
 ```
 -title Chronology function with lunar epochs and transition times
@@ -208,9 +217,9 @@ Demo 15
 -ep wilhelms
 ```
 
-![16-demo](https://ggmichael.github.io/craterstats/demo/16-demo.png)
+![17-demo](https://ggmichael.github.io/craterstats/demo/17-demo.png)
 
-Demo 16
+Demo 17
 
 ```
 -title 'Impact rate function|with alternative specified reference diameter'
@@ -220,9 +229,9 @@ Demo 16
 -ep wilhelms
 ```
 
-![17-demo](https://ggmichael.github.io/craterstats/demo/17-demo.png)
+![18-demo](https://ggmichael.github.io/craterstats/demo/18-demo.png)
 
-Demo 17
+Demo 18
 
 ```
 -title 'Poisson calculation for buffered crater count|indicating area and perimeter'
@@ -232,9 +241,9 @@ Demo 17
 -p 'type=b-poisson,range=[.25,2],offset=[-3,2]'
 ```
 
-![18-demo](https://ggmichael.github.io/craterstats/demo/18-demo.png)
+![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo.png)
 
-Demo 18
+Demo 19
 
 ```
 -title 'Differential plot|with root-2 binning and root-2 diameter scale'
@@ -245,9 +254,9 @@ Demo 18
 -p 'range=[2,5],colour=violet,offset_age=[2,-3]'
 ```
 
-![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo.png)
+![20-demo](https://ggmichael.github.io/craterstats/demo/20-demo.png)
 
-Demo 19
+Demo 20
 
 ```
 -title Cumulative plot with no binning
@@ -260,9 +269,9 @@ Demo 19
 -p 'range=[2,5],colour=blue,offset=[2,-2]'
 ```
 
-![20-demo](https://ggmichael.github.io/craterstats/demo/20-demo.png)
+![21-demo](https://ggmichael.github.io/craterstats/demo/21-demo.png)
 
-Demo 20
+Demo 21
 
 ```
 -title Plot with inverted colour
@@ -273,9 +282,9 @@ Demo 20
 -p 'range=[2,5],colour=violet,offset_age=[2,-3]'
 ```
 
-![21-demo](https://ggmichael.github.io/craterstats/demo/21-demo.png)
+![22-demo](https://ggmichael.github.io/craterstats/demo/22-demo.png)
 
-Demo 21
+Demo 22
 
 ```
 -title Plot with left-positioned age annotation
@@ -285,9 +294,9 @@ Demo 21
 -p 'range=[2,5],colour=blue,age_left=1'
 ```
 
-![22-demo](https://ggmichael.github.io/craterstats/demo/22-demo.png)
+![23-demo](https://ggmichael.github.io/craterstats/demo/23-demo.png)
 
-Demo 22
+Demo 23
 
 ```
 -title 'Plot with adjusted position of age annotation:|offset_age=[+1,+4] (in 1/20ths of decade)'
@@ -297,9 +306,9 @@ Demo 22
 -p 'range=[2,5],colour=blue,age_left=1,offset_age=[1,4]'
 ```
 
-![23-demo](https://ggmichael.github.io/craterstats/demo/23-demo.png)
+![24-demo](https://ggmichael.github.io/craterstats/demo/24-demo.png)
 
-Demo 23
+Demo 24
 
 ```
 -title Fig 3, Michael et al '(2021)'
@@ -319,9 +328,9 @@ Demo 23
 -sf 2
 ```
 
-<img src = "https://ggmichael.github.io/craterstats/demo/24-demo.svg" width = "100%" />
+<img src = "https://ggmichael.github.io/craterstats/demo/25-demo.svg" width = "100%" />
 
-Demo 24
+Demo 25
 
 ```
 -title Plot in SVG vector format '(PDF' also 'possible)'
@@ -342,11 +351,11 @@ Demo 24
 -sf 2
 ```
 
-![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_err.png)
-![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_age.png)
-![25-demo](https://ggmichael.github.io/craterstats/demo/25-demo_k.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_k.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_age.png)
+![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo_err.png)
 
-Demo 25
+Demo 26
 
 ```
 -title 'Evaluation of small-area, low-number count|assuming complete count of craters >150 m'
@@ -356,9 +365,9 @@ Demo 25
 -d_min 0.15
 ```
 
-![26-demo](https://ggmichael.github.io/craterstats/demo/26-demo.png)
+![27-demo](https://ggmichael.github.io/craterstats/demo/27-demo.png)
 
-Demo 26
+Demo 27
 
 ```
 -title Sequence plot
@@ -386,9 +395,9 @@ Demo 26
 -p 'src=%sample%/w5_l3.diam,rng=[0.15,0.8],nm=W5l3'
 ```
 
-![27-demo](https://ggmichael.github.io/craterstats/demo/27-demo.png)
+![28-demo](https://ggmichael.github.io/craterstats/demo/28-demo.png)
 
-Demo 27
+Demo 28
 
 ```
 -title 'Bin overlay to aid diameter selection|(normally remove before publication)'
