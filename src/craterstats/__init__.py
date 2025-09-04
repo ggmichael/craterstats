@@ -12,6 +12,7 @@ from .Craterpdf import Craterpdf
 from .Epochs import Epochs
 from .fractional_crater_transform import fractional_crater_transform
 from .Spatialcount import Spatialcount
+from .Randomnessanalysis import Randomnessanalysis
 
 from .bin_bias_correction import bin_bias_correction
 from .str_age import str_age
