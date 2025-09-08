@@ -278,11 +278,14 @@ class Cratercount:
 
         else:
             bins=self.generate_bins(binning,d,offset=offset)
-            h_event, bins = np.histogram(d, bins=bins)
-            h,bins=np.histogram(d,weights=self.fraction,bins=bins)
+            h_event, _ = np.histogram(d, bins=bins)
+            self.reverse_indices = np.digitize(d, bins) # needed for randomness analysis
+            h,_ = np.histogram(d,weights=self.fraction,bins=bins)
 
             width=bins[1:]-bins[:-1]
             bin_centres=np.sqrt(bins[1:]*bins[:-1])
+
+
 
         self.binned={'d_min':bins[:-1] if binning!='none' else bins,
                      'd_max':bins[1:] if binning!='none' else bins,
@@ -294,6 +297,7 @@ class Cratercount:
                      'ncum_event':np.flip(np.cumsum(np.flip(h_event)))
                      }
         self.binning=binning
+
 
     def decode_range(self,range,binning,snap):
         if not self.prebinned:

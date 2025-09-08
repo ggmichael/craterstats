@@ -1,8 +1,6 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 import copy
-
-import numpy as np
 import sys
 import os
 
@@ -15,12 +13,12 @@ import matplotlib.colors as colors
 import matplotlib.patches as patches
 import matplotlib.font_manager as fm
 
+import numpy as np
 from palettable.colorbrewer.diverging import Spectral_9
 from progressbar import progressbar
 
 import craterstats as cst
 import craterstats.gm as gm
-
 
 class Craterplotset:
     """
@@ -65,6 +63,7 @@ class Craterplotset:
         self.sz_ratio= self.pt_size / 9.
         self.grey = cst.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cst.PALETTE]
+        self.marker_def = [e[2].copy() for e in cst.MARKERS]
 
         
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
@@ -138,7 +137,6 @@ class Craterplotset:
             'ytick.minor.width': tw,
         })
 
-            
     def CreatePlotSpace(self):
         """
         Set up plot dimensions, font and scaled font size, titles, tick marks, and tick labels
@@ -184,11 +182,10 @@ class Craterplotset:
         normalised_position=self.position/np.array([xsize,ysize,xsize,ysize])  #pos, width for matplotlib axes
 
 # set up marker size
-        self.marker_def = [e[2].copy() for e in cst.MARKERS]
-        f = self.decades[0]*self.print_scale/7.5
+        f = self.decades[0] * self.print_scale / 7.5
         for e in self.marker_def:
-            e['markersize'] *= 0.8 * f # * self.print_scale/1.875
-            e['markeredgewidth'] = .5 * f # * self.print_scale/1.875
+            e['markersize'] *= 0.8 * f  # * self.print_scale/1.875
+            e['markeredgewidth'] = .5 * f  # * self.print_scale/1.875
 
 # set up titles, tick marks, and tick labels
 
@@ -213,16 +210,9 @@ class Craterplotset:
         if self.presentation in ['chronology', 'rate']:
             xminor, xmajor = .5, 1
         else:
-            if self.style=='root-2' or self.presentation=='Hartmann':                
-                v=[np.log10(2.**e) for e in range(-10,11)] #set up root-2/hartmann axis labels
-                labels=[str(e) for e in
-                        (1, 2, 4, 8, 16, 31, 63, 125, 250, 500, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024)]
-                labels[10]='  '+labels[10]+"km"
-                xtickv,xtickname = map(list,zip(*[(val,txt) for val,txt in zip(v,labels) if val>=self.xrange[0] and val<=self.xrange[1]]))
-                if xtickv[0]<0: xtickname[0]+='m'
-                xminor=(xtickv[1]-xtickv[0])/2
+            if self.style=='root-2' or self.presentation=='Hartmann':
+                xtickv, xtickname, xminor = cst.Hartmann_bins(self.xrange)
                 plt.rcParams.update({'xtick.labelsize':self.scaled_pt_size*.75})
-                
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
                 xtickname=[format(10**e,'0g')+r'$\,$km' if e>=0 else format(10**(e+3),'0g')+r'$\,$m' for e in v]

@@ -10,12 +10,15 @@ from .Craterplotset import Craterplotset
 from .Craterplot import Craterplot
 from .Craterpdf import Craterpdf
 from .Epochs import Epochs
-from .fractional_crater_transform import fractional_crater_transform
 from .Spatialcount import Spatialcount
 from .Randomnessanalysis import Randomnessanalysis
 
-from .bin_bias_correction import bin_bias_correction
-from .str_age import str_age
-from .merge_cratercounts import merge_cratercounts
+from .miscellaneous import (
+    bin_bias_correction,
+    fractional_crater_transform,
+    merge_cratercounts,
+    str_age,
+    Hartmann_bins
+)
 
 from .constants import *

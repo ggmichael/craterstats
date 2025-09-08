@@ -1,23 +1,27 @@
 #  Copyright (c) 2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-import numpy as np
+from collections import namedtuple
+from datetime import datetime
 import math
-import matplotlib.pyplot as plt
+import os
 import re
+import shutil
+
+import numpy as np
+import matplotlib.pyplot as plt
 import shapefile  # pyshp
 import shapely as shp
 import spherely as sph
 import pyproj as prj
-import os
-import shutil
-from datetime import datetime
 
 import craterstats as cst
 import craterstats.gm as gm
 
 class Spatialcount:
     '''Reads spatial crater count data'''
+
+    Craterlist = namedtuple('Craterlist', ['lon','lat','diam','fraction'])
 
     def __init__(self,filename=None,area_file=None):
         self.filename=filename
@@ -287,10 +291,12 @@ class Spatialcount:
         gm.write_textfile(gm.filename(fa, 'pn1', '.prj'), wkt)
         shutil.copy(cst.PATH + 'config/_AREA.qml', gm.filename(fa, 'pn1', '.qml'))
 
-    def find_rims(self,ns=100):
+    def find_rims(self,craters=None,ns=100):
         """
         Calculate crater rim lon lat points given centres and diameters
         """
+        lon,lat,diam = (craters.lon,craters.lat,craters.diam) if craters else (self.lon,self.lat,self.diam)
+
         theta = [2 * math.pi * i / ns for i in range(ns + 1)]
         cx, cy = np.array([(math.cos(e), math.sin(e)) for e in theta]).T
         rs = f'{self.planetary_radius * 1e3:0.0f}'
@@ -301,7 +307,7 @@ class Spatialcount:
         # nb: max offset from projection centre is grid/2
         grid = 5
         t_dict = {}
-        for d, x, y in zip(self.diam, self.lon, self.lat):
+        for d, x, y in zip(diam, lon, lat):
             origin = (round(x/grid)*grid,round(y/grid)*grid)
             if not origin in t_dict:
                 proj4 = f"+proj=laea +lat_ts=0 +lat_0={origin[1]} +lon_0={origin[0]} +R={self.planetary_radius * 1e3:0.0f} +units=m +no_defs"
@@ -330,47 +336,22 @@ class Spatialcount:
             decomposed += [rings]
         return decomposed
 
-    def plot(self,cps):
+    def plot(self,cps,craters=None,grid=False,ax=None):
         """
         Plot Spatialcount
 
         """
-        ax=cps.ax
+        if not ax:
+            ax=cps.ax
+        #lon, lat, diam = (craters.lon, craters.lat, craters.diam) if craters else (self.lon, self.lat, self.diam)
 
-        cenlon = sum(gm.range(self.lon))/2
-        cenlat = sum(gm.range(self.lat)) / 2
+        cen = sph.centroid(self.polygon)
+        cenlon, cenlat = (sph.get_x(cen),sph.get_y(cen))
+        xr = yr = None
         ortho_proj = prj.Proj(proj='ortho', lat_0=cenlat, lon_0=cenlon, R=self.planetary_radius)
+        self.ortho_proj = ortho_proj
 
-        #fig, ax = plt.subplots(figsize=(8, 8))
-        x, y = ortho_proj(self.lon, self.lat)
-        #ax.scatter(x, y, color='red', marker='o', s=5, zorder=5)
-
-        xr = np.array(gm.range(x))+np.array([-1,1])*gm.mag(x)*.1
-        yr = np.array(gm.range(y))+np.array([-1,1])*gm.mag(y)*.1
-        ax.set_xlim(xr[0],xr[1])
-        ax.set_ylim(yr[0],yr[1])
-        #lon_r, lat_r = ortho_proj(xr, yr, inverse=True)
-        xtickv = gm.ticks(self.lon, 6)
-        ytickv = gm.ticks(self.lat, 6)
-
-
-        n=50
-        dlat = ytickv[1]-ytickv[0]
-        dlon = xtickv[1]-xtickv[0]
-        offset = (ax.transData.transform_point((0, dlat))[1] - ax.transData.transform_point((0, 0))[1])/2000*cps.scaled_pt_size
-        # Plot parallels (latitude lines) and meridians (longitude lines)
-        for lat in ytickv[1:-1]:
-            x_par, y_par = ortho_proj(np.linspace(xtickv[0]-dlat, xtickv[-1]+dlat, n), np.repeat(lat,n))  # plot meridians
-            ax.plot(x_par, y_par, color='grey', linewidth=0.3*cps.sz_ratio)
-            ax.text(np.clip(x_par[-1],xr[0],xr[1]),np.clip(y_par[-1],yr[0],yr[1])-offset,f'{lat:.7g}°',
-                    ha='right',va='top',color='grey',fontsize=cps.scaled_pt_size*.7)
-        for lon in xtickv[1:-1]:
-            x_mer, y_mer = ortho_proj( np.repeat(lon,n), np.linspace(ytickv[0]-dlon, ytickv[-1]+dlon, n))  # plot parallels
-            ax.plot(x_mer, y_mer, color='grey', linewidth=0.3*cps.sz_ratio)
-            ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
-                    ha='left',va='bottom',color='grey',fontsize=cps.scaled_pt_size*.7)
-
-
+        # do area
         z = sph.to_wkb(self.polygon)
         multipolygon = shp.from_wkb(z)
 
@@ -391,14 +372,43 @@ class Spatialcount:
             # Reassemble the projected polygon
             projected_polygon = shp.Polygon(zip(x_exterior, y_exterior),
                 holes=[list(zip(xi, yi)) for xi, yi in zip(x_interior, y_interior)] if x_interior else None)
-
             gm.shp_plot_polygon(ax, projected_polygon, facecolor='#e0e0e0', edgecolor='#c0c0c0', linewidth=0.5, alpha=0.5)
 
-        rims,wkt = self.find_rims(ns=30)
+            xr = gm.range(list(x_exterior) + list(xr) if xr else x_exterior)
+            yr = gm.range(list(y_exterior) + list(yr) if yr else y_exterior)
+
+        xr = np.array(gm.range(xr)) + np.array([-1, 1]) * gm.mag(xr) * (.1 if grid else .05)
+        yr = np.array(gm.range(yr)) + np.array([-1, 1]) * gm.mag(yr) * (.1 if grid else .05)
+
+        # do gridlines
+        if grid:
+            xtickv = gm.ticks(xr, 6)
+            ytickv = gm.ticks(yr, 6)
+
+            ns=50
+            dlat = ytickv[1]-ytickv[0]
+            dlon = xtickv[1]-xtickv[0]
+            offset = (ax.transData.transform_point((0, dlat))[1] - ax.transData.transform_point((0, 0))[1])/2000*cps.scaled_pt_size
+            # Plot parallels (latitude lines) and meridians (longitude lines)
+            for lat in ytickv[1:-1]:
+                x_par, y_par = ortho_proj(np.linspace(xtickv[0]-dlat, xtickv[-1]+dlat, ns), np.repeat(lat,ns))  # plot meridians
+                ax.plot(x_par, y_par, color='grey', linewidth=0.3*cps.sz_ratio)
+                ax.text(np.clip(x_par[-1],xr[0],xr[1]),np.clip(y_par[-1],yr[0],yr[1])-offset,f'{lat:.7g}°',
+                        ha='right',va='top',color='grey',fontsize=cps.scaled_pt_size*.7)
+            for lon in xtickv[1:-1]:
+                x_mer, y_mer = ortho_proj( np.repeat(lon,ns), np.linspace(ytickv[0]-dlon, ytickv[-1]+dlon, ns))  # plot parallels
+                ax.plot(x_mer, y_mer, color='grey', linewidth=0.3*cps.sz_ratio)
+                ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
+                        ha='left',va='bottom',color='grey',fontsize=cps.scaled_pt_size*.7)
+
+        # do craters
+        rims,wkt = self.find_rims(craters=craters,ns=30)
         for r in rims:
             x, y = ortho_proj(r[0],r[1])
             ax.plot(x, y, color='black', linewidth=0.3*cps.sz_ratio)
 
+        ax.set_xlim(xr[0],xr[1])
+        ax.set_ylim(yr[0],yr[1])
         ax.set_axis_off()
         ax.set_aspect('equal', adjustable='box')
 
