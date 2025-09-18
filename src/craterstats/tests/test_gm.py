@@ -156,6 +156,17 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.read_textstructure('dict={\n  a=30\n  b=[2,3]\n}', from_string=True), {'dict': {'a': '30', 'b': ['2', '3']}})
         self.assertEqual(gm.read_textstructure('implied=1\nimplied=2\nimplied=3', from_string=True), {'implied': ['1', '2', '3']})
 
+        # nested table
+        test = """
+m2cnd={
+    trials = 50
+    results={bin, n_sigma
+    -3.5    -3.19
+    -3      -0.218
+    }
+}
+"""
+        self.assertEqual(gm.read_textstructure(test, from_string=True),{'m2cnd': {'trials':'50', 'results':{'bin':['-3.5','-3'], 'n_sigma':['-3.19','-0.218']}}})
 
 if __name__ == '__main__':
     unittest.main()
