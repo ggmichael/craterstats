@@ -116,6 +116,12 @@ def get_parser():
                              "resurf_showall={1,0}, show all data with resurfacing correction,"
                              "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
+
+    parser.add_argument("-ra", "--randomness_analysis", help="source fil for randomness analysis", nargs='+', action=SpacedString)
+    parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
+    parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
+    parser.add_argument("-adjust", help="x-offset,y-offset,reduction(%) [0-100,0-100,50-100] for randomness multiplots", nargs=1, type=str)
+
     return parser
 
 def defaults():
@@ -326,18 +332,17 @@ def construct_plot_dicts(args,plot):
         cpl += [p]
     return cpl
 
-
-def outfile(name,out,ext):
-    if out:
-        if os.path.isdir(out):
-            outfile = out + name + ext
-        else:
-            outfile = gm.filename(out,'pn') + ext
-    else:
-        outfile = name + ext
-    return outfile
-
 def convert_format(args, cps, cs_content):
+    def outfile(name, out, ext):
+        if out:
+            if os.path.isdir(out):
+                outfile = out + name + ext
+            else:
+                outfile = gm.filename(out, 'pn') + ext
+        else:
+            outfile = name + ext
+        return outfile
+
     fmt, src = args.convert
     scc = cst.Spatialcount(src.replace('%sample%/', cst.PATH + 'sample/'))
     fmt1 = fmt.lstrip(".")
@@ -430,6 +435,22 @@ def create_desktop_icon():
         case _:
             print(f"Desktop shortcut creation is not yet implemented for: {system}.")
 
+def randomness_analysis(args,cps):
+    out = '' if cps.out=='out' else gm.filename(cps.out,'p')
+    ra = cst.Randomnessanalysis(args.randomness_analysis, out=out)
+    cps.out = gm.filename(ra.ra_file,'pn')
+    trials = args.trials if args.trials else 300
+    cps.measures = args.measure.split(',') if args.measure else ['m2cnd','sdaa']
+    diff = set(cps.measures) - {'m2cnd','sdaa'}
+    if diff:
+        sys.exit(f"Invalid measure: {diff}")
+    ra.adjust = (int(e) for e in args.adjust.split(',')) if args.adjust else (0,20,80)
+    for measure in cps.measures:
+        ra.run_montecarlo(trials, measure)
+        ra.write()
+    return ra
+
+
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
@@ -510,17 +531,23 @@ def main(args0=None):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
-    if not args.input:
-        gm.write_textfile(cps_dict['out']+'.cs',cs_content)
 
     def savefig(tag=''):
-        cps.fig.savefig(cps_dict['out'] + tag +'.' + f, dpi=500, transparent=cps.transparent,
+        cps.fig.savefig(cps.out + tag +'.' + f, dpi=500, transparent=cps.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
 
     drawn=False
     for f in cps.format:
         if f in {'png','pdf','svg','tif'}:
-            if cps.presentation == 'uncertainty':
+            if args.randomness_analysis:
+                ra = randomness_analysis(args,cps)
+                for measure in cps.measures:
+                    ra.plot_montecarlo_split(cps, measure)
+                    savefig('-'+measure)
+                cps.create_map_plotspace()
+                ra.plot(cps,grid=True)
+                savefig('-map')
+            elif cps.presentation == 'uncertainty':
                 for plt in ('k','err','age'):
                     cps.draw()
                     cps.age_area_plot(plt)
@@ -532,7 +559,10 @@ def main(args0=None):
                 savefig()
 
         if f in {'csv'}:
-            cps.create_summary_table(f_out=cps_dict['out']+'.'+f)
+            cps.create_summary_table(f_out=cps.out+'.'+f)
+
+    if not args.input:
+        gm.write_textfile(cps.out + '.cs', cs_content)
 
 if __name__ == '__main__': 
     main()

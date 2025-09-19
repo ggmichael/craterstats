@@ -320,12 +320,14 @@ class Spatialcount:
             rims += [ll_pts]
         return rims,wkt
 
-    def polygon_to_pts(self):
+    def polygon_to_pts(self,p0=None):
         """
         Decompose polygon/multipolygon into list of lists of rings/holes
         """
+        if not p0:
+            p0=self.polygon
         decomposed=[]
-        for p in self.polygon if isinstance(self.polygon, list) else [self.polygon]:
+        for p in p0 if isinstance(p0, list) else [p0]:
             z = sph.to_wkb(p)
             y = shp.from_wkb(z)
             x = shp.get_exterior_ring(y)
@@ -343,11 +345,11 @@ class Spatialcount:
         """
         if not ax:
             ax=cps.ax
-        #lon, lat, diam = (craters.lon, craters.lat, craters.diam) if craters else (self.lon, self.lat, self.diam)
+        sz_ratio = ax.get_position().width / cps.ax.get_position().width
 
         cen = sph.centroid(self.polygon)
         cenlon, cenlat = (sph.get_x(cen),sph.get_y(cen))
-        xr = yr = None
+        xr0 = yr0 = None
         ortho_proj = prj.Proj(proj='ortho', lat_0=cenlat, lon_0=cenlon, R=self.planetary_radius)
         self.ortho_proj = ortho_proj
 
@@ -372,40 +374,42 @@ class Spatialcount:
             # Reassemble the projected polygon
             projected_polygon = shp.Polygon(zip(x_exterior, y_exterior),
                 holes=[list(zip(xi, yi)) for xi, yi in zip(x_interior, y_interior)] if x_interior else None)
-            gm.shp_plot_polygon(ax, projected_polygon, facecolor='#e0e0e0', edgecolor='#c0c0c0', linewidth=0.5, alpha=0.5)
+            gm.shp_plot_polygon(ax, projected_polygon, facecolor=cps.grey[2], edgecolor=cps.grey[1], linewidth=0.5*sz_ratio)
 
-            xr = gm.range(list(x_exterior) + list(xr) if xr else x_exterior)
-            yr = gm.range(list(y_exterior) + list(yr) if yr else y_exterior)
+            xr0 = gm.range(list(x_exterior) + list(xr0) if xr0 else x_exterior)
+            yr0 = gm.range(list(y_exterior) + list(yr0) if yr0 else y_exterior)
 
-        xr = np.array(gm.range(xr)) + np.array([-1, 1]) * gm.mag(xr) * (.1 if grid else .05)
-        yr = np.array(gm.range(yr)) + np.array([-1, 1]) * gm.mag(yr) * (.1 if grid else .05)
+        xr = np.array(gm.range(xr0)) + np.array([-1, 1]) * gm.mag(xr0) * (.1 if grid else .05)
+        yr = np.array(gm.range(yr0)) + np.array([-1, 1]) * gm.mag(yr0) * (.1 if grid else .05)
 
-        # do gridlines
+        # do gridlines - this probably needs improving for poles
         if grid:
-            xtickv = gm.ticks(xr, 6)
-            ytickv = gm.ticks(yr, 6)
+            lonr, latr = ortho_proj(xr0, yr0, inverse=True)
+
+            xtickv = gm.ticks(lonr, 6)
+            ytickv = gm.ticks(latr, 6)
 
             ns=50
             dlat = ytickv[1]-ytickv[0]
             dlon = xtickv[1]-xtickv[0]
-            offset = (ax.transData.transform_point((0, dlat))[1] - ax.transData.transform_point((0, 0))[1])/2000*cps.scaled_pt_size
+            offset = (ax.transData.transform_point((0, dlat))[1] - ax.transData.transform_point((0, 0))[1])/2e4*cps.scaled_pt_size
             # Plot parallels (latitude lines) and meridians (longitude lines)
             for lat in ytickv[1:-1]:
                 x_par, y_par = ortho_proj(np.linspace(xtickv[0]-dlat, xtickv[-1]+dlat, ns), np.repeat(lat,ns))  # plot meridians
-                ax.plot(x_par, y_par, color='grey', linewidth=0.3*cps.sz_ratio)
+                ax.plot(x_par, y_par, color=cps.grey[0], linewidth=0.3*cps.sz_ratio)
                 ax.text(np.clip(x_par[-1],xr[0],xr[1]),np.clip(y_par[-1],yr[0],yr[1])-offset,f'{lat:.7g}°',
-                        ha='right',va='top',color='grey',fontsize=cps.scaled_pt_size*.7)
+                        ha='right',va='top',color=cps.grey[0],fontsize=cps.scaled_pt_size*.5)
             for lon in xtickv[1:-1]:
                 x_mer, y_mer = ortho_proj( np.repeat(lon,ns), np.linspace(ytickv[0]-dlon, ytickv[-1]+dlon, ns))  # plot parallels
-                ax.plot(x_mer, y_mer, color='grey', linewidth=0.3*cps.sz_ratio)
+                ax.plot(x_mer, y_mer, color=cps.grey[0], linewidth=0.3*cps.sz_ratio)
                 ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
-                        ha='left',va='bottom',color='grey',fontsize=cps.scaled_pt_size*.7)
+                        ha='left',va='bottom',color=cps.grey[0],fontsize=cps.scaled_pt_size*.5)
 
         # do craters
         rims,wkt = self.find_rims(craters=craters,ns=30)
         for r in rims:
             x, y = ortho_proj(r[0],r[1])
-            ax.plot(x, y, color='black', linewidth=0.3*cps.sz_ratio)
+            ax.plot(x, y, color=cps.palette[0], linewidth=0.3*cps.sz_ratio,zorder=2)
 
         ax.set_xlim(xr[0],xr[1])
         ax.set_ylim(yr[0],yr[1])

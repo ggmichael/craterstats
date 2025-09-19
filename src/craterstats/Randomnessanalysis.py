@@ -5,13 +5,14 @@ from collections import namedtuple
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import math
 import os
-import re
 
 import astropy_healpix as hpx
 import astropy.units as u
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
+from scipy.spatial import SphericalVoronoi
+import shapely as shp
 import spherely as sph
 from progressbar import ProgressBar
 import pyproj as prj
@@ -23,12 +24,17 @@ import craterstats.gm as gm
 class Randomnessanalysis(cst.Spatialcount):
     '''Applies randomness tests to Spatialcount'''
 
-    def __init__(self,trials,measure,filename=None,area_file=None):
+    MEASURES = ['m2cnd','sdaa']
+    def __init__(self,filename=None,area_file=None,out=None):
         super().__init__(filename,area_file)
         self.init_Cratercount()
-        self.trials=trials
-        self.measure=measure
+        self.montecarlo = {}
         self.max_threads = os.cpu_count()-1
+        self.ra_file = (out if out else '') + self.name + "_ra.txt"
+        self.read()
+        binning='root-2'
+        self.cc.apply_binning(binning, offset=0.)
+        self.adj = (0, 0, .8)
 
     def init_Cratercount(self):
         self.cc = cst.Cratercount()
@@ -49,12 +55,6 @@ class Randomnessanalysis(cst.Spatialcount):
         nside = 2**round(np.log2(math.sqrt(desired_n_hpx/12)))
         self.hp = hpx.HEALPix(nside=nside, order='nested')
 
-    def self_pp(self):
-        """
-        tuple of vars for parallel processing
-        """
-        return self_pp_tuple(**{key: getattr(self, key) for key in attrs_pp})
-
     def oplot_neighbours(self,cps,craters,neighbours,ax=None):
         """
         Overplot neighbours
@@ -65,7 +65,46 @@ class Randomnessanalysis(cst.Spatialcount):
         for lon,lat,nb in zip(craters.lon,craters.lat,neighbours):
             x0, y0 = self.ortho_proj(lon, lat)
             x1, y1 = self.ortho_proj(sph.get_x(nb), sph.get_y(nb))
-            ax.plot((x0,x1),(y0,y1), color='black', linewidth=0.5*cps.sz_ratio*sz_ratio)
+            ax.plot((x0,x1),(y0,y1), color=cps.grey[0], linewidth=0.5*cps.sz_ratio*sz_ratio, zorder=1)
+
+    def oplot_voronoi(self,cps,craters,p2,ax=None):
+        """
+        Overplot voronoi polygons
+        """
+        if not ax:
+            ax=cps.ax
+        sz_ratio = ax.get_position().width/cps.ax.get_position().width
+
+        # start from sph_polygons output (p2) from sdaa calc.
+        shp_polygons0 = [shp.from_wkb(sph.to_wkb(p)) for p in p2]
+        # flatten any multipolygons (disjoint areas or holes should also be outlined)
+        shp_polygons = [polygon for shape in shp_polygons0 for polygon in (shape.geoms if isinstance(shape, shp.MultiPolygon) else [shape])]
+
+        ns = 20
+        frac = np.linspace(0, 1-1/ns, ns)
+        geod = prj.Geod(a=1,f=0)
+
+        # need to interpolate between vertices here to get proper curvature in distorted map (only for display)
+        # could make ns fn of distance if needed
+        interp_threshold = result = 2 * math.pi / 1800
+        for p in shp_polygons:
+            x0, y0 = p.exterior.xy
+            x1,y1 = [],[]
+            for i in range(len(x0)):
+                i1 = (i + 1) % len(x0)
+                azimuth, _, distance = geod.inv(x0[i], y0[i], x0[i1], y0[i1])
+                if distance > interp_threshold:
+                    x1i, y1i, _ = geod.fwd(np.full(ns, x0[i]), np.full(ns, y0[i]), np.full(ns, azimuth), distance * frac)
+                    x1.extend(x1i)
+                    y1.extend(y1i)
+                else:
+                    x1.append(x0[i])
+                    y1.append(y0[i])
+
+            x2, y2  = self.ortho_proj(x1, y1)
+            projected_polygon = shp.Polygon(zip(x2, y2)) # Reassemble projected polygon
+            gm.shp_plot_polygon(ax, projected_polygon, facecolor='none', edgecolor=cps.grey[0], linewidth=0.5 * sz_ratio)
+
 
     def get_bin_craters(self,bin,Craterlist=False):
         # from real config
@@ -89,50 +128,65 @@ class Randomnessanalysis(cst.Spatialcount):
                     hpd[id].append(pt)
             return pts,ids,hpd
 
-    def montecarlo_split(self,staggered=False):
+
+    def montecarlo_split(self, measure, self_pp, staggered=False):
         """
         Prepare separate runs across bin range
         """
-        binning='root-2'
-        self.cc.apply_binning(binning, offset=0.)
-        match self.measure:
+        match measure:
             case 'sdaa': min_count = 3
             case 'm2cnd': min_count = 3
 
-        self_pp = self.self_pp()
-        self.results = {}
-        bin_result = namedtuple('bin_result',['m0','p2','m','mn','sd','n_sigma'])
+        self.montecarlo[measure]['trials'] = {}
 
         for b,n in zip(self.cc.binned['d_min'],self.cc.binned['n_event']):
             if n >= min_count:
                 bin = f"{np.log2(b):.3g}"
-                print(f"Bin: {bin} d_min:{b:0.3g} number:{n}")
+                print(f"Measure: {measure}, bin: {bin}, d_min:{b:0.3g}, number:{n}")
 
-                pts, ids, hpd = self.get_bin_craters(bin)
-                m0,p2 = evaluate_randomness(self_pp,pts, ids, hpd)
-                print(f"Actual value of measure: {m0:0.3g}")
-
-                # do monte carlo for random configs
+                # do parallel monte carlo for random configs
                 m = montecarlo_pp(self_pp,b,n)
+                self.montecarlo[measure]['trials'][bin] = m
 
-                mn,sd = (np.mean(m),np.std(m))
-                n_sigma = (m0-mn)/sd
-
-                self.results[bin] = bin_result(m0=m0, p2=p2, m=m,mn=mn,sd=sd,n_sigma=n_sigma)
-                if b> .15: break
+                #if b> .15: break
 
 
-    def plot_histogram(self,cps,bin,ax0=None,sz_ratio=1): # mark median and 1 sd band
+    def run_montecarlo(self, trials, measure):
+
+        self.establish_hpx(trials)
+        self_pp = self.self_pp(trials, measure)
+
+        if not measure in self.montecarlo or not self.montecarlo[measure]['n_trials'] == trials: # skip montecarlo if already have data
+            self.montecarlo[measure] = {'n_trials':trials}
+            self.montecarlo_split(measure, self_pp)
+
+        self.montecarlo[measure]['stats'] = {}
+        stats = namedtuple('stats', ['m0', 'p2', 'mn', 'sd', 'n_sigma'])
+        for bin in self.montecarlo[measure]['trials'].keys():
+
+            pts, ids, hpd = self.get_bin_craters(bin)
+            m0,p2 = evaluate_randomness(self_pp,pts, ids, hpd)
+            #print(f"Bin: {bin} d_min:{2**float(bin):0.3g} number:{len(pts)} Actual value of measure: {m0:0.3g}")
+
+            m = self.montecarlo[measure]['trials'][bin]
+            mn,sd = (np.mean(m),np.std(m))
+            n_sigma = (m0-mn)/sd
+            self.montecarlo[measure]['stats'][bin] = stats(m0=m0, p2=p2, mn=mn, sd=sd, n_sigma=n_sigma)
+
+
+
+    def plot_histogram(self,cps,measure,bin,ax0=None,sz_ratio=1.): # mark median and 1 sd band
         if ax0:
             ax=ax0
         else:
             cps.create_map_plotspace()
             ax = cps.ax
 
-        res = self.results[bin]
-        m0,m=(res.m0,res.m)
+        res = self.montecarlo[measure]['stats'][bin]
+        m = self.montecarlo[measure]['trials'][bin]
+        m0 = res.m0
 
-        nbins = round(math.sqrt(self.trials) + 5)
+        nbins = round(math.sqrt(self.montecarlo[measure]['n_trials']) + 5)
 
         h,be = np.histogram(m, bins=nbins)
         bar_width = np.diff(be)
@@ -145,7 +199,7 @@ class Randomnessanalysis(cst.Spatialcount):
 
         h = list(h)
         x0,y0 = zip(*[(e,f[i]) for e,f in zip(be,zip([0]+h,h+[0])) for i in [0,1]])
-        ax.plot(x0, y0, color='black', linewidth=.7 * sz_ratio)
+        ax.plot(x0, y0, color=cps.palette[0], linewidth=.7 * sz_ratio)
 
         ax.plot([m0]*2, yr, color=cps.palette[0],alpha = 0.4, lw = 2 * cps.sz_ratio * sz_ratio)
         ax.text(m0, yr[0]+1*gm.mag(yr), f"{m0:0.3g} ", size=.7*cps.scaled_pt_size * math.sqrt(sz_ratio), rotation=0,
@@ -166,10 +220,10 @@ class Randomnessanalysis(cst.Spatialcount):
 
         xtickv = [e for e in gm.ticks(xr, 5) if xr[0] < e < xr[1]]
         xt_label = [f'{e:g}' for e in xtickv]
-        xt_label[-1] = "  "*len(xt_label[-1])+xt_label[-1]+" km"
+        xt_label[-1] = "  "*len(xt_label[-1])+xt_label[-1]+(" km" if measure=='m2cnd' else " km²")
         ax.set_xticks(xtickv)
-        ax.tick_params(axis='x', which='both', width=.5*sz_ratio, length=cps.pt_size * .2, pad=cps.pt_size * .1)
-        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1)
+        ax.tick_params(axis='x', which='both', width=.5*sz_ratio, length=cps.pt_size * .2 *sz_ratio, pad=cps.pt_size * .1)
+        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1 * sz_ratio)
         ax.set_xticklabels(xt_label,fontsize=.7*cps.scaled_pt_size * math.sqrt(sz_ratio), color=cps.palette[0])
 
         ax.patch.set_facecolor('none')
@@ -182,18 +236,17 @@ class Randomnessanalysis(cst.Spatialcount):
         else:
             ax.set_ylabel('Frequency')
 
-        cps.fig.savefig(r"D:\mydocs\tmp\ra_plot_histogram.png", dpi=500)
 
-    def plot_map_and_histogram(self, cps, bin, ax=None,sz_ratio=1):
+    def plot_map_and_histogram(self, cps, measure, bin, ax=None,sz_ratio=1.):
         if not ax:
             ax=cps.ax
         ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
         for spine in ax.spines.values(): spine.set_visible(False)
         ax.set_facecolor('none')
 
-        mf = 1.
+        mf = self.adj[2]
         hf = .3
-        offset = (0,35)
+        offset = (self.adj[0],10+self.adj[1]/70)
         pos = ax.get_position()
         dx,dy = ( (1-hf) * pos.width * offset[0]/100, pos.height * (1- hf*.5) * offset[1]/100 )
         ax1 = cps.fig.add_axes([pos.x0, pos.y0 + (1-mf) * pos.height, pos.width * mf, pos.height * mf])
@@ -201,18 +254,18 @@ class Randomnessanalysis(cst.Spatialcount):
 
         craters = self.get_bin_craters(bin, Craterlist=True)
         self.plot(cps, craters=craters, ax=ax1)
-        self.oplot_neighbours(cps,craters,self.results[bin].p2,ax=ax1)
-        self.plot_histogram(cps, bin, ax0=ax2,sz_ratio=sz_ratio)
+        match measure:
+            case 'm2cnd': self.oplot_neighbours(cps,craters,self.montecarlo[measure]['stats'][bin].p2,ax=ax1)
+            case 'sdaa': self.oplot_voronoi(cps, craters, self.montecarlo[measure]['stats'][bin].p2, ax=ax1)
+        self.plot_histogram(cps, measure, bin, ax0=ax2,sz_ratio=sz_ratio)
 
         d_min = 2**float(bin)
         ax.text(1, .9, gm.diameter_range([d_min,d_min*math.sqrt(2)],2), size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
                  transform=ax.transAxes, ha="right")
 
-        cps.fig.savefig(r"D:\mydocs\tmp\m_and_h.png", dpi=500)
 
-
-    def plot_montecarlo_split(self,cps): # multiplot?
-        dim = math.ceil(math.sqrt(len(self.results)+1))
+    def plot_montecarlo_split(self,cps,measure): # multiplot?
+        dim = math.ceil(math.sqrt(len(self.montecarlo[measure]['stats'])+1))
         cps.create_map_plotspace()
         pos = cps.ax.get_position()
         cps.ax.set_visible(False)
@@ -227,14 +280,13 @@ class Randomnessanalysis(cst.Spatialcount):
             ])
             return axi
 
-        for i,bin in enumerate(self.results):
-            self.plot_map_and_histogram(cps,bin ,ax=make_ax(i),sz_ratio=1/dim)
+        for i,bin in enumerate(self.montecarlo[measure]['stats']):
+            self.plot_map_and_histogram(cps,measure,bin ,ax=make_ax(i),sz_ratio=1/dim)
 
-        self.plot_n_sigma(cps,ax0=make_ax(i+1))
+        self.plot_n_sigma(cps, measure, ax0=make_ax(dim**2-1))
 
-        cps.fig.savefig(r"D:\mydocs\tmp\ra_hist_nxn.png", dpi=500)
 
-    def plot_n_sigma(self,cps,ax0=None):
+    def plot_n_sigma(self,cps, measure, ax0=None):
         if not ax0:
             ax0=cps.ax
         ax0.set_visible(False)
@@ -249,7 +301,8 @@ class Randomnessanalysis(cst.Spatialcount):
         yr=[e * math.sqrt(12) for e in [-1,1]]
         ytick = [-10,-5,-3,-2,-1,0,1,2,3,5,10]
         ytickv = np.sqrt(np.abs(ytick))*np.sign(ytick)
-        yticklabels = [f"{e}" for e in ytick]
+        yticklabels0 = [f"{e}" for e in ytick]
+        yticklabels = ['' if y in [-5,-2,2,5] and sz_ratio < .5 else e for y,e in zip(ytick,yticklabels0)]
 
         xtickv, xticklabels, xminor = cst.Hartmann_bins(xr)
         plt.rcParams.update({'xtick.labelsize': 1. *cps.scaled_pt_size})
@@ -259,10 +312,10 @@ class Randomnessanalysis(cst.Spatialcount):
 
         ax.set_yticks(ytickv)
         ax.set_yticklabels(yticklabels)
-        ax.tick_params(axis='y', direction='in',labelsize=0.4*cps.scaled_pt_size*math.sqrt(sz_ratio), width=.5*sz_ratio, length=cps.pt_size * .2, pad=cps.pt_size * .1)
+        ax.tick_params(axis='y', direction='in',labelsize=0.4*cps.scaled_pt_size*(sz_ratio**.6), width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .1)
         ax.tick_params(axis='x', which='both', direction='in', labelsize=0.5*cps.scaled_pt_size*math.sqrt(sz_ratio),
-                       width=.5*sz_ratio, length=cps.pt_size * .2, pad=cps.pt_size * .2)
-        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1)
+                       width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .2)
+        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1 * sz_ratio)
         ax.set_ylim(yr[0], yr[1])
         ax.set_xlim(xr[0], xr[1])
         ax.set_ylabel(r"$n_\sigma$",fontsize=1.*cps.scaled_pt_size*(sz_ratio), labelpad=.001*cps.pt_size*sz_ratio,fontstyle='italic')
@@ -271,61 +324,68 @@ class Randomnessanalysis(cst.Spatialcount):
 
         ax.text(.5, .13, "clustered", color=cps.grey[0], size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio), transform=ax.transAxes, va = 'center', ha = 'center')
         ax.text(.5, .87, "separated", color=cps.grey[0], size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio), transform=ax.transAxes, va = 'center', ha = 'center')
-        #ax.text(.5, .5, "mean random", color=cps.grey[4], size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
-        #        transform=ax.transAxes, va='center', ha='center')
 
+        ax.fill_between(xr,[ytickv[2]]*2, y2 = [ytickv[-3]]*2, color=cps.grey[2], edgecolor='none')
+        ax.fill_between(xr, [ytickv[3]]*2, y2 = [ytickv[-4]]*2, color=cps.grey[3], edgecolor='none')
+        ax.fill_between(xr, [ytickv[4]]*2, y2 = [ytickv[-5]]*2, color=cps.grey[1], edgecolor='none')
 
-        ax.fill_between(xr,[ytickv[2]]*2, y2 = [ytickv[8]]*2, color=cps.grey[2])
-        ax.fill_between(xr, [ytickv[3]]*2, y2 = [ytickv[7]]*2, color=cps.grey[3])
-        ax.fill_between(xr, [ytickv[4]]*2, y2 = [ytickv[6]]*2, color=cps.grey[1])
+        x = [np.log10(2**float(r)) for r in self.montecarlo[measure]['stats']]
+        y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
+        y1 = [np.sqrt(abs(e))*np.sign(e) for e in y0] # apply axis scaling
+        y = [-e if measure=='sdaa' else e for e in y1] # flip for sdaa
 
-        x = [np.log10(2**float(r)) for r in self.results]
-        y0 = [(self.results[r].m0 - self.results[r].mn)/self.results[r].sd for r in self.results]
-        y = [np.sqrt(abs(e))*np.sign(e) for e in y0] # apply axis scaling
         marker = cps.marker_def[10].copy()
         marker['markersize'] *= cps.sz_ratio*sz_ratio
         ax.plot(x,y,linestyle='-',**marker,color=cps.palette[0],linewidth=.75*sz_ratio)
 
-        cps.fig.savefig(r"D:\mydocs\tmp\ra_nsigma.png", dpi=500)
-
-    def write(self,filename):
-        results_table = [f"{bin:<12}\t{self.results[bin].n_sigma:9.4g}" for bin in self.results]
-        trials_table = ["\t".join([f"{t:<12}"] + [f"{self.results[bin].m[t]:<12.7g}" for bin in self.results])
-                        for t in range(self.trials) ]
-        s = (['# Randomness analysis',
+    def write(self):
+        s = ['# Randomness analysis',
               f'version = {cst.__version__}',
-              '#',
-              f'source = {gm.filename(self.filename,'ne')}',
-              f'trials = {self.trials}',
-              f'measure = {self.measure}',
-              'results={bin, n_sigma']
-             + results_table +
-             ['}',
-              'table = {trial, '+", ".join([f"b{i}" for i,_ in enumerate(self.results)])]
-             + trials_table +
-             ['}'])
-        gm.write_textfile(filename,s)
+              f'source = "{self.filename}"',
+              ]
+        for measure in self.montecarlo:
+            # n_sigma = (
+            #     ['n_sigma = {bin, n_sigma']
+            #     + [f"{bin:<12}\t{v.n_sigma:9.4g}" for bin,v in self.montecarlo[measure]['stats'].items()]
+            #     + ['}'])
+            trials = (
+                ['trials  = {index, ' + ", ".join([b for b in self.montecarlo[measure]['trials']])]
+                + ["\t".join([f"{t:<12}"] + [f"{v[t]:<12.7g}" for bin,v in self.montecarlo[measure]['trials'].items()])
+                            for t in range(self.montecarlo[measure]['n_trials']) ]
+                + ['}'])
+            s1 = (
+                ['#',f'{measure} = {{',
+                f'n_trials = {self.montecarlo[measure]['n_trials']}']
+                # + n_sigma
+                + trials
+                + ['}'])
+            s += s1
+        gm.write_textfile(self.ra_file,s)
 
-    def read(self,filename,on_match=False):
-        c = gm.read_textstructure(filename)
-        # need to test for combinations of trials/measure: on_match
+    def read(self):
+        if gm.file_exists(self.ra_file):
+            c = gm.read_textstructure(self.ra_file)
+            for name in self.MEASURES:
+                if name in c:
+                    self.montecarlo[name] = {
+                        'n_trials':int(c[name]['n_trials']),
+                        }
+                    self.montecarlo[name]['trials'] = {}
+                    for b in list(c[name]['trials'].keys())[1:]:
+                        self.montecarlo[name]['trials'][b] = [float(e) for e in c[name]['trials'][b]]
 
-        self.trials = int(c["trials"])
-        self.measure = c["measure"]
-        res = c["results"]
-        t = c["table"]
-
-        pass
-
-
-
+    def self_pp(self,trials, measure):
+        """
+        tuple of vars for parallel processing
+        """
+        return self_pp_tuple(trials=trials,measure=measure,**{key: getattr(self, key) for key in attrs_pp[:-2]})
 
 #######################################################
 # standalone functions required for parallel processing
 # note that 'self' in routines below is not class instance, but analogous self_pp namedtuple
 #######################################################
 
-attrs_pp = ['hp', 'planetary_radius', 'area', 'enclosing_area','polygon','xr','yr','trials','max_threads','measure']
+attrs_pp = ['hp', 'planetary_radius', 'area', 'enclosing_area', 'polygon', 'xr', 'yr', 'max_threads', 'trials','measure']
 self_pp_tuple = namedtuple('self_pp_tuple', attrs_pp)
 
 def evaluate_randomness(self_pp, pts, ids, hpd):
@@ -335,6 +395,8 @@ def evaluate_randomness(self_pp, pts, ids, hpd):
     match self_pp.measure:
         case 'm2cnd':
             measure, p2 = kth_nearest_neighbour_pp(self_pp, pts, ids, hpd, k=2)  # p2 are neighbours (for plotting real config)
+        case 'sdaa':
+            measure, p2 = sdaa(self_pp, pts, ids, hpd)
     return measure, p2
 
 def run_trial(self_pp, b, n, trial_index):
@@ -352,22 +414,17 @@ def montecarlo_pp(self_pp, b, n):
     with ProcessPoolExecutor(max_workers=self_pp.max_threads) as executor:
         trial_indices = range(self_pp.trials)
         args = [(self_pp, b, n, trial_index) for trial_index in trial_indices]
-        #measures = list(executor.map(run_trial_wrapper, args))
-
-        # Create a progress bar
         pbar = ProgressBar(max_value=self_pp.trials)
 
-        # Submit tasks to the executor and keep track of futures
+        # Submit tasks to executor and track futures
         future_to_index = {executor.submit(run_trial_wrapper, arg): trial_index for arg, trial_index in zip(args, trial_indices)}
 
         measures = []
         for future in as_completed(future_to_index):
-            result = future.result()  # Get the result of the completed trial
-            measures.append(result)  # Store the result
+            result = future.result()  # Get result of completed trial
+            measures.append(result)
             pbar.update(future_to_index[future])  # Update progress bar
-
-        pbar.finish()  # Finish the progress bar
-
+        pbar.finish()
     return measures
 
 def random_points_pp(self ,n):
@@ -433,10 +490,6 @@ def kth_nearest_neighbour_pp(self, pts,ids,hpd, k=1):
     neighbours = []
     distances = []
 
-    if len(pts) < k+1:
-        print("no solution")
-        return
-
     for id,pt in zip(ids,pts):
         locality = set()
         outer = {id}
@@ -458,3 +511,32 @@ def kth_nearest_neighbour_pp(self, pts,ids,hpd, k=1):
 
     mean_distance = np.mean(distances)
     return mean_distance,neighbours
+
+
+
+
+
+def sdaa(self, pts, ids, hpd):
+    """
+    find standard deviation of adjacent area (spherical)
+    """
+
+    ll_radians = [(math.radians(sph.get_x(p)), math.radians(sph.get_y(p))) for p in pts]
+    xyz = np.array([(math.cos(y) * math.cos(x), math.cos(y) * math.sin(x), math.sin(y)) for x, y in ll_radians])
+
+    center = np.array([0, 0, 0])
+    radius = 1.0
+    sv = SphericalVoronoi(xyz, radius, center, threshold=1e-08)
+    sv.sort_vertices_of_regions()
+
+    xyz_polygons = [[sv.vertices[id] for id in region] for region in sv.regions]
+    ll_polygons = [[(math.degrees(math.atan2(y, x)), math.degrees(math.asin(z))) for x, y, z in p] for p in xyz_polygons]
+    sph_polygons0 = [sph.create_polygon([(lon, lat) for lon, lat in p]) for p in ll_polygons]
+    sph_polygons = [sph.intersection(self.polygon, p) for p in sph_polygons0]
+
+    areas = [sph.area(p,radius=self.planetary_radius) for p in sph_polygons]
+    sdaa = np.std(areas)
+
+    return sdaa, sph_polygons
+
+
