@@ -120,7 +120,6 @@ def get_parser():
     parser.add_argument("-ra", "--randomness_analysis", help="source fil for randomness analysis", nargs='+', action=SpacedString)
     parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
-    parser.add_argument("-adjust", help="x-offset,y-offset,reduction(%) [0-100,0-100,50-100] for randomness multiplots", nargs=1, type=str)
 
     return parser
 
@@ -298,8 +297,7 @@ def construct_plot_dicts(args,plot):
             elif k in ('range','offset_age'):
                 p[k] = v.strip('[]').split(',')
             elif k == 'source':
-                v = v.replace('%sample%/', cst.PATH+'sample/')
-                p['source']=v.strip('"')
+                p['source']=cs_source(v).strip('"')
                 specified_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
@@ -435,16 +433,18 @@ def create_desktop_icon():
         case _:
             print(f"Desktop shortcut creation is not yet implemented for: {system}.")
 
+def cs_source(v):
+    return v.replace('%sample%/', cst.PATH + 'sample/')
+
 def randomness_analysis(args,cps):
     out = '' if cps.out=='out' else gm.filename(cps.out,'p')
-    ra = cst.Randomnessanalysis(args.randomness_analysis, out=out)
+    ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out)
     cps.out = gm.filename(ra.ra_file,'pn')
     trials = args.trials if args.trials else 300
     cps.measures = args.measure.split(',') if args.measure else ['m2cnd','sdaa']
     diff = set(cps.measures) - {'m2cnd','sdaa'}
     if diff:
         sys.exit(f"Invalid measure: {diff}")
-    ra.adjust = (int(e) for e in args.adjust.split(',')) if args.adjust else (0,20,80)
     for measure in cps.measures:
         ra.run_montecarlo(trials, measure)
         ra.write()

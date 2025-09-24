@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from scipy.spatial import SphericalVoronoi
 import shapely as shp
+import shapely.affinity as shp_aff
 import spherely as sph
 from progressbar import ProgressBar
 import pyproj as prj
@@ -34,7 +35,7 @@ class Randomnessanalysis(cst.Spatialcount):
         self.read()
         binning='root-2'
         self.cc.apply_binning(binning, offset=0.)
-        self.adj = (0, 0, .8)
+        self.plot_reduction_factor = None
 
     def init_Cratercount(self):
         self.cc = cst.Cratercount()
@@ -236,6 +237,47 @@ class Randomnessanalysis(cst.Spatialcount):
         else:
             ax.set_ylabel('Frequency')
 
+    def get_plot_reduction_factor(self,hf):
+        """
+        Find reduction factor so that map doesn't overlap histogram
+        hf : histogram fractional width of plot
+        return: amount to reduce normalised map plot
+        """
+        if not self.plot_reduction_factor:
+            # this could be moved to init....
+            cen = sph.centroid(self.polygon)
+            cenlon, cenlat = (sph.get_x(cen),sph.get_y(cen))
+            ortho_proj = prj.Proj(proj='ortho', lat_0=cenlat, lon_0=cenlon, R=self.planetary_radius)
+            self.ortho_proj = ortho_proj
+
+            # do area
+            z = sph.to_wkb(self.polygon)
+            multipolygon = shp.from_wkb(z)
+            p = []
+
+            if not isinstance(multipolygon, shp.MultiPolygon):
+                multipolygon = shp.MultiPolygon([multipolygon])
+
+            for poly in multipolygon.geoms:
+                exterior_x, exterior_y = poly.exterior.xy
+                x_exterior, y_exterior = ortho_proj(exterior_x, exterior_y)
+                # Reassemble the projected polygon
+                projected_polygon = shp.Polygon(zip(x_exterior, y_exterior))
+                p.append(projected_polygon)
+
+            mp = shp.MultiPolygon(p)
+            x_mn,y_mn,x_mx,y_mx = shp.bounds(mp)
+            x_mg,y_mg = (x_mx-x_mn,y_mx-y_mn)
+            mg = max(x_mg,y_mg)
+            mp_scaled = shp_aff.scale(mp,xfact=1/mg,yfact=1/mg)
+            mp_normalised = shp_aff.translate(mp_scaled,xoff=-mp_scaled.bounds[0], yoff=-mp_scaled.bounds[1])
+            hf = .3
+            hist_box = shp.Polygon([(1,0),(1,hf*.5),(1-hf,hf*.5),(1-hf,0),(1,0)])
+            f = 1.
+            while shp_aff.scale(mp_normalised,xfact=f,yfact=f).overlaps(hist_box):
+                f *= .98
+            self.plot_reduction_factor = f
+        return self.plot_reduction_factor
 
     def plot_map_and_histogram(self, cps, measure, bin, ax=None,sz_ratio=1.):
         if not ax:
@@ -244,11 +286,11 @@ class Randomnessanalysis(cst.Spatialcount):
         for spine in ax.spines.values(): spine.set_visible(False)
         ax.set_facecolor('none')
 
-        mf = self.adj[2]
         hf = .3
-        offset = (self.adj[0],10+self.adj[1]/70)
+        mf = self.get_plot_reduction_factor(hf)
+        offset = (0, .15)
         pos = ax.get_position()
-        dx,dy = ( (1-hf) * pos.width * offset[0]/100, pos.height * (1- hf*.5) * offset[1]/100 )
+        dx,dy = ( (1-hf) * pos.width * offset[0], pos.height * (1- hf*.5) * offset[1] )
         ax1 = cps.fig.add_axes([pos.x0, pos.y0 + (1-mf) * pos.height, pos.width * mf, pos.height * mf])
         ax2 = cps.fig.add_axes([pos.x0 + (1-hf) * pos.width - dx, pos.y0 +dy, pos.width * hf - dx, pos.height * hf *.5])
 
@@ -260,8 +302,8 @@ class Randomnessanalysis(cst.Spatialcount):
         self.plot_histogram(cps, measure, bin, ax0=ax2,sz_ratio=sz_ratio)
 
         d_min = 2**float(bin)
-        ax.text(1, .9, gm.diameter_range([d_min,d_min*math.sqrt(2)],2), size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
-                 transform=ax.transAxes, ha="right")
+        ax.text(1., .95, gm.diameter_range([d_min,d_min*math.sqrt(2)],2)+f'\nn = {len(craters.diam)}', size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
+                 transform=ax.transAxes, ha="right",va='top')
 
 
     def plot_montecarlo_split(self,cps,measure): # multiplot?
@@ -293,7 +335,7 @@ class Randomnessanalysis(cst.Spatialcount):
         pos = ax0.get_position()
         sz_ratio = pos.width / cps.ax.get_position().width
         if ax0:
-            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height / 3,pos.width*.85,pos.height/3])
+            ax = cps.fig.add_axes([pos.x0+.05*pos.width,pos.y0 + pos.height / 3,pos.width*.95,pos.height/3])
         else:
             ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 3])
 
@@ -312,7 +354,7 @@ class Randomnessanalysis(cst.Spatialcount):
 
         ax.set_yticks(ytickv)
         ax.set_yticklabels(yticklabels)
-        ax.tick_params(axis='y', direction='in',labelsize=0.4*cps.scaled_pt_size*(sz_ratio**.6), width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .1)
+        ax.tick_params(axis='y', direction='in',labelsize=0.5*cps.scaled_pt_size*(sz_ratio**.6), width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .1)
         ax.tick_params(axis='x', which='both', direction='in', labelsize=0.5*cps.scaled_pt_size*math.sqrt(sz_ratio),
                        width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .2)
         ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1 * sz_ratio)

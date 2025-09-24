@@ -338,6 +338,7 @@ class Spatialcount:
             decomposed += [rings]
         return decomposed
 
+
     def plot(self,cps,craters=None,grid=False,ax=None):
         """
         Plot Spatialcount
@@ -379,8 +380,17 @@ class Spatialcount:
             xr0 = gm.range(list(x_exterior) + list(xr0) if xr0 else x_exterior)
             yr0 = gm.range(list(y_exterior) + list(yr0) if yr0 else y_exterior)
 
-        xr = np.array(gm.range(xr0)) + np.array([-1, 1]) * gm.mag(xr0) * (.1 if grid else .05)
-        yr = np.array(gm.range(yr0)) + np.array([-1, 1]) * gm.mag(yr0) * (.1 if grid else .05)
+        # do craters
+        rims,wkt = self.find_rims(craters=craters,ns=30)
+        for r in rims:
+            x, y = ortho_proj(r[0],r[1])
+            ax.plot(x, y, color=cps.palette[0], linewidth=0.3*cps.sz_ratio,zorder=2)
+
+            xr0 = gm.range(list(x) + list(xr0) )
+            yr0 = gm.range(list(y) + list(yr0) )
+
+        xr = np.array(gm.range(xr0)) + np.array([-1, 1]) * gm.mag(xr0) * (.1 if ax is cps.ax else .02)
+        yr = np.array(gm.range(yr0)) + np.array([-1, 1]) * gm.mag(yr0) * (.1 if ax is cps.ax else .02)
 
         # do gridlines - this probably needs improving for poles
         if grid:
@@ -405,11 +415,7 @@ class Spatialcount:
                 ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
                         ha='left',va='bottom',color=cps.grey[0],fontsize=cps.scaled_pt_size*.5)
 
-        # do craters
-        rims,wkt = self.find_rims(craters=craters,ns=30)
-        for r in rims:
-            x, y = ortho_proj(r[0],r[1])
-            ax.plot(x, y, color=cps.palette[0], linewidth=0.3*cps.sz_ratio,zorder=2)
+
 
         ax.set_xlim(xr[0],xr[1])
         ax.set_ylim(yr[0],yr[1])
