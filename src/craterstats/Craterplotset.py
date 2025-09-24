@@ -263,6 +263,8 @@ class Craterplotset:
         if xtitle != '':ax.set_xlabel(xtitle)
         if ytitle != '':ax.set_ylabel(ytitle)
 
+        self.ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+normalised_position[3]+.02,normalised_position[2],.1])
+
         self.fig=fig
         self.ax=ax
 

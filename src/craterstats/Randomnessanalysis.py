@@ -386,11 +386,18 @@ class Randomnessanalysis(cst.Spatialcount):
               f'version = {cst.__version__}',
               f'source = "{self.filename}"',
               ]
+
+        table = []
+        for bin in self.montecarlo[next(iter(self.montecarlo))]['stats'].keys():
+            row = f"{bin:<12}"
+            for measure in self.montecarlo:
+                row += f"\t{self.montecarlo[measure]['stats'][bin].n_sigma:9.4g}"
+            table.append(row)
+        n_sigma = (['#','n_sigma = {bin' + ''.join([f', {measure}' for measure in self.montecarlo])]
+                   + table + ['}'])
+        s += n_sigma
+
         for measure in self.montecarlo:
-            n_sigma = (
-                ['n_sigma = {bin, n_sigma']
-                + [f"{bin:<12}\t{v.n_sigma:9.4g}" for bin,v in self.montecarlo[measure]['stats'].items()]
-                + ['}'])
             trials = (
                 ['trials  = {index, ' + ", ".join([b for b in self.montecarlo[measure]['trials']])]
                 + ["\t".join([f"{t:<12}"] + [f"{v[t]:<12.7g}" for bin,v in self.montecarlo[measure]['trials'].items()])
@@ -399,7 +406,6 @@ class Randomnessanalysis(cst.Spatialcount):
             s1 = (
                 ['#',f'{measure} = {{',
                 f'n_trials = {self.montecarlo[measure]['n_trials']}']
-                + n_sigma
                 + trials
                 + ['}'])
             s += s1

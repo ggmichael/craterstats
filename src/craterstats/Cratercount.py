@@ -26,6 +26,7 @@ class Cratercount:
         self.prebinned=False
         if filetype:
             self.name = gm.filename(filename, 'n')
+            self.n_sigma = self.read_ra_file()
 
         bad_filetype = False
         try:
@@ -43,11 +44,20 @@ class Cratercount:
             sys.exit()
         except:
             sys.exit("Unable to read file: "+filename)
-
         if bad_filetype: sys.exit("Unrecognised crater count file type: " + filename)
+
 
     def __str__(self):
         return self.filename
+
+    def read_ra_file(self):
+        possible_locations = (self.name + '_ra.txt',gm.filename(self.filename,'p')+self.name+'_ra.txt')
+        f = next((loc for loc in possible_locations if gm.file_exists(loc)), None)
+        if f:
+            c = gm.read_textstructure(f)
+            return c['n_sigma']
+        else:
+            return None
 
 # ;****************************************************
 # ;             Generate missing details

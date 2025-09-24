@@ -118,6 +118,11 @@ class Craterplot:
         self.n=p['n']
         self.n_event=p['n_event']
 
+        if self.cratercount.n_sigma:
+            x = [np.log10(2**float(e)) for e in self.cratercount.n_sigma['bin']]
+            y = [float(e) for e in self.cratercount.n_sigma['m2cnd']]
+            cps.ax_ra.plot(x,y)
+
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.5*cps.sz_ratio,ecolor=cps.grey[0])
 
