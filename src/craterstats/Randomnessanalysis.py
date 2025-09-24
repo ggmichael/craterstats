@@ -371,7 +371,7 @@ class Randomnessanalysis(cst.Spatialcount):
         ax.fill_between(xr, [ytickv[3]]*2, y2 = [ytickv[-4]]*2, color=cps.grey[3], edgecolor='none')
         ax.fill_between(xr, [ytickv[4]]*2, y2 = [ytickv[-5]]*2, color=cps.grey[1], edgecolor='none')
 
-        x = [np.log10(2**float(r)) for r in self.montecarlo[measure]['stats']]
+        x = [np.log10(2**(float(r)+.25)) for r in self.montecarlo[measure]['stats']]
         y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
         y1 = [np.sqrt(abs(e))*np.sign(e) for e in y0] # apply axis scaling
         y = [-e if measure=='sdaa' else e for e in y1] # flip for sdaa
