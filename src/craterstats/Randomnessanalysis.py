@@ -161,20 +161,21 @@ class Randomnessanalysis(cst.Spatialcount):
             self.montecarlo[measure] = {'n_trials':trials}
             self.montecarlo_split(measure, self_pp)
 
-        self.montecarlo[measure]['stats'] = {}
-        stats = namedtuple('stats', ['m0', 'p2', 'mn', 'sd', 'n_sigma'])
-        for bin in self.montecarlo[measure]['trials'].keys():
+    def calculate_stats(self):
+        for measure in self.montecarlo.keys():
+            self_pp = self.self_pp(self.montecarlo[measure]['n_trials'], measure)
+            self.montecarlo[measure]['stats'] = {}
+            stats = namedtuple('stats', ['m0', 'p2', 'mn', 'sd', 'n_sigma'])
+            for bin in self.montecarlo[measure]['trials'].keys():
 
-            pts, ids, hpd = self.get_bin_craters(bin)
-            m0,p2 = evaluate_randomness(self_pp,pts, ids, hpd)
-            #print(f"Bin: {bin} d_min:{2**float(bin):0.3g} number:{len(pts)} Actual value of measure: {m0:0.3g}")
+                pts, ids, hpd = self.get_bin_craters(bin)
+                m0,p2 = evaluate_randomness(self_pp,pts, ids, hpd)
+                #print(f"Bin: {bin} d_min:{2**float(bin):0.3g} number:{len(pts)} Actual value of measure: {m0:0.3g}")
 
-            m = self.montecarlo[measure]['trials'][bin]
-            mn,sd = (np.mean(m),np.std(m))
-            n_sigma = (m0-mn)/sd
-            self.montecarlo[measure]['stats'][bin] = stats(m0=m0, p2=p2, mn=mn, sd=sd, n_sigma=n_sigma)
-
-
+                m = self.montecarlo[measure]['trials'][bin]
+                mn,sd = (np.mean(m),np.std(m))
+                n_sigma = (m0-mn)/sd
+                self.montecarlo[measure]['stats'][bin] = stats(m0=m0, p2=p2, mn=mn, sd=sd, n_sigma=n_sigma)
 
     def plot_histogram(self,cps,measure,bin,ax0=None,sz_ratio=1.): # mark median and 1 sd band
         if ax0:
@@ -386,10 +387,10 @@ class Randomnessanalysis(cst.Spatialcount):
               f'source = "{self.filename}"',
               ]
         for measure in self.montecarlo:
-            # n_sigma = (
-            #     ['n_sigma = {bin, n_sigma']
-            #     + [f"{bin:<12}\t{v.n_sigma:9.4g}" for bin,v in self.montecarlo[measure]['stats'].items()]
-            #     + ['}'])
+            n_sigma = (
+                ['n_sigma = {bin, n_sigma']
+                + [f"{bin:<12}\t{v.n_sigma:9.4g}" for bin,v in self.montecarlo[measure]['stats'].items()]
+                + ['}'])
             trials = (
                 ['trials  = {index, ' + ", ".join([b for b in self.montecarlo[measure]['trials']])]
                 + ["\t".join([f"{t:<12}"] + [f"{v[t]:<12.7g}" for bin,v in self.montecarlo[measure]['trials'].items()])
@@ -398,7 +399,7 @@ class Randomnessanalysis(cst.Spatialcount):
             s1 = (
                 ['#',f'{measure} = {{',
                 f'n_trials = {self.montecarlo[measure]['n_trials']}']
-                # + n_sigma
+                + n_sigma
                 + trials
                 + ['}'])
             s += s1

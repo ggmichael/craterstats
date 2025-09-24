@@ -447,9 +447,10 @@ def randomness_analysis(args,cps):
         sys.exit(f"Invalid measure: {diff}")
     for measure in cps.measures:
         ra.run_montecarlo(trials, measure)
+        # do each loop so as to retain data on break
+        ra.calculate_stats()
         ra.write()
     return ra
-
 
 def main(args0=None):
     args = get_parser().parse_args(args0)
