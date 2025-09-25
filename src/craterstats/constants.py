@@ -22,6 +22,8 @@ DEFAULT_YRANGE = dict(zip(PRESENTATIONS, DEFAULT_YRANGE0))
 PLANETS = ('Moon', 'Mars', 'Mercury')
 SURFACE_AREAS = (3.79e7, 1.44e8, 7.48e7)
 
+LINESTYLES = {'m2cnd':'--','sdaa':':'}
+
 GREYS = (['#aaaaaa', '#e0e0e0', '#ededed', '#f8f8f8', '#ffffff'],  # standard/inverted grey values
          ['#787878', '#464646', '#373737', '#282828', '#000000'])
 

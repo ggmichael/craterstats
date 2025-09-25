@@ -224,16 +224,15 @@ class Randomnessanalysis(cst.Spatialcount):
         xt_label = [f'{e:g}' for e in xtickv]
         xt_label[-1] = "  "*len(xt_label[-1])+xt_label[-1]+(" km" if measure=='m2cnd' else " km²")
         ax.set_xticks(xtickv)
-        ax.tick_params(axis='x', which='both', width=.5*sz_ratio, length=cps.pt_size * .2 *sz_ratio, pad=cps.pt_size * .1)
-        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1 * sz_ratio)
+        ax.tick_params(axis='x', which='both', width=.5*sz_ratio, length=cps.pt_size * .3 *sz_ratio, pad=cps.pt_size * .1)
+        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .15 * sz_ratio)
+        ax.xaxis.set_minor_locator(ticker.AutoMinorLocator())
         ax.set_xticklabels(xt_label,fontsize=.7*cps.scaled_pt_size * math.sqrt(sz_ratio), color=cps.palette[0])
 
         ax.patch.set_facecolor('none')
 
         if ax0:
-            ax.spines['left'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            ax.spines['top'].set_visible(False)
+            for s in ['left', 'right', 'top']: ax.spines[s].set_visible(False)
             ax.set_yticks([])
         else:
             ax.set_ylabel('Frequency')
@@ -341,9 +340,9 @@ class Randomnessanalysis(cst.Spatialcount):
             ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 3])
 
         xr=[-2,2]
-        yr=[e * math.sqrt(12) for e in [-1,1]]
+        yr=[e * cst.n_sigma_scaling(12) for e in [-1,1]]
         ytick = [-10,-5,-3,-2,-1,0,1,2,3,5,10]
-        ytickv = np.sqrt(np.abs(ytick))*np.sign(ytick)
+        ytickv = cst.n_sigma_scaling(ytick)
         yticklabels0 = [f"{e}" for e in ytick]
         yticklabels = ['' if y in [-5,-2,2,5] and sz_ratio < .5 else e for y,e in zip(ytick,yticklabels0)]
 
@@ -374,12 +373,12 @@ class Randomnessanalysis(cst.Spatialcount):
 
         x = [np.log10(2**(float(r)+.25)) for r in self.montecarlo[measure]['stats']]
         y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
-        y1 = [np.sqrt(abs(e))*np.sign(e) for e in y0] # apply axis scaling
+        y1 = [cst.n_sigma_scaling(e) for e in y0] # apply axis scaling
         y = [-e if measure=='sdaa' else e for e in y1] # flip for sdaa
 
         marker = cps.marker_def[10].copy()
-        marker['markersize'] *= cps.sz_ratio*sz_ratio
-        ax.plot(x,y,linestyle='-',**marker,color=cps.palette[0],linewidth=.75*sz_ratio)
+        marker['markersize'] *= .7*cps.sz_ratio*sz_ratio
+        ax.plot(x,y,linestyle=cst.LINESTYLES[measure],**marker,color=cps.palette[0],linewidth=1*sz_ratio)
 
     def write(self):
         s = ['# Randomness analysis',

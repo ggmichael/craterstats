@@ -99,7 +99,6 @@ class Craterplot:
 
     def oplot_n_sigma(self,cps):
         measures = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})
-        linestyles = {'m2cnd':'--','sdaa':':'}
 
         x = [np.log10(2 ** (float(e) + .25)) for e in self.cratercount.n_sigma['bin']]
         xr = min(x)-np.log10(2**.25),max(x)+np.log10(2**.25)
@@ -122,7 +121,7 @@ class Craterplot:
 
         for m in measures:
             y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) for e in self.cratercount.n_sigma[m]]
-            cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **cps.marker_def[self.psym], linestyle=linestyles[m], clip_on=False)
+            cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **cps.marker_def[self.psym], linestyle=cst.LINESTYLES[m], clip_on=False)
 
         if not cps.ra_legend_drawn:
             dy=-.08
@@ -136,7 +135,7 @@ class Craterplot:
             for i,m in enumerate(measures):
                 y = ((len(measures)-1)/2-i)*cst.n_sigma_scaling(1)
                 cps.ax_ra.text(xr[0] - mg*.03, y, m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
-                cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=linestyles[m])
+                cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
 
 
 
