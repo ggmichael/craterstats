@@ -562,9 +562,6 @@ def kth_nearest_neighbour_pp(self, pts,ids,hpd, k=1):
     return mean_distance,neighbours
 
 
-
-
-
 def sdaa(self, pts, ids, hpd):
     """
     find standard deviation of adjacent area (spherical)

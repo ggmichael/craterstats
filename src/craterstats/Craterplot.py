@@ -97,6 +97,49 @@ class Craterplot:
         self.n_d = cps.pf.evaluate("cumulative", cps.ref_diameter, self.a0[0])
 
 
+    def oplot_n_sigma(self,cps):
+        measures = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})
+        linestyles = {'m2cnd':'--','sdaa':':'}
+
+        x = [np.log10(2 ** (float(e) + .25)) for e in self.cratercount.n_sigma['bin']]
+        xr = min(x)-np.log10(2**.25),max(x)+np.log10(2**.25)
+
+        cps.ax_ra.fill_between(xr, [cst.n_sigma_scaling(-3)]*2, y2 = [cst.n_sigma_scaling(3)]*2, color=cps.grey[2], edgecolor='none')
+        cps.ax_ra.fill_between(xr, [cst.n_sigma_scaling(-2)]*2, y2 = [cst.n_sigma_scaling(2)]*2, color=cps.grey[3], edgecolor='none')
+        cps.ax_ra.fill_between(xr, [cst.n_sigma_scaling(-1)]*2, y2 = [cst.n_sigma_scaling(1)]*2, color=cps.grey[1], edgecolor='none')
+
+        # put fading white band behind plot
+        mg = gm.mag(cps.xrange)
+        fade_zone = 1/6
+        plot_zone = gm.mag(xr)/mg
+        fade_steps = 20
+        plot_steps = round(fade_steps * plot_zone / fade_zone)
+        white_image = np.ones((1, fade_steps*2+plot_steps, 3))
+        alpha_values = np.concatenate((np.linspace(0, 1, fade_steps),np.linspace(1, 1, plot_steps),np.linspace(1, 0, fade_steps)))
+        alpha_channel = np.tile(alpha_values, (1, 1)) *.8
+        cps.ax_ra.imshow(white_image, alpha=alpha_channel, aspect='auto', extent=[xr[0]-mg*fade_zone, xr[1]+mg*fade_zone, cst.n_sigma_scaling(-2.95), cst.n_sigma_scaling(2.95)],
+                         zorder=0, clip_on=False)
+
+        for m in measures:
+            y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) for e in self.cratercount.n_sigma[m]]
+            cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **cps.marker_def[self.psym], linestyle=linestyles[m], clip_on=False)
+
+        if not cps.ra_legend_drawn:
+            dy=-.08
+            cps.ra_legend_drawn = True
+            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(-5), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(5), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+            cps.ax_ra.text(xr[1], dy, r"    $n_\sigma$", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='left')
+            for y in [-3,-1,0,1,3]:
+                cps.ax_ra.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
+
+            for i,m in enumerate(measures):
+                y = ((len(measures)-1)/2-i)*cst.n_sigma_scaling(1)
+                cps.ax_ra.text(xr[0] - mg*.03, y, m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
+                cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=linestyles[m])
+
+
+
 
     def overplot(self,cps):
         """
@@ -118,10 +161,8 @@ class Craterplot:
         self.n=p['n']
         self.n_event=p['n_event']
 
-        if self.cratercount.n_sigma:
-            x = [np.log10(2**float(e)) for e in self.cratercount.n_sigma['bin']]
-            y = [float(e) for e in self.cratercount.n_sigma['m2cnd']]
-            cps.ax_ra.plot(x,y)
+        if self.cratercount.n_sigma and self.type == 'data':
+            self.oplot_n_sigma(cps)
 
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.5*cps.sz_ratio,ecolor=cps.grey[0])

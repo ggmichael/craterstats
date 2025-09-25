@@ -389,7 +389,8 @@ def source_cmds(src):
         main(a)
     print('\nProcessing complete.')
 
-def demo(d=None,src=cst.PATH+'config/demo_commands.txt'):
+def demo(d=None,src=None):
+    if not src: src = cst.PATH+'config/demo_commands.txt'
     cmd = gm.read_textfile(src, ignore_blank=True, ignore_hash=True)
     out='demo/'
     os.makedirs(out,exist_ok=True)
@@ -447,12 +448,13 @@ def randomness_analysis(args,cps):
         sys.exit(f"Invalid measure: {diff}")
     for measure in cps.measures:
         ra.run_montecarlo(trials, measure)
-        # do each loop so as to retain data on break
+        # do each loop so as to retain data if interrupted
         ra.calculate_stats()
         ra.write()
     return ra
 
 def main(args0=None):
+    cst.initialize_calculated()
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 

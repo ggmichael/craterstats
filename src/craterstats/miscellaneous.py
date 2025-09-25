@@ -30,8 +30,6 @@ def bin_bias_correction(beta,k):
     return Fbin2F_ratio
 
 
-
-
 class fractional_crater_transform:
     '''
     Transform function between area fraction and linear penetration across boundary.
@@ -181,3 +179,9 @@ def Hartmann_bins(d_range):
     if xtickv[0] < 0: xtickname[0] += 'm'
     xminor = (xtickv[1] - xtickv[0]) / 2
     return xtickv,xtickname,xminor
+
+def n_sigma_scaling(v):
+    """
+    scaling for n_sigma plot: enlarge central zone
+    """
+    return np.power(np.abs(v),.6)*np.sign(v)

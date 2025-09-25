@@ -263,10 +263,26 @@ class Craterplotset:
         if xtitle != '':ax.set_xlabel(xtitle)
         if ytitle != '':ax.set_ylabel(ytitle)
 
-        self.ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+normalised_position[3]+.02,normalised_position[2],.1])
+# set up n_sigma axis
+        ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+normalised_position[3]*self.ra_y_position,normalised_position[2],normalised_position[3]/16])
+        ax_ra.set_xlim(left=self.xrange[0], right=self.xrange[1])
+        ax_ra.set_ylim(-np.sqrt(3),np.sqrt(3))
+        ax_ra.set_facecolor('none')
+        ax_ra.yaxis.tick_right()
+        ytick = [-3,-2,-1,0,1,2,3]
+        ytickv = cst.n_sigma_scaling(ytick)
+        yticklabels = [f"{e}" for e in ytick]
+        ax_ra.set_yticks(ytickv)
+        ax_ra.set_yticklabels(yticklabels)
+        ax_ra.tick_params(axis='y', direction='in',labelsize=0.5*self.scaled_pt_size, width=.5, length=self.pt_size * .2, pad=self.pt_size * .1)
+        for s in ['left','right','top','bottom']: ax_ra.spines[s].set_visible(False)
+        ax_ra.set_yticks([])
+        ax_ra.set_xticks([])
+        self.ra_legend_drawn = False
 
         self.fig=fig
         self.ax=ax
+        self.ax_ra = ax_ra
 
 # add bin labels
         if self.bins:
@@ -571,6 +587,12 @@ class Craterplotset:
         min_y, max_y = np.log10(min(y0)), np.log10(max(y1))
         xr = np.array([np.floor(min_x-mx[0]), np.ceil(max_x+mx[1])])
         yr = np.array([np.floor(np.log10(min(y0))-my[0]), np.ceil(np.log10(max(y1))+my[1])])
+
+        if any([cp.cratercount.n_sigma and cp.type == 'data' for y, cp in zip(y1, self.craterplot)]): # plot n_sigma?
+            yr[1] = max(yr[1], np.ceil(max_y + gm.mag(yr)*3/16))
+            mg = gm.mag(yr)
+            self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
+            max_y += mg/8
 
         big_left = min_x - xr[0] + mx[0] > xr[1] - max_x + mx[1] #still want biassed to left
         big_bottom = min_y - yr[0] > yr[1] - max_y

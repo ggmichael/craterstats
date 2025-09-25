@@ -152,12 +152,6 @@ class Epochs:
 
 
 
-if __name__ == '__main__':
-    f="config/functions.txt"
-    cf = cst.Chronologyfn(f, 'Moon, Neukum (1983)')
-    pf = cst.Productionfn(f, 'Moon, Neukum (1983)')
-    ep=Epochs(f,'Moon, Wilhelms (1987)',pf,cf)
-
 
 
 

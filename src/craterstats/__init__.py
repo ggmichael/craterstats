@@ -13,12 +13,5 @@ from .Epochs import Epochs
 from .Spatialcount import Spatialcount
 from .Randomnessanalysis import Randomnessanalysis
 
-from .miscellaneous import (
-    bin_bias_correction,
-    fractional_crater_transform,
-    merge_cratercounts,
-    str_age,
-    Hartmann_bins
-)
-
+from .miscellaneous import *
 from .constants import *

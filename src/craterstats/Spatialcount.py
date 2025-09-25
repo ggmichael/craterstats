@@ -415,8 +415,6 @@ class Spatialcount:
                 ax.text(np.clip(x_mer[0],xr[0],xr[1]),np.clip(y_mer[0],yr[0],yr[1]),f' {lon:.7g}°',
                         ha='left',va='bottom',color=cps.grey[0],fontsize=cps.scaled_pt_size*.5)
 
-
-
         ax.set_xlim(xr[0],xr[1])
         ax.set_ylim(yr[0],yr[1])
         ax.set_axis_off()
