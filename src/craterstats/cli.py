@@ -454,7 +454,7 @@ def randomness_analysis(args,cps):
     return ra
 
 def main(args0=None):
-    cst.initialize_calculated()
+    #cst.initialize_calculated()
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 

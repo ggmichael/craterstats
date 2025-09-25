@@ -60,68 +60,68 @@ PALETTE = (  # 1st column for white background; 2nd for inverted
     ('#a8b100', '#a8b100', 'yellow-green'),
 )
 
-def initialize_calculated():
-    """
-    these definitions must be contained in function for proper multiprocessing initialisation
-    """
+# def initialize_calculated():
+#     """
+#     these definitions must be contained in function for proper multiprocessing initialisation
+#     """
 
-    with importlib_resources.path("craterstats.config", "demo_commands.txt") as path:
-        cst.PATH = gm.filename(str(path),'u')
+with importlib_resources.path("craterstats.config", "demo_commands.txt") as path:
+    cst.PATH = gm.filename(str(path),'u')
 
-    star4 = mpath.Path(
-        np.array(([-1, -.25, 0, .25, 1, .25, 0, -.25, -1], [0, .25, 1, .25, 0, -.25, -1, -.25, 0])).transpose())
+star4 = mpath.Path(
+    np.array(([-1, -.25, 0, .25, 1, .25, 0, -.25, -1], [0, .25, 1, .25, 0, -.25, -1, -.25, 0])).transpose())
 
-    cst.MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.}),
-               ('o', 'circle', {'marker': 'o', 'fillstyle': 'none', 'markersize': 3.}),
-               ('*4', 'star4', {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3}),
-               ('^', 'triangle', {'marker': '^', 'fillstyle': 'none', 'markersize': 3.5}),
-               ('*', 'star5', {'marker': '*', 'fillstyle': 'none', 'markersize': 4.5}),
-               ('x', 'diagonal cross', {'marker': 'x', 'markersize': 3.}),
-               ('+', 'cross', {'marker': '+', 'markersize': 3.5}),
-               ('.', 'point', {'marker': '.', 'markersize': 3.}),
-               ('v', 'inverted triangle', {'marker': 'v', 'fillstyle': 'none', 'markersize': 3.5}),
-               ('fs', 'filled square', {'marker': 's', 'markersize': 2.5}),
-               ('fo', 'filled circle', {'marker': 'o', 'markersize': 2.5}),
-               ('f*4', 'filled star4', {'marker': star4, 'markersize': 3.8}),
-               ('f^', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
-               ('f*', 'filled star5', {'marker': '*', 'markersize': 3.5}),
-               ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
-               )
+cst.MARKERS = (('s', 'square', {'marker': 's', 'fillstyle': 'none', 'markersize': 3.}),
+           ('o', 'circle', {'marker': 'o', 'fillstyle': 'none', 'markersize': 3.}),
+           ('*4', 'star4', {'marker': star4, 'fillstyle': 'none', 'markersize': 4.3}),
+           ('^', 'triangle', {'marker': '^', 'fillstyle': 'none', 'markersize': 3.5}),
+           ('*', 'star5', {'marker': '*', 'fillstyle': 'none', 'markersize': 4.5}),
+           ('x', 'diagonal cross', {'marker': 'x', 'markersize': 3.}),
+           ('+', 'cross', {'marker': '+', 'markersize': 3.5}),
+           ('.', 'point', {'marker': '.', 'markersize': 3.}),
+           ('v', 'inverted triangle', {'marker': 'v', 'fillstyle': 'none', 'markersize': 3.5}),
+           ('fs', 'filled square', {'marker': 's', 'markersize': 2.5}),
+           ('fo', 'filled circle', {'marker': 'o', 'markersize': 2.5}),
+           ('f*4', 'filled star4', {'marker': star4, 'markersize': 3.8}),
+           ('f^', 'filled triangle', {'marker': '^', 'markersize': 2.5}),
+           ('f*', 'filled star5', {'marker': '*', 'markersize': 3.5}),
+           ('fv', 'filled inverted triangle', {'marker': 'v', 'markersize': 2.5}),
+           )
 
-    cst.ABOUT=[gm.bright("Craterstats-III"),
-           "Copyright (c) 2021-2025, Greg Michael",
-           "Licensed under BSD 3-Clause License. See LICENSE.txt for details.",
-           "Version: "+cst.__version__,
-           "",
-           "Explanations of concepts and calculations used in the software are given in:",
-           "",
-           gm.bright("Standardisation of crater count data presentation"),
-           "Arvidson R.E., Boyce J., Chapman C., Cintala M., Fulchignoni M., Moore H., Neukum G., Schultz P., Soderblom L., Strom R., Woronow A., Young R. "
-           "Standard techniques for presentation and analysis of crater size–frequency data. Icarus 37, 1979.",
-           "",
-           gm.bright("Formulation of a planetary surface chronology model"),
-           "Neukum G., Meteorite bombardment and dating of planetary surfaces (English translation, 1984). Meteoritenbombardement und Datierung planetarer Oberflächen (German original, 1983).",
-           "",
-           gm.bright("Resurfacing correction for cumulative fits; production function differential forms"),
-           "Michael G.G., Neukum G., Planetary surface dating from crater size-frequency distribution measurements: Partial resurfacing events and statistical age uncertainty. EPSL 294, 2010.",
-           "",
-           gm.bright("Differential fitting; binning bias correction; revised Mars epoch boundaries"),
-           "Michael G.G., Planetary surface dating from crater size-frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting. Icarus, 2013.",
-           "",
-           gm.bright("Poisson timing analysis; mu-notation"),
-           "Michael G.G., Kneissl T., Neesemann A., Planetary surface dating from crater size-frequency distribution measurements: Poisson timing analysis. Icarus, 2016.",
-           "",
-           gm.bright("Poisson calculation for buffered crater count"),
-           "Michael G.G., Yue Z., Gou S., Di K., Dating individual several-km lunar impact craters from the rim annulus in "
-           "region of planned Chang’E-5 landing Poisson age-likelihood calculation for a buffered crater counting area. EPSL 568, 2021.",
-           "",
-           gm.bright("Small-area and low number counts: age-area-uncertainty plots"),
-           "Michael G., Liu J., Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts. Icarus 431, 2025.",
-           "",
-           gm.bright("Sequence probability and simultaneous formation"),
-           "Michael G., Zhang L., Wu C., Liu J., Planetary surface dating from crater size–frequency distribution measurements: Sequence probability and simultaneous formation. Did the close Chang’E-6 mare units form simultaneously? Icarus 438, 2025.",
-           "",
-           "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
-           "",
-           ]
+cst.ABOUT=[gm.bright("Craterstats-III"),
+       "Copyright (c) 2021-2025, Greg Michael",
+       "Licensed under BSD 3-Clause License. See LICENSE.txt for details.",
+       "Version: "+cst.__version__,
+       "",
+       "Explanations of concepts and calculations used in the software are given in:",
+       "",
+       gm.bright("Standardisation of crater count data presentation"),
+       "Arvidson R.E., Boyce J., Chapman C., Cintala M., Fulchignoni M., Moore H., Neukum G., Schultz P., Soderblom L., Strom R., Woronow A., Young R. "
+       "Standard techniques for presentation and analysis of crater size–frequency data. Icarus 37, 1979.",
+       "",
+       gm.bright("Formulation of a planetary surface chronology model"),
+       "Neukum G., Meteorite bombardment and dating of planetary surfaces (English translation, 1984). Meteoritenbombardement und Datierung planetarer Oberflächen (German original, 1983).",
+       "",
+       gm.bright("Resurfacing correction for cumulative fits; production function differential forms"),
+       "Michael G.G., Neukum G., Planetary surface dating from crater size-frequency distribution measurements: Partial resurfacing events and statistical age uncertainty. EPSL 294, 2010.",
+       "",
+       gm.bright("Differential fitting; binning bias correction; revised Mars epoch boundaries"),
+       "Michael G.G., Planetary surface dating from crater size-frequency distribution measurements: Multiple resurfacing episodes and differential isochron fitting. Icarus, 2013.",
+       "",
+       gm.bright("Poisson timing analysis; mu-notation"),
+       "Michael G.G., Kneissl T., Neesemann A., Planetary surface dating from crater size-frequency distribution measurements: Poisson timing analysis. Icarus, 2016.",
+       "",
+       gm.bright("Poisson calculation for buffered crater count"),
+       "Michael G.G., Yue Z., Gou S., Di K., Dating individual several-km lunar impact craters from the rim annulus in "
+       "region of planned Chang’E-5 landing Poisson age-likelihood calculation for a buffered crater counting area. EPSL 568, 2021.",
+       "",
+       gm.bright("Small-area and low number counts: age-area-uncertainty plots"),
+       "Michael G., Liu J., Planetary surface dating from crater size–frequency distribution measurements: interpretation of small-area and low number counts. Icarus 431, 2025.",
+       "",
+       gm.bright("Sequence probability and simultaneous formation"),
+       "Michael G., Zhang L., Wu C., Liu J., Planetary surface dating from crater size–frequency distribution measurements: Sequence probability and simultaneous formation. Did the close Chang’E-6 mare units form simultaneously? Icarus 438, 2025.",
+       "",
+       "Full references for specific chronology or other functions are listed with the function definitions in `config/functions.txt`.",
+       "",
+       ]
 
