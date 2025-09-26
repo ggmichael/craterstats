@@ -1,3 +1,4 @@
+astropy-healpix
 colorama
 matplotlib
 numpy

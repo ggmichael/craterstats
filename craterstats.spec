@@ -13,7 +13,7 @@ sample_files = abs_glob('src/craterstats/sample/', ['scc', 'diam', 'r', 'stat', 
 font_files = abs_glob('src/craterstats/fonts/', ['txt', 'ttf'])
 
 a = Analysis(
-    ['src/craterstats/cli.py'],
+    ['src/craterstats.py'],
     pathex=[os.path.abspath('src')],
     binaries=[],
     datas = [
