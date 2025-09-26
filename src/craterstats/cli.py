@@ -120,6 +120,7 @@ def get_parser():
     parser.add_argument("-ra", "--randomness_analysis", help="source fil for randomness analysis", nargs='+', action=SpacedString)
     parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
+    parser.add_argument("-ra_offset", type=int, help="vertical offset for randomness analysis sub-plot in 1/20ths of decade")
 
     return parser
 
@@ -147,6 +148,7 @@ def defaults():
         'min_diameter':0.15,
         'global_area':1e12, # default larger than all terrestrial planets
         'n_samples':200,
+        'ra_offset':0,
         }
     plot = {
         'source': '',
@@ -225,6 +227,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'xrange', 'yrange',
                      'min_diameter','n_samples',
                      'bins',
+                     'ra_offset',
                      ):
                 c[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
@@ -366,7 +369,7 @@ def convert_format(args, cps, cs_content):
                 out = re.sub(r'_?CRATER_?', '', out)
                 out = gm.filename(out, 'pn1e','_map')
                 cps.create_map_plotspace()
-                scc.plot(cps)
+                scc.plot(cps,grid=True)
                 cps.fig.savefig(out, dpi=500, transparent=cps.transparent, bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
                 gm.write_textfile(gm.filename(out,'pn1','.cs'), cs_content)
         case _:
@@ -438,7 +441,7 @@ def cs_source(v):
     return v.replace('%sample%/', cst.PATH + 'sample/')
 
 def randomness_analysis(args,cps):
-    out = '' if cps.out=='out' else gm.filename(cps.out,'p')
+    out = '' if cps.out=='out' else gm.filename(cps.out,'pn')
     ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out)
     cps.out = gm.filename(ra.ra_file,'pn')
     trials = args.trials if args.trials else 300
@@ -454,7 +457,6 @@ def randomness_analysis(args,cps):
     return ra
 
 def main(args0=None):
-    #cst.initialize_calculated()
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 

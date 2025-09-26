@@ -21,7 +21,6 @@ class TestPlottingClasses(unittest.TestCase):
 
     def test_Craterplotset_CreatePlotSpace(self):
         cps=cst.Craterplotset()
-        cps.ra_y_position = .8
         cps.CreatePlotSpace()
         self.assertTrue(cps.fig)
         self.assertTrue(cps.ax)

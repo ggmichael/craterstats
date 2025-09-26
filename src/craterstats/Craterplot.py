@@ -109,19 +109,21 @@ class Craterplot:
 
         # put fading white band behind plot
         mg = gm.mag(cps.xrange)
-        fade_zone = 1/6
+        fade_zone = 1/8
         plot_zone = gm.mag(xr)/mg
         fade_steps = 20
         plot_steps = round(fade_steps * plot_zone / fade_zone)
-        white_image = np.ones((1, fade_steps*2+plot_steps, 3))
+        white_image = np.ones((1, fade_steps*2+plot_steps, 3)) * (0 if cps.invert else 1)
         alpha_values = np.concatenate((np.linspace(0, 1, fade_steps),np.linspace(1, 1, plot_steps),np.linspace(1, 0, fade_steps)))
         alpha_channel = np.tile(alpha_values, (1, 1)) *.8
         cps.ax_ra.imshow(white_image, alpha=alpha_channel, aspect='auto', extent=[xr[0]-mg*fade_zone, xr[1]+mg*fade_zone, cst.n_sigma_scaling(-2.95), cst.n_sigma_scaling(2.95)],
                          zorder=0, clip_on=False)
 
+        marker = cps.marker_def[self.psym].copy()
+        marker['markersize'] *= .7
         for m in measures:
             y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) for e in self.cratercount.n_sigma[m]]
-            cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **cps.marker_def[self.psym], linestyle=cst.LINESTYLES[m], clip_on=False)
+            cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **marker, linestyle=cst.LINESTYLES[m], clip_on=False)
 
         if not cps.ra_legend_drawn:
             dy=-.08

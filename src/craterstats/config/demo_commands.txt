@@ -3,6 +3,8 @@
 # Command line options to produce various demonstration results
 #
 
+-title Spatial randomness analysis: Mean 2nd-closest neighbour distance -ra %sample%/Pickering.scc -measure m2cnd
+
 -title "Differential plot with Poisson age evaluations,|equilibrium function, and epoch system" -cs neukumivanov -ep mars -ef trask -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 
 -title Differential plot|with two differential fit age evaluations -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red

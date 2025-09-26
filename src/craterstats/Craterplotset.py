@@ -64,6 +64,7 @@ class Craterplotset:
         self.grey = cst.GREYS[self.invert]
         self.palette = [e[self.invert] for e in cst.PALETTE]
         self.marker_def = [e[2].copy() for e in cst.MARKERS]
+        self.max_y = None
 
         
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
@@ -264,25 +265,27 @@ class Craterplotset:
         if ytitle != '':ax.set_ylabel(ytitle)
 
 # set up n_sigma axis
-        ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+normalised_position[3]*self.ra_y_position,normalised_position[2],normalised_position[3]/16])
-        ax_ra.set_xlim(left=self.xrange[0], right=self.xrange[1])
-        ax_ra.set_ylim(-np.sqrt(3),np.sqrt(3))
-        ax_ra.set_facecolor('none')
-        ax_ra.yaxis.tick_right()
-        ytick = [-3,-2,-1,0,1,2,3]
-        ytickv = cst.n_sigma_scaling(ytick)
-        yticklabels = [f"{e}" for e in ytick]
-        ax_ra.set_yticks(ytickv)
-        ax_ra.set_yticklabels(yticklabels)
-        ax_ra.tick_params(axis='y', direction='in',labelsize=0.5*self.scaled_pt_size, width=.5, length=self.pt_size * .2, pad=self.pt_size * .1)
-        for s in ['left','right','top','bottom']: ax_ra.spines[s].set_visible(False)
-        ax_ra.set_yticks([])
-        ax_ra.set_xticks([])
-        self.ra_legend_drawn = False
+        if self.max_y:
+            y_ra_normalised = (self.max_y + gm.mag(self.yrange)/16 + self.ra_offset/20 - self.yrange[0]) / gm.mag(self.yrange)
+            ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+y_ra_normalised*normalised_position[3],normalised_position[2],normalised_position[3]/16])
+            ax_ra.set_xlim(left=self.xrange[0], right=self.xrange[1])
+            ax_ra.set_ylim(-np.sqrt(3),np.sqrt(3))
+            ax_ra.set_facecolor('none')
+            ax_ra.yaxis.tick_right()
+            ytick = [-3,-2,-1,0,1,2,3]
+            ytickv = cst.n_sigma_scaling(ytick)
+            yticklabels = [f"{e}" for e in ytick]
+            ax_ra.set_yticks(ytickv)
+            ax_ra.set_yticklabels(yticklabels)
+            ax_ra.tick_params(axis='y', direction='in',labelsize=0.5*self.scaled_pt_size, width=.5, length=self.pt_size * .2, pad=self.pt_size * .1)
+            for s in ['left','right','top','bottom']: ax_ra.spines[s].set_visible(False)
+            ax_ra.set_yticks([])
+            ax_ra.set_xticks([])
+            self.ra_legend_drawn = False
+            self.ax_ra = ax_ra
 
         self.fig=fig
         self.ax=ax
-        self.ax_ra = ax_ra
 
 # add bin labels
         if self.bins:
@@ -591,7 +594,8 @@ class Craterplotset:
         if any([cp.cratercount.n_sigma and cp.type == 'data' for y, cp in zip(y1, self.craterplot)]): # plot n_sigma?
             yr[1] = max(yr[1], np.ceil(max_y + gm.mag(yr)*3/16))
             mg = gm.mag(yr)
-            self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
+            #self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
+            self.max_y = max_y
             max_y += mg/8
             self.n_sigma_range = gm.range([float(e) for cp in self.craterplot if cp.cratercount.n_sigma and cp.type == 'data' for e in cp.cratercount.n_sigma['bin']])
             self.measures = sorted({e for cp in self.craterplot if cp.cratercount.n_sigma and cp.type == 'data' for e in cp.cratercount.n_sigma.keys()} - {'bin'})

@@ -31,7 +31,7 @@ class Randomnessanalysis(cst.Spatialcount):
         self.init_Cratercount()
         self.montecarlo = {}
         self.max_threads = os.cpu_count()-1
-        self.ra_file = (out if out else '') + self.name + "_ra.txt"
+        self.ra_file = (out if out else self.name) + "_ra.txt"
         self.read()
         binning='root-2'
         self.cc.apply_binning(binning, offset=0.)
@@ -411,8 +411,11 @@ class Randomnessanalysis(cst.Spatialcount):
         gm.write_textfile(self.ra_file,s)
 
     def read(self):
-        if gm.file_exists(self.ra_file):
-            c = gm.read_textstructure(self.ra_file)
+        # allow read from source file location, but write will still be to current dir or -o
+        possible_locations = (self.ra_file, gm.filename(self.filename, 'pn1','_ra.txt'))
+        f = next((loc for loc in possible_locations if gm.file_exists(loc)), None)
+        if f:
+            c = gm.read_textstructure(f)
             for name in self.MEASURES:
                 if name in c:
                     self.montecarlo[name] = {

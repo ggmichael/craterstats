@@ -107,9 +107,6 @@ class Spatialcount:
         self.perimeter=sph.perimeter(p, radius=self.planetary_radius)
         self.polygon=p
 
-        print(f"Planetary radius: {self.planetary_radius:0g} km")
-        print(f"Area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km")
-
         n_pole = sph.create_point(longitude=0, latitude=90)
         s_pole = sph.create_point(longitude=0, latitude=-90)
         if sph.covers(p, n_pole):
@@ -118,13 +115,13 @@ class Spatialcount:
         if sph.covers(p, s_pole):
             yr = (-90, yr[1])
             xr = (-180, 180)
-
-        print(f"Range: {xr[0]:2f}:{xr[1]:2f} {yr[0]:2f}:{yr[1]:2f}")
         self.xr=xr
         self.yr=yr
         enclosing_polygon = sph.create_polygon(shell=[(xr[0],yr[0]),(xr[0],yr[1]),(xr[1],yr[1]),(xr[1],yr[0])])
         self.enclosing_area = sph.area(enclosing_polygon, radius=self.planetary_radius)
-        print(f"Enclosing area: {self.enclosing_area:.2f} km2")
+
+        print(f"Range: {xr[0]:.2f}:{xr[1]:.2f} {yr[0]:.2f}:{yr[1]:.2f}, area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km (planetary radius: {self.planetary_radius:0g} km)")
+
 
 
     def readSHPfiles(self):
