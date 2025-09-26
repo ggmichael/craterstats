@@ -593,6 +593,8 @@ class Craterplotset:
             mg = gm.mag(yr)
             self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
             max_y += mg/8
+            self.n_sigma_range = gm.range([float(e) for cp in self.craterplot if cp.cratercount.n_sigma and cp.type == 'data' for e in cp.cratercount.n_sigma['bin']])
+            self.measures = sorted({e for cp in self.craterplot if cp.cratercount.n_sigma and cp.type == 'data' for e in cp.cratercount.n_sigma.keys()} - {'bin'})
 
         big_left = min_x - xr[0] + mx[0] > xr[1] - max_x + mx[1] #still want biassed to left
         big_bottom = min_y - yr[0] > yr[1] - max_y

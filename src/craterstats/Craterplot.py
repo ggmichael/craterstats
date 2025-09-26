@@ -132,8 +132,8 @@ class Craterplot:
             for y in [-3,-1,0,1,3]:
                 cps.ax_ra.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
 
-            for i,m in enumerate(measures):
-                y = ((len(measures)-1)/2-i)*cst.n_sigma_scaling(1)
+            for i,m in enumerate(cps.measures):
+                y = ((len(cps.measures)-1)/2-i)*cst.n_sigma_scaling(1)
                 cps.ax_ra.text(xr[0] - mg*.03, y, m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
                 cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
 
