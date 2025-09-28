@@ -26,7 +26,7 @@ class Cratercount:
         self.prebinned=False
         if filetype:
             self.name = gm.filename(filename, 'n')
-            self.n_sigma = self.read_ra_file()
+            self.n_sigma, self.n_trials = self.read_ra_file()
 
         bad_filetype = False
         try:
@@ -55,9 +55,11 @@ class Cratercount:
         f = next((loc for loc in possible_locations if gm.file_exists(loc)), None)
         if f:
             c = gm.read_textstructure(f)
-            return c['n_sigma']
+            measures = sorted(set(c['n_sigma'].keys()) - {'bin'})
+            trials = [c[m]['n_trials'] for m in measures]
+            return c['n_sigma'],trials
         else:
-            return None
+            return None, None
 
 # ;****************************************************
 # ;             Generate missing details

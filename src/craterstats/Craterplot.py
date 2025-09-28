@@ -134,10 +134,11 @@ class Craterplot:
             for y in [-3,-1,0,1,3]:
                 cps.ax_ra.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
 
+            y = [((len(cps.measures)) / 2 - i) * cst.n_sigma_scaling(1) for i in range(len(cps.measures)+1)]
             for i,m in enumerate(cps.measures):
-                y = ((len(cps.measures)-1)/2-i)*cst.n_sigma_scaling(1)
-                cps.ax_ra.text(xr[0] - mg*.03, y, m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
-                cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
+                cps.ax_ra.text(xr[0] - mg*.03, y[i], m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
+                cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y[i]]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
+            cps.ax_ra.text(xr[0] - mg * .005, y[-1], ', '.join(set(self.cratercount.n_trials))+" trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='right')
 
 
 

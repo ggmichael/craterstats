@@ -7,3 +7,4 @@ from .sigfigs import sigfigs
 from .strip_quotes import strip_quotes
 from .quoted_split import quoted_split
 from .diameter_range import diameter_range
+from .percentile_sigfigs import percentile_sigfigs

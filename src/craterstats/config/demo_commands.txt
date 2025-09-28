@@ -3,7 +3,7 @@
 # Command line options to produce various demonstration results
 #
 
--title Spatial randomness analysis: Mean 2nd-closest neighbour distance -ra %sample%/Pickering.scc -measure m2cnd
+-title Spatial randomness analysis -ra %sample%/CE-6 8-km vicinity.scc
 
 -title "Differential plot with Poisson age evaluations,|equilibrium function, and epoch system" -cs neukumivanov -ep mars -ef trask -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 

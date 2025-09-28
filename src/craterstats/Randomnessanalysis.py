@@ -9,7 +9,6 @@ import os
 import astropy_healpix as hpx
 import astropy.units as u
 import numpy as np
-import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 from scipy.spatial import SphericalVoronoi
 import shapely as shp
@@ -143,13 +142,11 @@ class Randomnessanalysis(cst.Spatialcount):
         for b,n in zip(self.cc.binned['d_min'],self.cc.binned['n_event']):
             if n >= min_count:
                 bin = f"{np.log2(b):.3g}"
-                print(f"Measure: {measure}, bin: {bin}, d_min:{b:0.3g}, number:{n}")
+                print(f"{measure}, bin {bin}: {gm.diameter_range([b,b*math.sqrt(2)],2)}, {n} craters")
 
                 # do parallel monte carlo for random configs
                 m = montecarlo_pp(self_pp,b,n)
                 self.montecarlo[measure]['trials'][bin] = m
-
-                #if b> .15: break
 
 
     def run_montecarlo(self, trials, measure):
@@ -165,7 +162,7 @@ class Randomnessanalysis(cst.Spatialcount):
         for measure in self.montecarlo.keys():
             self_pp = self.self_pp(self.montecarlo[measure]['n_trials'], measure)
             self.montecarlo[measure]['stats'] = {}
-            stats = namedtuple('stats', ['m0', 'p2', 'mn', 'sd', 'n_sigma'])
+            stats = namedtuple('stats', ['m0', 'p2', 'mn', 'sd', 'n_sigma','percentile'])
             for bin in self.montecarlo[measure]['trials'].keys():
 
                 pts, ids, hpd = self.get_bin_craters(bin)
@@ -175,7 +172,8 @@ class Randomnessanalysis(cst.Spatialcount):
                 m = self.montecarlo[measure]['trials'][bin]
                 mn,sd = (np.mean(m),np.std(m))
                 n_sigma = (m0-mn)/sd
-                self.montecarlo[measure]['stats'][bin] = stats(m0=m0, p2=p2, mn=mn, sd=sd, n_sigma=n_sigma)
+                percentile = np.searchsorted(np.sort(m), m0) / len(m) * 100
+                self.montecarlo[measure]['stats'][bin] = stats(m0=m0, p2=p2, mn=mn, sd=sd, n_sigma=n_sigma,percentile = percentile)
 
     def plot_histogram(self,cps,measure,bin,ax0=None,sz_ratio=1.): # mark median and 1 sd band
         if ax0:
@@ -204,7 +202,8 @@ class Randomnessanalysis(cst.Spatialcount):
         ax.plot(x0, y0, color=cps.palette[0], linewidth=.7 * sz_ratio)
 
         ax.plot([m0]*2, yr, color=cps.palette[0],alpha = 0.4, lw = 2 * cps.sz_ratio * sz_ratio)
-        ax.text(m0, yr[0]+1*gm.mag(yr), f"{m0:0.3g} ", size=.7*cps.scaled_pt_size * math.sqrt(sz_ratio), rotation=0,
+
+        ax.text(m0, yr[0]+1*gm.mag(yr), f"{m0:0.3g}\n{gm.percentile_sigfigs(res.percentile)}%", size=.7*cps.scaled_pt_size * math.sqrt(sz_ratio), rotation=0,
                                  horizontalalignment='center', verticalalignment='bottom')
 
         # shade sd
@@ -310,7 +309,7 @@ class Randomnessanalysis(cst.Spatialcount):
         dim = math.ceil(math.sqrt(len(self.montecarlo[measure]['stats'])+1))
         cps.create_map_plotspace()
         pos = cps.ax.get_position()
-        cps.ax.set_visible(False)
+        #cps.ax.set_visible(False)
         cps.ax.set_axis_off()
         def make_ax(i):
             x,y = (i%dim,dim - 1 - i//dim)
@@ -325,60 +324,52 @@ class Randomnessanalysis(cst.Spatialcount):
         for i,bin in enumerate(self.montecarlo[measure]['stats']):
             self.plot_map_and_histogram(cps,measure,bin ,ax=make_ax(i),sz_ratio=1/dim)
 
-        self.plot_n_sigma(cps, measure, ax0=make_ax(dim**2-1))
+        self.plot_n_sigma(cps, measure, ax0=make_ax(dim ** 2 - 1))
 
 
-    def plot_n_sigma(self,cps, measure, ax0=None):
+    def plot_n_sigma(self, cps, measure, ax0=None):
         if not ax0:
             ax0=cps.ax
         ax0.set_visible(False)
         pos = ax0.get_position()
         sz_ratio = pos.width / cps.ax.get_position().width
+
         if ax0:
-            ax = cps.fig.add_axes([pos.x0+.05*pos.width,pos.y0 + pos.height / 3,pos.width*.95,pos.height/3])
+            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height / 3,pos.width*.95,pos.height/3])
         else:
             ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 3])
-
-        xr=[-2,2]
-        yr=[e * cst.n_sigma_scaling(12) for e in [-1,1]]
-        ytick = [-10,-5,-3,-2,-1,0,1,2,3,5,10]
-        ytickv = cst.n_sigma_scaling(ytick)
-        yticklabels0 = [f"{e}" for e in ytick]
-        yticklabels = ['' if y in [-5,-2,2,5] and sz_ratio < .5 else e for y,e in zip(ytick,yticklabels0)]
-
-        xtickv, xticklabels, xminor = cst.Hartmann_bins(xr)
-        plt.rcParams.update({'xtick.labelsize': 1. *cps.scaled_pt_size})
-        ax.set_xticks(xtickv)
-        ax.set_xticklabels(xticklabels)
-        ax.xaxis.set_minor_locator(ticker.MultipleLocator(xminor))
-
-        ax.set_yticks(ytickv)
-        ax.set_yticklabels(yticklabels)
-        ax.tick_params(axis='y', direction='in',labelsize=0.5*cps.scaled_pt_size*(sz_ratio**.6), width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .1)
-        ax.tick_params(axis='x', which='both', direction='in', labelsize=0.5*cps.scaled_pt_size*math.sqrt(sz_ratio),
-                       width=.5*sz_ratio, length=cps.pt_size * .2 * sz_ratio, pad=cps.pt_size * .2)
-        ax.tick_params(axis='x', which='minor', length=cps.pt_size * .1 * sz_ratio)
-        ax.set_ylim(yr[0], yr[1])
-        ax.set_xlim(xr[0], xr[1])
-        ax.set_ylabel(r"$n_\sigma$",fontsize=1.*cps.scaled_pt_size*(sz_ratio), labelpad=.001*cps.pt_size*sz_ratio,fontstyle='italic')
-        ax.set_xlabel("Diameter",fontsize=1.*cps.scaled_pt_size*(sz_ratio))
-        for spine in ax.spines.values(): spine.set_linewidth(.3*sz_ratio)
-
-        ax.text(.5, .13, "clustered", color=cps.grey[0], size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio), transform=ax.transAxes, va = 'center', ha = 'center')
-        ax.text(.5, .87, "separated", color=cps.grey[0], size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio), transform=ax.transAxes, va = 'center', ha = 'center')
-
-        ax.fill_between(xr,[ytickv[2]]*2, y2 = [ytickv[-3]]*2, color=cps.grey[2], edgecolor='none')
-        ax.fill_between(xr, [ytickv[3]]*2, y2 = [ytickv[-4]]*2, color=cps.grey[3], edgecolor='none')
-        ax.fill_between(xr, [ytickv[4]]*2, y2 = [ytickv[-5]]*2, color=cps.grey[1], edgecolor='none')
 
         x = [np.log10(2**(float(r)+.25)) for r in self.montecarlo[measure]['stats']]
         y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
         y1 = [cst.n_sigma_scaling(e) for e in y0] # apply axis scaling
         y = [-e if measure=='sdaa' else e for e in y1] # flip for sdaa
+        xr = min(x)-np.log10(2**.25),max(x)+np.log10(2**.25)
+        mg = gm.mag(cps.xrange)
+
+        for spine in ax.spines.values(): spine.set_visible(False)
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+        ax.set_ylim(cst.n_sigma_scaling(-5), cst.n_sigma_scaling(5))
+        ax.set_xlim(xr[0], xr[1])
+
+        ax.fill_between(xr, [cst.n_sigma_scaling(-3)]*2, y2 = [cst.n_sigma_scaling(3)]*2, color=cps.grey[2], edgecolor='none')
+        ax.fill_between(xr, [cst.n_sigma_scaling(-2)]*2, y2 = [cst.n_sigma_scaling(2)]*2, color=cps.grey[3], edgecolor='none')
+        ax.fill_between(xr, [cst.n_sigma_scaling(-1)]*2, y2 = [cst.n_sigma_scaling(1)]*2, color=cps.grey[1], edgecolor='none')
 
         marker = cps.marker_def[10].copy()
-        marker['markersize'] *= .7*cps.sz_ratio*sz_ratio
-        ax.plot(x,y,linestyle=cst.LINESTYLES[measure],**marker,color=cps.palette[0],linewidth=1*sz_ratio)
+        marker['markersize'] *= sz_ratio
+
+        ax.plot(x, y, color=cps.palette[0], lw=1. * cps.sz_ratio*sz_ratio, **marker, linestyle=cst.LINESTYLES[measure], clip_on=False)
+
+        dy=-.08
+        ax.text(np.mean(xr), cst.n_sigma_scaling(-5), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+        ax.text(np.mean(xr), cst.n_sigma_scaling(5), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+        ax.text(xr[1], dy, r"    $n_\sigma$", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='left')
+        for y in [-3,-1,0,1,3]:
+            ax.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
+
+        ax.text(xr[0] - mg*.005, 0, measure + f"\n{self.montecarlo[measure]['n_trials']} trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
+        #ax.plot([xr[0] - mg*.027,xr[0] - mg*.005], [0]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[measure])
 
     def write(self):
         s = ['# Randomness analysis',

@@ -105,6 +105,14 @@ class Testgm(unittest.TestCase):
         self.assertEqual(gm.diameter_range([1.1, 1.7]),'1.1–1.7 km')
         self.assertEqual(gm.diameter_range([.65, .95]),'650–950 m')
 
+    def test_percentile_sigfigs(self):
+        self.assertEqual(gm.percentile_sigfigs(0.01567,2), '0.016')
+        self.assertEqual(gm.percentile_sigfigs(0.01567, 3), '0.0157')
+        self.assertEqual(gm.percentile_sigfigs(43.01567, 2), '43')
+        self.assertEqual(gm.percentile_sigfigs(53.01567, 2), '53')
+        self.assertEqual(gm.percentile_sigfigs(99.5301567, 2), '99.53')
+        self.assertEqual(gm.percentile_sigfigs(99.995301567, 2), '99.9953')
+        self.assertEqual(gm.percentile_sigfigs(100, 2), '100')
 
     #file
 

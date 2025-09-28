@@ -213,7 +213,9 @@ class Craterplotset:
         else:
             if self.style=='root-2' or self.presentation=='Hartmann':
                 xtickv, xtickname, xminor = cst.Hartmann_bins(self.xrange)
-                plt.rcParams.update({'xtick.labelsize':self.scaled_pt_size*.75})
+                plt.rcParams.update({'xtick.labelsize':self.scaled_pt_size*.65})
+                if self.presentation == 'Hartmann':
+                    plt.rcParams.update({'ytick.labelsize': self.scaled_pt_size *.8})
             elif self.style=='natural':                
                 v=np.arange(np.ceil(self.xrange[0]),np.floor(self.xrange[1])+1).tolist()
                 xtickname=[format(10**e,'0g')+r'$\,$km' if e>=0 else format(10**(e+3),'0g')+r'$\,$m' for e in v]
@@ -237,17 +239,16 @@ class Craterplotset:
             ax2.set_axisbelow(False)
             ax2.set_xscale('log')      
             ax2.set_xbound(lower=10**self.xrange[0], upper=10**self.xrange[1])  
-            ax2.tick_params(axis='x',which='minor',direction="in",length=self.pt_size*.25, top=True)
+            ax2.tick_params(axis='x',which='minor',direction="in",length=self.pt_size*.15, top=True)
             ax2.tick_params(axis='x',which='major', bottom=False,labelbottom=False)
             ax2.get_yaxis().set_visible(False)            
                     
         ax.set_yscale('log')                                             #don't use xlog scale - awful to set up ticks for Hartmann binning
         ax.set_ylim(bottom=10**self.yrange[0], top=10**self.yrange[1])   #nb craterstats2 used linear for both axes
-  
         ax.set_xlim(left=self.xrange[0], right=self.xrange[1])
         
-        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.5,right=True,top=True)
-        ax.tick_params(axis='both',which='minor',direction="in",length=self.pt_size*.25,right=True,top=True)
+        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.3,right=True,top=True)
+        ax.tick_params(axis='both',which='minor',direction="in",length=self.pt_size*.15,right=True,top=True)
  
         if xminor is not None: ax.xaxis.set_minor_locator(ticker.MultipleLocator(xminor))            
         if xmajor is not None: ax.xaxis.set_major_locator(ticker.MultipleLocator(xmajor))
@@ -938,6 +939,6 @@ class Craterplotset:
         self.fig = mfig.Figure(figsize=[xsize * self.cm2inch, ysize * self.cm2inch], dpi=500)
         self.ax = self.fig.add_axes(normalised_position)
 
-        title = '\n'.join(self.title.split('|')) if self.title else None
-        if title: self.ax.set_title(title)
+        if self.title:
+            self.ax.set_title('\n'.join(self.title.split('|')) )
 

@@ -549,9 +549,9 @@ def main(args0=None):
                 for measure in cps.measures:
                     ra.plot_montecarlo_split(cps, measure)
                     savefig('-'+measure)
-                cps.create_map_plotspace()
-                ra.plot(cps,grid=True)
-                savefig('-map')
+                # cps.create_map_plotspace()
+                # ra.plot(cps,grid=True)
+                # savefig('-map')
             elif cps.presentation == 'uncertainty':
                 for plt in ('k','err','age'):
                     cps.draw()
