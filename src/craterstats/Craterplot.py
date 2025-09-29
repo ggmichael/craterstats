@@ -3,6 +3,7 @@
 
 import numpy as np
 from matplotlib.textpath import TextPath
+import matplotlib.ticker as ticker
 import re
 
 import craterstats as cst
@@ -128,8 +129,8 @@ class Craterplot:
         if not cps.ra_legend_drawn:
             dy=-.08
             cps.ra_legend_drawn = True
-            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(-5), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
-            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(5), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(-6), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+            cps.ax_ra.text(np.mean(xr), cst.n_sigma_scaling(8), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
             cps.ax_ra.text(xr[1], dy, r"    $n_\sigma$", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='left')
             for y in [-3,-1,0,1,3]:
                 cps.ax_ra.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
@@ -140,7 +141,15 @@ class Craterplot:
                 cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y[i]]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
             cps.ax_ra.text(xr[0] - mg * .005, y[-1], ', '.join(set(self.cratercount.n_trials))+" trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='right')
 
-
+            xtickv, xtickname, _, xminorv = cst.Hartmann_bins([xr[0],xr[1]+.001])
+            cps.ax_ra.spines['top'].set_position(('data', cst.n_sigma_scaling(3)))
+            cps.ax_ra.xaxis.set_ticks_position('top')
+            cps.ax_ra.tick_params(axis='x', which='both', direction="out", color=cps.grey[1], labelcolor=cps.grey[0], width=.25,
+                           length=cps.pt_size * .07, pad=cps.pt_size * .04, labelsize=cps.scaled_pt_size*.3)
+            cps.ax_ra.tick_params(axis='x', which='minor', length=cps.pt_size * .05)
+            cps.ax_ra.set_xticks(xtickv)
+            cps.ax_ra.set_xticks(xminorv, minor=True)
+            cps.ax_ra.set_xticklabels(xtickname)
 
 
     def overplot(self,cps):

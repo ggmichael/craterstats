@@ -5,8 +5,8 @@ import numpy as np
 
 def percentile_sigfigs(p, sf=2):
     """
-    format string with equivalent differential precision approaching 1 as approaching 0
-    p: percentile value between 0 and 100
+    format string with equivalent differential precision approaching 100 as approaching 0
+    p: percentile value between 0 and 100. i.e. 0.015 vs 99.985 as 2 s.f.
     sf: int sig figs
     """
 
@@ -17,5 +17,3 @@ def percentile_sigfigs(p, sf=2):
         res = f"{p:.{max(digits - 2, 0)}f}"
     return res
 
-if __name__ == '__main__':
-    print(percentile_sigfigs(3.14159,3))

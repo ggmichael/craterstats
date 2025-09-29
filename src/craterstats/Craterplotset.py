@@ -212,7 +212,7 @@ class Craterplotset:
             xminor, xmajor = .5, 1
         else:
             if self.style=='root-2' or self.presentation=='Hartmann':
-                xtickv, xtickname, xminor = cst.Hartmann_bins(self.xrange)
+                xtickv, xtickname, xminor, _ = cst.Hartmann_bins(self.xrange)
                 plt.rcParams.update({'xtick.labelsize':self.scaled_pt_size*.65})
                 if self.presentation == 'Hartmann':
                     plt.rcParams.update({'ytick.labelsize': self.scaled_pt_size *.8})

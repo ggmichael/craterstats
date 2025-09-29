@@ -3,8 +3,6 @@
 # Command line options to produce various demonstration results
 #
 
--title Spatial randomness analysis -ra %sample%/CE-6 8-km vicinity.scc
-
 -title "Differential plot with Poisson age evaluations,|equilibrium function, and epoch system" -cs neukumivanov -ep mars -ef trask -p source=%sample%/Pickering.scc -p type=poisson,range=[2,5],offset_age=[2,-2] -p range=[.2,.7]
 
 -title Differential plot|with two differential fit age evaluations -cs neukumivanov -p source=%sample%/Pickering.scc,psym=o -p type=d-fit,range=[.2,.7],isochron=1 -p range=[2,5],colour=red
@@ -34,6 +32,12 @@
 -title Hartmann 2010 crater count template -pr hartmann -cs hartmann2010 -ef hart84 -isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
 
 -title "Hartmann-style plot with other chronology system,|Poisson age analysis, and without $\mu$-notation" -pr hartmann -cs neukumivanov -mu 0 -ef trask -p source=%sample%/Pickering.scc,psym=tri,isochron=1,col=red -p type=poisson,range=[.2,.7] -p colour=red1,psym=filltriangle,range=[2,5],offset=[3,0]
+
+-title 8-km vicinity of Chang-E 6 landing site --convert png "%sample%/CE-6 8-km vicinity.scc"
+
+-title Spatial randomness analysis -ra "%sample%/CE-6 8-km vicinity.scc" -trials 3000
+
+-title Plot with diameter-aligned spatial randomness analysis results -ef trask -p source="%sample%/CE-6 8-km vicinity.scc" -p type=poisson,range=[.12,.2] -p range=[.2,.8]
 
 -title Chronology function with Mars epochs and transition times -pr chronology -ep mars -cs neukumivanov
 

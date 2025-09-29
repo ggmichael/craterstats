@@ -178,7 +178,8 @@ def Hartmann_bins(d_range):
     xtickv, xtickname = map(list, zip(*[(val, txt) for val, txt in zip(v, labels) if d_range[0] <= val <= d_range[1]]))
     if xtickv[0] < 0: xtickname[0] += 'm'
     xminor = (xtickv[1] - xtickv[0]) / 2
-    return xtickv,xtickname,xminor
+    xminorv = [e+xminor for e in [xtickv[0]-2*xminor]+xtickv if d_range[0] <= e+xminor <= d_range[1]]
+    return xtickv,xtickname,xminor,xminorv
 
 def n_sigma_scaling(v):
     """

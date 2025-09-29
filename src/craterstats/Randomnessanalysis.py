@@ -301,7 +301,7 @@ class Randomnessanalysis(cst.Spatialcount):
         self.plot_histogram(cps, measure, bin, ax0=ax2,sz_ratio=sz_ratio)
 
         d_min = 2**float(bin)
-        ax.text(1., .95, gm.diameter_range([d_min,d_min*math.sqrt(2)],2)+f'\nn = {len(craters.diam)}', size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
+        ax.text(1., .95, gm.diameter_range([d_min,d_min*2**.499],2)+f'\nn = {len(craters.diam)}', size=.7 * cps.scaled_pt_size * math.sqrt(sz_ratio),
                  transform=ax.transAxes, ha="right",va='top')
 
 
@@ -335,21 +335,21 @@ class Randomnessanalysis(cst.Spatialcount):
         sz_ratio = pos.width / cps.ax.get_position().width
 
         if ax0:
-            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height / 3,pos.width*.95,pos.height/3])
+            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height*.3,pos.width*.95,pos.height*.4])
         else:
-            ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 3])
+            ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 2])
 
         x = [np.log10(2**(float(r)+.25)) for r in self.montecarlo[measure]['stats']]
         y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
         y1 = [cst.n_sigma_scaling(e) for e in y0] # apply axis scaling
         y = [-e if measure=='sdaa' else e for e in y1] # flip for sdaa
-        xr = min(x)-np.log10(2**.25),max(x)+np.log10(2**.25)
+        xr = min(x)-np.log10(2**.251),max(x)+np.log10(2**.251) # control end-labels
         mg = gm.mag(cps.xrange)
 
-        for spine in ax.spines.values(): spine.set_visible(False)
-        ax.xaxis.set_visible(False)
+        for spine in set(ax.spines.values())-{'bottom'}: spine.set_visible(False)
+        #ax.xaxis.set_visible(False)
         ax.yaxis.set_visible(False)
-        ax.set_ylim(cst.n_sigma_scaling(-5), cst.n_sigma_scaling(5))
+        ax.set_ylim(cst.n_sigma_scaling(-6), cst.n_sigma_scaling(6))
         ax.set_xlim(xr[0], xr[1])
 
         ax.fill_between(xr, [cst.n_sigma_scaling(-3)]*2, y2 = [cst.n_sigma_scaling(3)]*2, color=cps.grey[2], edgecolor='none')
@@ -363,13 +363,24 @@ class Randomnessanalysis(cst.Spatialcount):
 
         dy=-.08
         ax.text(np.mean(xr), cst.n_sigma_scaling(-5), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
-        ax.text(np.mean(xr), cst.n_sigma_scaling(5), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
+        ax.text(np.mean(xr), cst.n_sigma_scaling(7), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
         ax.text(xr[1], dy, r"    $n_\sigma$", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='left')
         for y in [-3,-1,0,1,3]:
             ax.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
 
         ax.text(xr[0] - mg*.005, 0, measure + f"\n{self.montecarlo[measure]['n_trials']} trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
-        #ax.plot([xr[0] - mg*.027,xr[0] - mg*.005], [0]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[measure])
+
+        xtickv,xtickname,_,xminorv = cst.Hartmann_bins(xr)
+        ax.spines['top'].set_position(('data', cst.n_sigma_scaling(3)))
+        ax.xaxis.set_ticks_position('top')
+        ax.tick_params(axis='x', which='both', direction="out", color=cps.grey[1], labelcolor=cps.grey[0], width=.5*sz_ratio,
+                       length=cps.pt_size*sz_ratio * .2, pad=cps.pt_size*sz_ratio * .2, labelsize=cps.scaled_pt_size*sz_ratio)
+        ax.tick_params(axis='x', which='minor', length=cps.pt_size*sz_ratio * .15)
+        ax.set_xticks(xtickv)
+        ax.set_xticks(xminorv, minor=True)
+        ax.set_xticklabels(xtickname)
+
+
 
     def write(self):
         s = ['# Randomness analysis',
@@ -565,7 +576,7 @@ def sdaa(self, pts, ids, hpd):
 
     center = np.array([0, 0, 0])
     radius = 1.0
-    sv = SphericalVoronoi(xyz, radius, center, threshold=1e-08)
+    sv = SphericalVoronoi(xyz, radius, center, threshold=1e-09)
     sv.sort_vertices_of_regions()
 
     xyz_polygons = [[sv.vertices[id] for id in region] for region in sv.regions]
