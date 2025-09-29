@@ -9,7 +9,7 @@ def abs_glob(root, extensions):
     return [file for ext in extensions for file in glob.glob(root + f"*.{ext}")]
 
 config_files = abs_glob('src/craterstats/config/', ['txt', 'qml'])
-sample_files = abs_glob('src/craterstats/sample/', ['scc', 'diam', 'r', 'stat', 'binned', 'md'])
+sample_files = abs_glob('src/craterstats/sample/', ['scc', 'diam', 'r', 'stat', 'binned', 'md','txt'])
 font_files = abs_glob('src/craterstats/fonts/', ['txt', 'ttf'])
 
 a = Analysis(
