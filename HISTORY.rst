@@ -35,6 +35,7 @@ coordinate system for both layers)
 -----
 * support for conversion between .scc and .shp formats
 
-next release
-------------
-* add map plot for .scc/.shp data sources
+3.6.0
+-----
+- Spatial randomness analysis (see Michael et al., 2012) using spherical geometry for calculations
+- Conversion of .scc/.shp data sources to map plots

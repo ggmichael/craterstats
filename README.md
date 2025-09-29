@@ -7,6 +7,14 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 [Quick reference](https://github.com/ggmichael/craterstats/blob/main/docs/manual.md)
 
+# Recent additions
+
+- Support for filename_CRATER.shp, filename_AREA.shp shapefile sets. These can be produced in, e.g. ArcPRO, 
+using three-point circle and polygon tools, as well as OpenCraterTools
+- Spatial randomness analysis (see Michael et al., 2012)
+
+Both features use spherical geometry for calculations 
+
 # Installation
 
 Craterstats can be now installed as a standalone executable for Windows. 
@@ -25,7 +33,7 @@ current folder.
     
     craterstats -demo
 
-Visit the [Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md) and copy some of the commands there to recreate the example plots.
+Alternatively, visit the [Gallery](https://github.com/ggmichael/craterstats/blob/main/docs/gallery.md) and copy some of the commands there to recreate the example plots.
 
 
 # Usage
@@ -94,7 +102,12 @@ Uncertainty plots for the evaluation of small-area, low-number counts, assuming 
 
 as well as plots for comparing a sequence of events (Michael, Zhang et al., 2025):
 
-    craterstats.py -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
+    craterstats -pr seq -ep Wilhelms -xrange 4.2 1 -legend fAca -p src=%sample%/e1.diam,range=[0.24,1.5],type=poisson -p src=%sample%/e2.diam,rng=[0.25,1.5] -p src=%sample%/e3.diam,rng=[0.24,1.5] -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red 
+
+You can run the spatial randomness analysis code for a particular .scc file or crater/area shapefile set as follows:
+
+    craterstats -ra "%sample%/CE-6 8-km vicinity.scc" -trials 3000
+
 
 # References
 
