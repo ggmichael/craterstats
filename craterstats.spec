@@ -1,25 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 
-import glob
 import os
 import shutil
 import platform
-
-def abs_glob(root, extensions):
-    return [file for ext in extensions for file in glob.glob(root + f"*.{ext}")]
-
-config_files = abs_glob('src/craterstats/config/', ['txt', 'qml'])
-sample_files = abs_glob('src/craterstats/sample/', ['scc', 'diam', 'r', 'stat', 'binned', 'md','txt'])
-font_files = abs_glob('src/craterstats/fonts/', ['txt', 'ttf'])
 
 a = Analysis(
     ['src/craterstats.py'],
     pathex=[os.path.abspath('src')],
     binaries=[],
     datas = [
-        *[(f, "craterstats/config") for f in config_files],
-        *[(f, "craterstats/sample") for f in sample_files],
-        *[(f, "craterstats/fonts") for f in font_files],
+        ('src/craterstats/config/*','craterstats/config'),
+        ('src/craterstats/sample/*','craterstats/sample'),
+        ('src/craterstats/fonts/*','craterstats/fonts'),
         ('scripts/create_desktop_shortcut.bat', '.'),
         ('scripts/add_cs_path.bat', '.'),
         ('LICENSE.txt', '.'),
