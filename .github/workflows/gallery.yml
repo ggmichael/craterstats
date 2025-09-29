@@ -3,6 +3,8 @@ name: Build Gallery
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths:
       - 'src/craterstats/config/demo_commands.txt'
       - 'scripts/make_gallery.py'
