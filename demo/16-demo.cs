@@ -1,4 +1,6 @@
 -o demo/16-demo
--title Chronology function with lunar epochs and transition times
--pr chronology
--ep wilhelms
+-title Plot with left-positioned age annotation
+-cs neukumivanov
+-p source=%sample%/Pickering.scc,psym=fo
+-p 'type=poisson,range=[.2,.7]'
+-p 'range=[2,5],colour=blue,age_left=1'

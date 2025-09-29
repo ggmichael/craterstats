@@ -1,9 +1,9 @@
 -o demo/07-demo
--title 'Cumulative fits showing resurfacing correction,|equilibrium function and epoch system'
--pr cumul
+-title 'Hartmann-style plot with other chronology system,|Poisson age analysis, and without $\mu$-notation'
+-pr hartmann
 -cs neukumivanov
--ep mars
+-mu 0
 -ef trask
--p source=%sample%/Pickering.scc,psym=sq
--p 'type=c-fit,range=[2,5]'
--p 'range=[.2,.7],resurf=1,psym=fsq'
+-p source=%sample%/Pickering.scc,psym=tri,isochron=1,col=red
+-p 'type=poisson,range=[.2,.7]'
+-p 'colour=red1,psym=filltriangle,range=[2,5],offset=[3,0]'

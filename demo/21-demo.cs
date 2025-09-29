@@ -1,7 +1,8 @@
 -o demo/21-demo
--title Plot with inverted colour
--cs neukumivanov
--invert 1
--p source=%sample%/Pickering.scc,psym=fo
--p 'type=poisson,range=[.2,.7],isochron=1'
--p 'range=[2,5],colour=violet,offset_age=[2,-3]'
+-title 'Bin overlay to aid diameter selection|(normally remove before publication)'
+-xrange -2 1
+-yrange -4 2
+-cs ni2001
+-p source=%sample%/Pickering.scc
+-p 'type=poisson,range=[.26,.63]'
+--bins

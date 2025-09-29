@@ -1,0 +1,3 @@
+-o demo/08-demo
+-title 8-km vicinity of Chang-E 6 landing 'site|.scc' file to map conversion
+--convert png '%sample%/CE-6 8-km vicinity.scc'

@@ -1,6 +1,6 @@
 -o demo/13-demo
--title Hartmann 2010 crater count template
--pr hartmann
--cs hartmann2010
--ef hart84
--isochrons 4,3.5as,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
+-title 'Poisson calculation for buffered crater count|(see Michael et al., 2021)'
+-cs neukum83
+-pr diff
+-p source=%sample%/c7.scc
+-p 'type=b-poisson,range=[.25,2],offset=[-3,2]'

@@ -1,6 +1,6 @@
 -o demo/17-demo
--title 'Impact rate function|with alternative specified reference diameter'
--pr rate
--ref_diameter 10
--yrange -7 2
--ep wilhelms
+-title Plot with adjusted position of age 'annotation:|offset' by '(+1,+4)' in 1/20ths of decade
+-cs neukumivanov
+-p source=%sample%/Pickering.scc,psym=fo
+-p 'type=poisson,range=[.2,.7]'
+-p 'range=[2,5],colour=blue,age_left=1,offset_age=[1,4]'

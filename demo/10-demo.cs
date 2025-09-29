@@ -1,7 +1,6 @@
 -o demo/10-demo
--title R-plot with 10/decade binning
--pr rplot
--cs neukumivanov
--ep mars
--p source=%sample%/Pickering.scc,psym=o,binning=10/decade
--p 'type=poisson,range=[.2,.7],psym=fo,offset_age=[-9,0]'
+-title Differential plot with diameter-aligned spatial randomness analysis results
+-ef trask
+-p 'source=%sample%/CE-6 8-km vicinity.scc'
+-p 'type=poisson,range=[.12,.2]'
+-p 'range=[.2,.8]'

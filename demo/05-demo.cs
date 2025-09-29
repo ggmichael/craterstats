@@ -1,6 +1,7 @@
 -o demo/05-demo
--title 'Cumulative fit with resurfacing correction|showing all corrected data points'
--pr cumul
--cs neukumivanov
--p source=%sample%/Pickering.scc,psym=sq
--p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq,resurf_showall=1'
+-title Hartmann style plot
+-pr hartmann
+-cs hartmanndaubar2016
+--equilibrium hartmann
+-isochrons 4s,3.7s,3s,1,.1,.01,.001,1e-4,1e-5,1e-6,1e-7,1e-8,1e-9
+-p source=%sample%/Pickering.scc,binning=root2

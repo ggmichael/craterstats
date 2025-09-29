@@ -1,6 +1,17 @@
 -o demo/18-demo
--title 'Poisson calculation for buffered crater count|indicating area and perimeter'
--cs neukum83
--pr diff
--p source=%sample%/c7.scc
--p 'type=b-poisson,range=[.25,2],offset=[-3,2]'
+-title 'Fig 3, Michael et al (2021) in SVG editable vector format'
+-f svg
+-p 'src=%sample%/c1.scc,sym=^,err=0'
+-p 'src=%sample%/c2.scc,sym=f^,col=grey'
+-p src=%sample%/c3.scc,sym=s4
+-p src=%sample%/c4.scc,sym=o
+-p src=%sample%/c5.scc,sym=x
+-p src=%sample%/c6.scc,sym=s5,col=pink3
+-p src=%sample%/c7.scc,sym=sq
+-p src=%sample%/Im2.scc,sym=fo,col=blk,err=1
+-p 'type=poisson,range=[1.8,20],snap=0,offset=[-5,2]'
+-isochrons .5a,.05a,.005s
+-xrange -3 2
+-yrange -5 5
+-pt_size 9
+-sf 2

@@ -1,9 +1,24 @@
 -o demo/20-demo
--title Cumulative plot with no binning
--pr cumul
--cs neukumivanov
--xrange -2 3
--yrange -5 0
--p source=%sample%/Pickering.scc,binning=none,psym=point
--p 'type=poisson,colour=red,range=[.22,.43],isochron=1'
--p 'range=[2,5],colour=blue,offset=[2,-2]'
+-title 'Sequence plot  (Fig. 1b, Michael et al. 2025)'
+-pr seq
+-cs n83
+-ep moon
+-xrange 4.0 1
+-legend fA
+-p 'src=%sample%/e1.diam,range=[0.24,1.5],name=E1,type=poisson,snap=0'
+-p 'src=%sample%/e2.diam,rng=[0.25,1.5],nm=E2'
+-p 'src=%sample%/e3.diam,rng=[0.24,1.5],nm=E3'
+-p 'src=%sample%/w1.diam,rng=[0.21,1.2],colour=red,nm=W1'
+-p 'src=%sample%/w2.diam,rng=[0.18,1],nm=W2'
+-p 'src=%sample%/w2.diam,rng=[1.5,5],nm=W2'
+-p 'src=%sample%/w2_h.diam,rng=[0.16,0.6],nm=W2h'
+-p 'src=%sample%/w2_h.diam,rng=[0.8,1.9],nm=W2h'
+-p 'src=%sample%/w2_l.diam,rng=[0.19,1.1],nm=W2l'
+-p 'src=%sample%/w3.diam,rng=[0.16,1.5],colour=red1,nm=W3'
+-p 'src=%sample%/w4.diam,rng=[0.185,1.55],nm=W4'
+-p 'src=%sample%/w5_h1.diam,rng=[0.17,1],colour=blue,nm=W5h1'
+-p 'src=%sample%/w5_h2.diam,rng=[0.13,1.35],nm=W5h2'
+-p 'src=%sample%/w5_h3.diam,rng=[0.14,0.85],nm=W5h3'
+-p 'src=%sample%/w5_l1.diam,rng=[0.165,0.85],colour=blue2,nm=W5l1'
+-p 'src=%sample%/w5_l2.diam,rng=[0.12,0.8],nm=W5l2'
+-p 'src=%sample%/w5_l3.diam,rng=[0.15,0.8],nm=W5l3'

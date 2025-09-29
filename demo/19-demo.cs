@@ -1,7 +1,6 @@
 -o demo/19-demo
--title 'Differential plot|with root-2 binning and root-2 diameter scale'
--cs neukumivanov
--style root-2
--p source=%sample%/Pickering.scc,psym=x,binning=root-2
--p 'type=poisson,range=[.2,.7],isochron=1'
--p 'range=[2,5],colour=violet,offset_age=[2,-3]'
+-title 'Evaluation of small-area, low-number count|assuming complete count of craters >150 m'
+-pr uncertainty
+-cs n83
+-ef trask
+-d_min 0.15

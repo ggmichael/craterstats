@@ -1,7 +1,0 @@
--o demo/09-demo
--title 'Modified legend 2:|only count and diameter range; no function citations'
--pr cumul
--cs neukumivanov
--legend cr
--p source=%sample%/Pickering.scc,psym=sq,name=Area 1
--p 'type=c-fit,range=[.2,.7],resurf=1,psym=fsq'

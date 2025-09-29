@@ -1,0 +1,4 @@
+-o demo/09-demo
+-title Spatial randomness analysis 'of|8-km' vicinity around Chang-E 6 landing site
+-ra '%sample%/CE-6 8-km vicinity.scc'
+-trials 3000

@@ -1,6 +1,9 @@
 -o demo/02-demo
--title 'Differential age fits|with 10/decade binning'
+-title 'Cumulative fits showing resurfacing correction,|equilibrium function and epoch system'
+-pr cumul
 -cs neukumivanov
--p source=%sample%/Pickering.scc,psym=o,binning=10/decade
--p 'type=d-fit,range=[.2,.7],isochron=1'
--p 'range=[2,5],colour=red'
+-ep mars
+-ef trask
+-p source=%sample%/Pickering.scc,psym=sq
+-p 'type=c-fit,range=[2,5]'
+-p 'range=[.2,.7],resurf=1,psym=fsq'
