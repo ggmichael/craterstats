@@ -18,6 +18,9 @@
                           [-ref_diameter REF_DIAMETER] [-sf {2,3}] [-st]
                           [-d_min MIN_DIAMETER] [-ns N_SAMPLES]
                           [-p KEY=VAL, [KEY=VAL, ...]]
+                          [-ra RANDOMNESS_ANALYSIS [RANDOMNESS_ANALYSIS ...]]
+                          [-trials TRIALS] [-measure MEASURE]
+                          [-ra_offset RA_OFFSET]
 
 
 ## Options
@@ -229,3 +232,19 @@
 
   * `offset_age=[x,y]`
     Offset position of age label (in units of 1/20th of decade).
+
+  * `-ra, --randomness_analysis filename`
+    
+    Run randomness analysis, specifying source file. May be .scc file or _CRATER.shp of shapefile pair
+    
+  * `-trials VALUE`
+    
+    Number of Monte Carlo trials for randomness analysis
+    
+  * `-measure VALUE`
+    
+    Comma-separated list of measures for randomness analysis (from m2cnd,sdaa). Both if omitted.
+    
+  * `-ra_offset VALUE`
+    
+    Vertical offset for randomness analysis sub-plot in 1/20ths of decade
