@@ -32,6 +32,7 @@ and generated with the command `craterstats -i <filename>.cs`.
         f = glob.glob(f"demo/{fn}*.*")
         cs_file = next((e for e in f if e.endswith(".cs")), None)
         cs = gm.read_textfile(cs_file)
+        cs = [s.replace("'", "") for s in cs]
         pattern = re.compile(r"\.(png|pdf|svg)$", re.IGNORECASE)
         im0 = [e for e in f if pattern.search(e)]
         im1 = [Path(p).as_posix() for p in im0]
