@@ -17,13 +17,13 @@ Both features use spherical geometry for calculations
 
 # Installation
 
-Craterstats can be now installed as a standalone executable for Windows. 
+Craterstats can be installed as a standalone executable for Windows. 
 Download the latest version [here](https://github.com/ggmichael/craterstats/releases), 
 unzip to wherever you prefer, and double-click `create_desktop_shortcut.bat` to create a start-up icon.
 
-Executables could be provided for MacOS and Linux but are not yet tested: ask if interested.   
+Executables could be provided for MacOS and Linux but are not yet tested: please ask if interested.   
 
-Alternative installation methods (including MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
+Other installation methods (including for MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
  
 # Quick demonstration and try-out
 
