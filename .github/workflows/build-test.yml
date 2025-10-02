@@ -17,7 +17,7 @@ jobs:
         id: set-timestamp
         run: |
           TIMESTAMP=$(date +'%Y%m%d%H%M')
-          echo "timestamp=${TIMESTAMP}" >> $GITHUB_OUTPUT
+          echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_OUTPUT
 
   build:
     needs: generate-timestamp # wait for shared timestamp
@@ -58,6 +58,8 @@ jobs:
           pyinstaller craterstats.spec
 
       - name: Zip binary
+        env:
+          TIMESTAMP: ${{ needs.set-timestamp.outputs.TIMESTAMP }}
         run: |          
           if [ "${{ github.event_name }}" == "push" ]; then
             # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
