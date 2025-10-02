@@ -23,7 +23,7 @@ jobs:
     needs: generate-timestamp # wait for shared timestamp
     strategy:
       matrix:
-        os: [windows-latest,macos-latest] #,ubuntu-latest
+        os: [windows-latest,macos-latest,ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
