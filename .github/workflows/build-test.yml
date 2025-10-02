@@ -23,11 +23,7 @@ jobs:
     needs: generate-timestamp # wait for shared timestamp
     strategy:
       matrix:
-        os: [windows-latest, macos-latest] #,ubuntu-latest]
-        architecture: [x86_64, arm64]
-        exclude:
-          - os: windows-latest
-            architecture: arm64
+        os: [windows-latest, macos-latest, macos-15-intel] #,ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -58,20 +54,15 @@ jobs:
           pip install pyinstaller
 
       - name: Build with PyInstaller
-        shell: bash  # also on Windows
         run: |
-          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            pyinstaller --onefile --target-arch ${{ matrix.architecture }} craterstats.spec
-          else
-            pyinstaller craterstats.spec
-          fi
+          pyinstaller craterstats.spec
 
       - name: Zip binary
         shell: bash  # also on Windows
         env:
           TIMESTAMP: ${{ needs.generate-timestamp.outputs.timestamp }}
           EVENT_NAME: ${{ github.event_name }}
-          ARCHITECTURE: ${{ matrix.architecture }}
+          RUNNER_OS: ${{ runner.os }}
         run: |          
           if [ "$EVENT_NAME" == "push" ]; then
             # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
@@ -89,14 +80,14 @@ jobs:
           echo "VERSION=v${VERSION}" >> $GITHUB_ENV
           echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
           
-          if [ "${{ runner.os }}" == "Windows" ]; then
+          if [ "$RUNNER_OS" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
           else # Linux/macOS
-            if [ "${{ runner.os }}" == "Linux" ]; then
+            if [ "$RUNNER_OS" == "Linux" ]; then
               ZIP_NAME="craterstats-$VERSION-linux-UNTESTED.zip"
             else
-              ZIP_NAME="craterstats-$VERSION-macOS-$ARCHITECTURE-UNTESTED.zip"
+              ZIP_NAME="craterstats-$VERSION-$RUNNER_OS-UNTESTED.zip"
             fi
             cd dist
             zip -r "$ZIP_NAME" craterstats
