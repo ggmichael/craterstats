@@ -23,7 +23,8 @@ jobs:
     needs: generate-timestamp # wait for shared timestamp
     strategy:
       matrix:
-        os: [windows-latest,macos-latest,ubuntu-latest]
+        os: [windows-latest,macos-latest] #,ubuntu-latest]
+        architecture: [x86_64, arm64] # architectures for macOS
 
     runs-on: ${{ matrix.os }}
 
@@ -55,7 +56,11 @@ jobs:
 
       - name: Build with PyInstaller
         run: |
-          pyinstaller craterstats.spec
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            pyinstaller --onefile --target-arch ${{ matrix.architecture }} craterstats.spec
+          else
+            pyinstaller craterstats.spec
+          fi
 
       - name: Zip binary
         env:
@@ -85,7 +90,7 @@ jobs:
             if [ "${{ runner.os }}" == "Linux" ]; then
               ZIP_NAME="craterstats-$VERSION-linux-UNTESTED.zip"
             else
-              ZIP_NAME="craterstats-$VERSION-macOS-UNTESTED.zip"
+              ZIP_NAME="craterstats-$VERSION-macOS-${{ matrix.architecture }}-UNTESTED.zip"
             fi
             cd dist
             zip -r "$ZIP_NAME" craterstats
