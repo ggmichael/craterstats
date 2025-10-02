@@ -54,6 +54,7 @@ jobs:
           pip install pyinstaller
 
       - name: Build with PyInstaller
+        shell: bash  # also on Windows
         run: |
           if [[ "${{ matrix.os }}" == "macos-latest-x86_64" ]]; then
             pyinstaller --onefile --target-arch x86_64 craterstats.spec
@@ -64,6 +65,7 @@ jobs:
           fi
 
       - name: Zip binary
+        shell: bash  # also on Windows
         env:
           TIMESTAMP: ${{ needs.generate-timestamp.outputs.timestamp }}
           EVENT_NAME: ${{ github.event_name }}
@@ -98,7 +100,6 @@ jobs:
             cd ..
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-        shell: bash  # also on Windows
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
