@@ -63,7 +63,7 @@ jobs:
             MESSAGE="Release build: this version should be stable for general use."
           else
             # workflow_dispatch      
-            BASE_VERSION=$(sed -n 's/^__version__ = "$[^"]*$"/\1/p' < src/craterstats/__init__.py)
+            BASE_VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1/p' < src/craterstats/__init__.py)            
             TIMESTAMP="${{ needs.generate-timestamp.outputs.timestamp }}"
             VERSION="${BASE_VERSION}-dev-${TIMESTAMP}"              
             git tag "v${VERSION}"
