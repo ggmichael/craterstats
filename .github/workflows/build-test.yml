@@ -15,7 +15,9 @@ jobs:
     steps:
       - name: Generate Timestamp
         id: set-timestamp
-        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d%H%M')
+          echo "timestamp=$TIMESTAMP" 
 
   build:
     needs: generate-timestamp # wait for shared timestamp
