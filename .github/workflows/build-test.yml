@@ -1,4 +1,4 @@
-name: Build binaries
+name: Test-build binaries
 
 on:
 #  push:
@@ -7,7 +7,18 @@ on:
   workflow_dispatch:
 
 jobs:
+  generate-timestamp:
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.set-timestamp.outputs.timestamp }}
+
+    steps:
+      - name: Generate Timestamp
+        id: set-timestamp
+        run: echo "timestamp=$(date +'%Y%m%d%H%M')" >> $GITHUB_ENV
+
   build:
+    needs: generate-timestamp # wait for shared timestamp
     strategy:
       matrix:
         os: [windows-latest,macos-latest,ubuntu-latest]
@@ -52,22 +63,9 @@ jobs:
             MESSAGE="Release build: this version should be stable for general use."
           else
             # workflow_dispatch      
-            VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
-         
-            # Delete the old tag and release if they exist
-            git fetch --tags  # Ensure we have the latest tags from the remote
-            if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-              # If the tag exists, delete it
-              git tag -d "v${VERSION}"  # Delete the local tag
-              git push --delete origin "v${VERSION}"  # Delete the remote tag
-              
-              # Now delete the associated release
-              release_id=$(gh release list --repo ${{ github.repository }} | grep "v${VERSION}" | awk '{print $1}')
-              if [ -n "$release_id" ]; then
-                gh release delete "$release_id" --repo ${{ github.repository }} --yes
-              fi
-            fi
-            # Create temporary tag for manual builds
+            BASE_VERSION=$(sed -n 's/^__version__ = "$[^"]*$"/\1/p' < src/craterstats/__init__.py)
+            TIMESTAMP="${{ needs.generate-timestamp.outputs.timestamp }}"
+            VERSION="${BASE_VERSION}-dev-${TIMESTAMP}"              
             git tag "v${VERSION}"
             git push origin "v${VERSION}" 
             MESSAGE="Development build: this version is for test purposes and may not be fully functional."
@@ -86,7 +84,7 @@ jobs:
               ZIP_NAME="craterstats-$VERSION-macOS-UNTESTED.zip"
             fi
             cd dist
-            zip -r $ZIP_NAME craterstats
+            zip -r "$ZIP_NAME" craterstats
             cd ..
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
