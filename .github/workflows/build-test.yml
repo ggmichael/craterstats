@@ -25,16 +25,13 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest] #,ubuntu-latest]
         architecture: [x86_64, arm64]
+        exclude:
+          - os: windows-latest
+            architecture: arm64
 
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Skip secondary architecture builds for non-macOS
-        if: matrix.os != 'macos-latest' && matrix.architecture == 'arm64'
-        run: |
-          echo "Skipping secondary architecture build."
-          exit 0
-
       - name: Checkout code
         uses: actions/checkout@v2
 
