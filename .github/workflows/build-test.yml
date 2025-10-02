@@ -1,7 +1,7 @@
 name: Build binaries
 
 on:
-  push:
+#  push:
 #    tags:
 #      - 'v*'  # on any tag push
   workflow_dispatch:
