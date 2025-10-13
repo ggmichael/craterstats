@@ -39,3 +39,8 @@ coordinate system for both layers)
 -----
 - Spatial randomness analysis (see Michael et al., 2012) using spherical geometry for calculations
 - Conversion of .scc/.shp data sources to map plots
+
+3.6.3
+-----
+- Add MacOS binaries as beta
+- fix --functions_user config for pyinstaller versions
