@@ -22,7 +22,7 @@ Download the latest version [here](https://github.com/ggmichael/craterstats/rele
 unzip to wherever you prefer, and double-click `create_desktop_shortcut.bat` to create a start-up icon.
 
 Executables have recently been added for MacOS and successful operation was reported for the arm64 version. 
-[Download](https://github.com/ggmichael/craterstats/releases), unzip where you prefer, add the new directory to the shell path, and run Craterstats command from 
+[Download](https://github.com/ggmichael/craterstats/releases), unzip where you prefer, add the new directory to the shell path, and run `craterstats` commands from 
 within a Terminal window. Feedback on the usability of these MacOS versions is especially welcome.   
 
 Other installation methods (for Windows, MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
