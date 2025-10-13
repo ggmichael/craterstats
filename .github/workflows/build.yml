@@ -7,10 +7,23 @@ on:
   workflow_dispatch:
 
 jobs:
+  generate-timestamp:
+    runs-on: ubuntu-latest
+    outputs:
+      timestamp: ${{ steps.set-timestamp.outputs.timestamp }}
+
+    steps:
+      - name: Generate Timestamp
+        id: set-timestamp
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d%H%M')
+          echo "TIMESTAMP=${TIMESTAMP}" >> $GITHUB_OUTPUT
+
   build:
+    needs: generate-timestamp # wait for shared timestamp
     strategy:
       matrix:
-        os: [windows-latest] # macos-latest, ubuntu-latest
+        os: [windows-latest, macos-latest, macos-15-intel] #,ubuntu-latest]
 
     runs-on: ${{ matrix.os }}
 
@@ -45,52 +58,44 @@ jobs:
           pyinstaller craterstats.spec
 
       - name: Zip binary
+        shell: bash  # also on Windows
+        env:
+          TIMESTAMP: ${{ needs.generate-timestamp.outputs.timestamp }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUNNER_OS: ${{ runner.os }}
         run: |          
-          if [ "${{ github.event_name }}" == "push" ]; then
+          ARCHITECTURE=$(uname -m)
+          if [ "$EVENT_NAME" == "push" ]; then
             # Extract version from the tag (e.g., 'v1.0.0' -> '1.0.0')
             VERSION=$(echo ${{ github.ref }} | sed 's/refs\/tags\/v//')
-            MESSAGE="Release build: this version should be stable for general use."
+            MESSAGE="Release build: this version should be stable for general use.<br>MacOS versions are reported to work but have had limited testing. Feedback welcome."
           else
             # workflow_dispatch      
-            VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1-dev/p' < src/craterstats/__init__.py)          
-         
-            # Delete the old tag and release if they exist
-            git fetch --tags  # Ensure we have the latest tags from the remote
+            BASE_VERSION=$(sed -n 's/^__version__ = "\([^"]*\)"/\1/p' < src/craterstats/__init__.py)            
+            VERSION="${BASE_VERSION}-dev-${TIMESTAMP}"  
+            # Check if the tag exists before trying to create it
             if git rev-parse "v${VERSION}" >/dev/null 2>&1; then
-              # If the tag exists, delete it
-              git tag -d "v${VERSION}"  # Delete the local tag
-              git push --delete origin "v${VERSION}"  # Delete the remote tag
-              
-              # Now delete the associated release
-              release_id=$(gh release list --repo ${{ github.repository }} | grep "v${VERSION}" | awk '{print $1}')
-              if [ -n "$release_id" ]; then
-                gh release delete "$release_id" --repo ${{ github.repository }} --yes
-              fi
+              echo "Tag already exists, skipping creation"
+            else
+              git tag "v${VERSION}"
+              git push origin "v${VERSION}"
             fi
-            # Create temporary tag for manual builds
-            git tag "v${VERSION}"
-            git push origin "v${VERSION}" 
-            MESSAGE="Development build: this version may contain bugs or incomplete features."
+            MESSAGE="Development build: this version is for test purposes and may not be fully functional."
           fi
           
           echo "VERSION=v${VERSION}" >> $GITHUB_ENV
           echo "MESSAGE=${MESSAGE}" >> $GITHUB_ENV
           
-          if [ "${{ runner.os }}" == "Windows" ]; then
+          if [ "$RUNNER_OS" == "Windows" ]; then
             ZIP_NAME="craterstats-$VERSION-win.zip"
             powershell -Command "Compress-Archive -Path dist\\craterstats -DestinationPath dist\\$ZIP_NAME"
           else # Linux/macOS
-            if [ "${{ runner.os }}" == "Linux" ]; then
-              ZIP_NAME="craterstats-$VERSION-linux-UNTESTED.zip"
-            else
-              ZIP_NAME="craterstats-$VERSION-macOS-UNTESTED.zip"
-            fi
+            ZIP_NAME="craterstats-$VERSION-$RUNNER_OS-$ARCHITECTURE-beta.zip"
             cd dist
-            zip -r $ZIP_NAME craterstats
+            zip -r "$ZIP_NAME" craterstats
             cd ..
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-        shell: bash  # also on Windows
 
       - name: Upload release
         uses: softprops/action-gh-release@v2

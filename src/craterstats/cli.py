@@ -408,14 +408,16 @@ def demo(d=None,src=None):
     return d
 
 def do_functions_user(args):
-    if os.environ.get('CONDA_PREFIX'):
+    if os.environ.get('CONDA_PREFIX'): # conda environment
         config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
+    elif getattr(sys, 'frozen', False): # pyinstaller environment
+        config = os.path.dirname(sys.executable) + '/_internal/craterstats/config_functions_user.txt'
     else:
         return None #actions environment is not conda
     if args.functions_user:
         s=['#path to functions_user.txt',args.functions_user]
         gm.write_textfile(config,s)
-        print(': '.join(s))
+        print(': '.join(s)[1:])
     return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
 
 def create_desktop_icon():

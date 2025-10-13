@@ -21,10 +21,12 @@ Craterstats can be installed as a standalone executable for Windows.
 Download the latest version [here](https://github.com/ggmichael/craterstats/releases), 
 unzip to wherever you prefer, and double-click `create_desktop_shortcut.bat` to create a start-up icon.
 
-Executables could be provided for MacOS and Linux but are not yet tested: please ask if interested.   
+Executables have recently been added for MacOS and successful operation was reported for the arm64 version. 
+[Download](https://github.com/ggmichael/craterstats/releases), unzip where you prefer, add the new directory to the shell path, and run Craterstats command from 
+within a Terminal window. Feedback on the usability of these MacOS versions is especially welcome.   
 
-Other installation methods (including for MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
- 
+Other installation methods (for Windows, MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
+
 # Quick demonstration and try-out
 
 After installation, the following command will produce a series of example output plots as in the gallery, 
