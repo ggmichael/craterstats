@@ -145,10 +145,10 @@ class Epochs:
         for i,(a,b) in enumerate(zip(iso,iso[1:])):
             x=np.concatenate((a['d'], b['d'][::-1]))
             y = np.concatenate((a['y'], b['y'][::-1]))
-            cps.ax.fill(np.log10(x),y, color=cps.grey[3 - colour[i + 1]], edgecolor=None, lw=0)
+            cps.ax.fill(np.log10(x),y, color=cps.grey[3 - colour[i + 1]], edgecolor=None, lw=0,zorder=-2)
 
             if boundary[i]:
-                cps.ax.plot(np.log10(a['d']),a['y'], color=cps.grey[0], lw=.3)
+                cps.ax.plot(np.log10(a['d']),a['y'], color=cps.grey[0], lw=.3,zorder=-2)
 
 
 

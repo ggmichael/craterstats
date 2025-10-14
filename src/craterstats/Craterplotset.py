@@ -98,7 +98,7 @@ class Craterplotset:
                 path = os.path.join(font_dir, fname)
                 fm.fontManager.addfont(path)
 
-        available_font = 'Open Sans'
+        available_font = self.font
 
         # Set mathtext font set and fallback
         plt.rc('mathtext', fontset='custom',
@@ -115,6 +115,7 @@ class Craterplotset:
                         'Verdana': .83,
                         'DejaVu Sans': .83,
                         'Tahoma': .93,
+                        'Times New Roman': .99,
                         }[available_font]
         self.scaled_pt_size = self.pt_size * scale_factor
         plt.rc('font', family=available_font, size=self.scaled_pt_size)
@@ -469,7 +470,7 @@ class Craterplotset:
         N=self.pf.evaluate("cumulative",[self.ref_diameter,1.]) if self.pf else [1,1]
         ref_diam_ratio=N[0]/N[1]
 
-        if 'f' in self.legend:
+        if 'f' in self.legend: # show function legend
             txt=''
             if self.ep: txt += "Epochs: " + self.ep.name + '\n'
             if self.ef and self.presentation not in ['sequence']: txt += "EF: " + self.ef.name + '\n'
@@ -481,7 +482,7 @@ class Craterplotset:
                                     ha='right',linespacing=1.5)
             else:
                 text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
-            if self.text_halo and self.presentation not in ('sequence', 'uncertainty'):
+            if self.text_halo:
                 text.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white',alpha=0.7)])  # White shadow beneath text
 
         if self.presentation in ['chronology', 'rate']:

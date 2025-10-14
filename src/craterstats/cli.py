@@ -90,9 +90,10 @@ def get_parser():
 
     parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
+
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
-
+    parser.add_argument("--font", help="font name", nargs='+', action=SpacedString)
     parser.add_argument("-st","--sequence_table", help="generate sequence probability table", action='store_true')
 
     parser.add_argument("-d_min","--min_diameter", type=float, help="minimum diameter for uncertainty plot")
@@ -132,13 +133,14 @@ def defaults():
         'equilibrium': None,
         'invert': 0,
         'transparent':0,
-        'text_halo':1,
+        'text_halo':None,  # conditional default set in construct_cps_dict()
         'isochrons': None,
         'legend': 'fnacr',
         'mu': 1,
         'presentation': 'differential',
         'print_dimensions': '7.5x7.5',
         'pt_size': 9.0,
+        'font': 'Open Sans',
         'randomness': 0,
         'ref_diam': 1,
         'sig_figs': 3,
@@ -155,7 +157,7 @@ def defaults():
         'name': '',
         'range': ['0', 'inf'],
         'snap': 1,
-        'type': 'data',
+        'type': 'data', # should be conditional default set in construct_cps_dict()
         'error_bars': 1,
         'hide': 0,
         'colour': 0,
@@ -216,6 +218,7 @@ def construct_cps_dict(args,c,f,default_filename):
                      'legend',
                      'print_dimensions',
                      'pt_size',
+                     'font',
                      'ref_diameter',
                      'sig_figs',
                      'randomness',
@@ -266,6 +269,8 @@ def construct_cps_dict(args,c,f,default_filename):
         else:
             c['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
             c['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
+    if not c['text_halo']:
+        c['text_halo'] = 0 if c['presentation'] in ('uncertainty', 'sequence') else 1
 
     return c
 
