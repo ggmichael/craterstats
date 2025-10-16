@@ -83,9 +83,9 @@ def get_parser():
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
     parser.add_argument("-invert",  nargs='?', choices=[0,1], type=int, const=1, help="1 - invert to black background; 0 - white background")
-    parser.add_argument("-text_halo", nargs='?', choices=[0,1], type=int, const=1, help="1 - on [default]; 0 - off")
-    parser.add_argument("-transparent", nargs='?', choices=[0,1], type=int, const=1, help="set transparent background")
-    #combine invert/transparent into one? maybe not, but invert could be same syntax - get rid of 0,1
+    parser.add_argument("-text_halo", nargs='?', choices=[0,1], type=int, const=1, help="separate legend from background: 1 - on; 0 - off")
+    parser.add_argument("-transparent", nargs='?', choices=[0,1], type=int, const=1, help="set transparent background: 1 - on; 0 - off [default]")
+
     parser.add_argument("-tight", help="tight layout", action='store_true')
 
     parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
@@ -93,7 +93,7 @@ def get_parser():
 
     parser.add_argument("-ref_diameter", type=float, help="reference diameter for displayed N(d_ref) values")
     parser.add_argument("-sf","--sig_figs", type=int, choices=[2,3], help="number of significant figures for displayed ages")
-    parser.add_argument("--font", help="font name", nargs='+', action=SpacedString)
+    parser.add_argument("--font", help=argparse.SUPPRESS, nargs='+', action=SpacedString)
     parser.add_argument("-st","--sequence_table", help="generate sequence probability table", action='store_true')
 
     parser.add_argument("-d_min","--min_diameter", type=float, help="minimum diameter for uncertainty plot")
@@ -146,6 +146,7 @@ def defaults():
         'sig_figs': 3,
         'style': 'natural',
         'title': None,
+        'out': None,
         'format': {'png', 'csv'},
         'min_diameter':0.15,
         'global_area':1e12, # default larger than all terrestrial planets
@@ -199,7 +200,7 @@ def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False,allow_invalid=
     return res[0][0]
 
 
-def construct_cps_dict(args,c,f,default_filename):
+def construct_cps_dict(args,c,f):
     if 'presentation' in vars(args):
         if args.presentation is not None:
             c['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
@@ -210,9 +211,7 @@ def construct_cps_dict(args,c,f,default_filename):
         c['legend']='A'
 
     for k,v in vars(args).items():
-        if v is None:
-            if k == 'out': c[k] = default_filename # don't set as default in parse_args: need to detect None in source_cmds
-        else:
+        if v is not None:
             if k in ('title',
                      'isochrons',
                      'legend',
@@ -239,7 +238,7 @@ def construct_cps_dict(args,c,f,default_filename):
 
             elif k == 'out':
                 if os.path.isdir(v):
-                    c[k] = os.path.normpath(v+'/'+default_filename)
+                    c[k] = os.path.normpath(v+'/')
                 else:
                     c[k] = gm.filename(v, 'pn')
                     ext = gm.filename(v, 'e').lstrip('.')
@@ -275,13 +274,14 @@ def construct_cps_dict(args,c,f,default_filename):
     return c
 
 
-def construct_plot_dicts(args,plot):
-    #if type(plot) is list: plot=plot[0] #take only first plot entry as template
+def construct_plot_dicts(args,plot,cps_dict):
     cpl = []
     specified_source = False
     if args.plot is None: return []
     for d in args.plot:
         p=plot.copy()
+        p['type'] = 'poisson' if cps_dict['presentation'] == 'sequence' else 'data' # set default
+
         if cpl: # for these items: if not given, carry over from previous
             for k in ['source','psym','snap','isochron','error_bars','colour','binning']:
                 p[k] = cpl[-1][k]
@@ -514,20 +514,28 @@ def main(args0=None):
         return
 
     dflt = defaults()
-    cp_dicts = construct_plot_dicts(args,dflt['plot'])
+    cps_dict = construct_cps_dict(args, dflt['set'], functions)
+    cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
+
     if args.input:
         default_filename = gm.filename(args.input_filename,'pn')
     else:
-        default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-        default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
-    cps_dict = construct_cps_dict(args, dflt['set'], functions, default_filename)
-    if gm.filename(cps_dict['out'],'n')=='out' and cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
-        cps_dict['out']=gm.filename(cps_dict['out'],'p')+cps_dict['presentation']
+        if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
+            default_filename = cps_dict['presentation']
+        else:
+            default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+            default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
+    match cps_dict['out']:
+        case None:
+            cps_dict['out'] = default_filename
+        case _ if os.path.isdir(cps_dict['out']):
+            cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
+
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
 
-    cps=cst.Craterplotset(cps_dict) #,craterplot=cpl)
+    cps=cst.Craterplotset(cps_dict)
     for d in cp_dicts:
         if isinstance(d['colour'], int):d['colour']=cps.palette[d['colour']]
     cpl = [cst.Craterplot(d) for d in cp_dicts]

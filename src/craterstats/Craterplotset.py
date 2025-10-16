@@ -51,6 +51,7 @@ class Craterplotset:
             'isochrons':None,
             'print_dimensions':'7.5x7.5',
             'pt_size':9.,
+            'font': 'Open Sans',
             'ref_diameter':1.,
             'sig_figs':3,
             'randomness':0,
