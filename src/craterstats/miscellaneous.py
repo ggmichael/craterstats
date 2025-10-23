@@ -186,3 +186,4 @@ def n_sigma_scaling(v):
     scaling for n_sigma plot: enlarge central zone
     """
     return np.power(np.abs(v),.6)*np.sign(v)
+

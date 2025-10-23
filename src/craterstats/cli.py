@@ -353,7 +353,7 @@ def convert_format(args, cps, cs_content):
     scc = cst.Spatialcount(src.replace('%sample%/', cst.PATH + 'sample/'))
     fmt1 = fmt.lstrip(".")
     fmt0 = gm.filename(src,'e').lstrip(".")
-    out = outfile(gm.filename(src, 'n'), args.out, '.'+fmt1)
+    out = outfile(gm.filename(src, 'n'), cps.out, '.'+fmt1)
     match fmt1:
         case 'stat' if fmt0 in ['diam','scc','shp']:
             cc = cst.Cratercount(src)
@@ -372,11 +372,12 @@ def convert_format(args, cps, cs_content):
         case 'png'|'svg'|'pdf':
             if fmt0 in ['shp','scc']:
                 out = re.sub(r'_?CRATER_?', '', out)
-                out = gm.filename(out, 'pn1e','_map')
+                if not args.input:
+                    out = gm.filename(out, 'pn1e','_map')
+                    gm.write_textfile(gm.filename(out, 'pn1', '.cs'), cs_content)
                 cps.create_map_plotspace()
                 scc.plot(cps,grid=True)
                 cps.fig.savefig(out, dpi=500, transparent=cps.transparent, bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
-                gm.write_textfile(gm.filename(out,'pn1','.cs'), cs_content)
         case _:
             print(f"{fmt0} to {fmt1} conversion not supported")
             return
