@@ -340,7 +340,7 @@ def construct_plot_dicts(args,plot,cps_dict):
 
 def convert_format(args, cps, cs_content):
     def outfile(name, out, ext):
-        if out:
+        if out != 'out':
             if os.path.isdir(out):
                 outfile = out + name + ext
             else:
