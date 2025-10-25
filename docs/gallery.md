@@ -280,7 +280,7 @@ Demo 20
 -ep moon
 -xrange 4.0 1
 -legend fA
--p src=%sample%/e1.diam,range=[0.24,1.5],name=E1,type=poisson,snap=0
+-p src=%sample%/e1.diam,range=[0.24,1.5],name=E1,snap=0
 -p src=%sample%/e2.diam,rng=[0.25,1.5],nm=E2
 -p src=%sample%/e3.diam,rng=[0.24,1.5],nm=E3
 -p src=%sample%/w1.diam,rng=[0.21,1.2],colour=red,nm=W1
