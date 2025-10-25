@@ -20,6 +20,8 @@ Both features use spherical geometry for calculations
 Craterstats can be installed as a standalone executable for Windows. 
 Download the latest version [here](https://github.com/ggmichael/craterstats/releases), 
 unzip to wherever you prefer, and double-click `create_desktop_shortcut.bat` to create a start-up icon.
+Your system will warn that executables from unknown sources can be a security risk and ask you whether to allow 
+craterstats to run. 
 
 Executables have recently been added for MacOS and successful operation was reported for the arm64 version. 
 [Download](https://github.com/ggmichael/craterstats/releases), unzip where you prefer, add the new directory to the shell path, and run `craterstats` commands from 
