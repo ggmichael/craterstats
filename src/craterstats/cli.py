@@ -33,6 +33,10 @@ class SpacedString(argparse.Action):
 
 class LoadFromFile(argparse.Action):
     def __call__ (self, parser, namespace, values, option_string = None):
+        if option_string in ('-i','--input'):
+            self.work_dir = gm.filename(values,'p')
+            if os.path.isdir(self.work_dir):
+                os.chdir(self.work_dir)
         try:
             with open(values) as f:
                 # parse arguments in the file and store them in the target namespace
