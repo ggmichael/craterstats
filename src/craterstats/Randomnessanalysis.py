@@ -280,6 +280,7 @@ class Randomnessanalysis(cst.Spatialcount):
 
     def plot_map_and_histogram(self, cps, measure, bin, ax=None,sz_ratio=1.):
         if not ax:
+            cps.create_map_plotspace()
             ax=cps.ax
         ax.tick_params(left=False, bottom=False, labelleft=False, labelbottom=False)
         for spine in ax.spines.values(): spine.set_visible(False)
@@ -329,6 +330,7 @@ class Randomnessanalysis(cst.Spatialcount):
 
     def plot_n_sigma(self, cps, measure, ax0=None):
         if not ax0:
+            cps.create_map_plotspace()
             ax0=cps.ax
         ax0.set_visible(False)
         pos = ax0.get_position()

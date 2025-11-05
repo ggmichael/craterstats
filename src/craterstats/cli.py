@@ -126,6 +126,7 @@ def get_parser():
     parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
     parser.add_argument("-ra_offset", type=int, help="vertical offset for randomness analysis sub-plot in 1/20ths of decade")
+    parser.add_argument("-only", type=int, help="index of bin to plot only one (use 0 for summary chart)")
 
     return parser
 
@@ -566,9 +567,17 @@ def main(args0=None):
         if f in {'png','pdf','svg','tif'}:
             if args.randomness_analysis:
                 ra = randomness_analysis(args,cps)
+
                 for measure in cps.measures:
-                    ra.plot_montecarlo_split(cps, measure)
-                    savefig('-'+measure)
+                    match args.only:
+                        case None:
+                            ra.plot_montecarlo_split(cps, measure)
+                        case 0:
+                            ra.plot_n_sigma(cps, measure)
+                        case _:
+                            ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
+                    savefig('-' + measure + (f'-{args.only}' if args.only else ''))
+
                 # cps.create_map_plotspace()
                 # ra.plot(cps,grid=True)
                 # savefig('-map')
