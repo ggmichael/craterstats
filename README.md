@@ -112,6 +112,9 @@ You can run the spatial randomness analysis code for a particular .scc file or c
 
     craterstats -ra "%sample%/CE-6 8-km vicinity.scc" -trials 3000
 
+# Bug Reports
+
+Please open a GitHib [issue](https://github.com/ggmichael/craterstats/issues) if you have an account; alternatively, contact the author by email.
 
 # References
 

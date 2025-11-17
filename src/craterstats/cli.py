@@ -274,7 +274,7 @@ def construct_cps_dict(args,c,f):
             c['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
             c['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
     if not c['text_halo']:
-        c['text_halo'] = 0 if c['presentation'] in ('uncertainty', 'sequence') else 1
+        c['text_halo'] = 0 if c['presentation'] in ('uncertainty','sequence','chronology','rate') else 1
 
     return c
 
