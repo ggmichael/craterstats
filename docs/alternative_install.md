@@ -36,7 +36,7 @@ If you later need to upgrade to a newer version, use:
 
     pip install --upgrade craterstats
 
-In case of failure, it is always safe to delete the craterstats environment directory from `<userhome>/miniforge3/envs`, and reinstall fresh.
+If ever needed, it is safe to delete the craterstats environment directory from `<userhome>/miniforge3/envs`, and reinstall fresh.
 
 ## 2. Pipx (Windows)
 
