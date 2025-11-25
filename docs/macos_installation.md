@@ -11,7 +11,8 @@ any suggestions for improvement or simplification are welcome.
 
 1. From a Terminal, run the command: 
 `xattr -dr com.apple.quarantine <location of craterstats directory>`
-This allows the system to run the code without giving warnings about an "unidentified developer"
+
+   This allows the system to run the code without giving warnings about an "unidentified developer"
 
 1. Set up an alias for the `craterstats` command so that you can run it from any location. 
 Edit the `~/.zshrc` file (`~/.bash_profile` on earlier models) to include the line:
