@@ -23,9 +23,8 @@ unzip to wherever you prefer, and double-click `create_desktop_shortcut.bat` to 
 Your system will warn that executables from unknown sources can be a security risk and ask you to confirm that you want
 to allow craterstats to run. 
 
-Executables have recently been added for MacOS and successful operation was reported for the arm64 version. 
-[Download](https://github.com/ggmichael/craterstats/releases), unzip where you prefer, add the new directory to the shell path, and run `craterstats` commands from 
-within a Terminal window. Feedback on the usability of these MacOS versions is especially welcome.   
+Experimental executables have recently been added for MacOS and successful operation was reported for the arm64 version. 
+Instructions for installation [here](https://github.com/ggmichael/craterstats/blob/main/docs/macos_installation.md).
 
 Other installation methods (for Windows, MacOS and Linux) [here](https://github.com/ggmichael/craterstats/blob/main/docs/alternative_install.md).
 
