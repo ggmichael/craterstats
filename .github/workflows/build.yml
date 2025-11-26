@@ -97,6 +97,15 @@ jobs:
           fi
           echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
+      - name: Test zipped binary
+        shell: bash
+        env:
+          RUNNER_OS: ${{ runner.os }}
+        run: |            
+          mkdir craterstats          
+          unzip dist/${{ env.ZIP_NAME }} -d craterstats
+          craterstats/craterstats -v
+
       - name: Upload release
         uses: softprops/action-gh-release@v2
         with:
