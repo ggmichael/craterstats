@@ -102,8 +102,12 @@ jobs:
         env:
           RUNNER_OS: ${{ runner.os }}
         run: |            
-          mkdir craterstats          
-          unzip dist/${{ env.ZIP_NAME }} -d craterstats
+          mkdir craterstats       
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            7z x dist/${{ env.ZIP_NAME }} -o$PWD/craterstats
+          else # Use unzip for Linux/macOS
+            unzip -q dist/${{ env.ZIP_NAME }} -d craterstats
+          fi          
           craterstats/craterstats/craterstats -v
 
       - name: Upload release
