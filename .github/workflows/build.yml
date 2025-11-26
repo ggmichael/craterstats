@@ -104,7 +104,7 @@ jobs:
         run: |            
           mkdir craterstats          
           unzip dist/${{ env.ZIP_NAME }} -d craterstats
-          craterstats/craterstats -v
+          craterstats/craterstats/craterstats -v
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
