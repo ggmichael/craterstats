@@ -109,6 +109,7 @@ jobs:
             unzip -q dist/${{ env.ZIP_NAME }} -d craterstats
           fi          
           craterstats/craterstats/craterstats -v
+          craterstats/craterstats/craterstats -demo
 
       - name: Upload release
         uses: softprops/action-gh-release@v2
