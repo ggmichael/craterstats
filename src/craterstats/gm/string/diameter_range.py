@@ -2,7 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import numpy as np
-import craterstats.gm as gm
+from .sigfigs import sigfigs
 
 def diameter_range(d,sf=2):
     """
@@ -18,10 +18,10 @@ def diameter_range(d,sf=2):
         return 'unconstrained'
 
     if d[1] >=1:
-        s = gm.sigfigs(d, sf)
+        s = sigfigs(d, sf)
         return f"{s[0]}\u2013{s[1]} km"
     else:
-        s = gm.sigfigs(np.array(d)*1000, sf)
+        s = sigfigs(np.array(d)*1000, sf)
         return f"{s[0]}\u2013{s[1]} m"
 
 

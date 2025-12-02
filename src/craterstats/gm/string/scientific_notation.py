@@ -3,7 +3,6 @@
 
 import numpy as np
 
-#import craterstats.gm.string.sigfigs as sigfigs
 from .sigfigs import sigfigs
 
 def scientific_notation(v,e1=None,e2=0,sf=3,force=False, MathML=False, unit=None):
