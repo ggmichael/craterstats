@@ -234,7 +234,7 @@ class Craterplot:
                         legend_label += [f'{self.n:0g}']
                     else:
                         legend_label += [f'{self.n:.1f} (of {self.n_event:d})']
-                legend_label[-1] += " craters"
+                legend_label[-1] += " craters" + (" (buffered)" if self.cratercount.buffered or self.type=='b-poisson' else "")
             if 'r' in cps.legend:
                 if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
                     r=self.range
