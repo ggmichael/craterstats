@@ -122,7 +122,7 @@ def get_parser():
                              "isochron={1,0}, show whole fitted isochron,"
                              "offset_age=[x,y], in 1/20ths of decade")
 
-    parser.add_argument("-ra", "--randomness_analysis", help="source fil for randomness analysis", nargs='+', action=SpacedString)
+    parser.add_argument("-ra", "--randomness_analysis", help="source file for randomness analysis", nargs='+', action=SpacedString)
     parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
     parser.add_argument("-ra_offset", type=int, help="vertical offset for randomness analysis sub-plot in 1/20ths of decade")
