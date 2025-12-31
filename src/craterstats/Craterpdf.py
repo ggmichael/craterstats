@@ -44,9 +44,9 @@ class Craterpdf:
             d = [e for e in cc.diam if d_range[0] <= e < d_range[1]]
             self.k = len(d)
         else:   # we have a binned-only count
-            b = cc['binned']
-            q = np.where(b['d_min'] >= d_range[0] and b['d_max'] <= d_range[1])
-            self.k = np.sum(b['.n_event'][q])
+            b = cc.binned
+            q = np.where((b['d_min'] >= d_range[0]) & (b['d_max'] <= d_range[1]))
+            self.k = np.sum(b['n_event'][q])
 
         if not lam:
             if bcc: #buffered count

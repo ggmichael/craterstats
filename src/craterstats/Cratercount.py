@@ -20,6 +20,7 @@ class Cratercount:
 
         self.filename2 = filename2 # shp allows 2 files
         self.binning=None
+        self.diam=None
         self.binned={}
         self.perimeter=None
         self.buffered=False
