@@ -130,55 +130,6 @@ def get_parser():
 
     return parser
 
-def defaults():
-    set = {
-        'chronology_system': 'Moon, Neukum (1983)',
-        'cite_functions': 1,
-        'epochs': None,
-        'equilibrium': None,
-        'invert': 0,
-        'transparent':0,
-        'text_halo':None,  # conditional default set in construct_cps_dict()
-        'isochrons': None,
-        'legend': 'fnacr',
-        'mu': 1,
-        'presentation': 'differential',
-        'print_dimensions': '7.5x7.5',
-        'pt_size': 9.0,
-        'font': 'Open Sans',
-        'randomness': 0,
-        'ref_diam': 1,
-        'sig_figs': 3,
-        'style': 'natural',
-        'title': None,
-        'out': None,
-        'format': {'png', 'csv'},
-        'min_diameter':0.15,
-        'global_area':1e12, # default larger than all terrestrial planets
-        'n_samples':200,
-        'ra_offset':0,
-        }
-    plot = {
-        'source': '',
-        'name': '',
-        'range': ['0', 'inf'],
-        'snap': 1,
-        'type': 'data', # should be conditional default set in construct_cps_dict()
-        'error_bars': 1,
-        'hide': 0,
-        'colour': 0,
-        'psym': 1,
-        'binning': 'pseudo-log',
-        'age_left': 0,
-        'show_age': 1,
-        'resurf': 0,
-        'resurf_showall': 0,
-        'isochron': 0,
-        'offset_age': [0, 0]
-    }
-    return {'set':set,'plot':plot}
-
-
 def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False,allow_invalid=False):
     """
     decode arbitrary abbreviation of list member into index
@@ -288,7 +239,7 @@ def construct_plot_dicts(args,plot,cps_dict):
         p['type'] = 'poisson' if cps_dict['presentation'] == 'sequence' else 'data' # set default
 
         if cpl: # for these items: if not given, carry over from previous
-            for k in ['source','psym','snap','isochron','error_bars','colour','binning']:
+            for k in cst.CARRY_OVER_PROPERTIES:
                 p[k] = cpl[-1][k]
             if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
                 p['type'] = cpl[-1]['type']
@@ -519,7 +470,7 @@ def main(args0=None):
         demo()
         return
 
-    dflt = defaults()
+    dflt = cst.DEFAULTS.copy()
     cps_dict = construct_cps_dict(args, dflt['set'], functions)
     cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
 
