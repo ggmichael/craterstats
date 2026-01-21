@@ -145,12 +145,13 @@ class Randomnessanalysis(cst.Spatialcount):
                 print(f"{measure}, bin {bin}: {gm.diameter_range([b,b*math.sqrt(2)],2)}, {n} craters")
 
                 # do parallel monte carlo for random configs
-                m = montecarlo_pp(self_pp,b,n)
+                #m = montecarlo_pp(self_pp,b,n)
+                m = montecarlo_serial(self_pp, b, n)
                 self.montecarlo[measure]['trials'][bin] = m
 
 
     def run_montecarlo(self, trials, measure):
-
+        np.random.seed(42)
         self.establish_hpx(trials)
         self_pp = self.self_pp(trials, measure)
 
@@ -482,6 +483,27 @@ def montecarlo_pp(self_pp, b, n):
         pbar.finish()
     return measures
 
+def montecarlo_serial(self_pp, b, n):
+    """
+    Single Monte Carlo run. - serial - use for debugging only
+    """
+    trial_indices = range(self_pp.trials)
+    args = [(self_pp, b, n, trial_index) for trial_index in trial_indices]
+    pbar = ProgressBar(max_value=self_pp.trials)
+
+    measures = []
+    for trial_index, arg in zip(trial_indices, args):
+        try:
+            result = run_trial_wrapper(arg)  # Call the function directly
+            measures.append(result)
+            pbar.update(trial_index)  # Update progress bar in serial execution
+        except Exception as e:
+            print(f"Error occurred for trial {trial_index}: {e}")
+
+    pbar.finish()  # Finish the progress bar
+    return measures
+
+
 def random_points_pp(self ,n):
     # consider integral of cos(lat): sin(lat) - range varies from -1 to 1 for -180 to 180
     y0 = np.sin(np.radians(self.yr[0])) # move to init?
@@ -545,26 +567,38 @@ def kth_nearest_neighbour_pp(self, pts,ids,hpd, k=1):
     neighbours = []
     distances = []
 
-    for id,pt in zip(ids,pts):
-        locality = set()
-        outer = {id}
-        while True:
-            locality |= outer # union
-            n = sum(len(hpd[e]) for e in locality if e in hpd)
-            if n >= k+1:
-                break
-            hpx_neighbours = set(self.hp.neighbours(tuple(outer)).flatten())
-            outer = hpx_neighbours - locality
+    debug=0
 
-        d0,pt0 = get_kth(pt,locality)
+    try:
+        for id,pt in zip(ids,pts):
+            locality = set()
+            outer = {id}
+            debug=1
+            while True:
+                locality |= outer # union
+                n = sum(len(hpd[e]) for e in locality if e in hpd)
+                debug = 2
+                if n >= k+1:
+                    break
+                hpx_neighbours = set(self.hp.neighbours(tuple(outer)).flatten())
+                outer = hpx_neighbours - locality
+                debug = 3
 
-        # redefine neighbourhood based on known kth closest: if pt near edge, could be over hpx cell boundary
-        hpx_neighbours = self.hp.cone_search_lonlat(sph.get_x(pt) * u.deg, sph.get_y(pt) * u.deg, d0/self.planetary_radius * u.rad)
-        d1, pt1 = get_kth(pt, hpx_neighbours)
-        neighbours += [pt1]
-        distances += [d1]
+            d0,pt0 = get_kth(pt,locality)
+            debug = 4
 
-    mean_distance = np.mean(distances)
+            # redefine neighbourhood based on known kth closest: if pt near edge, could be over hpx cell boundary
+            hpx_neighbours = self.hp.cone_search_lonlat(sph.get_x(pt) * u.deg, sph.get_y(pt) * u.deg, d0/self.planetary_radius * u.rad)
+            d1, pt1 = get_kth(pt, hpx_neighbours)
+            debug = 5
+            neighbours += [pt1]
+            distances += [d1]
+
+        mean_distance = np.mean(distances)
+    except:
+        print(f"Error occurred, debug={debug}")
+        raise
+
     return mean_distance,neighbours
 
 
