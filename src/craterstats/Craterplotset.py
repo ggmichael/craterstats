@@ -332,7 +332,7 @@ class Craterplotset:
         self.decades=f(self.xrange),f(self.yrange)
 
         self.t_max = np.clip(max(self.xrange), 3., 4.5)
-        self.t_min = np.clip(min(self.xrange), 0., 3.5)
+        self.t_min = np.clip(min(self.xrange), 0., self.t_max-.1)
 
         if self.t_min<1 and self.t_min !=0:
             self.t_min=10**np.floor(np.log10(self.t_min))
@@ -347,11 +347,14 @@ class Craterplotset:
             log_t_min = np.log10(self.t_min)
             lin_units = max(self.t_max - t_crossover, 0) / dec2lin
             log_units = np.log10(t_crossover) - log_t_min
+            minor_div = 5
         else:
             t_crossover = self.t_min
             lin_units = 1
             log_units = 0
-            xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
+            #xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
+            xtickv0,minor_div = gm.ticks([self.t_min,self.t_max],6, max_minor=12)
+            xtickv = [e for e in xtickv0 if self.t_min <= e <= self.t_max]
 
         xticklabels = [f"{e:.2g}" for e in xtickv]
         xticklabels[-1] += ' Ga'
@@ -405,7 +408,7 @@ class Craterplotset:
         ax_lin.set_xticks(xtickv, labels=xticklabels)
         ax_lin.tick_params(length=2, pad=1.5)
         ax_lin.tick_params(which='minor',length=1)
-        ax_lin.xaxis.set_minor_locator(ticker.AutoMinorLocator(5))
+        ax_lin.xaxis.set_minor_locator(ticker.AutoMinorLocator(minor_div))
 
         if self.presentation == 'sequence':
             ax_lin.set_ylim(bottom=0, top=1)
@@ -432,7 +435,7 @@ class Craterplotset:
             #ax.spines[['left', 'bottom']].set_visible(False)
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
-        if self.t_max>3.:
+        if self.crossover and self.t_max > t_crossover > self.t_min:
             ax.plot(xfrac_linear, 0, marker='x', clip_on=False, markeredgewidth=.3, color=self.palette[0],
                              markersize=self.pt_size * .4, zorder=2)
         ax.patch.set_facecolor('none')
