@@ -1,13 +1,14 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-import os
-import sys
 import argparse
-import re
+import copy
+import os
 import platform
+import re
 import subprocess
 import shlex
+import sys
 
 import craterstats as cst
 import craterstats.gm as gm
@@ -470,7 +471,7 @@ def main(args0=None):
         demo()
         return
 
-    dflt = cst.DEFAULTS.copy()
+    dflt = copy.deepcopy(cst.DEFAULTS)
     cps_dict = construct_cps_dict(args, dflt['set'], functions)
     cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
 
