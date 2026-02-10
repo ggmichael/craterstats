@@ -479,7 +479,11 @@ def main(args0=None):
         default_filename = gm.filename(args.input_filename,'pn')
     else:
         if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
-            default_filename = cps_dict['presentation']
+            default_filename = re.sub(r'[^a-zA-Z0-9_]','', cps_dict['chronology_system'])
+            if cps_dict['presentation'] == 'uncertainty':
+                default_filename += f'_{cps_dict['min_diameter']}'
+            else:
+                default_filename += "_" + cps_dict['presentation']
         else:
             default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
             default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
