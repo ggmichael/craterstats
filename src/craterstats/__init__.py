@@ -12,6 +12,8 @@ from .Craterpdf import Craterpdf
 from .Epochs import Epochs
 from .Spatialcount import Spatialcount
 from .Randomnessanalysis import Randomnessanalysis
+from .BootstrapSFD import BootstrapSFD
+from .PowerLawMLE import PowerLawMLE
 
 from .miscellaneous import *
 from .constants import *

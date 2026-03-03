@@ -9,11 +9,19 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 # Recent additions
 
-- Support for filename_CRATER.shp, filename_AREA.shp shapefile sets. These can be produced in, e.g. ArcPRO, 
+- **Bootstrap confidence intervals** (`BootstrapSFD` class): KDE/EDF-based bootstrap
+  CIs following [Robbins et al. (2018)](https://doi.org/10.1111/maps.12990).
+  Supports four bootstrap versions (V1.1, V1.2, V2, V3 hybrid — recommended) and
+  differential, cumulative, R-plot, and Hartmann presentations.
+  Integrated into `Craterplot` via the `bootstrap_ci` parameter.
+- **Maximum likelihood estimation** (`PowerLawMLE` class): direct MLE fitting of
+  the Pareto (power-law) slope to unbinned crater diameters, plus production-function
+  regression for age estimation, per Robbins et al. (2018) §4–5.
+- Support for filename_CRATER.shp, filename_AREA.shp shapefile sets. These can be produced in, e.g. ArcPRO,
 using three-point circle and polygon tools, as well as OpenCraterTools
 - Spatial randomness analysis (see Michael et al., 2012)
 
-Both features use spherical geometry for calculations 
+Both features use spherical geometry for calculations
 
 # Installation
 

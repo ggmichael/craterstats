@@ -59,6 +59,7 @@ class Craterplotset:
             'invert':0,
             'text_halo':1,
             'bins':False,
+            'legend':'fnacr',
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.

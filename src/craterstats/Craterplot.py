@@ -8,6 +8,7 @@ import re
 
 import craterstats as cst
 import craterstats.gm as gm
+from .BootstrapSFD import BootstrapSFD
 
 
 class Craterplot:
@@ -34,6 +35,12 @@ class Craterplot:
             'resurf_showall':0,
             'isochron':0,
             'offset_age':[0.,0.],
+            'bootstrap_ci':0,           # 0=off, 1=on
+            'bootstrap_version':'3',    # '1.1','1.2','2','3'
+            'bootstrap_M':1000,         # Monte Carlo iterations
+            'bootstrap_psi':0.683,      # confidence level (0.683=1σ, 0.954=2σ)
+            'bootstrap_bw':0.1,         # bandwidth fraction (σ_i = bw * D_i)
+            'bootstrap_show_2sigma':0,  # also draw 2σ envelope
             },*args,kwargs)
 
         self.range = self.cratercount.decode_range(self.range,self.binning,self.snap)
@@ -55,8 +62,12 @@ class Craterplot:
                      'resurf_showall',
                      'isochron',
                      'psym',
+                     'bootstrap_ci',
+                     'bootstrap_show_2sigma',
                      ):
                 v = int(v)
+            if k == 'bootstrap_M': v = int(v)
+            if k in ('bootstrap_psi', 'bootstrap_bw'): v = float(v)
             setattr(self, k, v)
         if not self.cratercount and self.source:
             self.cratercount = cst.Cratercount(self.source)
@@ -161,6 +172,10 @@ class Craterplot:
         """
         if not self.cratercount or self.hide: return
 
+        # Resolve integer colour index to actual matplotlib color string
+        if isinstance(self.colour, int):
+            self.colour = cps.palette[self.colour]
+
         if cps.presentation=='sequence':
             self.overplot_sequence_element(cps)
             return
@@ -177,6 +192,9 @@ class Craterplot:
 
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.5*cps.sz_ratio,ecolor=cps.grey[0],zorder=-1)
+
+        if self.bootstrap_ci and self.type == 'data' and not self.cratercount.prebinned:
+            self._overplot_bootstrap_ci(cps)
 
         if self.type in ['c-fit','d-fit','poisson','b-poisson']:
             self.calculate_age(cps)
@@ -221,6 +239,109 @@ class Craterplot:
                     **cps.marker_def[self.psym],ls='',color=self.colour)
 
 
+
+    def _overplot_bootstrap_ci(self, cps):
+        """
+        Compute and draw Robbins (2018) bootstrap confidence interval envelope.
+        Called from overplot() when bootstrap_ci=1 and data is unbinned.
+        """
+        cc = self.cratercount
+        if not hasattr(cc, 'diam') or cc.diam is None or len(cc.diam) == 0:
+            return
+
+        diameters = np.array(cc.diam)
+
+        # Filter to the plot diameter range if set
+        r = self.range
+        if r[0] > 0:
+            diameters = diameters[diameters >= r[0]]
+        if r[1] < np.inf:
+            diameters = diameters[diameters <= r[1]]
+        if len(diameters) < 2:
+            return
+
+        sfd = BootstrapSFD(diameters, area=cc.area, bandwidth_fraction=self.bootstrap_bw)
+
+        # Compute 1σ CI
+        ci = sfd.bootstrap_ci(version=self.bootstrap_version,
+                               M=self.bootstrap_M,
+                               psi=self.bootstrap_psi)
+
+        pres = cps.presentation
+        converted = sfd.ci_to_presentation(ci, pres)
+
+        d_grid = converted['d_grid']
+        y = converted['y']
+        ci_lo = converted['ci_lo']
+        ci_hi = converted['ci_hi']
+
+        # Only plot where values are positive (log-log axes)
+        mask = (y > 0) & (ci_lo > 0) & (ci_hi > 0)
+        if not np.any(mask):
+            return
+
+        alpha_fill = 0.25
+        # Resolve integer colour index to actual matplotlib color string
+        c = cps.palette[self.colour] if isinstance(self.colour, int) else self.colour
+
+        # x-axis: linear scale in log10(diameter); y-axis: log scale in actual density
+        cps.ax.fill_between(
+            np.log10(d_grid[mask]),
+            ci_lo[mask],
+            ci_hi[mask],
+            color=c,
+            alpha=alpha_fill,
+            linewidth=0,
+            zorder=-2,
+        )
+        # Draw the EDF curve itself (thin dashed line)
+        mask_y = y > 0
+        cps.ax.plot(
+            np.log10(d_grid[mask_y]),
+            y[mask_y],
+            color=c,
+            lw=0.5 * cps.sz_ratio,
+            ls='--',
+            zorder=-1,
+        )
+
+        # Optionally draw 2σ envelope
+        if self.bootstrap_show_2sigma:
+            ci2 = sfd.bootstrap_ci(version=self.bootstrap_version,
+                                    M=self.bootstrap_M,
+                                    psi=0.954)
+            converted2 = sfd.ci_to_presentation(ci2, pres)
+            ci_lo2 = converted2['ci_lo']
+            ci_hi2 = converted2['ci_hi']
+            mask2 = (y > 0) & (ci_lo2 > 0) & (ci_hi2 > 0)
+            if np.any(mask2):
+                cps.ax.fill_between(
+                    np.log10(d_grid[mask2]),
+                    ci_lo2[mask2],
+                    ci_hi2[mask2],
+                    color=c,
+                    alpha=alpha_fill * 0.5,
+                    linewidth=0,
+                    zorder=-3,
+                )
+
+        # Rug plot: small tick marks at original crater diameters (Robbins 2018, rec. #9)
+        rug_y = cps.ax.get_ylim()[0]
+        rug_diameters = np.array(cc.diam)
+        if r[0] > 0:
+            rug_diameters = rug_diameters[rug_diameters >= r[0]]
+        if r[1] < np.inf:
+            rug_diameters = rug_diameters[rug_diameters <= r[1]]
+        cps.ax.plot(
+            np.log10(rug_diameters),
+            np.full(len(rug_diameters), rug_y),
+            '|',
+            color=c,
+            markersize=3 * cps.sz_ratio,
+            markeredgewidth=0.5 * cps.sz_ratio,
+            zorder=2,
+            clip_on=True,
+        )
 
     def make_legend_label(self,cps):
         legend_label = []
