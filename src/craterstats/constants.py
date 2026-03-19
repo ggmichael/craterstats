@@ -53,7 +53,8 @@ DEFAULTS = {
         'min_diameter': 0.15,
         'global_area': 1e12,  # default larger than all terrestrial planets
         'n_samples': 200,
-        'ra_offset': 0,
+        'ra_offset': 0.,
+        'bins': 0,
     },
     'plot': {
         'source': 'None',

@@ -551,8 +551,13 @@ class Craterplotset:
 
         :return: none
         """
-
-        isochrons = [(abs(float(e.rstrip('ash'))),'h' in e,'a' in e, 's' in e) for e in self.isochrons.split(',')]
+        isochrons = []
+        for e in self.isochrons.split(','):
+            try:
+                value = abs(float(e.rstrip('ash')))
+                isochrons.append((value, 'h' in e, 'a' in e, 's' in e))
+            except ValueError:
+                continue
 
         for t,hide,above,small in isochrons:
             a0 = self.cf.a0(t)
@@ -778,7 +783,7 @@ class Craterplotset:
         # warnings.filterwarnings('error', category=RuntimeWarning)
 
         cmap_k = 'Set2_r'
-        cmap_err = Spectral_9.mpl_colormap
+        cmap_err = Spectral_9.mpl_colormap.reversed()
         cmap_ratio = colors.ListedColormap(Spectral_9.mpl_colors)
 
         # new initialisation
@@ -869,8 +874,10 @@ class Craterplotset:
 
         if x_exceed and y_exceed:
             p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
+        poly = None
         if x_exceed or y_exceed:
             poly = Polygon(p, closed=True, facecolor='white', edgecolor=None, alpha=0.6)
+
 
         # print(f'T_eq {T_eq}, t_max {self.t_max}, t_cross {self.t_crossover}, t_min {self.t_min}\n'
         #       f'xfraclin {self.xfrac_linear}, x_exceed {x_exceed}')
@@ -900,7 +907,7 @@ class Craterplotset:
             cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
             cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
             cbar.set_label('Measured/actual age', rotation=90)
-            poly.set_alpha(0.7)
+            if poly: poly.set_alpha(0.7)
 
         def add_saturation_text():
             if y_exceed and (y_exceed < .98):
