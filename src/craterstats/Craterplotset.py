@@ -813,6 +813,7 @@ class Craterplotset:
         cc = cst.Cratercount()
         mid_d = np.sqrt(d_range[0] * d_range[1])
         cc.diam = [mid_d]  # shouldn't be empty
+        diameter_text = ' ($d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin * 1000:0.3g}$ m)')
 
         if not hasattr(self, 'age_area'): #store values first time, else retrieve
             zz = np.zeros((nsx,nsy))
@@ -876,24 +877,20 @@ class Craterplotset:
             p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
         poly = None
         if x_exceed or y_exceed:
-            poly = Polygon(p, closed=True, facecolor='white', edgecolor=None, alpha=0.6)
-
-
-        # print(f'T_eq {T_eq}, t_max {self.t_max}, t_cross {self.t_crossover}, t_min {self.t_min}\n'
-        #       f'xfraclin {self.xfrac_linear}, x_exceed {x_exceed}')
+            poly = Polygon(p, closed=True, facecolor='black' if self.invert else 'white', edgecolor=None, alpha=0.6)
 
         if plt=='k':
             im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
             imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto',extent=[0,1,0,1])
             cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
             cbar.ax.set_yticklabels(['0','1','2','3','4','5','6','7+'])
-            cbar.set_label('$k$', rotation=90)
+            cbar.set_label('$k$' + diameter_text, rotation=90)
 
         elif plt=='err':
             imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=None,
                              aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
             cbar = self.fig.colorbar(imo,self.ax_cbar)
-            cbar.set_label(r'Measured uncertainty $\sigma$, %', rotation=90)
+            cbar.set_label(r'Measured uncertainty $\sigma$, %' + diameter_text, rotation=90)
 
         elif plt == 'age':
             im = np.flip(np.transpose(np.log10(ee)),1)
@@ -906,7 +903,7 @@ class Craterplotset:
                            extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax)
             cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
             cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
-            cbar.set_label('Measured/actual age', rotation=90)
+            cbar.set_label('Measured/actual age' + diameter_text, rotation=90)
             if poly: poly.set_alpha(0.7)
 
         def add_saturation_text():
@@ -918,15 +915,9 @@ class Craterplotset:
                     self.ax.text(x_exceed, .87, 'saturation', size=self.scaled_pt_size * .7, rotation=90,
                                  horizontalalignment='right', verticalalignment='top')
 
-        def add_diameter_text():
-            self.fig.text(0.03, .96, '$d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin*1000:0.3g}$ m'),
-                     size=self.scaled_pt_size * .8, transform=self.ax.transAxes, horizontalalignment='left', verticalalignment='top')
-
         if x_exceed or y_exceed:
             self.ax.add_patch(poly)
         add_saturation_text()
-        add_diameter_text()
-
 
     def create_map_plotspace(self):
         """
