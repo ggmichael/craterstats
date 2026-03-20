@@ -6,3 +6,4 @@ from .filename import filename
 from .read_textfile import read_textfile
 from .read_textstructure import read_textstructure
 from .write_textfile import write_textfile
+from .get_documents_path import get_documents_path
