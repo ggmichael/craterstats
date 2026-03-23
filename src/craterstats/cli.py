@@ -421,6 +421,26 @@ def randomness_analysis(args,cps):
         ra.write()
     return ra
 
+def set_default_filename(args,cps_dict,cp_dicts):
+    if args and args.input:
+        default_filename = gm.filename(args.input_filename,'pn')
+    else:
+        if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
+            default_filename = re.sub(r'[^a-zA-Z0-9_]','', cps_dict['chronology_system'])
+            if cps_dict['presentation'] == 'uncertainty':
+                default_filename += f'_{cps_dict['min_diameter']}'
+            else:
+                default_filename += "_" + cps_dict['presentation']
+        else:
+            default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
+            default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
+    match cps_dict['out']:
+        case None:
+            cps_dict['out'] = default_filename
+        case _ if os.path.isdir(cps_dict['out']):
+            cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
+
+
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
@@ -475,24 +495,7 @@ def main(args0=None):
     cps_dict = construct_cps_dict(args, dflt['set'], functions)
     cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
 
-    if args.input:
-        default_filename = gm.filename(args.input_filename,'pn')
-    else:
-        if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
-            default_filename = re.sub(r'[^a-zA-Z0-9_]','', cps_dict['chronology_system'])
-            if cps_dict['presentation'] == 'uncertainty':
-                default_filename += f'_{cps_dict['min_diameter']}'
-            else:
-                default_filename += "_" + cps_dict['presentation']
-        else:
-            default_filename = '_'.join(sorted(set([gm.filename(d['source'], 'n') for d in cp_dicts]))) if cp_dicts else 'out'
-            default_filename = re.sub(r'_?CRATER_?', '', default_filename) # remove if present from shp file
-    match cps_dict['out']:
-        case None:
-            cps_dict['out'] = default_filename
-        case _ if os.path.isdir(cps_dict['out']):
-            cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
-
+    set_default_filename(args, cps_dict, cp_dicts)
 
     if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
