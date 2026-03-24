@@ -3,6 +3,7 @@
 
 from .idl import *
 from .maths import *
+from .misc import *
 from .file import *
 from .plotting import *
 from .string import *

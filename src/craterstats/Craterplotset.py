@@ -28,7 +28,9 @@ class Craterplotset:
 
     """
     
-    def __init__(self,*args,**kwargs):   
+    def __init__(self,*args,**kwargs):
+
+        self.progress_callback  = kwargs.pop("progress_callback", None)  # callback for gui (remove from kwargs safely)
             
         # matplotlib objects
         self.fig=None
@@ -67,7 +69,6 @@ class Craterplotset:
         self.marker_def = [e[2].copy() for e in cst.MARKERS]
         self.max_y = None
 
-        
     def UpdateSettings(self,*args,**kwargs): #pass either dictionary or keywords
         a = {k: v for d in args for k, v in d.items()}
         a.update(**kwargs)
@@ -828,7 +829,7 @@ class Craterplotset:
                 r=self.pf.evaluate("cumulative",d_range,a0=a)
                 C[i]=r[0]-r[1]
 
-            for i,xx in progressbar(enumerate(log_age),max_value=nsx):
+            for i,xx in gm.iterator_with_progress(enumerate(log_age), total=nsx, callback=self.progress_callback):
                 for j,yy in enumerate(log_area):
                     area=10**yy
                     lam=C[i]*area
