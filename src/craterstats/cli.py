@@ -84,14 +84,13 @@ def get_parser():
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: h - hide; a - above; s - small)")
     parser.add_argument("-legend", help="0 - suppress; or any combination of: n - name, a - area, p - perimeter, c - number of craters, r - range, N - N(d_ref) value, A - age (sequence plot)")
-    parser.add_argument("-mu", nargs='?', choices=[0,1], type=int, const=1, help="1 - show; 0 - suppress")
     parser.add_argument("-style", choices=['natural', 'root-2'], help="diameter axis style")
 
-    parser.add_argument("-invert",  nargs='?', choices=[0,1], type=int, const=1, help="1 - invert to black background; 0 - white background")
-    parser.add_argument("-text_halo", nargs='?', choices=[0,1], type=int, const=1, help="separate legend from background: 1 - on; 0 - off")
-    parser.add_argument("-transparent", nargs='?', choices=[0,1], type=int, const=1, help="set transparent background: 1 - on; 0 - off [default]")
-
-    parser.add_argument("-tight", help="tight layout", action='store_true')
+    parser.add_argument("-mu", nargs='?', choices=[0, 1], type=int, const=1, help="show mu [1(default)|0]")
+    parser.add_argument("-invert",  nargs='?', choices=[0,1], type=int, const=1, help="invert to black background [1|0]")
+    parser.add_argument("-text_halo", nargs='?', choices=[0,1], type=int, const=1, help="separate legend from background [1|0]")
+    parser.add_argument("-transparent", nargs='?', choices=[0,1], type=int, const=1, help="set transparent background [1|0]")
+    parser.add_argument("-tight", nargs='?', choices=[0, 1], type=int, const=1, help="make tight framing [1|0]")
 
     parser.add_argument("-pd", "--print_dimensions", help="print dimensions: either single value (cm/decade) or enclosing box in cm (AxB), e.g. 2 or 8x8")
     parser.add_argument("-pt_size", type=float, help="point size for figure text")
@@ -440,6 +439,42 @@ def set_default_filename(args,cps_dict,cp_dicts):
         case _ if os.path.isdir(cps_dict['out']):
             cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
 
+def write_output_files(args, cps, drawn = False):
+    def savefig(tag=''):
+        cps.fig.savefig(cps.out + tag + '.' + f, dpi=500, transparent=cps.transparent,
+                        bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
+
+    for f in cps.format:
+        if f in {'png', 'pdf', 'svg', 'tif'}:
+            if args.randomness_analysis:
+                ra = randomness_analysis(args, cps)
+
+                for measure in cps.measures:
+                    match args.only:
+                        case None:
+                            ra.plot_montecarlo_split(cps, measure)
+                        case 0:
+                            ra.plot_n_sigma(cps, measure)
+                        case _:
+                            ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
+                    savefig('-' + measure + (f'-{args.only}' if args.only else ''))
+
+                # cps.create_map_plotspace()
+                # ra.plot(cps,grid=True)
+                # savefig('-map')
+            elif cps.presentation == 'uncertainty':
+                for plt in ('k', 'err', 'age'):
+                    cps.draw()
+                    cps.age_area_plot(plt)
+                    savefig('_' + plt)
+            else:
+                if not drawn:
+                    cps.draw()
+                    drawn = True
+                savefig()
+
+        if f in {'csv'} and not cps.presentation == 'uncertainty':
+            cps.create_summary_table(f_out=cps.out + '.' + f)
 
 def main(args0=None):
     args = get_parser().parse_args(args0)
@@ -517,45 +552,10 @@ def main(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
 
-    def savefig(tag=''):
-        cps.fig.savefig(cps.out + tag +'.' + f, dpi=500, transparent=cps.transparent,
-                        bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
-
-    drawn=False
-    for f in cps.format:
-        if f in {'png','pdf','svg','tif'}:
-            if args.randomness_analysis:
-                ra = randomness_analysis(args,cps)
-
-                for measure in cps.measures:
-                    match args.only:
-                        case None:
-                            ra.plot_montecarlo_split(cps, measure)
-                        case 0:
-                            ra.plot_n_sigma(cps, measure)
-                        case _:
-                            ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
-                    savefig('-' + measure + (f'-{args.only}' if args.only else ''))
-
-                # cps.create_map_plotspace()
-                # ra.plot(cps,grid=True)
-                # savefig('-map')
-            elif cps.presentation == 'uncertainty':
-                for plt in ('k','err','age'):
-                    cps.draw()
-                    cps.age_area_plot(plt)
-                    savefig('_'+plt)
-            else:
-                if not drawn:
-                    cps.draw()
-                    drawn = True
-                savefig()
-
-        if f in {'csv'}:
-            cps.create_summary_table(f_out=cps.out+'.'+f)
+    write_output_files(args,cps)
 
     if not args.input:
-        gm.write_textfile(cps.out + '.cs', cs_content)
+            gm.write_textfile(cps.out + '.cs', cs_content)
 
 if __name__ == '__main__': 
     main()
