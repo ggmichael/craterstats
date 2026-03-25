@@ -69,7 +69,6 @@ class Craterplot:
     def calculate_age(self,cps):
         """
         Calculate age
-
         :param cps: Craterplotset instance
         """
         if self.type in ['poisson','b-poisson']:
@@ -226,6 +225,12 @@ class Craterplot:
         legend_label = []
 
         if self.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
+            if cps.presentation == 'sequence':
+                if 'A' in cps.legend:
+                    legend_label+=[(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs,
+                                            mu=cps.mu, no_error=False))]
+                if 'a' in cps.legend:
+                    legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
             if 'c' in cps.legend:
                 if self.cratercount.buffered:
                     legend_label += [f'{self.n_event:.1f}']
@@ -243,12 +248,7 @@ class Craterplot:
                 legend_label += [gm.diameter_range(r)]
             if 'N' in cps.legend:
                 legend_label += [f'N({cps.ref_diameter:0g})' +'=' + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
-            if cps.presentation == 'sequence':
-                if 'a' in cps.legend:
-                    legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
-                if 'A' in cps.legend:
-                    legend_label+=[(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs,
-                                            mu=cps.mu, no_error=False))]
+
 
         if self.type=='data':
             if 'n' in cps.legend:
