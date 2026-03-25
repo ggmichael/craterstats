@@ -10,6 +10,8 @@ import subprocess
 import shlex
 import sys
 
+from progressbar import ProgressBar
+
 import craterstats as cst
 import craterstats.gm as gm
 
@@ -404,9 +406,10 @@ def create_desktop_icon():
 def cs_source(v):
     return v.replace('%sample%/', cst.PATH + 'sample/')
 
-def randomness_analysis(args,cps):
-    out = '' if cps.out=='out' else gm.filename(cps.out,'pn')
-    ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out)
+
+def randomness_analysis(args,cps,progress_callback=None):
+    out = '' if cps.out=='out' or cps.out is None else gm.filename(cps.out,'pn')
+    ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out,progress_callback=progress_callback)
     cps.out = gm.filename(ra.ra_file,'pn')
     trials = args.trials if args.trials else cps.trials
     if args.measure:

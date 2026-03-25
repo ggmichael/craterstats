@@ -2,8 +2,9 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 from collections import namedtuple
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor
 import math
+import multiprocessing
 import os
 
 import astropy_healpix as hpx
@@ -25,12 +26,13 @@ class Randomnessanalysis(cst.Spatialcount):
     '''Applies randomness tests to Spatialcount'''
 
     MEASURES = ['m2cnd','sdaa']
-    def __init__(self,filename=None,area_file=None,out=None):
+    def __init__(self,filename=None,area_file=None,out=None,progress_callback=None):
         super().__init__(filename,area_file)
         self.init_Cratercount()
         self.montecarlo = {}
         self.max_threads = os.cpu_count()-1
         self.ra_file = (out if out else self.name) + "_ra.txt"
+        self.progress_callback = progress_callback
         self.read()
         binning='root-2'
         self.cc.apply_binning(binning, offset=0.)
@@ -43,6 +45,12 @@ class Randomnessanalysis(cst.Spatialcount):
         self.cc.lat = self.lat
         self.cc.fraction = self.fraction
         self.cc.prebinned = 0
+
+    def print(self,msg): # print either to terminal or to gui
+        if self.progress_callback:
+            self.progress_callback(0, 1, '\n' + msg) # CR before to not scroll early
+        else:
+            print(msg)
 
     def establish_hpx(self,n):
         """
@@ -142,11 +150,12 @@ class Randomnessanalysis(cst.Spatialcount):
         for b,n in zip(self.cc.binned['d_min'],self.cc.binned['n_event']):
             if n >= min_count:
                 bin = f"{np.log2(b):.3g}"
-                print(f"{measure}, bin {bin}: {gm.diameter_range([b,b*math.sqrt(2)],2)}, {n} craters")
+                msg = f"{measure}, bin {bin}: {gm.diameter_range([b,b*math.sqrt(2)],2)}, {n} craters"
+                self.print(msg)
 
                 # do parallel monte carlo for random configs
-                #m = montecarlo_pp(self_pp,b,n)
-                m = montecarlo_serial(self_pp, b, n)
+                m = montecarlo_pp(self_pp, b, n, progress_callback=self.progress_callback)
+                #m = montecarlo_serial(self_pp, b, n)
                 self.montecarlo[measure]['trials'][bin] = m
 
 
@@ -441,7 +450,7 @@ class Randomnessanalysis(cst.Spatialcount):
 # note that 'self' in routines below is not class instance, but analogous self_pp namedtuple
 #######################################################
 
-attrs_pp = ['hp', 'planetary_radius', 'area', 'enclosing_area', 'polygon', 'xr', 'yr', 'max_threads', 'trials','measure']
+attrs_pp = ['hp', 'planetary_radius', 'area', 'enclosing_area', 'polygon', 'xr', 'yr', 'max_threads','trials','measure']
 self_pp_tuple = namedtuple('self_pp_tuple', attrs_pp)
 
 def evaluate_randomness(self_pp, pts, ids, hpd):
@@ -460,28 +469,43 @@ def run_trial(self_pp, b, n, trial_index):
     m, _ = evaluate_randomness(self_pp, pts, ids, hpd)
     return m
 
-def run_trial_wrapper(args):
-    return run_trial(*args)
+def run_trial_wrapper(self_pp, b, n, trial_index, progress):
+    result = run_trial(self_pp, b, n, trial_index)
+    progress.value += 1 # Update shared progress
+    return result
 
-def montecarlo_pp(self_pp, b, n):
+def montecarlo_pp(self_pp, b, n, progress_callback=None):
     """
-    Single Monte Carlo run. - parallel
+    Single Monte Carlo run - parallel using processes with a Manager for shared progress.
+    Parameters:
+    - self_pp: object containing max_threads and trials attributes
+    - b: parameter for trials
+    - n: parameter for trials
+    - callback: optional callback function (for GUI)
+
+    Returns:
+    - measures: list of results from the trials
     """
-    with ProcessPoolExecutor(max_workers=self_pp.max_threads) as executor:
-        trial_indices = range(self_pp.trials)
-        args = [(self_pp, b, n, trial_index) for trial_index in trial_indices]
-        pbar = ProgressBar(max_value=self_pp.trials)
+    # Manager for shared progress
+    with multiprocessing.Manager() as manager:
+        progress = manager.Value('i', 0)  # Shared integer to track progress
 
-        # Submit tasks to executor and track futures
-        future_to_index = {executor.submit(run_trial_wrapper, arg): trial_index for arg, trial_index in zip(args, trial_indices)}
+        with ProcessPoolExecutor(max_workers=self_pp.max_threads) as executor:
+            trial_indices = range(self_pp.trials)
+            args = [(self_pp, b, n, trial_index, progress) for trial_index in trial_indices]
 
-        measures = []
-        for future in as_completed(future_to_index):
-            result = future.result()  # Get result of completed trial
-            measures.append(result)
-            pbar.update(future_to_index[future])  # Update progress bar
-        pbar.finish()
+            # Submit tasks to executor and track futures
+            futures = [executor.submit(run_trial_wrapper, *arg) for arg in args]
+
+            # Use iterator_with_progress to handle progress reporting
+            progress_iter = gm.iterator_with_progress(enumerate(futures), total=self_pp.trials, callback=progress_callback)
+
+            measures = []
+            for i, future in progress_iter:
+                result = future.result()  # Get result of completed trial
+                measures.append(result)
     return measures
+
 
 def montecarlo_serial(self_pp, b, n):
     """
