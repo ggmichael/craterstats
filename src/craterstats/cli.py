@@ -408,11 +408,12 @@ def randomness_analysis(args,cps):
     out = '' if cps.out=='out' else gm.filename(cps.out,'pn')
     ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out)
     cps.out = gm.filename(ra.ra_file,'pn')
-    trials = args.trials if args.trials else 300
-    cps.measures = args.measure.split(',') if args.measure else ['m2cnd','sdaa']
-    diff = set(cps.measures) - {'m2cnd','sdaa'}
-    if diff:
-        sys.exit(f"Invalid measure: {diff}")
+    trials = args.trials if args.trials else cps.trials
+    if args.measure:
+        cps.measures = set(args.measure.split(','))
+        diff = cps.measures - {'m2cnd','sdaa'}
+        if diff:
+            sys.exit(f"Invalid measure: {diff}")
     for measure in cps.measures:
         ra.run_montecarlo(trials, measure)
         # do each loop so as to retain data if interrupted
