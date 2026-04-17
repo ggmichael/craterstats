@@ -171,7 +171,7 @@ class Craterplot:
         self.n=p['n']
         self.n_event=p['n_event']
 
-        if self.cratercount.n_sigma and self.type == 'data':
+        if cps.ra_show and self.cratercount.n_sigma and self.type == 'data':
             self.oplot_n_sigma(cps)
 
         if self.error_bars:
