@@ -26,13 +26,13 @@ class Randomnessanalysis(cst.Spatialcount):
     '''Applies randomness tests to Spatialcount'''
 
     MEASURES = ['m2cnd','sdaa']
-    def __init__(self,filename=None,area_file=None,out=None,progress_callback=None):
+    def __init__(self,filename=None,area_file=None,out=None,progress_queue=None):
         super().__init__(filename,area_file)
         self.init_Cratercount()
         self.montecarlo = {}
         self.max_threads = os.cpu_count()-1
         self.ra_file = (out if out else self.name) + "_ra.txt"
-        self.progress_callback = progress_callback
+        self.progress_queue = progress_queue
         self.read()
         binning='root-2'
         self.cc.apply_binning(binning, offset=0.)
@@ -47,8 +47,8 @@ class Randomnessanalysis(cst.Spatialcount):
         self.cc.prebinned = 0
 
     def print(self,msg): # print either to terminal or to gui
-        if self.progress_callback:
-            self.progress_callback(0, 1, '\n' + msg) # CR before to not scroll early
+        if self.progress_queue:
+            self.progress_queue.put((0, 1, '\n' + msg)) # CR before to not scroll early
         else:
             print(msg)
 
@@ -154,7 +154,7 @@ class Randomnessanalysis(cst.Spatialcount):
                 self.print(msg)
 
                 # do parallel monte carlo for random configs
-                m = montecarlo_pp(self_pp, b, n, progress_callback=self.progress_callback)
+                m = montecarlo_pp(self_pp, b, n, progress_queue=self.progress_queue)
                 #m = montecarlo_serial(self_pp, b, n)
                 self.montecarlo[measure]['trials'][bin] = m
 
@@ -474,7 +474,7 @@ def run_trial_wrapper(self_pp, b, n, trial_index, progress):
     progress.value += 1 # Update shared progress
     return result
 
-def montecarlo_pp(self_pp, b, n, progress_callback=None):
+def montecarlo_pp(self_pp, b, n, progress_queue=None):
     """
     Single Monte Carlo run - parallel using processes with a Manager for shared progress.
     Parameters:
@@ -498,7 +498,7 @@ def montecarlo_pp(self_pp, b, n, progress_callback=None):
             futures = [executor.submit(run_trial_wrapper, *arg) for arg in args]
 
             # Use iterator_with_progress to handle progress reporting
-            progress_iter = gm.iterator_with_progress(enumerate(futures), total=self_pp.trials, callback=progress_callback)
+            progress_iter = gm.iterator_with_progress(enumerate(futures), total=self_pp.trials, progress_queue=progress_queue)
 
             measures = []
             for i, future in progress_iter:

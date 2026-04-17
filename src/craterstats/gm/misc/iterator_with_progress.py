@@ -2,7 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 
-def iterator_with_progress(enumerated_iterable, total=None, callback=None):
+def iterator_with_progress(enumerated_iterable, total=None, progress_queue=None):
     """
     Iterate over items with progress reporting.
 
@@ -15,10 +15,10 @@ def iterator_with_progress(enumerated_iterable, total=None, callback=None):
     - iterator over (index, item) tuples
     """
 
-    if callback:
+    if progress_queue is not None:
         def generator():
             for i, item in enumerated_iterable:
-                callback(i + 1, total)
+                progress_queue.put((i + 1, total, None))
                 yield i, item
         return generator()
     else:

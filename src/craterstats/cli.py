@@ -129,6 +129,7 @@ def get_parser():
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
     parser.add_argument("-ra_offset", type=int, help="vertical offset for randomness analysis sub-plot in 1/20ths of decade")
     parser.add_argument("-only", type=int, help="index of bin to plot only one (use 0 for summary chart)")
+    parser.add_argument("-ra_show", nargs='?', choices=[0, 1], type=int, const=1, help="overplot randomness analysis [1|0]")
 
     return parser
 
@@ -188,6 +189,7 @@ def construct_cps_dict(args,c,f):
                      'min_diameter','n_samples',
                      'bins',
                      'ra_offset',
+                     'ra_show',
                      ):
                 c[k]=v
             elif k in ('chronology_system','equilibrium','epochs'):
@@ -407,9 +409,9 @@ def cs_source(v):
     return v.replace('%sample%/', cst.PATH + 'sample/')
 
 
-def randomness_analysis(args,cps,progress_callback=None):
+def randomness_analysis(args,cps,progress_queue=None):
     out = '' if cps.out=='out' or cps.out is None else gm.filename(cps.out,'pn')
-    ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out,progress_callback=progress_callback)
+    ra = cst.Randomnessanalysis(cs_source(args.randomness_analysis), out=out,progress_queue=progress_queue)
     cps.out = gm.filename(ra.ra_file,'pn')
     trials = args.trials if args.trials else cps.trials
     if args.measure:
@@ -443,7 +445,7 @@ def set_default_filename(args,cps_dict,cp_dicts):
         case _ if os.path.isdir(cps_dict['out']):
             cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
 
-def write_output_files(args, cps, drawn = False):
+def write_output_files(args, cps, drawn = False,progress_queue=None):
     def savefig(tag=''):
         cps.fig.savefig(cps.out + tag + '.' + f, dpi=500, transparent=cps.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
@@ -451,7 +453,7 @@ def write_output_files(args, cps, drawn = False):
     for f in cps.format:
         if f in {'png', 'pdf', 'svg', 'tif'}:
             if args.randomness_analysis:
-                ra = randomness_analysis(args, cps)
+                ra = randomness_analysis(args, cps,progress_queue=progress_queue)
 
                 for measure in cps.measures:
                     match args.only:
@@ -515,7 +517,11 @@ def main(args0=None):
         return
 
     if args.about:
-        print('\n'.join(cst.ABOUT))
+        for line in cst.ABOUT:
+            if line != '' and line[0] =='*':
+                print(gm.bright(line[1:]))
+            else:
+                print(line)
         return
 
     if args.version:
