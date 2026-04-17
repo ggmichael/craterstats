@@ -61,6 +61,7 @@ class Craterplotset:
             'invert':0,
             'text_halo':1,
             'bins':False,
+            'ra_show':1,
             },*args,kwargs)
 
         self.sz_ratio= self.pt_size / 9.
@@ -294,16 +295,17 @@ class Craterplotset:
 # add bin labels
         if self.bins:
             cpb = next((cp for cp in self.craterplot if cp.type=='data'), None)
-            bins = cpb.cratercount.generate_bins(cpb.binning, 10**self.xrange)
-            for i,b in enumerate(bins):
-                c = [self.palette[0],'red','dodgerblue'][i%3]
-                if b < 10 ** self.xrange[1]:
-                    if i%3!=0:
-                        ax.fill_between(np.log10([b,bins[i+1]]), 10**self.yrange[0], 10**self.yrange[1], color=c, ec=None, alpha=0.1,zorder=3)
-                    if b > 10 ** self.xrange[0]:
-                        for y in [.16,.5,.84]:
-                            ax.text(np.log10(b), y, f" {b:.1e}"[0:4], ha='center', va='bottom' if (i%2)==0 else 'top',
-                                    color=c, fontsize=self.scaled_pt_size * .4, rotation=90, transform = ax.get_xaxis_transform())
+            if cpb:
+                bins = cpb.cratercount.generate_bins(cpb.binning, 10**self.xrange)
+                for i,b in enumerate(bins):
+                    c = [self.palette[0],'red','dodgerblue'][i%3]
+                    if b < 10 ** self.xrange[1]:
+                        if i%3!=0:
+                            ax.fill_between(np.log10([b,bins[i+1]]), 10**self.yrange[0], 10**self.yrange[1], color=c, ec=None, alpha=0.1,zorder=3)
+                        if b > 10 ** self.xrange[0]:
+                            for y in [.16,.5,.84]:
+                                ax.text(np.log10(b), y, f" {b:.1e}"[0:4], ha='center', va='bottom' if (i%2)==0 else 'top',
+                                        color=c, fontsize=self.scaled_pt_size * .4, rotation=90, transform = ax.get_xaxis_transform())
 
 # set up coordinate transformations
         a2d=ax.transAxes + ax.transData.inverted()
@@ -603,7 +605,7 @@ class Craterplotset:
         xr = np.array([np.floor(min_x-mx[0]), np.ceil(max_x+mx[1])])
         yr = np.array([np.floor(np.log10(min(y0))-my[0]), np.ceil(np.log10(max(y1))+my[1])])
 
-        if any([cp.cratercount.n_sigma and cp.type == 'data' for y, cp in zip(y1, self.craterplot)]): # plot n_sigma?
+        if self.ra_show and any([cp.cratercount.n_sigma and cp.type == 'data' for y, cp in zip(y1, self.craterplot)]): # plot n_sigma?
             yr[1] = max(yr[1], np.ceil(max_y + gm.mag(yr)*3/16))
             mg = gm.mag(yr)
             #self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
