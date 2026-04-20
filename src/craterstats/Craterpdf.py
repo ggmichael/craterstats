@@ -55,18 +55,17 @@ class Craterpdf:
                 ns=500 #samples of PF for integration
                 d=np.linspace(d_range[0], d_range[1], ns)
                 F=pf.F(d,a0)
-                y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/8.)*F
+                y=(cc.area+d*cc.perimeter/2.+np.pi*d**2/4.)*F
                 I1=simpson(y,d)
-                lam=I1
+                lam = 10 ** (np.log10(I1) + x)   # lambda for each of self.ts
             else: #standard count
-                Ncum=pf.evaluate("cumulative",d_range,a0)
-                Ninc=(Ncum[0]-Ncum[1])*cc.area # no expected on area with phi(1 Ga)
-                lam=Ninc
+                Ncum10=np.log10(pf.evaluate("cumulative",d_range,a0))
+                lam = (10 ** (Ncum10[0] + x) - 10 ** (Ncum10[1] + x)) * cc.area # lambda for each of self.ts
 
-        pdf0 = gm.poisson(self.k, lam * 10 ** x)
+        pdf0 = gm.poisson(self.k, lam) * cf.phi(self.ts) # include dC/dt factor
         pdf0 = pdf0.astype(float)
         if np.sum(pdf0)<1e-30: #force line peak if under-resolved
-            pdf0[np.searchsorted(lam * 10 ** x,self.k)]=1.
+            pdf0[np.searchsorted(lam, self.k)] = 1.
         self.lam = lam
         self.pdf = pdf0/np.sum(pdf0*self.dt)
         self.cdf = np.cumsum(self.pdf*self.dt)

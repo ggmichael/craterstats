@@ -9,11 +9,10 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 # Recent additions
 
+- Fix Poisson pdf normalisation (reduces uncertainty mainly of low-count, >3 Ga results). Thanks to Sam Bell for pointing this out.
 - Support for filename_CRATER.shp, filename_AREA.shp shapefile sets. These can be produced in, e.g. ArcPRO, 
 using three-point circle and polygon tools, as well as OpenCraterTools
-- Spatial randomness analysis (see Michael et al., 2012)
-
-Both features use spherical geometry for calculations 
+- Spatial randomness analysis (see Michael et al., 2012) using spherical geometry
 
 # Installation
 
