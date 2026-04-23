@@ -11,6 +11,11 @@ def import_code(code):
     exec(code, module.__dict__)
     return module
 
+def n1_coeff(t, p):
+    return p[0]*(np.exp(p[1]*t) - 1.) + p[3]*t
+
+def phi_coeff(t, p):
+    return p[1]*p[0]*np.exp(p[1]*t) + p[3]
 
 class Chronologyfn:
     
@@ -36,18 +41,19 @@ class Chronologyfn:
             raise ValueError('Chronology function not found: '+identifier)
               
         if 'coefficients' in self.definition:            
-            p=[float(e) for e in self.definition['coefficients']]
-            self.lambda_n1 = lambda t: p[0]*(np.exp(p[1]*t)-1.)+p[3]*t
-            self.lambda_phi = lambda t: p[1]*p[0]*np.exp(p[1]*t)+p[3]  
+            self.p=[float(e) for e in self.definition['coefficients']]
+            self.model = 'coeff'
+            # self.lambda_n1 = lambda t: p[0]*(np.exp(p[1]*t)-1.)+p[3]*t
+            # self.lambda_phi = lambda t: p[1]*p[0]*np.exp(p[1]*t)+p[3]
       
-        if 'n1_code' in self.definition:
-            # '*' allows unforseen fns to be used in user code without np prefix (or user-awareness of python)
-            code='from numpy import *\n' \
-                'def n1(t):\n' \
-                +'\n'.join(['  '+e.strip() for e in self.definition['n1_code'].splitlines()]) \
-                +'\n  return n1'
-            m=import_code(code)
-            self.lambda_n1=m.n1
+        # if 'n1_code' in self.definition:
+        #     # '*' allows unforseen fns to be used in user code without np prefix (or user-awareness of python)
+        #     code='from numpy import *\n' \
+        #         'def n1(t):\n' \
+        #         +'\n'.join(['  '+e.strip() for e in self.definition['n1_code'].splitlines()]) \
+        #         +'\n  return n1'
+        #     m=import_code(code)
+        #     self.lambda_n1=m.n1
             
         self.ts=np.linspace(0.,5.,t_steps)
         self.n1s=self.N1(self.ts)     
@@ -56,18 +62,21 @@ class Chronologyfn:
         return self.name
     
     def N1(self,t):  #t in Ga
-        return self.lambda_n1(t)
+        match self.model:
+            case 'coeff':
+                return n1_coeff(t, self.p)
 
     def a0(self,t):
         return np.log10(self.N1(t))
         
     def phi(self,t): #phi = dN1/dt - the impact rate [/Ga]
-        if self.lambda_phi is None:
-            dt=t/1e4
-            return (self.N1(t+dt)-self.N1(t-dt))/(2.*dt)
-        else:
-            return self.lambda_phi(t)
-        
+        match self.model:
+            case 'coeff':
+                return phi_coeff(t, self.p)
+            case _:
+                dt=t/1e4
+                return (self.N1(t+dt)-self.N1(t-dt))/(2.*dt)
+
     def t(self,a0=None,n1=None):
         if not a0 is None:
             n1=10**a0

@@ -30,8 +30,6 @@ class Craterplotset:
     
     def __init__(self,*args,**kwargs):
 
-        self.progress_callback  = kwargs.pop("progress_callback", None)  # callback for gui (remove from kwargs safely)
-            
         # matplotlib objects
         self.fig=None
         self.ax=None
@@ -313,14 +311,7 @@ class Craterplotset:
         self.data_to_axis = a2d.inverted().transform
         self.axis_to_fig = (ax.transAxes + fig.transFigure.inverted()).transform
      
-
-    def create_time_axis_plotspace(self):
-        """
-        Set up plotspace with normal/split time axis for sequence, uncertainty plot
-        """
-        if self.fig: del self.fig
-        self.EstablishFontandScaling()
-
+    def calculate_time_axis_params(self):
         # set up plot dimensions
         margin = self.pt_size * .2  # plot margin in cm
         plot_dims = [float(e) for e in self.print_dimensions.split('x')]
@@ -355,7 +346,6 @@ class Craterplotset:
             t_crossover = self.t_min
             lin_units = 1
             log_units = 0
-            #xtickv = [e/2. for e in range(0,10) if self.t_min <= e/2. <= self.t_max]
             xtickv0,minor_div = gm.ticks([self.t_min,self.t_max],6, max_minor=12)
             xtickv = [e for e in xtickv0 if self.t_min <= e <= self.t_max]
 
@@ -363,6 +353,24 @@ class Craterplotset:
         xticklabels[-1] += ' Ga'
 
         xfrac_linear = lin_units / (lin_units + log_units)
+
+        # pass on values
+        self.t_crossover = t_crossover
+        self.xfrac_linear = xfrac_linear
+
+
+        return xsize, ysize, margin, xfrac_linear, t_crossover, log_t_min, minor_div, xtickv, xticklabels
+
+
+    def create_time_axis_plotspace(self):
+        """
+        Set up plotspace with normal/split time axis for sequence, uncertainty plot
+        """
+        if self.fig: del self.fig
+        self.EstablishFontandScaling()
+
+        xsize, ysize, margin, xfrac_linear, t_crossover, log_t_min, minor_div, xtickv, xticklabels = self.calculate_time_axis_params()
+
         width_linear = xfrac_linear * (xsize - margin * 2)
         pos_linear = [margin, margin, width_linear, ysize - 2*margin]
         pos_log = [margin + width_linear, margin, (1 - xfrac_linear) * (xsize - margin * 2), pos_linear[3]]
@@ -459,9 +467,6 @@ class Craterplotset:
         self.data_to_axis = a2d.inverted().transform
         self.axis_to_fig = (ax.transAxes + fig.transFigure.inverted()).transform
 
-        # pass on values
-        self.t_crossover = t_crossover
-        self.xfrac_linear = xfrac_linear
 
     def draw(self):
         """
@@ -781,9 +786,99 @@ class Craterplotset:
         except:
             sys.exit(gm.bright("Unable to write file: ")+f_csv)
 
-    def age_area_plot(self,plt):
-        # import warnings
-        # warnings.filterwarnings('error', category=RuntimeWarning)
+    def compute_age_area(self, progress_queue=None):
+
+        #xsize, ysize, margin, xfrac_linear, t_crossover, log_t_min, minor_div, xtickv, xticklabels = self.calculate_time_axis_params()
+
+        dmin = self.min_diameter
+        max_area = self.global_area
+
+        # --- grid size ---
+        if self.aspect_ratio > 1:
+            nsx = self.n_samples
+            nsy = int(nsx * self.aspect_ratio)
+        else:
+            nsy = self.n_samples
+            nsx = int(nsy / self.aspect_ratio)
+
+        ns_lin = round(nsx * self.xfrac_linear)
+        ns_log = nsx - ns_lin
+
+        # --- axes ---
+        log_age_range = [np.log10(self.t_min), np.log10(self.t_crossover)]
+        log_age = np.concatenate((
+            np.linspace(log_age_range[0], log_age_range[1], ns_log),
+            np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin + 1)[1:])
+        ))
+
+        log_area_range = self.yrange
+        log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
+
+        # --- crater setup ---
+        d_range = [dmin, 1000.]
+        cc = cst.Cratercount()
+        mid_d = np.sqrt(d_range[0] * d_range[1])
+        cc.diam = [mid_d]
+
+        a0 = self.cf.a0(10 ** log_age)
+
+        C = np.ndarray(nsx)
+        for i, a in enumerate(a0):
+            r = self.pf.evaluate("cumulative", d_range, a0=a)
+            C[i] = r[0] - r[1]
+
+        # --- result arrays ---
+        zz = np.zeros((nsx, nsy))
+        kk = np.zeros((nsx, nsy))
+        ee = np.zeros((nsx, nsy))
+        lm = np.zeros((nsx, nsy))
+
+        # --- main loop ---
+        for i, xx in gm.iterator_with_progress(
+                enumerate(log_age),
+                total=nsx,
+                progress_queue=progress_queue
+        ):
+            for j, yy in enumerate(log_area):
+                area = 10 ** yy
+                lam = C[i] * area
+
+                k = np.random.poisson(lam) if lam < 1e5 else int(lam)
+
+                cc.area = area
+                pdf = cst.Craterpdf(self.pf, self.cf, cc, d_range, k=k, bcc=False, n_samples=2000)
+
+                t = pdf.median1sigma()
+                err = np.sqrt(t[2] / t[1]) - 1.0
+                ratio = t[0] / (10 ** xx)
+
+                zz[i, j] = 0 if np.isnan(err) else err
+                kk[i, j] = k
+                ee[i, j] = 1 if np.isnan(ratio) else ratio
+                lm[i, j] = lam
+
+        # --- return EVERYTHING needed for plotting ---
+        return {
+            "zz": zz,
+            "kk": kk,
+            "ee": ee,
+            "lm": lm,
+            "nsx": nsx,
+            "nsy": nsy,
+            "log_age_range": log_age_range,
+            "log_area_range": log_area_range,
+            "max_area": max_area,
+        }
+
+    def age_area_plot(self, plt, age_area_result):
+
+        self.calculate_time_axis_params()
+
+        # unpack age_area_result
+        zz, kk, ee, lm = age_area_result["zz"], age_area_result["kk"], age_area_result["ee"], age_area_result["lm"]
+        nsx, nsy = age_area_result["nsx"], age_area_result["nsy"]
+        log_area_range = age_area_result["log_area_range"]
+        max_area = age_area_result["max_area"]
 
         cmap_k = 'Set2_r'
         cmap_err = Spectral_9.mpl_colormap.reversed()
@@ -791,26 +886,15 @@ class Craterplotset:
 
         # new initialisation
         dmin = self.min_diameter
-        max_area=self.global_area
 
-        if self.aspect_ratio>1:
-            nsx = self.n_samples  # samples for plotting
-            nsy = int(nsx*self.aspect_ratio)
-        else:
-            nsy = self.n_samples
-            nsx = int(nsy/self.aspect_ratio)
-
-        ns_lin = round(nsx*self.xfrac_linear)
+        ns_lin = round(nsx * self.xfrac_linear)
         ns_log = nsx - ns_lin
 
         log_age_range = [np.log10(self.t_min), np.log10(self.t_crossover)]
         log_age = np.concatenate((
             np.linspace(log_age_range[0], log_age_range[1], ns_log),
-            np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin+1)[1:])
-            ))
-
-        log_area_range = self.yrange
-        log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
+            np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin + 1)[1:])
+        ))
 
         d_range = [dmin, 1000.]
         cc = cst.Cratercount()
@@ -818,51 +902,18 @@ class Craterplotset:
         cc.diam = [mid_d]  # shouldn't be empty
         diameter_text = ' ($d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin * 1000:0.3g}$ m)')
 
-        if not hasattr(self, 'age_area'): #store values first time, else retrieve
-            zz = np.zeros((nsx,nsy))
-            kk = np.zeros((nsx,nsy))
-            ee = np.zeros((nsx, nsy))
-            lm = np.zeros((nsx, nsy))
-
-            a0 = self.cf.a0(10 ** log_age)
-            C = np.ndarray(nsx)
-
-            for i,a in enumerate(a0):
-                r=self.pf.evaluate("cumulative",d_range,a0=a)
-                C[i]=r[0]-r[1]
-
-            for i,xx in gm.iterator_with_progress(enumerate(log_age), total=nsx, callback=self.progress_callback):
-                for j,yy in enumerate(log_area):
-                    area=10**yy
-                    lam=C[i]*area
-                    k=np.random.poisson(lam) if lam < 1e5 else int(lam)  # prevent too large lam
-                    cc.area=area
-                    pdf = cst.Craterpdf(self.pf, self.cf, cc, d_range, k=k, bcc=False,n_samples=2000)
-                    t = pdf.median1sigma()
-                    err = np.sqrt(t[2]/t[1]) - 1.
-                    ratio=t[0]/(10**xx)
-
-                    zz[i,j]=0 if np.isnan(err) else err  # clear underflow errors
-                    kk[i,j]=k
-                    ee[i,j]=1 if np.isnan(ratio) else ratio
-                    lm[i,j]=lam
-
-            self.age_area=(zz,kk,ee,lm)
-        else:
-            zz, kk, ee, lm = self.age_area
-
         x_exceed = y_exceed = None
 
-        if np.searchsorted(log_area_range,np.log10(max_area)) == 1:
-            y_exceed = (np.log10(max_area) - log_area_range[0])/gm.mag(log_area_range)
+        if np.searchsorted(log_area_range, np.log10(max_area)) == 1:
+            y_exceed = (np.log10(max_area) - log_area_range[0]) / gm.mag(log_area_range)
             p = [[0, y_exceed], [1, y_exceed], [1, 1], [0, 1]]
 
         if self.ef:
-            C_ef_dmin = self.ef.evaluate("cumulative",dmin)
-            C = self.pf.evaluate("cumulative",[dmin,1.])
-            T_eq = self.cf.t(n1=C_ef_dmin * C[1]/C[0])
+            C_ef_dmin = self.ef.evaluate("cumulative", dmin)
+            C = self.pf.evaluate("cumulative", [dmin, 1.])
+            T_eq = self.cf.t(n1=C_ef_dmin * C[1] / C[0])
 
-            match np.searchsorted([self.t_min,self.t_crossover,self.t_max],T_eq):
+            match np.searchsorted([self.t_min, self.t_crossover, self.t_max], T_eq):
                 case 1:
                     x_exceed = (self.xfrac_linear + (1 - self.xfrac_linear) *
                                 (np.log10(self.t_crossover) - np.log10(T_eq)) /
@@ -874,45 +925,44 @@ class Craterplotset:
                     pass
 
             if x_exceed:
-                p = [[0,0],[x_exceed, 0], [x_exceed, 1], [0, 1]]
+                p = [[0, 0], [x_exceed, 0], [x_exceed, 1], [0, 1]]
 
-        if x_exceed and y_exceed:
-            p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
+            if x_exceed and y_exceed:
+                p = [[0, 0], [x_exceed, 0], [x_exceed, y_exceed], [1, y_exceed], [1, 1], [0, 1]]
         poly = None
         if x_exceed or y_exceed:
             poly = Polygon(p, closed=True, facecolor='black' if self.invert else 'white', edgecolor=None, alpha=0.6)
 
-        if plt=='k':
+        if plt == 'k':
             im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
-            imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto',extent=[0,1,0,1])
-            cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
-            cbar.ax.set_yticklabels(['0','1','2','3','4','5','6','7+'])
+            imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto', extent=[0, 1, 0, 1])
+            cbar = self.fig.colorbar(imo, self.ax_cbar, ticks=[0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5])
+            cbar.ax.set_yticklabels(['0', '1', '2', '3', '4', '5', '6', '7+'])
             cbar.set_label('$k$' + diameter_text, rotation=90)
 
-        elif plt=='err':
-            imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=None,
-                             aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
-            cbar = self.fig.colorbar(imo,self.ax_cbar)
+        elif plt == 'err':
+            imo = self.ax.imshow(np.flip(np.transpose(zz), 1) * 100, cmap_err, origin="lower", interpolation='none', alpha=None,
+                                 aspect='auto', vmin=0, extent=[0, 1, 0, 1])
+            cbar = self.fig.colorbar(imo, self.ax_cbar)
             cbar.set_label(r'Measured uncertainty $\sigma$, %' + diameter_text, rotation=90)
 
         elif plt == 'age':
-            im = np.flip(np.transpose(np.log10(ee)),1)
-            vmin=np.log10(1./5)
-            vmax=np.log10(5.)
-            # svg output does not respect alpha; both png and svg respect np.nan
-            im=np.where((im > vmin) & (im < vmax),im,np.nan)
+            im = np.flip(np.transpose(np.log10(ee)), 1)
+            vmin = np.log10(1. / 5)
+            vmax = np.log10(5.)
+            im = np.where((im > vmin) & (im < vmax), im, np.nan)
             imo = self.ax.imshow(im,
-                           cmap_ratio, origin="lower", interpolation='none', #zorder=0,
-                           extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax)
-            cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
-            cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
+                                 cmap_ratio, origin="lower", interpolation='none',
+                                 extent=[0, 1, 0, 1], aspect='auto', vmin=vmin, vmax=vmax)
+            cbar = self.fig.colorbar(imo, self.ax_cbar, ticks=[np.log10(e) for e in [.1, .2, 1 / 3., .5, 1. / 1.4, 1., 1.4, 2., 3., 5., 10.]])
+            cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5', '.7', '1', '1.4', '2', '3', '5', '10'])
             cbar.set_label('Measured/actual age' + diameter_text, rotation=90)
             if poly: poly.set_alpha(0.7)
 
         def add_saturation_text():
             if y_exceed and (y_exceed < .98):
-                self.ax.text(.82, y_exceed , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
-                        transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
+                self.ax.text(.82, y_exceed, 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
+                             transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
             if self.ef:
                 if x_exceed and (x_exceed > .02):
                     self.ax.text(x_exceed, .87, 'saturation', size=self.scaled_pt_size * .7, rotation=90,
@@ -921,6 +971,127 @@ class Craterplotset:
         if x_exceed or y_exceed:
             self.ax.add_patch(poly)
         add_saturation_text()
+
+
+    # def age_area_plot(self,plt, data=None):
+    #     # import warnings
+    #     # warnings.filterwarnings('error', category=RuntimeWarning)
+    #     if data is None:
+    #         if not hasattr(self, 'age_area'):
+    #             raise ValueError("No data provided")
+    #         zz, kk, ee, lm = self.age_area
+    #     else:
+    #         zz, kk, ee, lm = data
+    #         self.age_area = data  # optional caching
+    #
+    #     cmap_k = 'Set2_r'
+    #     cmap_err = Spectral_9.mpl_colormap.reversed()
+    #     cmap_ratio = colors.ListedColormap(Spectral_9.mpl_colors)
+    #
+    #     # new initialisation
+    #     dmin = self.min_diameter
+    #     max_area=self.global_area
+    #
+    #     if self.aspect_ratio>1:
+    #         nsx = self.n_samples  # samples for plotting
+    #         nsy = int(nsx*self.aspect_ratio)
+    #     else:
+    #         nsy = self.n_samples
+    #         nsx = int(nsy/self.aspect_ratio)
+    #
+    #     ns_lin = round(nsx*self.xfrac_linear)
+    #     ns_log = nsx - ns_lin
+    #
+    #     log_age_range = [np.log10(self.t_min), np.log10(self.t_crossover)]
+    #     log_age = np.concatenate((
+    #         np.linspace(log_age_range[0], log_age_range[1], ns_log),
+    #         np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin+1)[1:])
+    #         ))
+    #
+    #     log_area_range = self.yrange
+    #     log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
+    #
+    #     d_range = [dmin, 1000.]
+    #     cc = cst.Cratercount()
+    #     mid_d = np.sqrt(d_range[0] * d_range[1])
+    #     cc.diam = [mid_d]  # shouldn't be empty
+    #     diameter_text = ' ($d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin * 1000:0.3g}$ m)')
+    #
+    #
+    #
+    #     x_exceed = y_exceed = None
+    #
+    #     if np.searchsorted(log_area_range,np.log10(max_area)) == 1:
+    #         y_exceed = (np.log10(max_area) - log_area_range[0])/gm.mag(log_area_range)
+    #         p = [[0, y_exceed], [1, y_exceed], [1, 1], [0, 1]]
+    #
+    #     if self.ef:
+    #         C_ef_dmin = self.ef.evaluate("cumulative",dmin)
+    #         C = self.pf.evaluate("cumulative",[dmin,1.])
+    #         T_eq = self.cf.t(n1=C_ef_dmin * C[1]/C[0])
+    #
+    #         match np.searchsorted([self.t_min,self.t_crossover,self.t_max],T_eq):
+    #             case 1:
+    #                 x_exceed = (self.xfrac_linear + (1 - self.xfrac_linear) *
+    #                             (np.log10(self.t_crossover) - np.log10(T_eq)) /
+    #                             (np.log10(self.t_crossover) - np.log10(self.t_min)))
+    #             case 2:
+    #                 x_exceed = (self.xfrac_linear *
+    #                             (self.t_max - T_eq) / (self.t_max - self.t_crossover))
+    #             case _:
+    #                 pass
+    #
+    #         if x_exceed:
+    #             p = [[0,0],[x_exceed, 0], [x_exceed, 1], [0, 1]]
+    #
+    #     if x_exceed and y_exceed:
+    #         p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
+    #     poly = None
+    #     if x_exceed or y_exceed:
+    #         poly = Polygon(p, closed=True, facecolor='black' if self.invert else 'white', edgecolor=None, alpha=0.6)
+    #
+    #     if plt=='k':
+    #         im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
+    #         imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto',extent=[0,1,0,1])
+    #         cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
+    #         cbar.ax.set_yticklabels(['0','1','2','3','4','5','6','7+'])
+    #         cbar.set_label('$k$' + diameter_text, rotation=90)
+    #
+    #     elif plt=='err':
+    #         imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=None,
+    #                          aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
+    #         cbar = self.fig.colorbar(imo,self.ax_cbar)
+    #         cbar.set_label(r'Measured uncertainty $\sigma$, %' + diameter_text, rotation=90)
+    #
+    #     elif plt == 'age':
+    #         im = np.flip(np.transpose(np.log10(ee)),1)
+    #         vmin=np.log10(1./5)
+    #         vmax=np.log10(5.)
+    #         # svg output does not respect alpha; both png and svg respect np.nan
+    #         im=np.where((im > vmin) & (im < vmax),im,np.nan)
+    #         imo = self.ax.imshow(im,
+    #                        cmap_ratio, origin="lower", interpolation='none', #zorder=0,
+    #                        extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax)
+    #         cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
+    #         cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
+    #         cbar.set_label('Measured/actual age' + diameter_text, rotation=90)
+    #         if poly: poly.set_alpha(0.7)
+    #
+    #     def add_saturation_text():
+    #         if y_exceed and (y_exceed < .98):
+    #             self.ax.text(.82, y_exceed , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
+    #                     transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
+    #         if self.ef:
+    #             if x_exceed and (x_exceed > .02):
+    #                 self.ax.text(x_exceed, .87, 'saturation', size=self.scaled_pt_size * .7, rotation=90,
+    #                              horizontalalignment='right', verticalalignment='top')
+    #
+    #     if x_exceed or y_exceed:
+    #         self.ax.add_patch(poly)
+    #     add_saturation_text()
+
+
+
 
     def create_map_plotspace(self):
         """
@@ -947,4 +1118,5 @@ class Craterplotset:
 
         if self.title:
             self.ax.set_title('\n'.join(self.title.split('|')) )
+
 

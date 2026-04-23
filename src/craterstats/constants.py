@@ -8,7 +8,7 @@ import matplotlib.path as mpath
 import craterstats.gm as gm
 import craterstats as cst
 
-PRESENTATIONS = ('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate', 'sequence', 'uncertainty')
+PRESENTATIONS = ('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate', 'sequence', 'uncertainty', 'map', 'sdaa', 'm2cnd')
 OPLOT_TYPES = ('data', 'differential-fit', 'cumulative-fit', 'poisson', 'buffered-poisson')
 OPLOT_TYPES_SHORT = ('data', 'd-fit', 'c-fit', 'poisson', 'b-poisson')
 CRATERPLOT_KEYS = ('source', 'name', 'range', 'snap', 'type', 'error_bars', 'hide', 'colour', 'psym', 'binning', 'age_left', 'show_age',
@@ -16,8 +16,8 @@ CRATERPLOT_KEYS = ('source', 'name', 'range', 'snap', 'type', 'error_bars', 'hid
 
 CARRY_OVER_PROPERTIES = ('source','psym','snap','isochron','error_bars','colour','binning') # not 'type' - only if 'source' too
 
-DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0), (4.2, 1e-2), (4.2, 1e-5))
-DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3), (0, 0), (-2, 8))
+DEFAULT_XRANGE0 = ((-3, 2), (-3, 2), (-2, 3), (-3.15, 2.56), (4.5, 0), (4.5, 0), (4.2, 1e-2), (4.2, 1e-5), (0,1), (0,1), (0,1))
+DEFAULT_YRANGE0 = ((-4, 1), (-5, 5), (-4, 1), (-8, 5), (-6, 2), (-6, 3), (0, 0), (-2, 8), (0,1), (0,1), (0,1))
 DEFAULT_XRANGE = dict(zip(PRESENTATIONS, DEFAULT_XRANGE0))
 DEFAULT_YRANGE = dict(zip(PRESENTATIONS, DEFAULT_YRANGE0))
 
@@ -53,7 +53,7 @@ DEFAULTS = {
         'global_area': 1e12,  # default larger than all terrestrial planets
         'n_samples': 200,
         'trials': 300,
-        'measures': {'m2cnd','sdaa'},
+        'measure': {'m2cnd','sdaa'},
         'ra_offset': 0.,
         'ra_show': 1,
         'bins': 0,

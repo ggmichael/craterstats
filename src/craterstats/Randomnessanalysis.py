@@ -48,7 +48,7 @@ class Randomnessanalysis(cst.Spatialcount):
 
     def print(self,msg): # print either to terminal or to gui
         if self.progress_queue:
-            self.progress_queue.put((0, 1, '\n' + msg)) # CR before to not scroll early
+            self.progress_queue.put(("log", msg))
         else:
             print(msg)
 

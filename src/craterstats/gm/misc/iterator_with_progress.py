@@ -18,7 +18,7 @@ def iterator_with_progress(enumerated_iterable, total=None, progress_queue=None)
     if progress_queue is not None:
         def generator():
             for i, item in enumerated_iterable:
-                progress_queue.put((i + 1, total, None))
+                progress_queue.put(("progress",i + 1, total))
                 yield i, item
         return generator()
     else:

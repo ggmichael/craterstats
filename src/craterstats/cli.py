@@ -81,7 +81,7 @@ def get_parser():
     parser.add_argument("-ep", "--epochs", help="epoch system index")
 
     parser.add_argument("-title", help="plot title", nargs='+', action=SpacedString)
-    parser.add_argument("-pr", "--presentation", help="data presentation: " + (', ').join(cst.PRESENTATIONS))
+    parser.add_argument("-pr", "--presentation", help="data presentation: " + (', ').join(cst.PRESENTATIONS))#, action=SpacedString)
     parser.add_argument("-xrange", help="x-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-yrange", help="y-axis range, log(min) log(max)", nargs=2)
     parser.add_argument("-isochrons", help="comma-separated isochron list in Ga, e.g. 1,3,3.7a,4a (optional combined suffix to modify label: h - hide; a - above; s - small)")
@@ -203,8 +203,11 @@ def construct_cps_dict(args,c,f):
                     c[k] = gm.filename(v, 'pn')
                     ext = gm.filename(v, 'e').lstrip('.')
                     if ext: c['format'].add(ext)
-            elif k == 'format':
+            elif k in 'format':
                 c[k]=set(v)
+            elif k in 'measures':
+                c[k]=set(v.split(','))
+
 
 
     cs=next((e for e in f['chronology_system'] if e['name'] == c['chronology_system']), None)
@@ -430,7 +433,7 @@ def set_default_filename(args,cps_dict,cp_dicts):
     if args and args.input:
         default_filename = gm.filename(args.input_filename,'pn')
     else:
-        if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty'):
+        if cps_dict['presentation'] in ('chronology', 'rate', 'uncertainty','map'):
             default_filename = re.sub(r'[^a-zA-Z0-9_]','', cps_dict['chronology_system'])
             if cps_dict['presentation'] == 'uncertainty':
                 default_filename += f'_{cps_dict['min_diameter']}'
@@ -464,14 +467,12 @@ def write_output_files(args, cps, drawn = False,progress_queue=None):
                         case _:
                             ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
                     savefig('-' + measure + (f'-{args.only}' if args.only else ''))
-
-                # cps.create_map_plotspace()
-                # ra.plot(cps,grid=True)
-                # savefig('-map')
             elif cps.presentation == 'uncertainty':
+                cps.calculate_time_axis_params()
+                age_area_result = cps.compute_age_area()
                 for plt in ('k', 'err', 'age'):
                     cps.draw()
-                    cps.age_area_plot(plt)
+                    cps.age_area_plot(plt,age_area_result)
                     savefig('_' + plt)
             else:
                 if not drawn:

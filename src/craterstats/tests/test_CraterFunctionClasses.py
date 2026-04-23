@@ -21,21 +21,21 @@ class TestCraterFunctionObjects(unittest.TestCase):
         self.assertAlmostEqual(cf.phi(0.), 8.38E-4)
         self.assertAlmostEqual(cf.t(n1=N1), 3.,places=4)
 
-        #user defined function
-        f = textwrap.dedent("""
-            chronology={
-              name='user_function'
-              n1_code="
-                a=5.44E-14 * (exp(6.93*t)-1)
-                b=8.38E-4 * t
-                n1=a+b
-                "
-            }
-            """)
-        cf_user = cst.Chronologyfn(f, 'user_function')
-        self.assertEqual(cf_user.N1(3.), N1)
-        self.assertTrue(np.allclose(cf.getplotdata(), cf_user.getplotdata()))
-        self.assertTrue(np.allclose(cf.getplotdata(phi=True),cf_user.getplotdata(phi=True))) # user fn same as pre-defined
+        #user defined function - had to remove lambdas for multiprocessing. Reconsider implementation when needed
+        # f = textwrap.dedent("""
+        #     chronology={
+        #       name='user_function'
+        #       n1_code="
+        #         a=5.44E-14 * (exp(6.93*t)-1)
+        #         b=8.38E-4 * t
+        #         n1=a+b
+        #         "
+        #     }
+        #     """)
+        # cf_user = cst.Chronologyfn(f, 'user_function')
+        # self.assertEqual(cf_user.N1(3.), N1)
+        # self.assertTrue(np.allclose(cf.getplotdata(), cf_user.getplotdata()))
+        # self.assertTrue(np.allclose(cf.getplotdata(phi=True),cf_user.getplotdata(phi=True))) # user fn same as pre-defined
 
     def test_Productionfn(self):
         Npf = cst.Productionfn(self.file_fns,'Moon, Neukum (1983)') # polynomial PF
