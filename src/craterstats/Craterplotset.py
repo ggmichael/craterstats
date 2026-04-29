@@ -344,6 +344,7 @@ class Craterplotset:
             minor_div = 5
         else:
             t_crossover = self.t_min
+            log_t_min = None
             lin_units = 1
             log_units = 0
             xtickv0,minor_div = gm.ticks([self.t_min,self.t_max],6, max_minor=12)
@@ -672,7 +673,7 @@ class Craterplotset:
                  ('resurf', '6', '', None),
                  ('n', '7', '', None),
                  ('n_event', '9', '', None),
-                 ('t', '7', '.3g', ('Age','Age-','Age+')),
+                 ('t', '8', '.5g', ('Age','Age-','Age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
                  ('n_d', '8', '.2e', (n_d_lbl,n_d_lbl+'-',n_d_lbl+'+')),
                  ('source', '', '', None),
