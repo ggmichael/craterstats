@@ -44,3 +44,8 @@ coordinate system for both layers)
 -----
 - Add MacOS binaries as beta
 - fix --functions_user config for pyinstaller versions
+
+3.6.4
+-----
+- Refactor in preparation for GUI version
+- Fix Poisson pdf normalisation (reduces uncertainty mainly of low-count, >3 Ga results). Thanks to Sam Bell for pointing this out.
