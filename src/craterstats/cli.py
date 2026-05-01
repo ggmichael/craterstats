@@ -458,7 +458,7 @@ def write_output_files(args, cps, drawn = False,progress_queue=None):
             if args.randomness_analysis:
                 ra = randomness_analysis(args, cps,progress_queue=progress_queue)
 
-                for measure in cps.measures:
+                for measure in cps.measure:
                     match args.only:
                         case None:
                             ra.plot_montecarlo_split(cps, measure)
