@@ -422,7 +422,7 @@ def randomness_analysis(args,cps,progress_queue=None):
         diff = cps.measures - {'m2cnd','sdaa'}
         if diff:
             sys.exit(f"Invalid measure: {diff}")
-    for measure in cps.measures:
+    for measure in cps.measure:
         ra.run_montecarlo(trials, measure)
         # do each loop so as to retain data if interrupted
         ra.calculate_stats()
