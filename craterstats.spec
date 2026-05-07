@@ -16,7 +16,7 @@ a = Analysis(
         ('scripts/add_cs_path.bat', '.'),
         ('LICENSE.txt', '.'),
     ],
-    hiddenimports=['craterstats.config',
+    hiddenimports=[#'craterstats.config',
                    'matplotlib.backends.backend_svg',
                    'matplotlib.backends.backend_pdf',
                    'scipy.special.erf','scipy.special.factorial',

@@ -1,7 +1,7 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
-import importlib.resources as importlib_resources
+import os
 
 import numpy as np
 import matplotlib.path as mpath
@@ -117,13 +117,7 @@ PALETTE = (  # 1st column for white background; 2nd for inverted
     ('#a8b100', '#a8b100', 'yellow-green'),
 )
 
-# def initialize_calculated():
-#     """
-#     these definitions must be contained in function for proper multiprocessing initialisation
-#     """
-
-with importlib_resources.path("craterstats.config", "demo_commands.txt") as path:
-    cst.PATH = gm.filename(str(path),'u')
+cst.PATH = gm.filename(os.path.abspath(__file__),'p')
 
 star4 = mpath.Path(
     np.array(([-1, -.25, 0, .25, 1, .25, 0, -.25, -1], [0, .25, 1, .25, 0, -.25, -1, -.25, 0])).transpose())
