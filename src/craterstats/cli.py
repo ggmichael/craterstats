@@ -376,19 +376,6 @@ def demo(d=None,src=None):
     print('\nDemo output written to: '+out)
     return d
 
-def do_functions_user(args):
-    if os.environ.get('CONDA_PREFIX'): # conda environment
-        config = os.environ.get('CONDA_PREFIX')+'/etc/config_functions_user.txt'
-    elif getattr(sys, 'frozen', False): # pyinstaller environment
-        config = os.path.dirname(sys.executable) + '/_internal/craterstats/config_functions_user.txt'
-    else:
-        return None #actions environment is not conda
-    if args.functions_user:
-        s=['#path to functions_user.txt',args.functions_user]
-        gm.write_textfile(config,s)
-        print(': '.join(s)[1:])
-    return gm.read_textfile(config,ignore_hash=True)[0] if gm.file_exists(config) else None
-
 def create_desktop_icon():
     system = platform.system()
     match system:
@@ -487,27 +474,17 @@ def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 
-    functions=cst.PATH+'config/functions.txt'
-    s = gm.read_textfile(functions, ignore_hash=True, strip=';', as_string=True)  # read and remove comments
-    functions_user = do_functions_user(args)
-    if functions_user:
-        try:
-            s = s + gm.read_textfile(functions_user, ignore_hash=True, strip=';', as_string=True)
-        except:
-            print("Unable to read user functions file: "+functions_user+" - ignoring.")
-    functions = gm.read_textstructure(s,from_string=True)
-
     if args.create_desktop_icon:
         create_desktop_icon()
         return
 
+    fl = cst.Functionslist()
+    if args.functions_user:
+        fl.set_user_functions_config(args.functions_user)
+        return
+
     if args.lcs:
-        print(gm.bright("\nChronology systems:"))
-        print('\n'.join([f'{e['name']}' for e in functions['chronology_system']]))
-        print(gm.bright("\nEquilibrium functions:"))
-        print('\n'.join([f'{e['name']}' for e in functions['equilibrium']]))
-        print(gm.bright("\nEpoch systems:"))
-        print('\n'.join([f'{e['name']}' for e in functions['epochs']]))
+        fl.print()
         return
 
     if args.lpc:
@@ -538,7 +515,7 @@ def main(args0=None):
         return
 
     dflt = copy.deepcopy(cst.DEFAULTS)
-    cps_dict = construct_cps_dict(args, dflt['set'], functions)
+    cps_dict = construct_cps_dict(args, dflt['set'], fl.functions)
     cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
 
     set_default_filename(args, cps_dict, cp_dicts)
@@ -561,7 +538,6 @@ def main(args0=None):
     if cpl and cps.presentation not in ('sequence','uncertainty'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
-
 
     write_output_files(args,cps)
 

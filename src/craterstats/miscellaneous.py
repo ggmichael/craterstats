@@ -1,6 +1,7 @@
 #  Copyright (c) 2021-2025, Greg Michael
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
+import os
 import sys
 
 import numpy as np
@@ -59,6 +60,46 @@ class fractional_crater_transform:
         plt.xlabel('linear frac')
         plt.ylabel('area frac')
         plt.show()
+
+class Functionslist:
+    """
+    manage functions/user_functions lists
+    """
+    def __init__(self):
+        s = gm.read_textfile(cst.PATH+'config/functions.txt', ignore_hash=True, strip=';', as_string=True)
+        self.config = self.user_function_config()
+        if self.config:
+            uf = gm.read_textfile(self.config, ignore_hash=True)[0] if gm.file_exists(self.config) else None
+        if uf:
+            try:
+                s = s + gm.read_textfile(uf, ignore_hash=True, strip=';', as_string=True)
+            except:
+                print("Unable to read user functions file: "+functions_user+" - ignoring.")
+        self.functions = gm.read_textstructure(s,from_string=True)
+
+    def user_function_config(self):
+        if os.environ.get('CONDA_PREFIX'):  # conda environment
+            return os.environ.get('CONDA_PREFIX') + '/etc/config_functions_user.txt'
+        elif getattr(sys, 'frozen', False):  # pyinstaller environment
+            return os.path.dirname(sys.executable) + '/_internal/craterstats/config_functions_user.txt'
+        else: # other
+            return None
+
+    def set_user_functions_config(self,path):
+        if path:
+            s = ['#path to functions_user.txt', path]
+            gm.write_textfile(self.config, s)
+            print(': '.join(s)[1:])
+
+    def print(self):
+        print(gm.bright("\nChronology systems:"))
+        print('\n'.join([f'{e['name']}' for e in self.functions['chronology_system']]))
+        print(gm.bright("\nEquilibrium functions:"))
+        print('\n'.join([f'{e['name']}' for e in self.functions['equilibrium']]))
+        print(gm.bright("\nEpoch systems:"))
+        print('\n'.join([f'{e['name']}' for e in self.functions['epochs']]))
+        return
+
 
 
 def merge_cratercounts(args,equal_weight=False):
