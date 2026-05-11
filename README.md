@@ -9,6 +9,7 @@ This is a Python reimplementation and extension of the Craterstats-II software, 
 
 # Recent additions
 
+- [Self-contained graphical user interface version](https://github.com/ggmichael/craterstatsGUI)
 - Fix Poisson pdf normalisation (reduces uncertainty mainly of low-count, >3 Ga results). Thanks to Sam Bell for pointing this out.
 - Support for filename_CRATER.shp, filename_AREA.shp shapefile sets. These can be produced in, e.g. ArcPRO, 
 using three-point circle and polygon tools, as well as OpenCraterTools
@@ -110,7 +111,7 @@ You can run the spatial randomness analysis code for a particular .scc file or c
 
     craterstats -ra "%sample%/CE-6 8-km vicinity.scc" -trials 3000
 
-# Bug Reports
+# Bug reports
 
 Please open a GitHib [issue](https://github.com/ggmichael/craterstats/issues) if you have an account; alternatively, contact the author by email.
 
