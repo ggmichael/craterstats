@@ -435,7 +435,7 @@ def set_default_filename(args,cps_dict,cp_dicts):
         case _ if os.path.isdir(cps_dict['out']):
             cps_dict['out'] = os.path.normpath(v + '/' + gm.filename(default_filename,'n'))
 
-def write_output_files(args, cps, drawn = False,progress_queue=None):
+def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_result=None):
     def savefig(tag=''):
         cps.fig.savefig(cps.out + tag + '.' + f, dpi=500, transparent=cps.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
@@ -454,7 +454,7 @@ def write_output_files(args, cps, drawn = False,progress_queue=None):
                         case _:
                             ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
                     savefig('-' + measure + (f'-{args.only}' if args.only else ''))
-            elif cps.presentation == 'uncertainty':
+            elif cps.presentation == 'uncertainty' and age_area_result is None: # send to single fig output for gui
                 cps.calculate_time_axis_params()
                 age_area_result = cps.compute_age_area()
                 for plt in ('k', 'err', 'age'):
