@@ -470,6 +470,13 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
         if f in {'csv'} and not cps.presentation == 'uncertainty':
             cps.create_summary_table(f_out=cps.out + '.' + f)
 
+def print_with_highlights(s):
+    for line in s:
+        if line != '' and line[0] == '*':
+            print(gm.bright(line[1:]))
+        else:
+            print(line)
+
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
@@ -495,15 +502,11 @@ def main(args0=None):
         return
 
     if args.about:
-        for line in cst.ABOUT:
-            if line != '' and line[0] =='*':
-                print(gm.bright(line[1:]))
-            else:
-                print(line)
+        print_with_highlights(cst.ABOUT)
         return
 
     if args.version:
-        print('\n'.join(cst.ABOUT[0:5]))
+        print_with_highlights(cst.ABOUT[0:5])
         return
 
     if args.merge:
