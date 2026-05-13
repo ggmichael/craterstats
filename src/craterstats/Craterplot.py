@@ -98,7 +98,7 @@ class Craterplot:
 
 
     def oplot_n_sigma(self,cps):
-        measures = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})
+        measure = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})
 
         x = [np.log10(2 ** (float(e) + .25)) for e in self.cratercount.n_sigma['bin']]
         xr = min(x)-np.log10(2**.25),max(x)+np.log10(2**.25)
@@ -121,7 +121,7 @@ class Craterplot:
 
         marker = cps.marker_def[self.psym].copy()
         marker['markersize'] *= .7
-        for m in measures:
+        for m in measure:
             y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) for e in self.cratercount.n_sigma[m]]
             cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **marker, linestyle=cst.LINESTYLES[m], clip_on=False)
 
@@ -134,8 +134,8 @@ class Craterplot:
             for y in [-3,-1,0,1,3]:
                 cps.ax_ra.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
 
-            y = [((len(cps.measures)) / 2 - i) * cst.n_sigma_scaling(1) for i in range(len(cps.measures)+1)]
-            for i,m in enumerate(cps.measures):
+            y = [((len(cps.measure)) / 2 - i) * cst.n_sigma_scaling(1) for i in range(len(cps.measure)+1)]
+            for i,m in enumerate(cps.measure):
                 cps.ax_ra.text(xr[0] - mg*.03, y[i], m, color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
                 cps.ax_ra.plot([xr[0] - mg*.027,xr[0] - mg*.005], [y[i]]*2, color=cps.grey[0], lw=.5 * cps.sz_ratio, linestyle=cst.LINESTYLES[m])
             cps.ax_ra.text(xr[0] - mg * .005, y[-1], ', '.join(set(self.cratercount.n_trials))+" trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='right')
