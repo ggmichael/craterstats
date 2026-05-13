@@ -8,15 +8,9 @@ datas = [
     ('src/craterstats/config/*', 'craterstats/config'),
     ('src/craterstats/sample/*', 'craterstats/sample'),
     ('src/craterstats/fonts/*', 'craterstats/fonts'),
-    ('src/craterstats/scripts/*', 'craterstats/scripts'), # available for gui installer
+    ('src/craterstats/scripts/*', 'craterstats/scripts'),
+    ('LICENSE.txt', '.')
 ]
-
-datas += [('LICENSE.txt', '.')]
-if os.name == 'nt':
-    datas += [
-        ('src/craterstats/scripts/create_desktop_shortcut.bat', '.'),
-        ('src/craterstats/scripts/add_cs_path.bat', '.'),
-        ]
 
 a = Analysis(
     ['src/craterstatsCLI.py'],
@@ -58,4 +52,5 @@ coll = COLLECT(
 exedir = r'dist/craterstats/'
 shutil.move(exedir + r'_internal/LICENSE.txt', exedir)
 if os.name == 'nt':
-    shutil.move(exedir + r'_internal/create_desktop_shortcut.bat', exedir)
+    shutil.move(exedir + r'_internal/craterstats/scripts/create_desktop_shortcut.bat', exedir)
+    shutil.move(exedir + r'_internal/craterstats/scripts/add_cs_path.bat', r'_internal/')
