@@ -13,7 +13,7 @@ datas = [
 ]
 
 a = Analysis(
-    ['src/craterstatsCLI.py'],
+    ['src/craterstats.py'],
     pathex=[os.path.abspath('src')],
     binaries=[],
     datas=datas,
@@ -52,5 +52,5 @@ coll = COLLECT(
 exedir = r'dist/craterstats/'
 shutil.move(exedir + r'_internal/LICENSE.txt', exedir)
 if os.name == 'nt':
+    shutil.move(exedir + r'_internal/craterstats/scripts/add_cs_path.bat', exedir + r'_internal/')
     shutil.move(exedir + r'_internal/craterstats/scripts/create_desktop_shortcut.bat', exedir)
-    shutil.move(exedir + r'_internal/craterstats/scripts/add_cs_path.bat', r'_internal/')
