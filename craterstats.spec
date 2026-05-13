@@ -1,22 +1,29 @@
-# -*- mode: python ; coding: utf-8 -*-
+#  Copyright (c) 2026, Greg Michael
+#  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import os
 import shutil
-import platform
+
+datas = [
+    ('src/craterstats/config/*', 'craterstats/config'),
+    ('src/craterstats/sample/*', 'craterstats/sample'),
+    ('src/craterstats/fonts/*', 'craterstats/fonts'),
+    ('src/craterstats/scripts/*', 'craterstats/scripts'), # available for gui installer
+]
+
+datas += [('LICENSE.txt', '.')]
+if os.name == 'nt':
+    datas += [
+        ('src/craterstats/scripts/create_desktop_shortcut.bat', '.'),
+        ('src/craterstats/scripts/add_cs_path.bat', '.'),
+        ]
 
 a = Analysis(
-    ['src/craterstats.py'],
+    ['src/craterstatsCLI.py'],
     pathex=[os.path.abspath('src')],
     binaries=[],
-    datas = [
-        ('src/craterstats/config/*','craterstats/config'),
-        ('src/craterstats/sample/*','craterstats/sample'),
-        ('src/craterstats/fonts/*','craterstats/fonts'),
-        ('scripts/create_desktop_shortcut.bat', '.'),
-        ('scripts/add_cs_path.bat', '.'),
-        ('LICENSE.txt', '.'),
-    ],
-    hiddenimports=[#'craterstats.config',
+    datas=datas,
+    hiddenimports=[
                    'matplotlib.backends.backend_svg',
                    'matplotlib.backends.backend_pdf',
                    'scipy.special.erf','scipy.special.factorial',
@@ -33,20 +40,11 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
-    [],
     exclude_binaries=True,
     name='craterstats',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
     console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
 )
+
 coll = COLLECT(
     exe,
     a.binaries,
@@ -57,6 +55,7 @@ coll = COLLECT(
     name='craterstats',
 )
 
-shutil.move(r'dist/craterstats/_internal/LICENSE.txt', r'dist/craterstats')
-if platform.system()=='Windows':
-    shutil.move(r'dist/craterstats/_internal/create_desktop_shortcut.bat', r'dist/craterstats')
+exedir = r'dist/craterstats/'
+shutil.move(exedir + r'_internal/LICENSE.txt', exedir)
+if os.name == 'nt':
+    shutil.move(exedir + r'_internal/create_desktop_shortcut.bat', exedir)
