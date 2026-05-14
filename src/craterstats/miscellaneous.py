@@ -70,11 +70,11 @@ class Functionslist:
         self.config = self.user_function_config()
         if self.config:
             uf = gm.read_textfile(self.config, ignore_hash=True)[0] if gm.file_exists(self.config) else None
-        if uf:
-            try:
-                s = s + gm.read_textfile(uf, ignore_hash=True, strip=';', as_string=True)
-            except:
-                print("Unable to read user functions file: "+functions_user+" - ignoring.")
+            if uf:
+                try:
+                    s = s + gm.read_textfile(uf, ignore_hash=True, strip=';', as_string=True)
+                except:
+                    print("Unable to read user functions file: "+functions_user+" - ignoring.")
         self.functions = gm.read_textstructure(s,from_string=True)
 
     def user_function_config(self):
