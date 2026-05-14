@@ -52,7 +52,7 @@ DEFAULTS = {
         'min_diameter': 0.15,
         'global_area': 1e12,  # default larger than all terrestrial planets
         'n_samples': 200,
-        'trials': 300,
+        'trials': 1000,
         'measure': {'m2cnd','sdaa'},
         'ra_offset': 0.,
         'ra_show': 1,

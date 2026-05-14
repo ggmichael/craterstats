@@ -164,7 +164,7 @@ class Randomnessanalysis(cst.Spatialcount):
         self.establish_hpx(trials)
         self_pp = self.self_pp(trials, measure)
 
-        if not measure in self.montecarlo or not self.montecarlo[measure]['n_trials'] == trials: # skip montecarlo if already have data
+        if not measure in self.montecarlo or not self.montecarlo[measure]['n_trials'] >= trials: # skip montecarlo if already have data
             self.montecarlo[measure] = {'n_trials':trials}
             self.montecarlo_split(measure, self_pp)
 
