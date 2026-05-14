@@ -54,3 +54,4 @@ shutil.move(exedir + r'_internal/LICENSE.txt', exedir)
 if os.name == 'nt':
     shutil.move(exedir + r'_internal/craterstats/scripts/add_cs_path.bat', exedir + r'_internal/')
     shutil.move(exedir + r'_internal/craterstats/scripts/create_desktop_shortcut.bat', exedir)
+shutil.copytree(exedir + r'_internal/craterstats/sample', exedir + 'sample/', dirs_exist_ok=True)
