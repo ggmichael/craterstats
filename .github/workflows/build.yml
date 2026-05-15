@@ -45,9 +45,11 @@ jobs:
           python-version: 3.12
 
       - name: Install dependencies
+        shell: bash  # also on Windows
         run: |
+          mkdir -p ~/.cache/pip
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --cache-dir ~/.cache/pip -r requirements.txt
 
       - name: Install pyinstaller
         run: |
