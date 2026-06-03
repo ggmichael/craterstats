@@ -163,7 +163,7 @@ def construct_cps_dict(args,c,f):
     if 'presentation' in vars(args):
         if args.presentation is not None:
             c['presentation'] = cst.PRESENTATIONS[decode_abbreviation(cst.PRESENTATIONS, args.presentation,one_based=True)]
-    if c['presentation'] in ['chronology', 'rate', 'sequence','uncertainty']: #possible to overwrite with user-choice
+    if c['presentation'] in ['chronology', 'rate', 'sequence', 'uncertainty']: #possible to overwrite with user-choice
         c['xrange'] = cst.DEFAULT_XRANGE[c['presentation']]
         c['yrange'] = cst.DEFAULT_YRANGE[c['presentation']]
     if c['presentation']=='sequence':
@@ -226,8 +226,8 @@ def construct_cps_dict(args,c,f):
 
     if c['presentation'] == 'Hartmann':
         if hasattr(c['pf'],'xrange'): #not possible to overwrite with user choice
-            c['xrange'] = c['pf'].xrange
-            c['yrange'] = c['pf'].yrange
+            c['xrange'] = tuple(c['pf'].xrange.tolist())
+            c['yrange'] = tuple(c['pf'].yrange.tolist())
         else:
             c['xrange'] = cst.DEFAULT_XRANGE['Hartmann']
             c['yrange'] = cst.DEFAULT_YRANGE['Hartmann']
