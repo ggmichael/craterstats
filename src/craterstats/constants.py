@@ -43,7 +43,7 @@ DEFAULTS = {
         'print_dimensions': '7.5x7.5',
         'pt_size': '9.0',
         'font': 'Open Sans',
-        'ref_diam': 1,
+        'ref_diameter': 1,
         'sig_figs': 3,
         'style': 'natural',
         'title': '',
