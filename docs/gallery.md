@@ -122,8 +122,8 @@ Demo 8
 --convert png %sample%/CE-6 8-km vicinity.scc
 ```
 
-![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-sdaa.png)
 ![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-m2cnd.png)
+![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-sdaa.png)
 
 Demo 9
 
@@ -255,9 +255,9 @@ Demo 18
 -sf 2
 ```
 
+![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo_k.png)
 ![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo_err.png)
 ![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo_age.png)
-![19-demo](https://ggmichael.github.io/craterstats/demo/19-demo_k.png)
 
 Demo 19
 
