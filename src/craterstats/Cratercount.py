@@ -286,7 +286,7 @@ class Cratercount:
             bins,h = zip(*sorted(zip(d, self.fraction)))
             bins, h = np.array(bins), np.array(h)
             bin_centres = bins
-            h_event=np.ones(len(h))
+            h_event=np.ones(len(h), dtype=int)
             width = np.zeros(len(d))
 
         else:
