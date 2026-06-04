@@ -1,1 +1,2 @@
 *.qml linguist-vendored=true
+*.cs linguist-language=Text
