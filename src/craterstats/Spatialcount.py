@@ -3,13 +3,13 @@
 
 from collections import namedtuple
 from datetime import datetime
+from itertools import groupby
 import math
 import os
 import re
 import shutil
 
 import numpy as np
-import matplotlib.pyplot as plt
 import shapefile  # pyshp
 import shapely as shp
 import spherely as sph
@@ -56,9 +56,8 @@ class Spatialcount:
         return x,y,z
 
     def readSCCfile(self):
-
         s = gm.read_textfile(self.filename,ignore_hash=True,strip=';', as_string=True)
-        s = re.sub(r"a-axis radius", "oct_a_axis_radius", s) # fix OpenCraterTool misformatting
+        s = re.sub(r"a[-_]axis radius", "oct_a_axis_radius", s) # fix OpenCraterTool misformatting
         c = gm.read_textstructure(s,from_string=True)
 
         crater=c['crater']
@@ -81,6 +80,7 @@ class Spatialcount:
         d={}
         for i, _ in z:
             pts = [(float(x),float(y)) for x,y, sub_area in zip(c['unit_boundary']['lon'],c['unit_boundary']['lat'], c['unit_boundary']['sub_area']) if int(sub_area) == i]
+            pts = [pt for pt, _ in groupby(pts)] # remove consecutive duplicates
             p = sph.create_polygon(shell=pts)
             d[i] = (pts, p) #, xyz(pts)) # xyz needs to be moved out
             xr1 = gm.range([x for x,y in pts])
