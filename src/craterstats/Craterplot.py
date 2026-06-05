@@ -122,7 +122,7 @@ class Craterplot:
         marker = cps.marker_def[self.psym].copy()
         marker['markersize'] *= .7
         for m in measure:
-            y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) for e in self.cratercount.n_sigma[m]]
+            y = [cst.n_sigma_scaling(float(e)) * (-1 if m=='sdaa' else 1) if e!='-' else None for e in self.cratercount.n_sigma[m]]
             cps.ax_ra.plot(x, y, color=self.colour, lw=.5 * cps.sz_ratio, **marker, linestyle=cst.LINESTYLES[m], clip_on=False)
 
         if not cps.ra_legend_drawn:

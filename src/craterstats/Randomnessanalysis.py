@@ -142,9 +142,8 @@ class Randomnessanalysis(cst.Spatialcount):
         Prepare separate runs across bin range
         """
         match measure:
-            case 'sdaa': min_count = 3
+            case 'sdaa': min_count = 4
             case 'm2cnd': min_count = 3
-
         self.montecarlo[measure]['trials'] = {}
 
         for b,n in zip(self.cc.binned['d_min'],self.cc.binned['n_event']):
@@ -153,11 +152,12 @@ class Randomnessanalysis(cst.Spatialcount):
                 msg = f"{measure}, bin {bin}: {gm.diameter_range([b,b*math.sqrt(2)],2)}, {n} craters"
                 self.print(msg)
 
-                # do parallel monte carlo for random configs
-                m = montecarlo_pp(self_pp, b, n, progress_queue=self.progress_queue)
-                #m = montecarlo_serial(self_pp, b, n)
+                debug = False
+                if debug:
+                    m = montecarlo_serial(self_pp, b, n)
+                else: # do parallel monte carlo for random configs
+                    m = montecarlo_pp(self_pp, b, n, progress_queue=self.progress_queue)
                 self.montecarlo[measure]['trials'][bin] = m
-
 
     def run_montecarlo(self, trials, measure):
         np.random.seed(42)
@@ -401,10 +401,14 @@ class Randomnessanalysis(cst.Spatialcount):
               ]
 
         table = []
-        for bin in self.montecarlo[next(iter(self.montecarlo))]['stats'].keys():
+        bins = sorted({k for m in self.montecarlo for k in self.montecarlo[m]['stats'].keys()}, key=float) # get bins from all measures
+        for bin in bins:
             row = f"{bin:<12}"
             for measure in self.montecarlo:
-                row += f"\t{self.montecarlo[measure]['stats'][bin].n_sigma:9.4g}"
+                if bin in self.montecarlo[measure]['stats']:
+                    row += f"\t{self.montecarlo[measure]['stats'][bin].n_sigma:9.4g}"
+                else:
+                    row += f"\t{'-':>9}"
             table.append(row)
         n_sigma = (['#','n_sigma = {bin' + ''.join([f', {measure}' for measure in self.montecarlo])]
                    + table + ['}'])
@@ -471,7 +475,8 @@ def run_trial(self_pp, b, n, trial_index):
 
 def run_trial_wrapper(self_pp, b, n, trial_index, progress):
     result = run_trial(self_pp, b, n, trial_index)
-    progress.value += 1 # Update shared progress
+    if progress is not None:
+        progress.value += 1 # Update shared progress
     return result
 
 def montecarlo_pp(self_pp, b, n, progress_queue=None):
@@ -506,26 +511,23 @@ def montecarlo_pp(self_pp, b, n, progress_queue=None):
                 measures.append(result)
     return measures
 
-
-def montecarlo_serial(self_pp, b, n):
+def montecarlo_serial(self_pp, b, n, progress_queue=None):
     """
     Single Monte Carlo run. - serial - use for debugging only
     """
-    trial_indices = range(self_pp.trials)
-    args = [(self_pp, b, n, trial_index) for trial_index in trial_indices]
-    pbar = ProgressBar(max_value=self_pp.trials)
-
     measures = []
-    for trial_index, arg in zip(trial_indices, args):
-        try:
-            result = run_trial_wrapper(arg)  # Call the function directly
-            measures.append(result)
-            pbar.update(trial_index)  # Update progress bar in serial execution
-        except Exception as e:
-            print(f"Error occurred for trial {trial_index}: {e}")
 
-    pbar.finish()  # Finish the progress bar
+    for trial_index in range(self_pp.trials):
+        result = run_trial_wrapper(
+            self_pp, b, n, trial_index, None  # no shared progress
+        )
+        measures.append(result)
+
+        if progress_queue is not None:
+            progress_queue.put(trial_index + 1)
+
     return measures
+
 
 
 def random_points_pp(self ,n):
@@ -636,7 +638,7 @@ def sdaa(self, pts, ids, hpd):
 
     center = np.array([0, 0, 0])
     radius = 1.0
-    sv = SphericalVoronoi(xyz, radius, center, threshold=1e-09)
+    sv = SphericalVoronoi(xyz, radius, center, threshold=1e-9)
     sv.sort_vertices_of_regions()
 
     xyz_polygons = [[sv.vertices[id] for id in region] for region in sv.regions]
