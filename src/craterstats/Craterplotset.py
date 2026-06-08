@@ -973,127 +973,6 @@ class Craterplotset:
             self.ax.add_patch(poly)
         add_saturation_text()
 
-
-    # def age_area_plot(self,plt, data=None):
-    #     # import warnings
-    #     # warnings.filterwarnings('error', category=RuntimeWarning)
-    #     if data is None:
-    #         if not hasattr(self, 'age_area'):
-    #             raise ValueError("No data provided")
-    #         zz, kk, ee, lm = self.age_area
-    #     else:
-    #         zz, kk, ee, lm = data
-    #         self.age_area = data  # optional caching
-    #
-    #     cmap_k = 'Set2_r'
-    #     cmap_err = Spectral_9.mpl_colormap.reversed()
-    #     cmap_ratio = colors.ListedColormap(Spectral_9.mpl_colors)
-    #
-    #     # new initialisation
-    #     dmin = self.min_diameter
-    #     max_area=self.global_area
-    #
-    #     if self.aspect_ratio>1:
-    #         nsx = self.n_samples  # samples for plotting
-    #         nsy = int(nsx*self.aspect_ratio)
-    #     else:
-    #         nsy = self.n_samples
-    #         nsx = int(nsy/self.aspect_ratio)
-    #
-    #     ns_lin = round(nsx*self.xfrac_linear)
-    #     ns_log = nsx - ns_lin
-    #
-    #     log_age_range = [np.log10(self.t_min), np.log10(self.t_crossover)]
-    #     log_age = np.concatenate((
-    #         np.linspace(log_age_range[0], log_age_range[1], ns_log),
-    #         np.log10(np.linspace(self.t_crossover, self.t_max, ns_lin+1)[1:])
-    #         ))
-    #
-    #     log_area_range = self.yrange
-    #     log_area = np.linspace(log_area_range[0], log_area_range[1], nsy)
-    #
-    #     d_range = [dmin, 1000.]
-    #     cc = cst.Cratercount()
-    #     mid_d = np.sqrt(d_range[0] * d_range[1])
-    #     cc.diam = [mid_d]  # shouldn't be empty
-    #     diameter_text = ' ($d > ' + (f'{dmin:0.3g}$ km' if dmin >= 1 else f'{dmin * 1000:0.3g}$ m)')
-    #
-    #
-    #
-    #     x_exceed = y_exceed = None
-    #
-    #     if np.searchsorted(log_area_range,np.log10(max_area)) == 1:
-    #         y_exceed = (np.log10(max_area) - log_area_range[0])/gm.mag(log_area_range)
-    #         p = [[0, y_exceed], [1, y_exceed], [1, 1], [0, 1]]
-    #
-    #     if self.ef:
-    #         C_ef_dmin = self.ef.evaluate("cumulative",dmin)
-    #         C = self.pf.evaluate("cumulative",[dmin,1.])
-    #         T_eq = self.cf.t(n1=C_ef_dmin * C[1]/C[0])
-    #
-    #         match np.searchsorted([self.t_min,self.t_crossover,self.t_max],T_eq):
-    #             case 1:
-    #                 x_exceed = (self.xfrac_linear + (1 - self.xfrac_linear) *
-    #                             (np.log10(self.t_crossover) - np.log10(T_eq)) /
-    #                             (np.log10(self.t_crossover) - np.log10(self.t_min)))
-    #             case 2:
-    #                 x_exceed = (self.xfrac_linear *
-    #                             (self.t_max - T_eq) / (self.t_max - self.t_crossover))
-    #             case _:
-    #                 pass
-    #
-    #         if x_exceed:
-    #             p = [[0,0],[x_exceed, 0], [x_exceed, 1], [0, 1]]
-    #
-    #     if x_exceed and y_exceed:
-    #         p = [[0,0],[x_exceed,0],[x_exceed,y_exceed],[1,y_exceed],[1,1],[0,1]]
-    #     poly = None
-    #     if x_exceed or y_exceed:
-    #         poly = Polygon(p, closed=True, facecolor='black' if self.invert else 'white', edgecolor=None, alpha=0.6)
-    #
-    #     if plt=='k':
-    #         im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
-    #         imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto',extent=[0,1,0,1])
-    #         cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5])
-    #         cbar.ax.set_yticklabels(['0','1','2','3','4','5','6','7+'])
-    #         cbar.set_label('$k$' + diameter_text, rotation=90)
-    #
-    #     elif plt=='err':
-    #         imo = self.ax.imshow(np.flip(np.transpose(zz),1) * 100, cmap_err, origin="lower", interpolation='none',alpha=None,
-    #                          aspect='auto', vmin=0,extent=[0,1,0,1]) #, vmax=115)#, 'plasma_r' extent=[0,ns-1,0,nsy-1]
-    #         cbar = self.fig.colorbar(imo,self.ax_cbar)
-    #         cbar.set_label(r'Measured uncertainty $\sigma$, %' + diameter_text, rotation=90)
-    #
-    #     elif plt == 'age':
-    #         im = np.flip(np.transpose(np.log10(ee)),1)
-    #         vmin=np.log10(1./5)
-    #         vmax=np.log10(5.)
-    #         # svg output does not respect alpha; both png and svg respect np.nan
-    #         im=np.where((im > vmin) & (im < vmax),im,np.nan)
-    #         imo = self.ax.imshow(im,
-    #                        cmap_ratio, origin="lower", interpolation='none', #zorder=0,
-    #                        extent=[0,1,0,1],aspect='auto', vmin=vmin,vmax=vmax)
-    #         cbar = self.fig.colorbar(imo,self.ax_cbar,ticks=[np.log10(e) for e in [.1,.2,1/3.,.5,1./1.4,1.,1.4,2.,3.,5.,10.]])
-    #         cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5','.7', '1', '1.4', '2', '3', '5','10'])
-    #         cbar.set_label('Measured/actual age' + diameter_text, rotation=90)
-    #         if poly: poly.set_alpha(0.7)
-    #
-    #     def add_saturation_text():
-    #         if y_exceed and (y_exceed < .98):
-    #             self.ax.text(.82, y_exceed , 'whole globe', size=self.scaled_pt_size * .7, rotation=0,
-    #                     transform=self.ax.transAxes, horizontalalignment='right', verticalalignment='bottom')
-    #         if self.ef:
-    #             if x_exceed and (x_exceed > .02):
-    #                 self.ax.text(x_exceed, .87, 'saturation', size=self.scaled_pt_size * .7, rotation=90,
-    #                              horizontalalignment='right', verticalalignment='top')
-    #
-    #     if x_exceed or y_exceed:
-    #         self.ax.add_patch(poly)
-    #     add_saturation_text()
-
-
-
-
     def create_map_plotspace(self):
         """
         Set up plotspace for Spatialcount map
@@ -1121,3 +1000,11 @@ class Craterplotset:
             self.ax.set_title('\n'.join(self.title.split('|')) )
 
 
+    def position_to_data_coords(self,x,y):
+        """
+        convert normalised plot image coords to data coords
+        x,y: (0,0) - bottom left; (1,1) - top right
+        """
+        # figure -> display -> data
+        x_data, y_data = self.ax.transData.inverted().transform(self.fig.transFigure.transform((x, y)))
+        return x_data, np.log10(y_data)
