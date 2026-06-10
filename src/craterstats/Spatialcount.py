@@ -203,11 +203,11 @@ class Spatialcount:
                 f = transform.af2lf(area_frac)
             frac += [f]
 
-        self.diam = diam
-        self.fraction = frac
-        self.lon = lon
-        self.lat = lat
-        return
+        filtered = [(d,f,ln,lt) for d,f,ln,lt in zip(diam,frac,lon,lat) if f > 0]
+        if filtered:
+            self.diam, self.fraction, self.lon, self.lat = map(list, zip(*filtered))
+        else:
+            self.diam, self.fraction, self.lon, self.lat = [], [], [], []
 
 
     def writeSCCfile(self, filename=None):
