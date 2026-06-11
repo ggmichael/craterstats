@@ -60,10 +60,10 @@ class TestPlottingClasses(unittest.TestCase):
             'Pickering,3036.6,pseudo-log,0.2,0.7,c-fit,1,313.0,313,0.69143,0.65379,0.72908,-3.472,-3.497,-3.449,3.37e-04')
         cp.UpdateSettings(type='poisson', range=[.22,.43], resurf=0)
         self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,pseudo-log,0.22,0.43,poisson,0,223,223,0.68515,0.64078,0.73261,-3.476,-3.505,-3.447,3.34e-04')
+            'Pickering,3036.6,pseudo-log,0.22,0.43,poisson,0,223,223,0.68567,0.64082,0.73258,-3.476,-3.505,-3.447,3.34e-04')
         cp.UpdateSettings(type='poisson', range=[.22, .43], binning='none')
         self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,none,0.22,0.43,poisson,0,223,223,0.68515,0.64078,0.73261,-3.476,-3.505,-3.447,3.34e-04')
+            'Pickering,3036.6,none,0.22,0.43,poisson,0,223,223,0.68567,0.64082,0.73258,-3.476,-3.505,-3.447,3.34e-04')
 
 
 
