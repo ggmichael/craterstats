@@ -59,7 +59,7 @@ DEFAULTS = {
         'bins': 0,
     },
     'plot': {
-        'source': 'None',
+        'source': None,
         'name': '',
         'range': ['0', 'inf'],
         'snap': 1,

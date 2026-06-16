@@ -246,10 +246,12 @@ def construct_plot_dicts(args,plot,cps_dict):
         p['type'] = 'poisson' if cps_dict['presentation'] == 'sequence' else 'data' # set default
 
         if cpl: # for these items: if not given, carry over from previous
+            if p['source'] is None: # only carry type if source unchanged
+                p['type'] = cpl[-1]['type']
             for k in cst.CARRY_OVER_PROPERTIES:
                 p[k] = cpl[-1][k]
-            if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
-                p['type'] = cpl[-1]['type']
+            #if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
+
 
         for k0,v in d.items():
             k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
