@@ -276,7 +276,6 @@ def construct_plot_dicts(args,plot,cps_dict):
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'binning':
                 p[k] = cst.Cratercount.BINNINGS[decode_abbreviation(cst.Cratercount.BINNINGS, v, allow_ambiguous=True)]
-                cst.Cratercount.BINNINGS
             elif k == 'colour':
                 if v[0]=='#':
                     if bool(re.match(r'^#([0-9A-Fa-f]{6})$', v)):
@@ -295,11 +294,9 @@ def construct_plot_dicts(args,plot,cps_dict):
                     p[k]=decode_abbreviation(names, v, allow_ambiguous=True)
 
         if not specified_source: sys.exit('Source not specified')
-        if os.path.isabs(p['source']):
-            src = p['source']
-        else:
-            src = (gm.filename(args.input_filename,'p') if args.input else '')+p['source']
-        p['cratercount'] = cst.Cratercount(src)
+        if args.input and not os.path.isabs(p['source']): # if running from another dir or gui
+            p['source'] = gm.filename(args.input_filename,'p') + p['source']
+        p['cratercount'] = cst.Cratercount(p['source'])
         cpl += [p]
     return cpl
 
