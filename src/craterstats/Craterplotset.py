@@ -627,21 +627,24 @@ class Craterplotset:
         if np.isnan(dx): #only empty crater files
             xr=yr=np.array([-2.,0.])
         elif self.presentation == 'differential':
-            if dy/2.-np.floor(dy/2.) > .01: yr+=[-1,0]
-            dy= gm.mag(yr)
+            if int(dy) % 2 == 1: # odd
+                yr += [0, 1] if big_bottom else [-1, 0]
+                dy = gm.mag(yr)
             d=dy/2-dx
             d0=abs(d)
-            d2a=int(d0/2)
-            d2b=d0-d2a
-            if d<0: yr+=np.array([-d2a,d2b])*2 if big_bottom else np.array([-d2b,d2a])*2
-            if d>0: xr+=np.array([-d2a,d2b]) if big_left else np.array([-d2b,d2a])
+            if d < 0:
+                yr += np.array([-1, 1]) * d0
+            elif d > 0:
+                d2a = int(d0 / 2)
+                d2b = d0 - d2a
+                xr+=np.array([-d2a,d2b]) if big_left else np.array([-d2b,d2a])
         else:
             d=dy-dx
             d0=abs(d)
             d2a=int(d0/2)
             d2b=d0-d2a
             if d < 0: yr += [-d2a,d2b] if big_bottom else [-d2b,d2a]
-            if d > 0: xr += [-d2a,d2b] if big_left else [-d2b,d2a]
+            elif d > 0: xr += [-d2a,d2b] if big_left else [-d2b,d2a]
 
         self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
         self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
