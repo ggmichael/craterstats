@@ -425,7 +425,7 @@ class Craterplotset:
         if self.presentation == 'sequence':
             ax_lin.set_ylim(bottom=0, top=1)
             ax_lin.get_yaxis().set_visible(False)
-            ax_lin.spines[['left', 'right']].set_visible(False)
+            ax_lin.spines[['left', 'top', 'right']].set_visible(False)
         elif self.presentation == 'uncertainty':
             ax_lin.set_yscale('log')
             ax_lin.yaxis.set_major_locator(ticker.LogLocator(numticks=999))
@@ -441,10 +441,9 @@ class Craterplotset:
         ax.set_ylim(bottom=0, top=1)
         ax.get_yaxis().set_visible(False)
         if self.presentation == 'sequence':
-            ax.spines[['left', 'right', 'top', 'bottom']].set_visible(False)
+            ax.spines[['left', 'right', 'bottom']].set_visible(False)
             ax.set_xlabel('Age', labelpad=2 * self.scaled_pt_size)
         elif self.presentation == 'uncertainty':
-            #ax.spines[['left', 'bottom']].set_visible(False)
             ax.set_xlabel('Actual age', labelpad=2*self.scaled_pt_size)
 
         if self.crossover and self.t_max > t_crossover > self.t_min:
