@@ -36,7 +36,7 @@ class TestPlottingClasses(unittest.TestCase):
         cp = cst.Craterplot(cratercount=self.cc)
         cps = cst.Craterplotset(craterplot=[cp])
         cps.autoscale()
-        self.assertEqual(list(cps.xrange)+list(cps.yrange),[-2, 2, -6, 2])
+        self.assertEqual(list(cps.xrange)+list(cps.yrange),[-2, 2, -5, 3])
 
     def test_Craterplotset_summary(self):
         cp = cst.Craterplot(cratercount=self.cc,range=[.2,.7],type='d-fit')
@@ -45,25 +45,20 @@ class TestPlottingClasses(unittest.TestCase):
         def get_cps_summary():
             res0=cps.create_summary_table()
             res=res0.split('\n')
-            res=','.join(res[3].split(',')[0:16]) # trim off headers/source file
+            res=','.join(res[3].split(',')[0:18]) # trim off headers/source file
             return res
 
         # the following results are not fundamental, but verified against CraterstatsII (see demo plots):
-        # name,area,binning,d_min,d_max,method,resurf,n,n_event,age,age-,age+,a0,a0-,a0+,N(1)
-        self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,pseudo-log,0.2,0.7,d-fit,0,313.0,313,0.66757,0.61332,0.72182,-3.488,-3.524,-3.454,3.25e-04')
+        # name,area,binning,d_min,d_max,method,resurf,n,n_event,sort_order,age,age-,age+,a0,a0-,a0+,N(1)
+        self.assertEqual(get_cps_summary(), 'Pickering,3036.6,pseudo-log,0.2,0.7,d-fit,0,313.0,313,0,0.668,0.613,0.722,-3.488,-3.524,-3.454,3.25e-04,2.99e-04')
         cp.UpdateSettings(binning='10/decade')
-        self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,10/decade,0.2,0.79,d-fit,0,313.0,313,0.64481,0.59316,0.69646,-3.503,-3.539,-3.469,3.14e-04')
+        self.assertEqual(get_cps_summary(), 'Pickering,3036.6,10/decade,0.2,0.79,d-fit,0,313.0,313,0,0.645,0.593,0.696,-3.503,-3.539,-3.469,3.14e-04,2.89e-04')
         cp.UpdateSettings(type='c-fit', resurf=1, binning='pseudo-log')
-        self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,pseudo-log,0.2,0.7,c-fit,1,313.0,313,0.69143,0.65379,0.72908,-3.472,-3.497,-3.449,3.37e-04')
+        self.assertEqual(get_cps_summary(),'Pickering,3036.6,pseudo-log,0.2,0.7,c-fit,1,313.0,313,0,0.691,0.654,0.729,-3.472,-3.497,-3.449,3.37e-04,3.19e-04')
         cp.UpdateSettings(type='poisson', range=[.22,.43], resurf=0)
-        self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,pseudo-log,0.22,0.43,poisson,0,223,223,0.68567,0.64082,0.73258,-3.476,-3.505,-3.447,3.34e-04')
+        self.assertEqual(get_cps_summary(),'Pickering,3036.6,pseudo-log,0.22,0.43,poisson,0,223,223,0,0.686,0.641,0.733,-3.476,-3.505,-3.447,3.34e-04,3.12e-04')
         cp.UpdateSettings(type='poisson', range=[.22, .43], binning='none')
-        self.assertEqual(get_cps_summary(),
-            'Pickering,3036.6,none,0.22,0.43,poisson,0,223,223,0.68567,0.64082,0.73258,-3.476,-3.505,-3.447,3.34e-04')
+        self.assertEqual(get_cps_summary(),'Pickering,3036.6,none,0.22,0.43,poisson,0,223,223,0,0.686,0.641,0.733,-3.476,-3.505,-3.447,3.34e-04,3.12e-04')
 
 
 

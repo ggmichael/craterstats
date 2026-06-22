@@ -665,6 +665,9 @@ class Craterplotset:
 
         if not s: return
 
+        for sort_order, item in enumerate(sorted(s, key=lambda d: d['t'][0], reverse=True)):
+            item['sort_order'] = sort_order
+
         n_d_lbl=f'N({self.ref_diameter:0g})'
         # w now obsolete in this table (width)
         table = (('name', '24', '', None),
@@ -675,7 +678,8 @@ class Craterplotset:
                  ('resurf', '6', '', None),
                  ('n', '7', '', None),
                  ('n_event', '9', '', None),
-                 ('t', '8', '.5g', ('Age','Age-','Age+')),
+                 ('sort_order', '6', '', None),
+                 ('t', '8', '.3g', ('Age','Age-','Age+')),
                  ('a0', '6', '.4g', ('a0','a0-','a0+')),
                  ('n_d', '8', '.2e', (n_d_lbl,n_d_lbl+'-',n_d_lbl+'+')),
                  ('source', '', '', None),
