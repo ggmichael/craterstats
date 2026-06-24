@@ -527,7 +527,8 @@ class Craterplotset:
 
         if self.presentation in ['cumulative', 'differential', 'R-plot', 'Hartmann', 'sequence']:
             for cp in reversed(self.craterplot):
-                cp.overplot(self)
+                if not (self.presentation in ['differential', 'R-plot', 'Hartmann'] and cp.binning == 'none'):
+                    cp.overplot(self)
 
         # aggregate legend entries
         h, b = self.ax.get_legend_handles_labels()
@@ -602,7 +603,15 @@ class Craterplotset:
 
         :return: none
         """
-        x0,x1,y0,y1=zip(*[cp.get_data_range(self) for cp in self.craterplot])
+
+        ranges = []
+        for cp in self.craterplot:
+            try:
+                ranges.append(cp.get_data_range(self))
+            except Exception: # non-cml, binning=none. This is ugly - better to test and skip these (and hidden plots)
+                pass
+        x0, x1, y0, y1 = zip(*ranges) if ranges else  (*cst.DEFAULT_XRANGE[self.presentation], *cst.DEFAULT_YRANGE[self.presentation])
+
         mx = (.3, .8) # minimum empty margin
         my = [e * (2 if self.presentation=='differential' else 1) for e in [.3,.3]] # minimum empty margin
         min_x, max_x = np.log10(min(x0)), np.log10(max(x1))
@@ -624,8 +633,9 @@ class Craterplotset:
 
         #optimal padding should consider margins mx, my as well
         dx,dy= gm.mag(xr), gm.mag(yr)
-        if np.isnan(dx): #only empty crater files
-            xr=yr=np.array([-2.,0.])
+        if np.isnan(dx) or np.isnan(dy): # dx - empty crater files; dy - non-cml, binning=none
+            xr = cst.DEFAULT_XRANGE[self.presentation]
+            yr = cst.DEFAULT_YRANGE[self.presentation]
         elif self.presentation == 'differential':
             if int(dy) % 2 == 1: # odd
                 yr += [0, 1] if big_bottom else [-1, 0]
