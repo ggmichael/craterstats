@@ -641,10 +641,10 @@ class Craterplotset:
         else:
             d=dy-dx
             d0=abs(d)
-            d2a=int(d0/2)
-            d2b=d0-d2a
+            d2a=int(d0/2) # smaller addition
+            d2b=d0-d2a    # larger addition
             if d < 0: yr += [-d2a,d2b] if big_bottom else [-d2b,d2a]
-            elif d > 0: xr += [-d2a,d2b] if big_left else [-d2b,d2a]
+            elif d > 0: xr += [-d2b,d2a] if big_left else [-d2a,d2b]
 
         self.xrange = xr if xrange is None else np.array(xrange,dtype=float)
         self.yrange = yr if yrange is None else np.array(yrange,dtype=float)
