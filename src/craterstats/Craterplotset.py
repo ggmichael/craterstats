@@ -268,7 +268,7 @@ class Craterplotset:
         if ytitle != '':ax.set_ylabel(ytitle)
 
 # set up n_sigma axis
-        if self.max_y:
+        if self.ra_show and any(cp.cratercount.n_sigma and cp.type == 'data' for cp in self.craterplot): # plot n_sigma?
             y_ra_normalised = (self.max_y + gm.mag(self.yrange)/16 + self.ra_offset/20 - self.yrange[0]) / gm.mag(self.yrange)
             ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+y_ra_normalised*normalised_position[3],normalised_position[2],normalised_position[3]/16])
             ax_ra.set_xlim(left=self.xrange[0], right=self.xrange[1])
@@ -619,10 +619,9 @@ class Craterplotset:
         xr = np.array([np.floor(min_x-mx[0]), np.ceil(max_x+mx[1])])
         yr = np.array([np.floor(np.log10(min(y0))-my[0]), np.ceil(np.log10(max(y1))+my[1])])
 
-        if self.ra_show and any([cp.cratercount.n_sigma and cp.type == 'data' for y, cp in zip(y1, self.craterplot)]): # plot n_sigma?
+        if self.ra_show and any(cp.cratercount.n_sigma and cp.type == 'data' for cp in self.craterplot): # plot n_sigma?
             yr[1] = max(yr[1], np.ceil(max_y + gm.mag(yr)*3/16))
             mg = gm.mag(yr)
-            #self.ra_y_position = (max_y - yr[0] + mg*1.5/16) / mg
             self.max_y = max_y
             max_y += mg/8
             self.n_sigma_range = gm.range([float(e) for cp in self.craterplot if cp.cratercount.n_sigma and cp.type == 'data' for e in cp.cratercount.n_sigma['bin']])
