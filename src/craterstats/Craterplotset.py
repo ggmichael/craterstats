@@ -268,7 +268,7 @@ class Craterplotset:
         if ytitle != '':ax.set_ylabel(ytitle)
 
 # set up n_sigma axis
-        if self.ra_show and any(cp.cratercount.n_sigma and cp.type == 'data' for cp in self.craterplot): # plot n_sigma?
+        if self.presentation in ('cumulative', 'differential', 'R-plot', 'Hartmann') and self.ra_show and any(cp.cratercount.n_sigma and cp.type == 'data' for cp in self.craterplot): # plot n_sigma?
             y_ra_normalised = (self.max_y + gm.mag(self.yrange)/16 + self.ra_offset/20 - self.yrange[0]) / gm.mag(self.yrange)
             ax_ra = fig.add_axes([normalised_position[0],normalised_position[1]+y_ra_normalised*normalised_position[3],normalised_position[2],normalised_position[3]/16])
             ax_ra.set_xlim(left=self.xrange[0], right=self.xrange[1])
