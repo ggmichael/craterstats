@@ -444,14 +444,14 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
             if args.randomness_analysis:
                 ra = randomness_analysis(args, cps,progress_queue=progress_queue)
                 selection = sorted([int(m.group(1)) for m in re.finditer(r'(?:^|,)\s*([+-]?\d+)\s*(?=,|$)', args.select)]) if args.select else None # get int indices
-                
+
                 for measure in cps.measure:
                     if selection==[0]:
                         ra.plot_n_sigma(cps, measure)
                         savefig(f'-{measure}-n_sigma')
                     else:
                         ra.plot_montecarlo_split(cps, measure, selection=selection)
-                        savefig(f'-{measure})
+                        savefig(f'-{measure}')
             elif cps.presentation == 'uncertainty' and age_area_result is None: # send to single fig output for gui
                 cps.calculate_time_axis_params()
                 age_area_result = cps.compute_age_area()

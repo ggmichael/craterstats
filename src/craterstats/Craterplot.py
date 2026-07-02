@@ -142,10 +142,6 @@ class Craterplot:
 
             xtickv, xtickname, _, xminorv = cst.Hartmann_bins([xr[0],xr[1]+.001])
             cps.ax_ra.spines['top'].set_position(('data', cst.n_sigma_scaling(3)))
-            #cps.ax_ra.xaxis.set_ticks_position('top')
-            # cps.ax_ra.tick_params(axis='x', which='both', direction="out", color=cps.grey[1], labelcolor=cps.grey[0], width=.25,
-            #                length=cps.pt_size * .07, pad=cps.pt_size * .04, labelsize=cps.scaled_pt_size*.3)
-            # cps.ax_ra.tick_params(axis='x', which='minor', length=cps.pt_size * .05)
             cps.ax_ra.set_xticks(xtickv)
             cps.ax_ra.set_xticks(xminorv, minor=True)
             cps.ax_ra.set_xticklabels([])
