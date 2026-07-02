@@ -248,3 +248,11 @@
   * `-ra_offset VALUE`
     
     Vertical offset for randomness analysis sub-plot in 1/20ths of decade
+
+  * `-select LIST`
+    
+    Comma-separated list of bins for randomness analysis plot (e.g. `2,3,4`). Include 0 for n_sigma plot.
+
+  * `-ra_show [{0,1}]`
+
+    Show randomness analysis overplot: `0` = no, `1` yes (default).

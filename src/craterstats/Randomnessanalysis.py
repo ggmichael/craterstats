@@ -316,11 +316,15 @@ class Randomnessanalysis(cst.Spatialcount):
                  transform=ax.transAxes, ha="right",va='top')
 
 
-    def plot_montecarlo_split(self,cps,measure): # multiplot?
-        dim = math.ceil(math.sqrt(len(self.montecarlo[measure]['stats'])+1))
+    def plot_montecarlo_split(self,cps,measure,selection=None):
+        bins = list(self.montecarlo[measure]['stats'].keys())
+        n_sigma = True
+        if selection:
+            bins = [bins[i-1] for i in selection if 1 <= i <= len(bins)]
+            n_sigma = 0 in selection
+        dim = math.ceil(math.sqrt(len(bins)+int(n_sigma)))
         cps.create_map_plotspace()
         pos = cps.ax.get_position()
-        #cps.ax.set_visible(False)
         cps.ax.set_axis_off()
         def make_ax(i):
             x,y = (i%dim,dim - 1 - i//dim)
@@ -332,10 +336,11 @@ class Randomnessanalysis(cst.Spatialcount):
             ])
             return axi
 
-        for i,bin in enumerate(self.montecarlo[measure]['stats']):
+        for i,bin in enumerate(bins):
             self.plot_map_and_histogram(cps,measure,bin ,ax=make_ax(i),sz_ratio=1/dim)
 
-        self.plot_n_sigma(cps, measure, ax0=make_ax(dim ** 2 - 1))
+        if n_sigma:
+            self.plot_n_sigma(cps, measure, ax0=make_ax(dim ** 2 - 1))
 
 
     def plot_n_sigma(self, cps, measure, ax0=None):

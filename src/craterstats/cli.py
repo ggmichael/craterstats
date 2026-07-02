@@ -128,7 +128,7 @@ def get_parser():
     parser.add_argument("-trials", type=int, help="number of Monte Carlo trials for randomness analysis")
     parser.add_argument("-measure", help="comma-separated list of measures for randomness analysis (from m2cnd,sdaa)")
     parser.add_argument("-ra_offset", type=int, help="vertical offset for randomness analysis sub-plot in 1/20ths of decade")
-    parser.add_argument("-only", type=int, help="index of bin to plot only one (use 0 for summary chart)")
+    parser.add_argument("-select", help="comma-separated list of indices of ra bins to plot (use 0 for n_sigma chart)")
     parser.add_argument("-ra_show", nargs='?', choices=[0, 1], type=int, const=1, help="overplot randomness analysis [1|0]")
 
     return parser
@@ -443,16 +443,15 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
         if f in {'png', 'pdf', 'svg', 'tif'}:
             if args.randomness_analysis:
                 ra = randomness_analysis(args, cps,progress_queue=progress_queue)
-
+                selection = sorted([int(m.group(1)) for m in re.finditer(r'(?:^|,)\s*([+-]?\d+)\s*(?=,|$)', args.select)]) if args.select else None # get int indices
+                
                 for measure in cps.measure:
-                    match args.only:
-                        case None:
-                            ra.plot_montecarlo_split(cps, measure)
-                        case 0:
-                            ra.plot_n_sigma(cps, measure)
-                        case _:
-                            ra.plot_map_and_histogram(cps, measure, list(ra.montecarlo[measure]['stats'].keys())[args.only - 1])
-                    savefig('-' + measure + (f'-{args.only}' if args.only else ''))
+                    if selection==[0]:
+                        ra.plot_n_sigma(cps, measure)
+                        savefig(f'-{measure}-n_sigma')
+                    else:
+                        ra.plot_montecarlo_split(cps, measure, selection=selection)
+                        savefig(f'-{measure})
             elif cps.presentation == 'uncertainty' and age_area_result is None: # send to single fig output for gui
                 cps.calculate_time_axis_params()
                 age_area_result = cps.compute_age_area()
@@ -476,6 +475,12 @@ def print_with_highlights(s):
         else:
             print(line)
 
+def list_symbols_and_colours():
+    print(gm.bright("\nPlot symbols:"))
+    print(', '.join([f'{e[1]} ({e[0]})' for e in cst.MARKERS]))
+    print(gm.bright("\nColours:"))
+    print(', '.join([f'{e[2]}' for e in cst.PALETTE]))
+
 def main(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
@@ -494,10 +499,7 @@ def main(args0=None):
         return
 
     if args.lpc:
-        print(gm.bright("\nPlot symbols:"))
-        print(', '.join([f'{e[1]} ({e[0]})' for e in cst.MARKERS]))
-        print(gm.bright("\nColours:"))
-        print(', '.join([f'{e[2]}' for e in cst.PALETTE]))
+        list_symbols_and_colours()
         return
 
     if args.about:
