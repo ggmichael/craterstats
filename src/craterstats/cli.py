@@ -133,7 +133,7 @@ def get_parser():
 
     return parser
 
-def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False,allow_invalid=False):
+def decode_abbreviation(s,v,one_based=False,allow_ambiguous=False,allow_invalid=False): #would like to move out to gm, but need to handle errors properly
     """
     decode arbitrary abbreviation of list member into index
 
