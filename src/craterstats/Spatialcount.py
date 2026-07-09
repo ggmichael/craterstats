@@ -156,22 +156,14 @@ class Spatialcount:
         self.sa = sa
 
         multipolygon = []
-        for shape in sa:
-            parts = shape.parts
-            points = shape.points
-            n_rings = len(parts) - 1
-            if n_rings == 0:
-                p = sph.create_polygon(shell=points)
-            else:
-                ext = points[:parts[1]]
-                int = []
-                for i in range(1, len(parts)):
-                    start_idx = parts[i]
-                    end_idx = parts[i + 1] if i + 1 < len(parts) else len(points)
-                    int += [points[start_idx:end_idx]]
-                p = sph.create_polygon(shell=ext, holes=int)
-            # print(f"Polygon has {n_rings} hole(s). Sub-area: {sph.area(p, radius=ra):.5g} km2")
-            multipolygon += [p]
+        for shp_record in sa:
+            geom = shp.geometry.shape(shp_record.__geo_interface__)
+            polys = geom.geoms if geom.geom_type == "MultiPolygon" else [geom] # treat polygon and multipolygon uniformly
+            for poly in polys:
+                shell = list(poly.exterior.coords)
+                holes = [list(r.coords) for r in poly.interiors]
+                multipolygon.append(sph.create_polygon(shell=shell, holes=holes))
+
         p = sph.create_multipolygon(multipolygon)
         self.polygon = p
         self.area = sph.area(p, radius=ra)
