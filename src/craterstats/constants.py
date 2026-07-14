@@ -37,6 +37,7 @@ DEFAULTS = {
         'transparent': 0,
         'text_halo': None,  # conditional default set in construct_cps_dict()
         'isochrons': '',
+        'select': '',
         'legend': 'fnacr',
         'mu': 1,
         'presentation': 'differential',

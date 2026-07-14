@@ -443,8 +443,7 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
         if f in {'png', 'pdf', 'svg', 'tif'}:
             if args.randomness_analysis:
                 ra = randomness_analysis(args, cps,progress_queue=progress_queue)
-                selection = sorted([int(m.group(1)) for m in re.finditer(r'(?:^|,)\s*([+-]?\d+)\s*(?=,|$)', args.select)]) if args.select else None # get int indices
-
+                selection = cst.ra_decode_selection(args.select)
                 for measure in cps.measure:
                     if selection==[0]:
                         ra.plot_n_sigma(cps, measure)

@@ -2,6 +2,7 @@
 #  Licensed under BSD 3-Clause License. See LICENSE.txt for details.
 
 import os
+import re
 import sys
 
 import numpy as np
@@ -228,3 +229,11 @@ def n_sigma_scaling(v):
     """
     return np.power(np.abs(v),.6)*np.sign(v)
 
+def ra_decode_selection(s):
+    """
+    decode comma separated selection string
+    :param s:
+    :return:
+    """
+    selection = sorted([int(m.group(1)) for m in re.finditer(r'(?:^|,)\s*([+-]?\d+)\s*(?=,|$)', s)]) if s else None  # get int indices
+    return selection
