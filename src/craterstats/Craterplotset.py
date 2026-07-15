@@ -280,7 +280,6 @@ class Craterplotset:
             yticklabels = [f"{e}" for e in ytick]
             ax_ra.set_yticks(ytickv)
             ax_ra.set_yticklabels(yticklabels)
-            ax_ra.tick_params(axis='y', direction='in',labelsize=0.5*self.scaled_pt_size, width=.5, length=self.pt_size * .2, pad=self.pt_size * .1)
             for s in ['left','right','top','bottom']: ax_ra.spines[s].set_visible(False)
             ax_ra.set_yticks([])
             ax_ra.set_xticks([])

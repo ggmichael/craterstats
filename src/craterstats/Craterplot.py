@@ -96,6 +96,19 @@ class Craterplot:
 
         self.n_d = cps.pf.evaluate("cumulative", cps.ref_diameter, self.a0[0])
 
+    # def oplot_n_sigma(self,cps):
+    #
+    #     x = [np.log10(2 ** (float(e) + .25)) for e in self.cratercount.n_sigma['bin']]
+    #     y = {}
+    #     measures = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})
+    #     for m in measures:
+    #         y[m] = [float(e) if e != '-' else None for e in self.cratercount.n_sigma[m]]
+    #
+    #     n_trials = [int(e) for e in self.cratercount.n_trials]
+    #     draw_legend = not cps.ra_legend_drawn
+    #
+    #     cst.n_sigma_plot(cps,cps.ax_ra,x,y,n_trials,psym=self.psym,colour=self.colour,fading=True,draw_legend=draw_legend)
+    #     cps.ra_legend_drawn = True
 
     def oplot_n_sigma(self,cps):
         measure = sorted(set(self.cratercount.n_sigma.keys()) - {'bin'})

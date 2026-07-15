@@ -223,11 +223,6 @@ def Hartmann_bins(d_range):
     xminorv = [e+xminor for e in [xtickv[0]-2*xminor]+xtickv if d_range[0] <= e+xminor <= d_range[1]]
     return xtickv,xtickname,xminor,xminorv
 
-def n_sigma_scaling(v):
-    """
-    scaling for n_sigma plot: enlarge central zone
-    """
-    return np.power(np.abs(v),.6)*np.sign(v)
 
 def ra_decode_selection(s):
     """
@@ -237,3 +232,9 @@ def ra_decode_selection(s):
     """
     selection = sorted([int(m.group(1)) for m in re.finditer(r'(?:^|,)\s*([+-]?\d+)\s*(?=,|$)', s)]) if s else None  # get int indices
     return selection
+
+def n_sigma_scaling(v):
+    """
+    scaling for n_sigma plot: enlarge central zone
+    """
+    return np.power(np.abs(v), .6) * np.sign(v)

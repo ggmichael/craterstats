@@ -344,17 +344,20 @@ class Randomnessanalysis(cst.Spatialcount):
 
 
     def plot_n_sigma(self, cps, measure, ax0=None):
-        if not ax0:
-            cps.create_map_plotspace()
-            ax0=cps.ax
-        ax0.set_visible(False)
-        pos = ax0.get_position()
-        sz_ratio = pos.width / cps.ax.get_position().width
-
+        """
+        considered making common routine with craterplot::plot_n_sigma but too many differences
+        """
         if ax0:
-            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height*.3,pos.width*.95,pos.height*.4])
+            ax0.set_visible(False)
+            pos = ax0.get_position()
+            sz_ratio = pos.width / cps.ax.get_position().width * .9
+            ax = cps.fig.add_axes([pos.x0+.15*pos.width,pos.y0 + pos.height*.4,pos.width*.95,pos.height*.2])
         else:
-            ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height / 3, pos.width, pos.height / 2])
+            cps.create_map_plotspace()
+            cps.ax.set_visible(False)
+            pos = cps.ax.get_position()
+            ax = cps.fig.add_axes([pos.x0, pos.y0 + pos.height *.4, pos.width, pos.height *.2])
+            sz_ratio = .8
 
         x = [np.log10(2**(float(r)+.25)) for r in self.montecarlo[measure]['stats']]
         y0 = [(e.m0 - e.mn)/e.sd for e in self.montecarlo[measure]['stats'].values()]
@@ -364,9 +367,8 @@ class Randomnessanalysis(cst.Spatialcount):
         mg = gm.mag(cps.xrange)
 
         for spine in set(ax.spines.values())-{'bottom'}: spine.set_visible(False)
-        #ax.xaxis.set_visible(False)
         ax.yaxis.set_visible(False)
-        ax.set_ylim(cst.n_sigma_scaling(-6), cst.n_sigma_scaling(6))
+        ax.set_ylim(cst.n_sigma_scaling(-3), cst.n_sigma_scaling(3))
         ax.set_xlim(xr[0], xr[1])
 
         ax.fill_between(xr, [cst.n_sigma_scaling(-3)]*2, y2 = [cst.n_sigma_scaling(3)]*2, color=cps.grey[2], edgecolor='none')
@@ -379,23 +381,23 @@ class Randomnessanalysis(cst.Spatialcount):
         ax.plot(x, y, color=cps.palette[0], lw=1. * cps.sz_ratio*sz_ratio, **marker, linestyle=cst.LINESTYLES[measure], clip_on=False)
 
         dy=-.08
-        ax.text(np.mean(xr), cst.n_sigma_scaling(-5), "clustered", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
-        ax.text(np.mean(xr), cst.n_sigma_scaling(7), "separated", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='center', clip_on=False)
-        ax.text(xr[1], dy, r"    $n_\sigma$", color=cps.grey[0], size=.4 * cps.scaled_pt_size, va='center', ha='left')
+        ax.text(np.mean(xr), cst.n_sigma_scaling(-6), "clustered", color=cps.palette[0], size=1.2 * cps.scaled_pt_size * sz_ratio, va='center', ha='center', clip_on=False)
+        ax.text(np.mean(xr), cst.n_sigma_scaling(7), "separated", color=cps.palette[0], size=1.2 * cps.scaled_pt_size * sz_ratio, va='center', ha='center', clip_on=False)
+        ax.text(xr[1], dy, r"    $n_\sigma$", color=cps.palette[0], size=1.2 * cps.scaled_pt_size * sz_ratio, va='center', ha='left')
         for y in [-3,-1,0,1,3]:
-            ax.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.grey[0], size=.3 * cps.scaled_pt_size, va='center', ha='left')
+            ax.text(xr[1], cst.n_sigma_scaling(y)+dy, f"{abs(y):>2}", color=cps.palette[0], size=1. * cps.scaled_pt_size * sz_ratio, va='center', ha='left')
 
-        ax.text(xr[0] - mg*.005, 0, measure + f"\n{self.montecarlo[measure]['n_trials']} trials", color=cps.grey[0], size=.4 * cps.scaled_pt_size,  va='center', ha='right')
+        ax.text(xr[0] - mg*.004, 0, measure + f"\n{self.montecarlo[measure]['n_trials']} trials", color=cps.palette[0], size=1.2 * cps.scaled_pt_size * sz_ratio,  va='center', ha='right')
 
         xtickv,xtickname,_,xminorv = cst.Hartmann_bins(xr)
         ax.spines['top'].set_position(('data', cst.n_sigma_scaling(3)))
         ax.xaxis.set_ticks_position('top')
-        ax.tick_params(axis='x', which='both', direction="out", color=cps.grey[1], labelcolor=cps.grey[0], width=.5*sz_ratio,
-                       length=cps.pt_size*sz_ratio * .2, pad=cps.pt_size*sz_ratio * .2, labelsize=cps.scaled_pt_size*sz_ratio)
-        ax.tick_params(axis='x', which='minor', length=cps.pt_size*sz_ratio * .15)
+        ax.tick_params(axis='x', pad=cps.pt_size*sz_ratio * .2, labelsize=1. * cps.scaled_pt_size*sz_ratio)
         ax.set_xticks(xtickv)
         ax.set_xticks(xminorv, minor=True)
         ax.set_xticklabels(xtickname)
+        ax.tick_params(which='both', length=0)
+        ax.grid(True, which='both', color=cps.grey[3], linewidth=.04 * cps.scaled_pt_size * sz_ratio)
 
 
 
