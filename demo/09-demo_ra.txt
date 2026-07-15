@@ -1,5 +1,5 @@
 # Randomness analysis
-version = 3.6.6
+version = 3.6.9
 source = "/opt/hostedtoolcache/Python/3.12.13/x64/lib/python3.12/site-packages/craterstats/sample/CE-6 8-km vicinity.scc"
 #
 n_sigma = {bin, m2cnd, sdaa

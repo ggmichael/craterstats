@@ -1,6 +1,6 @@
 -o demo/13-demo
--title 'Poisson calculation for buffered crater count|(see Michael et al., 2021)'
--cs neukum83
--pr diff
--p source=%sample%/c7.scc
--p 'type=b-poisson,range=[.25,2],offset=[-3,2]'
+-title 'Buffered Poisson calculation reading data directly from shapefiles'
+-cs MarsNeukumIvanov2001
+-ep Mars
+-p source=%sample%/ejecta01_CRATER.shp
+-p 'range=[0.17,1],type=b-poisson'
