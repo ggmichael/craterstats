@@ -397,7 +397,7 @@ class Randomnessanalysis(cst.Spatialcount):
         ax.set_xticks(xminorv, minor=True)
         ax.set_xticklabels(xtickname)
         ax.tick_params(which='both', length=0)
-        ax.grid(True, which='both', color=cps.grey[3], linewidth=.04 * cps.scaled_pt_size * sz_ratio)
+        ax.grid(True, which='both', color=cps.grey[3], linewidth=.08 * cps.scaled_pt_size * sz_ratio)
 
 
 
