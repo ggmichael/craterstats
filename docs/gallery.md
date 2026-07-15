@@ -122,8 +122,8 @@ Demo 8
 --convert png %sample%/CE-6 8-km vicinity.scc
 ```
 
-![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-m2cnd.png)
 ![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-sdaa.png)
+![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-m2cnd.png)
 
 Demo 9
 
@@ -173,11 +173,11 @@ Demo 12
 Demo 13
 
 ```
--title Poisson calculation for buffered crater count|(see Michael et al., 2021)
--cs neukum83
--pr diff
--p source=%sample%/c7.scc
--p type=b-poisson,range=[.25,2],offset=[-3,2]
+-title Buffered Poisson calculation reading data directly from shapefiles
+-cs MarsNeukumIvanov2001
+-ep Mars
+-p source=%sample%/ejecta01_CRATER.shp
+-p range=[0.17,1],type=b-poisson
 ```
 
 ![14-demo](https://ggmichael.github.io/craterstats/demo/14-demo.png)
