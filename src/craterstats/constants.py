@@ -11,8 +11,6 @@ import craterstats as cst
 PRESENTATIONS = ('cumulative', 'differential', 'R-plot', 'Hartmann', 'chronology', 'rate', 'sequence', 'uncertainty', 'map', 'sdaa', 'm2cnd')
 OPLOT_TYPES = ('data', 'differential-fit', 'cumulative-fit', 'poisson', 'buffered-poisson')
 OPLOT_TYPES_SHORT = ('data', 'd-fit', 'c-fit', 'poisson', 'b-poisson')
-CRATERPLOT_KEYS = ('source', 'name', 'range', 'snap', 'type', 'error_bars', 'hide', 'colour', 'psym', 'binning', 'age_left', 'show_age',
-                   'resurf', 'resurf_showall', 'isochron', 'offset_age')
 
 CARRY_OVER_PROPERTIES = ('source','psym','snap','isochron','error_bars','colour','binning') # not 'type' - only if 'source' too
 
@@ -61,6 +59,7 @@ DEFAULTS = {
     },
     'plot': {
         'source': None,
+        'shp_area': None,
         'name': '',
         'range': ['0', 'inf'],
         'snap': 1,
@@ -79,6 +78,7 @@ DEFAULTS = {
     }
 }
 
+CRATERPLOT_KEYS = list(DEFAULTS['plot'].keys())
 
 GREYS = (['#aaaaaa', '#e0e0e0', '#ededed', '#f8f8f8', '#ffffff'],  # standard/inverted grey values
          ['#787878', '#464646', '#373737', '#282828', '#000000'])

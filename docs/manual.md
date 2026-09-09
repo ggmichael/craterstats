@@ -182,7 +182,11 @@
   Multiple key-value pairs should be separated by commas. Available options:
 
   * `source=filename`
-    Data source filename (of type `.stat`, `.diam`, `.scc`, `_CRATER.shp`)
+    Data source filename (of type `.stat`, `.diam`, `.scc`, `_CRATER.shp`). 
+    When using `*_CRATER.shp`, associated `*_AREA.shp` is found in same location.
+
+  * `shp_area=filename`
+    Specify only if differently named `_AREA.shp` required.
 
   * `name=label`
     Label for legend (filename used by default).

@@ -108,6 +108,7 @@ def get_parser():
     parser.add_argument("-p", "--plot", nargs='+', action=AppendPlotDict, metavar="KEY=VAL,",
                         help="Specify overplot.\nAllowed keys:   \n"
                              "source=txt,"
+                             "shp_area=txt,"
                              "name=txt,"
                              "range=[min,max],"
                              "snap={1,0},"
@@ -246,12 +247,11 @@ def construct_plot_dicts(args,plot,cps_dict):
         p['type'] = 'poisson' if cps_dict['presentation'] == 'sequence' else 'data' # set default
 
         if cpl: # for these items: if not given, carry over from previous
-            if p['source'] is None: # only carry type if source unchanged
+            if p['source'] is None: # only carry type/shp_area if source unchanged
                 p['type'] = cpl[-1]['type']
+                p['shp_area'] = cpl[-1]['shp_area']
             for k in cst.CARRY_OVER_PROPERTIES:
                 p[k] = cpl[-1][k]
-            #if p['source'] == cpl[-1]['source']: #only carry type if source unchanged
-
 
         for k0,v in d.items():
             k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
@@ -269,9 +269,10 @@ def construct_plot_dicts(args,plot,cps_dict):
                 p[k]=v
             elif k in ('range','offset_age'):
                 p[k] = v.strip('[]').split(',')
-            elif k == 'source':
-                p['source']=cs_source(v).strip('"')
-                specified_source = True
+            elif k in ('source','shp_area'):
+                p[k]=cs_source(v).strip('"')
+                if k == 'source':
+                    specified_source = True
             elif k == 'type':
                 p[k]=cst.OPLOT_TYPES_SHORT[decode_abbreviation(cst.OPLOT_TYPES, v, allow_ambiguous=True)]
             elif k == 'binning':
@@ -295,8 +296,11 @@ def construct_plot_dicts(args,plot,cps_dict):
 
         if not specified_source: sys.exit('Source not specified')
         if args.input and not os.path.isabs(p['source']): # if running from another dir or gui
-            p['source'] = gm.filename(args.input_filename,'p') + p['source']
-        p['cratercount'] = cst.Cratercount(p['source'])
+            path = gm.filename(args.input_filename,'p')
+            p['source'] = path + p['source']
+            if p['shp_area']:
+                p['shp_area'] = path + p['shp_area']
+        p['cratercount'] = cst.Cratercount(p['source'],p['shp_area'])
         cpl += [p]
     return cpl
 
