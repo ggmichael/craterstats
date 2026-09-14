@@ -340,9 +340,12 @@ class Cratercount:
 
         if self.binning != 'none':
             if snap1[0] and r1[0]>0:
-                r1[0] = self.binned['d_min'][max(np.searchsorted(self.binned['d_min'],r1[0]*(1.0000001))-1,0)]
-            if snap1[1] and r1[1] <= self.binned['d_max'][-1]-1e-7:
-                r1[1] = self.binned['d_max'][np.searchsorted(self.binned['d_max'],r1[1]*(0.999999))]
+                #r1[0] = self.binned['d_min'][max(np.searchsorted(self.binned['d_min'],r1[0]*(1.0000001))-1,0)]
+                r1[0] = self.generate_bins(binning,[r1[0]*(1.0000001)])[0]
+            if snap1[1] and np.isfinite(r1[1]):
+                r1[1] = self.generate_bins(binning, [r1[1] * (0.999999)])[1]
+            # if snap1[1] and r1[1] <= self.binned['d_max'][-1]-1e-7:
+            #     r1[1] = self.binned['d_max'][np.searchsorted(self.binned['d_max'],r1[1]*(0.999999))]
 
         return r1
 

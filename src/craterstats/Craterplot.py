@@ -63,7 +63,7 @@ class Craterplot:
         if not self.source and self.cratercount:
             self.source = self.cratercount.filename
         if not self.name and self.source:
-            self.name = re.sub(r'_?CRATER_?', '', gm.filename(self.source,"n"))  # remove if present from shp file
+            self.name = self.cratercount.name #re.sub(r'_?CRATER_?', '', gm.filename(self.source,"n"))  # remove if present from shp file
 
 
     def calculate_age(self,cps):
@@ -263,7 +263,7 @@ class Craterplot:
 
         if self.type=='data':
             if 'n' in cps.legend:
-                legend_label+=[self.name if self.name!='' else gm.filename(self.source, "n")]
+                legend_label+=[self.name if self.name!='' else self.cratercount.name] #.filename(self.source, "n")]
             if 'a' in cps.legend:
                 legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
             if 'p' in cps.legend:

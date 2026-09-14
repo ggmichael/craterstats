@@ -36,7 +36,7 @@ class Spatialcount:
                 area_file = gm.filename(filename, 'p1e', f)
             self.crater_file = filename
             self.area_file = area_file
-            self.name = re.sub(r'_?CRATER_?', '', gm.filename(filename, "n"))
+            self.name = re.sub(r'_?AREA_?', '', gm.filename(area_file, "n")) # if names differ, use area name
             self.readSHPfiles()
 
     def summary(self):
@@ -125,9 +125,10 @@ class Spatialcount:
             if not crs.is_geographic:
                 transformer = prj.Transformer.from_crs(crs, crs.geodetic_crs, always_xy=True)
                 for shape in shapes:
-                    xy = list(zip(*shape.points))
-                    lons, lats = transformer.transform(xy[0], xy[1])
-                    shape.points = [(lon, lat) for lon, lat in zip(lons, lats)]
+                    if shape.shapeTypeName == 'POLYGON': # deletions can leave a NULL in QGIS
+                        xy = list(zip(*shape.points))
+                        lons, lats = transformer.transform(xy[0], xy[1])
+                        shape.points = [(lon, lat) for lon, lat in zip(lons, lats)]
 
             return shapes, planetary_radius, mtime
 
