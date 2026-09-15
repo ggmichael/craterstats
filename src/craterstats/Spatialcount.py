@@ -136,6 +136,8 @@ class Spatialcount:
         sa, ra, ta = read_shp(self.area_file)
         if rc != ra:
             raise ValueError("Crater/Area shapefile planetary radii disagree")
+        if len(sa)==0:
+            raise ValueError("Area shapefile coontains no polygon")
         self.planetary_radius = rc
         self.tc, self.ta = tc, ta
         self.sa = sa

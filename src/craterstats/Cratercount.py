@@ -43,8 +43,8 @@ class Cratercount:
             else: bad_filetype = True
         except SystemExit:
             sys.exit()
-        except:
-            sys.exit("Unable to read file: "+filename)
+        except Exception as e:
+            sys.exit("Unable to read file: " + filename + "\n" + str(e))
         if bad_filetype: sys.exit("Unrecognised crater count file type: " + filename)
 
 

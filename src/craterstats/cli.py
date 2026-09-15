@@ -440,8 +440,13 @@ def set_default_filename(args,cps_dict,cp_dicts):
 
 def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_result=None):
     def savefig(tag=''):
-        cps.fig.savefig(cps.out + tag + '.' + f, dpi=500, transparent=cps.transparent,
+        filename = cps.out + tag + '.' + f
+        try:
+            cps.fig.savefig(filename, dpi=500, transparent=cps.transparent,
                         bbox_inches='tight' if args.tight else None, pad_inches=.02 if args.tight else None)
+        except:
+            print(f"Unable to write: {filename}")
+
 
     for f in cps.format:
         if f in {'png', 'pdf', 'svg', 'tif'}:
