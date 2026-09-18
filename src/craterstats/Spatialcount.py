@@ -80,8 +80,7 @@ class Spatialcount:
         d={}
         for i, _ in z:
             pts = [(float(x),float(y)) for x,y, sub_area in zip(c['unit_boundary']['lon'],c['unit_boundary']['lat'], c['unit_boundary']['sub_area']) if int(sub_area) == i]
-            pts = [pt for pt, _ in groupby(pts)] # remove consecutive duplicates
-            p = sph.create_polygon(shell=pts)
+            p = gm.sph_create_polygon_cleaned(shell=pts)
             d[i] = (pts, p) #, xyz(pts)) # xyz needs to be moved out
             xr1 = gm.range([x for x,y in pts])
             yr1 = gm.range([y for x, y in pts])
@@ -149,7 +148,7 @@ class Spatialcount:
             for poly in polys:
                 shell = list(poly.exterior.coords)
                 holes = [list(r.coords) for r in poly.interiors]
-                multipolygon.append(sph.create_polygon(shell=shell, holes=holes))
+                multipolygon.append(gm.sph_create_polygon_cleaned(shell=shell, holes=holes))
 
         p = sph.create_multipolygon(multipolygon)
         self.polygon = p
