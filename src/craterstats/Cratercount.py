@@ -29,7 +29,6 @@ class Cratercount:
             self.name = gm.filename(filename, 'n')
             self.n_sigma, self.n_trials = self.read_ra_file()
 
-        bad_filetype = False
         try:
             if filetype == '.stat': self.ReadStatFile()
             elif filetype == '.diam': self.ReadDiamFile()
@@ -40,12 +39,11 @@ class Cratercount:
             elif filetype == '.scc': self.ReadSCCfile()
             elif filetype == '.shp': self.ReadSHPfile()
             elif filetype == None: pass #just create empty object
-            else: bad_filetype = True
-        except SystemExit:
-            sys.exit()
+            else:
+                raise ValueError("Unrecognised crater count file type: " + filename)
+
         except Exception as e:
-            sys.exit("Unable to read file: " + filename + "\n" + str(e))
-        if bad_filetype: sys.exit("Unrecognised crater count file type: " + filename)
+            raise RuntimeError(f"Unable to read file: {filename}: {e}") from e
 
 
     def __str__(self):

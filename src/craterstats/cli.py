@@ -489,7 +489,7 @@ def list_symbols_and_colours():
     print(gm.bright("\nColours:"))
     print(', '.join([f'{e[2]}' for e in cst.PALETTE]))
 
-def main(args0=None):
+def run_cli(args0=None):
     args = get_parser().parse_args(args0)
     if not args0: args0=sys.argv[1:]
 
@@ -556,6 +556,13 @@ def main(args0=None):
     if not args.input:
             gm.write_textfile(cps.out + '.cs', cs_content)
 
+def main(args0=None):
+    try:
+        return run_cli(args0)
+    except RuntimeError as e:
+        print(e, file=sys.stderr)
+        return 1
+
 if __name__ == '__main__': 
-    main()
+    sys.exit(main())
 
