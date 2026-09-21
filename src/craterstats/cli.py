@@ -242,19 +242,20 @@ def construct_plot_dicts(args,plot,cps_dict):
     cpl = []
     specified_source = False
     if args.plot is None: return []
-    for d in args.plot:
+
+    for d0 in args.plot:
+        d = {cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k, allow_ambiguous=True)]:v for k,v in d0.items()} # expand key abbreviations
         p=plot.copy()
         p['type'] = 'poisson' if cps_dict['presentation'] == 'sequence' else 'data' # set default
 
         if cpl: # for these items: if not given, carry over from previous
-            if p['source'] is None: # only carry type/shp_area if source unchanged
+            if not 'source' in d: # only carry type/shp_area if source unchanged
                 p['type'] = cpl[-1]['type']
                 p['shp_area'] = cpl[-1]['shp_area']
             for k in cst.CARRY_OVER_PROPERTIES:
                 p[k] = cpl[-1][k]
 
-        for k0,v in d.items():
-            k=cst.CRATERPLOT_KEYS[decode_abbreviation(cst.CRATERPLOT_KEYS, k0, allow_ambiguous=True)]
+        for k,v in d.items():
             if k in (
                     'name',
                     'snap',
@@ -528,7 +529,7 @@ def run_cli(args0=None):
 
     dflt = copy.deepcopy(cst.DEFAULTS)
     cps_dict = construct_cps_dict(args, dflt['set'], fl.functions)
-    cp_dicts = construct_plot_dicts(args,dflt['plot'], cps_dict)
+    cp_dicts = construct_plot_dicts(args, dflt['plot'], cps_dict)
 
     set_default_filename(args, cps_dict, cp_dicts)
 
