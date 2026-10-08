@@ -49,3 +49,7 @@ coordinate system for both layers)
 -----
 - Refactor in preparation for GUI version
 - Fix Poisson pdf normalisation (reduces uncertainty mainly of low-count, >3 Ga results). Thanks to Sam Bell for pointing this out.
+
+3.6.11
+------
+- Improve error reporting for faulty shapefiles

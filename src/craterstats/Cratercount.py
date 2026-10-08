@@ -14,11 +14,11 @@ class Cratercount:
 
     BINNINGS = ['pseudo-log', '20/decade', '10/decade', 'x2', 'root-2', '4th root-2', 'none'] #allowed binnings
 
-    def __init__(self,filename=None,filename2=None):
+    def __init__(self, filename=None, area_file=None):
         self.filename=filename
         filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
 
-        self.filename2 = filename2 # shp allows 2 files
+        self.area_file = area_file # shp allows 2 files
         self.binning=None
         self.diam=None
         self.binned={}
@@ -42,6 +42,8 @@ class Cratercount:
             else:
                 raise ValueError("Unrecognised crater count file type: " + filename)
 
+        except RuntimeError:
+            raise
         except Exception as e:
             raise RuntimeError(f"Unable to read file: {filename}: {e}") from e
 
@@ -182,11 +184,12 @@ class Cratercount:
         self.prebinned=0
 
     def ReadSHPfile(self):
-        shp = cst.Spatialcount(self.filename,self.filename2)
+        shp = cst.Spatialcount(self.filename,self.area_file)
         self.diam, self.fraction  = shp.diam, shp.fraction
         self.area, self.perimeter = shp.area, shp.perimeter
         self.prebinned=0
         self.name = shp.name
+        self.area_file = shp.area_file
 
 # ;****************************************************
 # ;                 File writers

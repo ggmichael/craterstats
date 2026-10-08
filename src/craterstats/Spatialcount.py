@@ -37,7 +37,12 @@ class Spatialcount:
             self.crater_file = filename
             self.area_file = area_file
             self.name = re.sub(r'_?AREA_?', '', gm.filename(area_file, "n")) # if names differ, use area name
-            self.readSHPfiles()
+            try:
+                self.readSHPfiles()
+            except Exception as e:
+                srcname = filename + "; " + area_file[len(os.path.commonprefix((filename, area_file))):]
+                raise RuntimeError(f"Unable to read files: {srcname}: {e}") from e
+
 
     def summary(self):
         print(f"\nPlanetary radius: {self.planetary_radius:0g} km")
