@@ -48,7 +48,7 @@ class Craterpdf:
             q = np.where((b['d_min'] >= d_range[0]) & (b['d_max'] <= d_range[1]))
             self.k = np.sum(b['n_event'][q])
 
-        if not lam:
+        if lam is None:
             if bcc: #buffered count
                 if cc.perimeter is None:
                     sys.exit('Error: buffered-poisson calculation requires polygon perimeter in source file')

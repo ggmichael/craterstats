@@ -477,6 +477,7 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
         if f in {'csv'} and not cps.presentation == 'uncertainty':
             cps.create_summary_table(f_out=cps.out + '.' + f)
 
+
 def print_with_highlights(s):
     for line in s:
         if line != '' and line[0] == '*':
@@ -553,6 +554,9 @@ def run_cli(args0=None):
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
     write_output_files(args,cps)
+
+    if args.sequence_table and not cps.presentation == 'uncertainty':
+        cps.create_sequence_table(f_csv=cps.out + '_sequence_table.csv')
 
     if not args.input:
             gm.write_textfile(cps.out + '.cs', cs_content)

@@ -742,7 +742,7 @@ class Craterplotset:
 
         return st #for test routine
 
-    def create_sequence_table(self,f_csv):
+    def create_sequence_table(self, f_csv):
         """
         Output table of sequence probabilities from sequence plot
 
@@ -752,7 +752,7 @@ class Craterplotset:
 
         # calculate sequence table
         show_self_comparison = False
-        cpl = [e for e in self.craterplot if e.type in ['poisson','buffered-poisson'] and not e.hide]
+        cpl = [e for e in self.craterplot if e.type in ['poisson','b-poisson'] and not e.hide]
         n = len(cpl)
         if n<2: return
         s=[['' for i in range(n+1)] for j in range(n+1)]
@@ -767,17 +767,17 @@ class Craterplotset:
                 s[i][j+1] = gm.sigfigs(1.-P,2)
                 s[j][i+1] = gm.sigfigs(P,2)
 
-        st='Table of probability that t(x)>t(y)\n'+'\n'.join([','+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
+        st='Table of probability that t(x)>t(y)\n\n'+'\n'.join([','+','.join([cpl[i].name for i in range(n)])]+[','.join(e) for e in s])
 
         # calculate probability of simultaneous formation vs median time formation
 
         t = [cp.pdf.t(0.5) for cp in cpl]
         t_mean= sum(t)/float(n)
 
-        st += '\nt_median:,'+','.join([f'{tt:.3g}' for tt in t])
-        st += '\nmean(t_median):,'+f'{t_mean:.4g}'
+        st += '\n"t_median, Ga:",'+','.join([f'{tt:.3g}' for tt in t])
+        st += '\n"mean(t_median) Ga:",'+f'{t_mean:.4g}'
 
-        # second calculation of same
+        # calculation v1
 
         lam_ratio = [self.cf.N1(tt)/self.cf.N1(t_mean) for tt,cp in zip(t,cpl)]
         pdf2 = [cst.Craterpdf(self.pf,self.cf,cp.cratercount,cp.range,k=cp.pdf.k,lam=cp.pdf.lam*lr) for lr,cp in zip(lam_ratio,cpl)]
@@ -785,16 +785,32 @@ class Craterplotset:
         # combined pdf
 
         pdf3 = copy.deepcopy(pdf2[0])
-        pdf3.pdf = np.product([e.pdf for e in pdf2],0)
+        pdf3.pdf = np.prod([e.pdf for e in pdf2],0)
 
         rel_probs =  [e.relative_probability(t0) for e,t0 in zip(pdf2,t)]
-        compound_prob = np.product(rel_probs)
+        compound_prob = np.prod(rel_probs)
 
         worse = np.where(pdf3.pdf < compound_prob, pdf3.dt * pdf3.pdf, 0)
         prob_worse = sum(worse)/sum(pdf3.dt * pdf3.pdf)
 
-        st += ('\n\nProbability of more distant time configuration than observed if all surfaces formed at t_mean:\n,'
+        st += ('\n\nProbability of more distant time configuration than that observed if all surfaces formed at t_mean:\n,'
                +f'{prob_worse:g}' )
+
+        # # calculation v2 - not presently used, nor complete
+        #
+        # a0_t_mean = self.cf.a0(t_mean)
+        #
+        # # expected number of craters for given diam range for each measurement at t_mean:
+        # lam_t_mean = [(self.pf.evaluate("cumulative",cp.range[0],a0=a0_t_mean) - self.pf.evaluate("cumulative",cp.range[1],a0=a0_t_mean))*cp.cratercount.area for cp in cpl]
+        #
+        # # observed number
+        # k_obs = [sum(cp.range[0] <= d < cp.range[1] for d in cp.cratercount.diam) for cp in cpl]
+        #
+        # from scipy.stats import poisson
+        #
+        # # probability of observation at equal or greater distance from t_mean (doubling to account for either direction):
+        # pr = [2 * (1 - poisson.cdf(k, mu=lam) if k>lam else poisson.cdf(k, mu=lam) ) for lam,k in zip(lam_t_mean,k_obs)]
+        # print()
 
         try:
             gm.write_textfile(f_csv,st)
