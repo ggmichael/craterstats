@@ -227,10 +227,10 @@ class Craterpdf:
 
         ax.fill_between(self.ts[p[1]:p[3]], y + w * self.pdf[p[1]:p[3]], y - w * self.pdf[p[1]:p[3]],
                         color=gm.mix_colours(color,'black' if invert else 'white',0.35),
-                        edgecolor=color,lw=linewidth, zorder=4)
+                        edgecolor=color,lw=linewidth, alpha=1, zorder=4)
 
         ax.fill_between(self.ts[p[2]:p[2] + 1], y + w * self.pdf[p[2]:p[2] + 1], y - w * self.pdf[p[2]:p[2] + 1],
-                        edgecolor=color, lw=linewidth, alpha=.5, zorder=4)
+                        edgecolor=color, lw=linewidth, zorder=4)
 
 
     def calculate_sequence_probability(self,pdf2):

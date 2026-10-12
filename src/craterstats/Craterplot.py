@@ -318,6 +318,11 @@ class Craterplot:
             for j in [0, 1] if cps.crossover else [0]:
 
                 if self.type in ['poisson','b-poisson']:
+
+                    # to get rid of line cusps at crossover between log/lin axes, should abandon dual ax object approach
+                    # and use single ax with linear -> dual scale mapping function. Eventually much simpler, but
+                    # needs substantial rewrite of cps.create_time_axis_plotspace and dependent code
+
                     self.pdf.violin_plot(cps.ax2[j],dy,w0,pt_size=cps.scaled_pt_size,color=self.colour,invert=cps.invert)
 
                 if self.type in ['d-fit','c-fit']:
