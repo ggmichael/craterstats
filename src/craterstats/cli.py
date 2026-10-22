@@ -468,6 +468,16 @@ def write_output_files(args, cps, drawn = False,progress_queue=None, age_area_re
                     cps.draw()
                     cps.age_area_plot(plt,age_area_result)
                     savefig('_' + plt)
+            elif cps.presentation == 'map': # plot first cp only
+                try:
+                    src = cps.craterplot[0].source
+                    area = cps.craterplot[0].shp_area
+                    scc = cst.Spatialcount(src,area)
+                    cps.create_map_plotspace()
+                    scc.plot(cps, grid=True)
+                    savefig()
+                except:
+                    raise ValueError("Require first plot to be spatial crater count")
             else:
                 if not drawn:
                     cps.draw()
@@ -549,7 +559,7 @@ def run_cli(args0=None):
         convert_format(args, cps, cs_content)
         return
 
-    if cpl and cps.presentation not in ('sequence','uncertainty'):
+    if cpl and cps.presentation not in ('sequence','uncertainty','map'):
         cps.autoscale(cps_dict['xrange'] if 'xrange' in cps_dict else None,
                       cps_dict['yrange'] if 'yrange' in cps_dict else None)
 
@@ -564,8 +574,8 @@ def run_cli(args0=None):
 def main(args0=None):
     try:
         return run_cli(args0)
-    except RuntimeError as e:
-        print(e, file=sys.stderr)
+    except (RuntimeError,ValueError) as e:
+        print(f"{type(e).__name__}: {e}", file=sys.stderr)
         return 1
 
 if __name__ == '__main__': 
