@@ -177,7 +177,7 @@ class Craterplot:
 
         p = self.cratercount.getplotdata(cps.presentation, self.binning, range=self.range,
             resurfacing=1 if self.resurf and self.type == 'c-fit' else 0, showall=self.resurf_showall,
-            pf=cps.pf)
+            pf=cps.pf,buffered=self.buffered)
 
         self.n=p['n']
         self.n_event=p['n_event']
@@ -250,7 +250,8 @@ class Craterplot:
                         legend_label += [f'{self.n:0g}']
                     else:
                         legend_label += [f'{self.n:.1f} (of {self.n_event:d})']
-                legend_label[-1] += " craters" + (" (buffered)" if self.cratercount.buffered or self.type=='b-poisson' else "")
+                legend_label[-1] += " craters" + (" (buffered)" if self.cratercount.buffered or self.type=='b-poisson' or self.buffered else "")
+                # note:  self.cratercount.buffered comes from Kneissl 'fraction' normalisation (to be removed); self.buffered from new cli param
             if 'r' in cps.legend:
                 if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
                     r=self.range
@@ -264,6 +265,7 @@ class Craterplot:
         if self.type == 'data':
             if 'n' in cps.legend:
                 legend_label+=[self.name if self.name!='' else self.cratercount.name] #.filename(self.source, "n")]
+                legend_label[-1] += " (buffered)" if self.buffered else "" # self.buffered from new cli param
             if 'a' in cps.legend:
                 legend_label+=[gm.scientific_notation(self.cratercount.area, sf=3, unit='km2')]
             if 'p' in cps.legend:

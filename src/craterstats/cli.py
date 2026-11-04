@@ -111,6 +111,7 @@ def get_parser():
                              "shp_area=txt,"
                              "name=txt,"
                              "range=[min,max],"
+                             "buffered={1,0},"
                              "snap={1,0},"
                              "type={data,poisson,b-poisson,c-fit,d-fit},"
                              "error_bars={1,0},"
@@ -260,6 +261,7 @@ def construct_plot_dicts(args,plot,cps_dict):
                     'name',
                     'snap',
                     'error_bars',
+                    'buffered',
                     'hide',
                     'age_left',
                     'show_age',

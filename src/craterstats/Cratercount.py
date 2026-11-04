@@ -24,7 +24,10 @@ class Cratercount:
         self.diam=None
         self.binned={}
         self.perimeter=None
-        self.buffered=False
+
+        self.buffered=False  # this is for old-style (Kneissl) buffer calculation, using 'fraction' field for normalisation. Diam/scc files. Eventually remove.
+        # newer method (density contribs) swutches with 'buffered' field from plot params - don't confuse with this one!
+
         self.prebinned=False
         self.density_contribution=None
 
@@ -385,7 +388,7 @@ class Cratercount:
                     range=None,
                     resurfacing=0,
                     showall=0,
-                    pf=None):
+                    pf=None,buffered=0):
         '''
         Return cratercount data in one of several presentation forms suitable for plotting
 
@@ -394,6 +397,7 @@ class Cratercount:
         :param range: diameter range (km)
         :param resurfacing: None|0|1  - no correction|show only range of correction|show all corrected points
         :param pf: production function (for binning bias or resurfacing corrections)
+        :param buffered: use density_contributions instead of count
         :return: dictionary of plottable values
         '''
 
@@ -407,22 +411,34 @@ class Cratercount:
 
         if presentation=='cumulative':
             d=self.binned['d_min'][q]
-            y=self.binned['ncum'][q]/self.area+adj
+            if buffered:
+                y = self.binned['cum_density'][q] + adj
+            else:
+                y = self.binned['ncum'][q] / self.area + adj
             err=y/np.sqrt(self.binned['ncum_event'][q])
 
         elif presentation=='incremental':
             d=self.binned['d_mean'][q]
-            y=self.binned['n'][q]/self.area
+            if buffered:
+                y=self.binned['bin_density'][q]
+            else:
+                y=self.binned['n'][q]/self.area
             err=y/np.sqrt(self.binned['n_event'][q])
 
         elif presentation=='Hartmann':
             d=self.binned['d_mean'][q]
-            y=self.binned['n'][q]/self.binned['bin_width'][q]/self.area*d*(np.sqrt(2.)-1.)
+            if buffered:
+                y=self.binned['bin_density'][q]/self.binned['bin_width'][q]*d*(np.sqrt(2.)-1.)
+            else:
+                y=self.binned['n'][q]/self.binned['bin_width'][q]/self.area*d*(np.sqrt(2.)-1.)
             err=y/np.sqrt(self.binned['n_event'][q])
 
         elif presentation=='differential':
             d=self.binned['d_mean'][q]
-            y=self.binned['n'][q]/self.binned['bin_width'][q]/self.area
+            if buffered:
+                y=self.binned['bin_density'][q]/self.binned['bin_width'][q]
+            else:
+                y=self.binned['n'][q]/self.binned['bin_width'][q]/self.area
             err=y/np.sqrt(self.binned['n_event'][q])
 
             #correct for exponential binning bias (Michael, 2013 - Section 5)
@@ -436,7 +452,10 @@ class Cratercount:
 
         elif presentation=='R-plot':
             d=self.binned['d_mean'][q]
-            y=d**3*self.binned['n'][q]/self.binned['bin_width'][q]/self.area
+            if buffered:
+                y = d ** 3 * self.binned['bin_density'][q] / self.binned['bin_width'][q]
+            else:
+                y = d ** 3 * self.binned['n'][q] / self.binned['bin_width'][q] / self.area
             err=y/np.sqrt(self.binned['n_event'][q])
 
         if range:

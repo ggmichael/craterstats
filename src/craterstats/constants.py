@@ -18,7 +18,7 @@ DEFAULT_YRANGE = dict(zip(PRESENTATIONS, DEFAULT_YRANGE0))
 OPLOT_TYPES = ('data', 'differential-fit', 'cumulative-fit', 'poisson', 'buffered-poisson')
 OPLOT_TYPES_SHORT = ('data', 'd-fit', 'c-fit', 'poisson', 'b-poisson')
 
-CARRY_OVER_PROPERTIES = ('source','psym','snap','isochron','error_bars','colour','binning') # not 'type' - only if 'source' too
+CARRY_OVER_PROPERTIES = ('source','psym','snap','isochron','error_bars','colour','binning','buffered') # not 'type' - only if 'source' too
 
 PLANETS = ('Moon', 'Mars', 'Mercury')
 SURFACE_AREAS = (3.79e7, 1.44e8, 7.48e7) # for 'whole globe' on age-area diagrams
@@ -63,6 +63,7 @@ DEFAULTS = {
         'shp_area': None,
         'name': '',
         'range': ['0', 'inf'],
+        'buffered': 0,
         'snap': 1,
         'type': 'data',  # should be conditional default set in construct_cps_dict()
         'error_bars': 1,
