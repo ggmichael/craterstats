@@ -43,6 +43,8 @@ class Spatialcount:
                 srcname = filename + "; " + area_file[len(os.path.commonprefix((filename, area_file))):]
                 raise RuntimeError(f"Unable to read files: {srcname}: {e}") from e
 
+        self.calculate_buffered_density_contributions()
+
 
     def summary(self):
         print(f"\nPlanetary radius: {self.planetary_radius:0g} km")
@@ -210,6 +212,19 @@ class Spatialcount:
         enclosing_polygon = sph.create_polygon(shell=[(xr[0],yr[0]),(xr[0],yr[1]),(xr[1],yr[1]),(xr[1],yr[0])])
         self.enclosing_area = sph.area(enclosing_polygon, radius=self.planetary_radius)
         print(f"Range: {xr[0]:.2f}:{xr[1]:.2f} {yr[0]:.2f}:{yr[1]:.2f}, area: {self.area:.2f} km2, perimeter: {self.perimeter:.2f} km (planetary radius: {self.planetary_radius:0g} km)")
+
+    def calculate_buffered_density_contributions(self,approx=True):
+        """
+        After reading conventional scc/shp files, calculate per crater buffered areas and density contributions
+        approx: use polygon calculation (exact) or perimeter approx (default)
+        """
+        self.density_contribution = []
+        for d in self.diam:
+            if approx:
+                buffered_area = self.area + self.perimeter * d/2 + math.pi * d**2/4 # Michael et al 2021, Eq 3
+            else:
+                pass
+            self.density_contribution.append(1/buffered_area)
 
 
     def writeSCCfile(self, filename=None):

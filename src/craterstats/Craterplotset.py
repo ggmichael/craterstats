@@ -291,7 +291,7 @@ class Craterplotset:
 
 # add bin labels
         if self.bins:
-            cpb = next((cp for cp in self.craterplot if cp.type=='data'), None)
+            cpb = next((cp for cp in self.craterplot if cp.type == 'data'), None)
             if cpb:
                 bins = cpb.cratercount.generate_bins(cpb.binning, 10**self.xrange)
                 for i,b in enumerate(bins):

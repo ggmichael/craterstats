@@ -15,16 +15,19 @@ class Cratercount:
     BINNINGS = ['pseudo-log', '20/decade', '10/decade', 'x2', 'root-2', '4th root-2', 'none'] #allowed binnings
 
     def __init__(self, filename=None, area_file=None):
+
         self.filename=filename
         filetype = gm.filename(filename, 'e', max_ext_length=6) if filename else None
-
         self.area_file = area_file # shp allows 2 files
+
         self.binning=None
         self.diam=None
         self.binned={}
         self.perimeter=None
         self.buffered=False
         self.prebinned=False
+        self.density_contribution=None
+
         if filetype:
             self.name = gm.filename(filename, 'n')
             self.n_sigma, self.n_trials = self.read_ra_file()
@@ -36,8 +39,8 @@ class Cratercount:
             # requires dedicated code to interact with 'range' specification beyond given bins
             # needs further consideration (e.g. for poisson range), but better not to use data in this format anyway
             #elif filetype=='.binned': self.ReadBinnedFile()
-            elif filetype == '.scc': self.ReadSCCfile()
-            elif filetype == '.shp': self.ReadSHPfile()
+            elif filetype == '.scc': self.Read_Spatialcount_file() # self.ReadSCCfile() - now obsolete
+            elif filetype == '.shp': self.Read_Spatialcount_file()
             elif filetype == None: pass #just create empty object
             else:
                 raise ValueError("Unrecognised crater count file type: " + filename)
@@ -166,30 +169,30 @@ class Cratercount:
         self.MakeBinNcum()
 
 
-    def ReadSCCfile(self):
-        s = gm.read_textstructure(self.filename)
-        c=s['crater']
-        diam=[float(e) for e in c['diam']]
-        frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1. for e in diam]
+    # def ReadSCCfile(self):
+    #     s = gm.read_textstructure(self.filename)
+    #     c=s['crater']
+    #     diam=[float(e) for e in c['diam']]
+    #     frac=[float(e) for e in c['fraction']] if 'fraction' in c else [1. for e in diam]
+    #
+    #     q=[i for i,e in sorted(enumerate(diam),key=lambda x:x[1])]     #get sorted indices
+    #
+    #     self.area=float(re.findall(r'\s*[\d\.]*',s['Total_area'])[0])
+    #     if 'Perimeter' in s.keys():
+    #         self.perimeter = float(s['Perimeter'].split()[0])
+    #     if 'Total_perimeter' in s.keys(): #for Thomas Heyer's OpenCraterTool
+    #         self.perimeter = float(re.findall(r'\s*[\d\.]*',s['Total_perimeter'])[0])
+    #     self.diam=[diam[e] for e in q]
+    #     self.fraction=[frac[e] for e in q]
+    #     self.prebinned=0
 
-        q=[i for i,e in sorted(enumerate(diam),key=lambda x:x[1])]     #get sorted indices
-
-        self.area=float(re.findall(r'\s*[\d\.]*',s['Total_area'])[0])
-        if 'Perimeter' in s.keys():
-            self.perimeter = float(s['Perimeter'].split()[0])
-        if 'Total_perimeter' in s.keys(): #for Thomas Heyer's OpenCraterTool
-            self.perimeter = float(re.findall(r'\s*[\d\.]*',s['Total_perimeter'])[0])
-        self.diam=[diam[e] for e in q]
-        self.fraction=[frac[e] for e in q]
+    def Read_Spatialcount_file(self):
+        scc = cst.Spatialcount(self.filename,self.area_file)
+        self.diam, self.fraction, self.density_contribution = scc.diam, scc.fraction, scc.density_contribution
+        self.area, self.perimeter = scc.area, scc.perimeter
         self.prebinned=0
-
-    def ReadSHPfile(self):
-        shp = cst.Spatialcount(self.filename,self.area_file)
-        self.diam, self.fraction  = shp.diam, shp.fraction
-        self.area, self.perimeter = shp.area, shp.perimeter
-        self.prebinned=0
-        self.name = shp.name
-        self.area_file = shp.area_file
+        self.name = scc.name
+        self.area_file = scc.area_file
 
 # ;****************************************************
 # ;                 File writers
@@ -282,10 +285,14 @@ class Cratercount:
         if not binning in self.BINNINGS: raise Exception("Invalid binning")
 
         d=self.diam
+        if self.density_contribution is None:
+            dc = [1/self.area] * len(d)
+        else:
+            dc = self.density_contribution
 
         if binning=='none':
-            bins,h = zip(*sorted(zip(d, self.fraction)))
-            bins, h = np.array(bins), np.array(h)
+            bins, h, dc = zip(*sorted(zip(d, self.fraction, dc)))
+            bins, h, dc = np.array(bins), np.array(h), np.array(dc)
             bin_centres = bins
             h_event=np.ones(len(h), dtype=int)
             width = np.zeros(len(d))
@@ -295,11 +302,10 @@ class Cratercount:
             h_event, _ = np.histogram(d, bins=bins)
             self.reverse_indices = np.digitize(d, bins) # needed for randomness analysis
             h,_ = np.histogram(d,weights=self.fraction,bins=bins)
+            bin_density,_ = np.histogram(d,weights=dc,bins=bins)
 
             width=bins[1:]-bins[:-1]
             bin_centres=np.sqrt(bins[1:]*bins[:-1])
-
-
 
         self.binned={'d_min':bins[:-1] if binning!='none' else bins,
                      'd_max':bins[1:] if binning!='none' else bins,
@@ -308,7 +314,9 @@ class Cratercount:
                      'n':h,
                      'n_event':h_event,
                      'ncum':np.flip(np.cumsum(np.flip(h))),
-                     'ncum_event':np.flip(np.cumsum(np.flip(h_event)))
+                     'ncum_event':np.flip(np.cumsum(np.flip(h_event))),
+                     'bin_density':bin_density,
+                     'cum_density':np.flip(np.cumsum(np.flip(bin_density))),
                      }
         self.binning=binning
 

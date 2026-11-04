@@ -261,7 +261,7 @@ class Craterplot:
                 legend_label += [f'N({cps.ref_diameter:0g})' +'=' + gm.scientific_notation(10**self.a0[0],10**self.a0[2],10**self.a0[1], unit='km-2')]
 
 
-        if self.type=='data':
+        if self.type == 'data':
             if 'n' in cps.legend:
                 legend_label+=[self.name if self.name!='' else self.cratercount.name] #.filename(self.source, "n")]
             if 'a' in cps.legend:
