@@ -88,9 +88,9 @@ class TestCratercount(unittest.TestCase):
         root = cst.gm.filename(cst.__file__, 'p')
         cc = cst.Cratercount(root + 'sample/Pickering.scc')
         # check correctly read
-        self.assertEqual(0.100268735886, cc.diam[10])
-        self.assertEqual(3108.4786861585735, cc.area)
-        self.assertEqual(337.6404007893458,cc.perimeter)
+        self.assertAlmostEqual(0.100268735886, cc.diam[10])
+        self.assertAlmostEqual(3108.4786861585735, cc.area)
+        self.assertAlmostEqual(337.6404007893458, cc.perimeter)
         # check initialisation
         self.assertEqual(cc.binning, None)
         self.assertFalse(cc.prebinned)
