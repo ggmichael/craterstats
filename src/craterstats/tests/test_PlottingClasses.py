@@ -40,6 +40,7 @@ class TestPlottingClasses(unittest.TestCase):
 
     def test_Craterplotset_summary(self):
         cp = cst.Craterplot(cratercount=self.cc,range=[.2,.7],type='d-fit')
+        cp.cratercount.area = 3036.61128229 # set scc nominal area for comparison calcs below. Now finds from spherical geom - better.
         cps = cst.Craterplotset(cf=self.cf,pf=self.pf,craterplot=[cp])
 
         def get_cps_summary():

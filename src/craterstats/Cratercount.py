@@ -299,6 +299,7 @@ class Cratercount:
             bin_centres = bins
             h_event=np.ones(len(h), dtype=int)
             width = np.zeros(len(d))
+            bin_density = None
 
         else:
             bins=self.generate_bins(binning,d,offset=offset)

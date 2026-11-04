@@ -21,6 +21,7 @@ class Craterplot:
             'source':'',
             'name':'',
             'range':['0','inf'],   #unconstrained
+            'buffered':0,
             'snap':1,
             'type':'data',
             'error_bars':1,

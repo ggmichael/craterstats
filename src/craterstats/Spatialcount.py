@@ -27,6 +27,7 @@ class Spatialcount:
         self.filename=filename
         filetype = gm.filename(filename, 'e') if filename else None
         self.name = gm.filename(filename, "n")
+        self.area_file = area_file
 
         if filetype == '.scc':
             self.readSCCfile()

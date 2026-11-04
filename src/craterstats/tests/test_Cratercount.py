@@ -85,26 +85,17 @@ class TestCratercount(unittest.TestCase):
         self.assertEqual(cc.fraction[0], 1/24.3)
 
     def test_ReadSCCfile(self):
-        c = textwrap.dedent("""
-            Total_area = 224669.2 <km^2>
-            Perimeter = 1605.7
-            # crater_diameters:
-            crater = {diam,lon,lat
-            33.58 -126.0 16.81
-            40.40 -124.4 16.95
-            }
-            """)
-        with patch('builtins.open', mock_open(read_data=c)):
-            cc = cst.Cratercount('test.scc')
+        root = cst.gm.filename(cst.__file__, 'p')
+        cc = cst.Cratercount(root + 'sample/Pickering.scc')
         # check correctly read
-        self.assertTrue(np.array_equal(cc.diam, [33.58, 40.40]))
-        self.assertEqual(cc.area, 224669.2)
-        self.assertEqual(cc.perimeter, 1605.7)
+        self.assertEqual(0.100268735886, cc.diam[10])
+        self.assertEqual(3108.4786861585735, cc.area)
+        self.assertEqual(337.6404007893458,cc.perimeter)
         # check initialisation
         self.assertEqual(cc.binning, None)
         self.assertFalse(cc.prebinned)
         self.assertFalse(cc.buffered)
-        self.assertTrue(np.array_equal(cc.fraction, [1., 1.]))
+        self.assertTrue(np.array_equal(cc.fraction[0:2], [1., 1.]))
 
     def make_flat_distribution(self):
         self.N_CRATERS=100
@@ -112,6 +103,7 @@ class TestCratercount(unittest.TestCase):
         cc.diam=10**np.linspace(.001,.999,self.N_CRATERS)
         cc.fraction=[1.]*(self.N_CRATERS-2)+[.3]*2
         cc.area = 10.
+        cc.density_contribution = None
         return cc
 
     def test_apply_binning(self):
@@ -165,6 +157,14 @@ class TestCratercount(unittest.TestCase):
         self.assertEqual(len(bins),11)
         np.testing.assert_allclose(bins[[0,-1]],[1.,10.])
         self.assertEqual(len(cc.generate_bins('20/decade', cc.diam)),21)
+
+    def test_scc_measured_area(self): # this GIS measured area differs from spherical area by ~2%. Check doesn't change.
+        root = cst.gm.filename(cst.__file__, 'p')
+        cc = cst.Cratercount(root + 'sample/Pickering.scc')
+        gis_area = 3036.61128229
+        self.assertLess(abs(gis_area-cc.area)/gis_area,.025)
+
+
 
 if __name__ == '__main__':
     unittest.main()
