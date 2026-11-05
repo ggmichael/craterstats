@@ -4,5 +4,5 @@
 -yrange -4 2
 -cs ni2001
 -p source=%sample%/Pickering.scc
--p 'type=poisson,range=[.26,.63]'
+-p 'type=poisson,range=[.23,.63]'
 --bins
