@@ -28,7 +28,7 @@ class Randomnessanalysis(cst.Spatialcount):
     MEASURES = ['m2cnd','sdaa']
     def __init__(self,filename=None,area_file=None,out=None,progress_queue=None):
         super().__init__(filename,area_file)
-        self.init_Cratercount()
+        self.init_Cratercount() # probably would have been better to make Spatialcount a child class of Cratercount
         self.montecarlo = {}
         self.max_threads = os.cpu_count()-1
         self.ra_file = (out if out else self.name) + "_ra.txt"
@@ -44,6 +44,7 @@ class Randomnessanalysis(cst.Spatialcount):
         self.cc.lon = self.lon
         self.cc.lat = self.lat
         self.cc.fraction = self.fraction
+        self.cc.area = self.area
         self.cc.prebinned = 0
 
     def print(self,msg): # print either to terminal or to gui
