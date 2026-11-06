@@ -664,7 +664,7 @@ class Craterplotset:
         """
         s=[]
         for cp in self.craterplot:
-            if cp.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
+            if cp.type in ['c-fit', 'd-fit', 'poisson']:
                 cp.calculate_age(self)
                 d = {k: getattr(cp, k, None) for k in
                       {'name', 'binning', 'range', 'bin_range', 'resurf', 'type', 'source', 'n', 'n_event', 't','a0','n_d'}}
@@ -752,7 +752,7 @@ class Craterplotset:
 
         # calculate sequence table
         show_self_comparison = False
-        cpl = [e for e in self.craterplot if e.type in ['poisson','b-poisson'] and not e.hide]
+        cpl = [e for e in self.craterplot if e.type == 'poisson' and not e.hide]
         n = len(cpl)
         if n<2: return
         s=[['' for i in range(n+1)] for j in range(n+1)]

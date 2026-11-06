@@ -257,8 +257,9 @@ def construct_plot_dicts(args,plot,cps_dict):
                 p[k] = cpl[-1][k]
 
         for k,v in d.items():
-            if k in (
-                    'name',
+            if k == 'name':
+                p[k] = v
+            elif k in (
                     'snap',
                     'error_bars',
                     'buffered',
@@ -269,7 +270,7 @@ def construct_plot_dicts(args,plot,cps_dict):
                     'resurf_showall',
                     'isochron',
                     ):
-                p[k]=v
+                p[k]=int(v)
             elif k in ('range','offset_age'):
                 p[k] = v.strip('[]').split(',')
             elif k in ('source','shp_area'):
@@ -546,7 +547,7 @@ def run_cli(args0=None):
 
     set_default_filename(args, cps_dict, cp_dicts)
 
-    if 'a' in cps_dict['legend'] and 'b-poisson' in [d['type'] for d in cp_dicts]:
+    if 'a' in cps_dict['legend'] and True in [d['type'] == 'poisson' and bool(d['buffered']) for d in cp_dicts]:
         cps_dict['legend']+='p' #force to show perimeter with area if using b-poisson
 
     cps=cst.Craterplotset(cps_dict)

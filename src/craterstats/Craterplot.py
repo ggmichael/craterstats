@@ -72,10 +72,10 @@ class Craterplot:
         Calculate age
         :param cps: Craterplotset instance
         """
-        if self.type in ['poisson','b-poisson']:
+        if self.type == 'poisson':
             pf_range=cps.pf.range
             r0=np.clip(self.range,pf_range[0],pf_range[1])
-            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=self.type == 'b-poisson')
+            self.pdf=cst.Craterpdf(cps.pf, cps.cf, self.cratercount, r0, bcc=bool(self.buffered))
             self.t = self.pdf.median1sigma()  # median/1-sigma gaussian-equivalent percentiles
             self.a0=cps.cf.a0(self.t)
             self.n=self.pdf.k
@@ -189,7 +189,7 @@ class Craterplot:
         if self.error_bars:
             cps.ax.errorbar(np.log10(p['d']),p['y'],yerr=p['err'],fmt='none',linewidth=.5*cps.sz_ratio,ecolor=cps.grey[0],zorder=-1)
 
-        if self.type in ['c-fit','d-fit','poisson','b-poisson']:
+        if self.type in ['c-fit','d-fit','poisson']:
             self.calculate_age(cps)
 
             if self.isochron:
@@ -208,7 +208,7 @@ class Craterplot:
                             color=self.colour,size=cps.scaled_pt_size*1.2,
                             horizontalalignment='right' if self.age_left else 'left',)
 
-                if self.type in ['poisson','b-poisson']:
+                if self.type == 'poisson':
                     text_extent = TextPath((0, 0), st, size=cps.scaled_pt_size*1.2).get_extents()
                     h,w=text_extent.height,text_extent.width
                     f = 1 / (cps.cm2inch * (cps.position[2] - cps.position[0]) * 100) #conversion for axes coord
@@ -236,7 +236,7 @@ class Craterplot:
     def make_legend_label(self,cps):
         legend_label = []
 
-        if self.type in ['c-fit', 'd-fit', 'poisson', 'b-poisson']:
+        if self.type in ['c-fit', 'd-fit', 'poisson']:
             if cps.presentation == 'sequence':
                 if 'A' in cps.legend:
                     legend_label+=[(cst.str_age(self.t[0], self.t[2] - self.t[0], self.t[0] - self.t[1], cps.sig_figs,
@@ -251,10 +251,10 @@ class Craterplot:
                         legend_label += [f'{self.n:0g}']
                     else:
                         legend_label += [f'{self.n:.1f} (of {self.n_event:d})']
-                legend_label[-1] += " craters" + (" (buffered)" if self.cratercount.buffered or self.type=='b-poisson' or self.buffered else "")
+                legend_label[-1] += " craters" + (" (buffered)" if self.cratercount.buffered or self.buffered else "")
                 # note:  self.cratercount.buffered comes from Kneissl 'fraction' normalisation (to be removed); self.buffered from new cli param
             if 'r' in cps.legend:
-                if not self.cratercount.prebinned and self.type in ['poisson','b-poisson']:
+                if not self.cratercount.prebinned and self.type == 'poisson':
                     r=self.range
                 else:
                     r=gm.range(self.cratercount.generate_bins(self.binning,self.range,expand=False))
@@ -305,7 +305,7 @@ class Craterplot:
         self.n=p['n']
         self.n_event=p['n_event']
 
-        if self.type in ['c-fit','d-fit','poisson','b-poisson']:
+        if self.type in ['c-fit','d-fit','poisson']:
 
             self.calculate_age(cps)
 
@@ -320,7 +320,7 @@ class Craterplot:
 
             for j in [0, 1] if cps.crossover else [0]:
 
-                if self.type in ['poisson','b-poisson']:
+                if self.type == 'poisson':
 
                     # to get rid of line cusps at crossover between log/lin axes, should abandon dual ax object approach
                     # and use single ax with linear -> dual scale mapping function. Eventually much simpler, but
