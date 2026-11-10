@@ -1,5 +1,10 @@
 # History
 
+## 3.7
+
+- Diagnostic reporting for faulty shapefiles.
+- Allow distinctly named _AREA.shp file with shp_area= plot parameter so one crater file can be used across several areas
+
 ## 3.6.11
 
 - Improve error reporting for faulty shapefiles.
