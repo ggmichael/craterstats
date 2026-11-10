@@ -176,8 +176,8 @@ Demo 13
 -title Buffered Poisson calculation reading data directly from shapefiles
 -cs MarsNeukumIvanov2001
 -ep Mars
--p source=%sample%/ejecta01_CRATER.shp
--p range=[0.17,1],type=b-poisson
+-p source=%sample%/ejecta01_CRATER.shp,buffered=1
+-p range=[0.17,1],type=poisson
 ```
 
 ![14-demo](https://ggmichael.github.io/craterstats/demo/14-demo.png)
