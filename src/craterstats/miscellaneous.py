@@ -75,7 +75,7 @@ class Functionslist:
                 try:
                     s = s + gm.read_textfile(uf, ignore_hash=True, strip=';', as_string=True)
                 except:
-                    print("Unable to read user functions file: "+functions_user+" - ignoring.")
+                    print("Unable to read user functions file: "+uf+" - ignoring.")
         self.functions = gm.read_textstructure(s,from_string=True)
 
     def user_function_config(self):
