@@ -3,7 +3,6 @@
 
 from collections import namedtuple
 from datetime import datetime
-from itertools import groupby
 import math
 import os
 import re
@@ -144,14 +143,17 @@ class Spatialcount:
         if rc != ra:
             raise ValueError("Crater/Area shapefile planetary radii disagree")
         if len(sa)==0:
-            raise ValueError("Area shapefile coontains no polygon")
+            raise ValueError("Area shapefile contains no polygon")
         self.planetary_radius = rc
         self.tc, self.ta = tc, ta
         self.sa = sa
 
+        valid_geometries, report = self.validate_shp_polygons(sa)
+        if report:
+            raise ValueError("\n".join([f"Record {e['record']} | Polygon {e['polygon']} | Ring {e['ring']} | {e['type']}, {e['message']}" for e in report]))
+
         multipolygon = []
-        for shp_record in sa:
-            geom = shp.geometry.shape(shp_record.__geo_interface__)
+        for geom in valid_geometries:
             polys = geom.geoms if geom.geom_type == "MultiPolygon" else [geom] # treat polygon and multipolygon uniformly
             for poly in polys:
                 shell = list(poly.exterior.coords)
@@ -436,3 +438,93 @@ class Spatialcount:
         ax.set_aspect('equal', adjustable='box')
 
 
+
+    def validate_shp_polygons(self, sa):
+        from shapely.geometry import shape, LineString
+
+        report = []
+        valid_geometries = []
+
+        def add_error(record, polygon, ring, error_type, message):
+            report.append({"record": record, "polygon": polygon, "ring": ring, "type": error_type, "message": message})
+
+        def validate_ring(coords, record_no, polygon_no, ring_name):
+            errors = []
+            points = list(coords)
+
+            if len(points) > 1 and points[0][:2] == points[-1][:2]:
+                points = points[:-1]
+            n = len(points)
+
+            if n < 3:
+                add_error(record_no, polygon_no, ring_name, "too_few_vertices", f"Ring has only {n} vertices.")
+                return errors
+
+            for i, point in enumerate(points): # Check invalid coordinates
+                if not all(math.isfinite(float(v)) for v in point):
+                    add_error(record_no, polygon_no, ring_name, "invalid_coordinate", f"Invalid coordinate at vertex {i}: {point}")
+
+            edges = [LineString([points[i][:2], points[(i + 1) % n][:2]]) for i in range(n)]
+
+            for i in range(n):             # Check self-intersections
+                for j in range(i + 1, n):
+                    if j == i + 1 or (i == 0 and j == n - 1):
+                        continue
+                    if edges[i].intersects(edges[j]):
+                        intersection = edges[i].intersection(edges[j])
+                        add_error(record_no, polygon_no, ring_name, "self_intersection", f"Edge {i} intersects edge {j}: {intersection.wkt}")
+
+            return errors
+
+        def check_ring_intersections(poly, record_no, polygon_no):
+            rings = [("exterior", poly.exterior)] + [(f"hole_{i}", ring) for i, ring in enumerate(poly.interiors, start=1)]
+
+            for i, (name1, ring1) in enumerate(rings):
+                line1 = LineString(ring1.coords)
+                for name2, ring2 in rings[i + 1:]:
+                    line2 = LineString(ring2.coords)
+                    if line1.intersects(line2):
+                        intersection = line1.intersection(line2)
+                        add_error(record_no, polygon_no, f"{name1} / {name2}", "ring_intersection", f"{name1} intersects {name2}: {intersection.wkt}")
+
+        for record_no, shp_record in enumerate(sa, start=1):
+            try:
+                geom = shape(shp_record.__geo_interface__)
+            except Exception as exc:
+                add_error(record_no, None, None, "geometry_error", str(exc))
+                continue
+
+            if geom.geom_type == "Polygon":
+                polys = [geom]
+            elif geom.geom_type == "MultiPolygon":
+                polys = list(geom.geoms)
+            else:
+                add_error(record_no, None, None, "unsupported_geometry", f"Unsupported geometry: {geom.geom_type}")
+                continue
+
+            feature_error_start = len(report)
+
+            for polygon_no, poly in enumerate(polys, start=1):
+                if poly.is_empty:
+                    add_error(record_no, polygon_no, None, "empty_polygon", "Polygon is empty.")
+                    continue
+
+                validate_ring(poly.exterior.coords, record_no, polygon_no, "exterior")
+
+                for hole_no, ring in enumerate(poly.interiors, start=1):
+                    validate_ring(ring.coords, record_no, polygon_no, f"hole_{hole_no}")
+
+                check_ring_intersections(poly, record_no, polygon_no)
+
+                if not shp.is_valid(poly):
+                    has_detailed_error = any(e["record"] == record_no and e["polygon"] == polygon_no and e["type"] in ("self_intersection", "ring_intersection") for e in report[feature_error_start:])
+                    if not has_detailed_error:
+                        add_error(record_no, polygon_no, None, "invalid_polygon", shp.is_valid_reason(poly))
+
+                if poly.area == 0:
+                    add_error(record_no, polygon_no, None, "zero_area", "Polygon has zero area.")
+
+            if len(report) == feature_error_start:
+                valid_geometries.append(geom)
+
+        return valid_geometries, report

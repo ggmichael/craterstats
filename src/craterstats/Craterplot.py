@@ -19,6 +19,7 @@ class Craterplot:
         self.UpdateSettings({
             'cratercount':None, # if not provided, will create from 'source'
             'source':'',
+            'shp_area':None,
             'name':'',
             'range':['0','inf'],   #unconstrained
             'buffered':0,
@@ -60,7 +61,7 @@ class Craterplot:
                 v = int(v)
             setattr(self, k, v)
         if not self.cratercount and self.source:
-            self.cratercount = cst.Cratercount(self.source)
+            self.cratercount = cst.Cratercount(self.source,area_file=self.shp_area)
         if not self.source and self.cratercount:
             self.source = self.cratercount.filename
         if not self.name and self.source:

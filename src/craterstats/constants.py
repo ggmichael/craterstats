@@ -18,7 +18,7 @@ DEFAULT_YRANGE = dict(zip(PRESENTATIONS, DEFAULT_YRANGE0))
 OPLOT_TYPES = ('data', 'differential-fit', 'cumulative-fit', 'poisson')
 OPLOT_TYPES_SHORT = ('data', 'd-fit', 'c-fit', 'poisson')
 
-CARRY_OVER_PROPERTIES = ('source','psym','snap','isochron','error_bars','colour','binning','buffered') # not 'type' - only if 'source' too
+CARRY_OVER_PROPERTIES = ('source','shp_area','psym','snap','isochron','error_bars','colour','binning','buffered') # not 'type' - only if 'source' too
 
 PLANETS = ('Moon', 'Mars', 'Mercury')
 SURFACE_AREAS = (3.79e7, 1.44e8, 7.48e7) # for 'whole globe' on age-area diagrams
