@@ -122,8 +122,8 @@ Demo 8
 --convert png %sample%/CE-6 8-km vicinity.scc
 ```
 
-![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-sdaa.png)
 ![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-m2cnd.png)
+![09-demo](https://ggmichael.github.io/craterstats/demo/09-demo_ra-sdaa.png)
 
 Demo 9
 
@@ -309,6 +309,6 @@ Demo 21
 -yrange -4 2
 -cs ni2001
 -p source=%sample%/Pickering.scc
--p type=poisson,range=[.26,.63]
+-p type=poisson,range=[.23,.63]
 --bins
 ```
