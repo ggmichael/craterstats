@@ -4,6 +4,7 @@
 
 - Diagnostic reporting for faulty shapefiles.
 - Allow distinctly named _AREA.shp file with shp_area= plot parameter so one crater file can be used across several areas
+- Add buffered={0|1} plot parameter, which applies to both data and fitting/Poisson overplots. 'buffered-Poisson' is thus removed.
 
 ## 3.6.11
 
