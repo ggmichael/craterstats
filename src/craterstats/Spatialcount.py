@@ -158,7 +158,8 @@ class Spatialcount:
             for poly in polys:
                 shell = list(poly.exterior.coords)
                 holes = [list(r.coords) for r in poly.interiors]
-                multipolygon.append(gm.sph_create_polygon_cleaned(shell=shell, holes=holes))
+                p = gm.sph_create_polygon_cleaned(shell=shell, holes=holes)
+                multipolygon.append(p)
 
         p = sph.create_multipolygon(multipolygon)
         self.polygon = p
@@ -448,44 +449,77 @@ class Spatialcount:
         def add_error(record, polygon, ring, error_type, message):
             report.append({"record": record, "polygon": polygon, "ring": ring, "type": error_type, "message": message})
 
+        def format_intersection(intersection):
+            return shp.to_wkt(intersection, rounding_precision=5)
+
         def validate_ring(coords, record_no, polygon_no, ring_name):
             errors = []
             points = list(coords)
 
             if len(points) > 1 and points[0][:2] == points[-1][:2]:
                 points = points[:-1]
+
             n = len(points)
 
             if n < 3:
                 add_error(record_no, polygon_no, ring_name, "too_few_vertices", f"Ring has only {n} vertices.")
                 return errors
 
-            for i, point in enumerate(points): # Check invalid coordinates
+            # Check invalid coordinates
+            for i, point in enumerate(points):
                 if not all(math.isfinite(float(v)) for v in point):
                     add_error(record_no, polygon_no, ring_name, "invalid_coordinate", f"Invalid coordinate at vertex {i}: {point}")
 
+            # Check spikes (collinear edges reversing direction)
+            for i in range(n):
+                p1 = points[i - 1][:2]
+                p2 = points[i][:2]
+                p3 = points[(i + 1) % n][:2]
+
+                cross = (p2[0] - p1[0]) * (p3[1] - p2[1]) - (p2[1] - p1[1]) * (p3[0] - p2[0])
+                dot = (p2[0] - p1[0]) * (p3[0] - p2[0]) + (p2[1] - p1[1]) * (p3[1] - p2[1])
+
+                if abs(cross) < 1e-10 and dot < 0:
+                    add_error(record_no, polygon_no, ring_name, "spike", f"Spike at vertex {i}: {p2}")
+
+            # Create edges
             edges = [LineString([points[i][:2], points[(i + 1) % n][:2]]) for i in range(n)]
 
-            for i in range(n):             # Check self-intersections
+            # Check self-intersections
+            for i in range(n):
                 for j in range(i + 1, n):
                     if j == i + 1 or (i == 0 and j == n - 1):
                         continue
+
                     if edges[i].intersects(edges[j]):
                         intersection = edges[i].intersection(edges[j])
-                        add_error(record_no, polygon_no, ring_name, "self_intersection", f"Edge {i} intersects edge {j}: {intersection.wkt}")
+                        add_error(record_no, polygon_no, ring_name, "self_intersection", f"Edge {i} intersects edge {j}: {format_intersection(intersection)}")
 
             return errors
 
         def check_ring_intersections(poly, record_no, polygon_no):
-            rings = [("exterior", poly.exterior)] + [(f"hole_{i}", ring) for i, ring in enumerate(poly.interiors, start=1)]
+            from shapely.geometry import LineString
 
-            for i, (name1, ring1) in enumerate(rings):
-                line1 = LineString(ring1.coords)
-                for name2, ring2 in rings[i + 1:]:
-                    line2 = LineString(ring2.coords)
+            errors = []
+            exterior = LineString(poly.exterior.coords)
+
+            for hole_no, ring in enumerate(poly.interiors, start=1):
+                hole = LineString(ring.coords)
+                name = f"hole_{hole_no}"
+
+                if exterior.intersects(hole):
+                    intersection = exterior.intersection(hole)
+                    add_error(record_no, polygon_no, f"exterior / {name}", "hole_touches_exterior",
+                              f"{name} touches or crosses exterior boundary: {format_intersection(intersection)}")
+
+            # Check intersections between holes
+            holes = [(f"hole_{i}", LineString(r.coords)) for i, r in enumerate(poly.interiors, start=1)]
+
+            for i, (name1, line1) in enumerate(holes):
+                for name2, line2 in holes[i + 1:]:
                     if line1.intersects(line2):
                         intersection = line1.intersection(line2)
-                        add_error(record_no, polygon_no, f"{name1} / {name2}", "ring_intersection", f"{name1} intersects {name2}: {intersection.wkt}")
+                        add_error(record_no, polygon_no, f"{name1} / {name2}", "hole_intersection", f"{name1} intersects {name2}: {format_intersection(intersection)}")
 
         for record_no, shp_record in enumerate(sa, start=1):
             try:
