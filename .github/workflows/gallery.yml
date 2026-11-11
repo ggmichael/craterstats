@@ -8,6 +8,7 @@ on:
     paths:
       - 'src/craterstats/config/demo_commands.txt'
       - 'scripts/make_gallery.py'
+      - 'scripts/gallery_layout.html'
 
 permissions:
   contents: write
@@ -52,6 +53,11 @@ jobs:
       - name: List files after generating gallery
         run: |
           ls -R gallery/
+
+      - name: Add GitHub-style layout
+        run: |
+          mkdir -p gallery/_layouts
+          cp scripts/gallery_layout.html gallery/_layouts/default.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
