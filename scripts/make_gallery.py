@@ -20,7 +20,6 @@ def main():
     n = None
     n = cli.demo(n)
     s = ['''---
-layout: default
 ---
  
 # Gallery
