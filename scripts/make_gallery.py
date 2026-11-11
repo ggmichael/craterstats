@@ -17,9 +17,9 @@ def main():
         for f in fs:
             Path(f).unlink()
 
-    n = None #[5,6,7,24,25]
-    n=cli.demo(n)
-    s=['''  
+    n = None
+    n = cli.demo(n)
+    s = ['''  
 # Gallery
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
@@ -38,7 +38,7 @@ and generated with the command `craterstats -i <filename>.cs`.
         im1 = [Path(p).as_posix() for p in im0]
         lnks = []
         for im in im1:
-            match gm.filename(im,'e'):
+            match gm.filename(im, 'e'):
                 case '.png':
                     lnk = f'![{fn}]({root}{im})'
                 case '.pdf':
@@ -47,11 +47,11 @@ and generated with the command `craterstats -i <filename>.cs`.
                     lnk = f'<img src = "{root}{im}" width = "100%" />'
             lnks += [lnk]
 
-        s+=[*lnks,
+        s += [*lnks,
             f'\nDemo {i}\n',
             "```", *cs[1:], "```\n"]
 
-    gm.write_textfile(r'../docs/gallery.md',s)
+    gm.write_textfile('index.md', s)
 
 if __name__ == '__main__':
     main()
