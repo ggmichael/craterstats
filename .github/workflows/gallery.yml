@@ -50,15 +50,23 @@ jobs:
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      - name: Generate gallery.md and images
+      - name: Generate and publish gallery.md
         run: |
           python scripts/make_gallery.py
+          cp docs/gallery.md "$RUNNER_TEMP/gallery.md"
 
           git fetch origin gallery || true
-          git checkout -B gallery origin/gallery || git checkout -B gallery
-          git add docs/gallery.md
+          if git show-ref --verify --quiet refs/remotes/origin/gallery; then
+            git checkout -B gallery origin/gallery
+          else
+            git checkout -B gallery
+          fi
+
+          mkdir -p docs
+          cp "$RUNNER_TEMP/gallery.md" docs/gallery.md
+          git add -f docs/gallery.md
           git commit -m "Build gallery.md" || echo "No changes to commit"
-          git push origin gallery --force
+          git push origin gallery
 
       - name: List files after generating gallery
         run: |
