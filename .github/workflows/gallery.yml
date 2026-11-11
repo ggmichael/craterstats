@@ -8,7 +8,6 @@ on:
     paths:
       - 'src/craterstats/config/demo_commands.txt'
       - 'scripts/make_gallery.py'
-      - 'scripts/gallery_layout.html'
 
 permissions:
   contents: write
@@ -46,23 +45,21 @@ jobs:
         run: |
           python setup.py install
 
-      - name: Generate gallery
+      - name: Set Git user name and email
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      - name: Generate gallery.md and images
         run: |
           python scripts/make_gallery.py
 
+          git fetch origin gallery || true
+          git checkout -B gallery origin/gallery || git checkout -B gallery
+          git add docs/gallery.md
+          git commit -m "Build gallery.md" || echo "No changes to commit"
+          git push origin gallery --force
+
       - name: List files after generating gallery
         run: |
-          ls -R gallery/
-
-      - name: Add GitHub-style layout
-        run: |
-          mkdir -p gallery/_layouts
-          cp scripts/gallery_layout.html gallery/_layouts/default.html
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./gallery
-          publish_branch: gh-pages
-          enable_jekyll: true
+          ls -R gallery

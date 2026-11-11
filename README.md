@@ -3,7 +3,7 @@
 
 This is a Python reimplementation and extension of the Craterstats-II software, a tool to analyse and plot crater count data for planetary surface dating.
 
-[Gallery](https://ggmichael.github.io/craterstats/)
+[Gallery](https://github.com/ggmichael/craterstats/blob/gallery/docs/gallery.md)
 
 [Quick reference](https://github.com/ggmichael/craterstats/blob/main/docs/manual.md)
 
@@ -36,7 +36,7 @@ current folder.
     
     craterstats -demo
 
-Alternatively, visit the [Gallery](https://ggmichael.github.io/craterstats/) and copy some of the commands there to recreate the example plots.
+Alternatively, visit the [Gallery](https://github.com/ggmichael/craterstats/blob/gallery/docs/gallery.md) and copy some of the commands there to recreate the example plots.
 
 
 # Usage
