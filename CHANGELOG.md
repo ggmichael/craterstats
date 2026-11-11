@@ -1,5 +1,9 @@
 # History
 
+## 3.7.1
+
+- Fixed legend/label placement after matplotlib update
+
 ## 3.7
 
 - Diagnostic reporting for faulty shapefiles.

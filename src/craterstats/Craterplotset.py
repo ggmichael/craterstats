@@ -249,7 +249,7 @@ class Craterplotset:
         ax.set_ylim(bottom=10**self.yrange[0], top=10**self.yrange[1])   #nb craterstats2 used linear for both axes
         ax.set_xlim(left=self.xrange[0], right=self.xrange[1])
         
-        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.3,right=True,top=True)
+        ax.tick_params(axis='both',which='major',direction="in",length=self.pt_size*.3,right=True,top=True,pad=2)
         ax.tick_params(axis='both',which='minor',direction="in",length=self.pt_size*.15,right=True,top=True)
  
         if xminor is not None: ax.xaxis.set_minor_locator(ticker.MultipleLocator(xminor))            
@@ -490,9 +490,9 @@ class Craterplotset:
             #offset would be better specified in pts (1.5 * fontsize) [for many-decade plots]:
             if self.presentation in ('uncertainty'):
                 text = self.ax.text(.95, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7,
-                                    ha='right',linespacing=1.5)
+                                    ha='right',linespacing=1.)
             else:
-                text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.5)
+                text=self.ax.text(.05, .05, txt, transform=self.ax.transAxes, fontsize=self.scaled_pt_size * .7, linespacing=1.)
             if self.text_halo:
                 text.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white',alpha=0.7)])  # White shadow beneath text
 
@@ -548,7 +548,7 @@ class Craterplotset:
 
         h1.reverse()
         b1.reverse()
-        legend=self.ax.legend(h1,b1,frameon=False, loc='upper right', borderaxespad=1,handletextpad=0.5,labelspacing=.4,handlelength=1.5)
+        legend=self.ax.legend(h1,b1,frameon=False, loc='upper right', borderaxespad=1,handletextpad=0.5,labelspacing=.0,handlelength=1.5,handleheight=0.5)
         if self.text_halo:
             for item in legend.get_texts(): #inverted shadow for improved contrast
                 item.set_path_effects([patheffects.withStroke(linewidth=self.sz_ratio, foreground='black' if self.invert else 'white', alpha=0.7)])
@@ -968,13 +968,15 @@ class Craterplotset:
             im = np.flip(np.transpose(np.clip(kk, 0, 8)), 1)
             imo = self.ax.imshow(im, cmap_k, origin="lower", interpolation='none', alpha=None, aspect='auto', extent=[0, 1, 0, 1])
             cbar = self.fig.colorbar(imo, self.ax_cbar, ticks=[0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5])
-            cbar.ax.set_yticklabels(['0', '1', '2', '3', '4', '5', '6', '7+'])
+            cbar.ax.set_yticklabels(['0', '1', '2', '3', '4', '5', '6', '7+'],va='center')
             cbar.set_label('$k$' + diameter_text, rotation=90)
 
         elif plt == 'err':
             imo = self.ax.imshow(np.flip(np.transpose(zz), 1) * 100, cmap_err, origin="lower", interpolation='none', alpha=None,
                                  aspect='auto', vmin=0, extent=[0, 1, 0, 1])
             cbar = self.fig.colorbar(imo, self.ax_cbar)
+            for label in cbar.ax.get_yticklabels():
+                label.set_va('center')
             cbar.set_label(r'Measured uncertainty $\sigma$, %' + diameter_text, rotation=90)
 
         elif plt == 'age':
@@ -986,7 +988,7 @@ class Craterplotset:
                                  cmap_ratio, origin="lower", interpolation='none',
                                  extent=[0, 1, 0, 1], aspect='auto', vmin=vmin, vmax=vmax)
             cbar = self.fig.colorbar(imo, self.ax_cbar, ticks=[np.log10(e) for e in [.1, .2, 1 / 3., .5, 1. / 1.4, 1., 1.4, 2., 3., 5., 10.]])
-            cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5', '.7', '1', '1.4', '2', '3', '5', '10'])
+            cbar.ax.set_yticklabels(['0.1', '.2', '.33', '.5', '.7', '1', '1.4', '2', '3', '5', '10'],va='center')
             cbar.set_label('Measured/actual age' + diameter_text, rotation=90)
             if poly: poly.set_alpha(0.7)
 

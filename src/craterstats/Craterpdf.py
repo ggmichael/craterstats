@@ -186,9 +186,10 @@ class Craterpdf:
 
         ax.set_xticks(xt)
 
-        ax.tick_params(axis='x', which='both', width=linewidth, length=pt_size * .2, pad=pt_size * .1, color=color)
+        ax.tick_params(axis='x', which='both', width=linewidth, length=pt_size * .2, pad=pt_size * -.1, color=color)
         ax.tick_params(axis='x', which='minor', length=pt_size * .1)
         ax.set_xticklabels(xt_label,fontsize=pt_size*.6, color=color)#,horizontalalignment='left')
+
 
     def offset(self,left):
         """
