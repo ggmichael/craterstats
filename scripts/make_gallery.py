@@ -19,7 +19,10 @@ def main():
 
     n = None
     n = cli.demo(n)
-    s = ['''  
+    s = ['''---
+layout: default
+---
+ 
 # Gallery
 
 This gallery shows the types of plots produced by Craterstats-III, and the command options used to produce them.
